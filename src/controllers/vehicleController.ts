@@ -17,7 +17,8 @@ export const getVehicleById = async (req: Request, res: Response, next: NextFunc
         const vehicleId = req.params.id;
         const vehicle = await vehicleService.getVehicleById(vehicleId);
         if (!vehicle) {
-            return res.status(404).json({ message: 'Vehicle not found' });
+            res.status(404).json({ message: 'Vehicle not found' });
+            return;
         }
         res.json(vehicle);
     } catch (err) {
@@ -38,7 +39,8 @@ export const updateVehicle = async (req: Request, res: Response, next: NextFunct
         const updatedVehicleData: Partial<IVehicle> = req.body;
         const updatedVehicle = await vehicleService.updateVehicle(vehicleId, updatedVehicleData);
         if (!updatedVehicle) {
-            return res.status(404).json({ message: 'Vehicle not found' });
+            res.status(404).json({ message: 'Vehicle not found' });
+            return;
         }
         res.json(updatedVehicle);
     } catch (err) {
