@@ -37,7 +37,7 @@ export const removeCartItemHandler = async (req: Request, res: Response, next: N
     try {
         const {cartId, itemId} = req.params;
         const cart = await CartService.removeItem(cartId, itemId);
-        return res.status(200).json({message: 'Item deleted from cart', cart});
+        res.status(200).json({message: 'Item deleted from cart', cart});
     } catch (error: any) {
         logger.logError(`removeCartItemHandler error: ${error.message}`);
         next(new ApiError(500, `Server error: ${error.message}`));
