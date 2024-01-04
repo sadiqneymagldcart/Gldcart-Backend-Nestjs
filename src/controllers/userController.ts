@@ -20,7 +20,8 @@ export const signup = async (
             password
         );
         res.cookie("refreshToken", userData.refreshToken, {
-            httpOnly: false,
+            httpOnly: true,
+            sameSite: 'none',
             secure: true,
             maxAge: process.env.COOKIES_MAX_AGE as unknown as number,
         });
