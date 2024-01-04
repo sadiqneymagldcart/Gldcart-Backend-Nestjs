@@ -74,6 +74,7 @@ class CartService {
                 return ApiError.BadRequest("Cart not found");
             }
             this.logger.logInfo(`Product removed successfully from User: ${userId}'s cart`);
+
             return cart;
         } catch (error: any) {
             this.logger.logError(`Error while removing product from User: ${userId}'s cart. Error: ${error.message}`);
