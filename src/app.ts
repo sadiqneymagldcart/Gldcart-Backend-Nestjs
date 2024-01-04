@@ -36,8 +36,10 @@ app.use(
     cors({
         origin: appConfig.CLIENT_URL,
         credentials: true,
+        exposedHeaders: ["set-cookie"]
     })
 );
+
 app.use(authRoutes);
 app.use(passwordRoutes);
 app.use(addressesRoutes);
