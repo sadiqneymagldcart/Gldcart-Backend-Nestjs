@@ -48,7 +48,7 @@ class UserService {
     }
 
     async login(email: string, password: string) {
-        const user: IUser = <IUser>await User.findOne({email});
+        const user = <IUser>await User.findOne({email});
 
         if (user) {
             const auth: boolean = await bcrypt.compare(password, user.password);
