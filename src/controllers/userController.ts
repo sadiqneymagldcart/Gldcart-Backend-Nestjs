@@ -178,7 +178,8 @@ export const googleOauthHandler = async (req: Request, res: Response) => {
             process.env.USERS_AFTER_GOOGLE_PASSWORD as string
         );
         res.cookie("refreshToken", userData.refreshToken, {
-            httpOnly: false,
+            httpOnly: true,
+            sameSite: 'none',
             secure: true,
             maxAge: process.env.COOKIES_MAX_AGE as unknown as number,
         });
