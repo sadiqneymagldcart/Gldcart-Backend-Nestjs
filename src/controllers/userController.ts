@@ -42,7 +42,8 @@ export const login = async (
         const userData = await UserService.login(email, password);
 
         res.cookie("refreshToken", userData.refreshToken, {
-            httpOnly: false,
+            httpOnly: true,
+            sameSite: 'none',
             secure: true,
             maxAge: process.env.COOKIES_MAX_AGE as unknown as number,
         });
@@ -122,7 +123,8 @@ export const refresh = async (
         const refreshToken = req.cookies.refreshToken as string;
         const userData = await UserService.refresh(refreshToken);
         res.cookie("refreshToken", userData.refreshToken, {
-            httpOnly: false,
+            httpOnly: true,
+            sameSite: 'none',
             secure: true,
             maxAge: process.env.COOKIES_MAX_AGE as unknown as number,
         });
