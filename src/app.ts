@@ -34,7 +34,7 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 app.use(
     cors({
-        origin: appConfig.CLIENT_URL,
+        origin: [appConfig.CLIENT_URL!, "http://localhost:5173"],
         credentials: true,
         exposedHeaders: ["set-cookie"]
     })
