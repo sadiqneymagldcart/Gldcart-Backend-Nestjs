@@ -11,7 +11,7 @@ export const productRoutes = Router();
 
 productRoutes.get('/products', getAllProducts);
 
-productRoutes.get('/products/:productId:', getProductById);
+productRoutes.get('/products/:productId', getProductById);
 
 productRoutes.post('/product', createProduct);
 
