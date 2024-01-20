@@ -1,6 +1,5 @@
 import {IUser} from "../models/User";
-import {IAddress} from "../models/Address";
-class UserDto {
+export class UserDto {
     id: string;
     type: string;
     name: string;
@@ -15,5 +14,3 @@ class UserDto {
         this.email = model.email;
     }
 }
-
-export default UserDto;
