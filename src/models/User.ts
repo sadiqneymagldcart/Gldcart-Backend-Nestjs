@@ -32,10 +32,10 @@ const userSchema: Schema<IUser> = new Schema({
   },
   email: {
     type: String,
-    required: [true, "Please, enter an email"],
+    required: [true, "Please, enter an mail"],
     unique: true,
     lowercase: true,
-    validate: [validator.isEmail, "Please, enter a valid email"],
+    validate: [validator.isEmail, "Please, enter a valid mail"],
   },
   addresses: [addressSchema],
   picture: {
