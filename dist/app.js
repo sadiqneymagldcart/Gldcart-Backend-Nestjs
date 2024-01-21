@@ -3,69 +3,62 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.app = void 0;
-const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
-const mongoose_1 = __importDefault(require("mongoose"));
-const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const errorMiddleware_1 = __importDefault(require("./middlewares/errorMiddleware"));
-const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
-const helmet_1 = __importDefault(require("helmet"));
-const appConfig_1 = require("./config/appConfig");
-const body_parser_1 = __importDefault(require("body-parser"));
-const authRoutes_1 = require("./routes/authRoutes");
-const passwordRoutes_1 = require("./routes/passwordRoutes");
-const addressesRoutes_1 = require("./routes/addressesRoutes");
-const emailRoutes_1 = require("./routes/emailRoutes");
-const paymentRoutes_1 = require("./routes/paymentRoutes");
-const personalDetailsRoutes_1 = require("./routes/personalDetailsRoutes");
-const vehicleRoutes_1 = require("./routes/vehicleRoutes");
-const webhookRoutes_1 = require("./routes/webhookRoutes");
-const subscriptionRoutes_1 = require("./routes/subscriptionRoutes");
-const cartRoutes_1 = require("./routes/cartRoutes");
-exports.app = (0, express_1.default)();
-exports.app.set("trust proxy", 1);
-exports.app.use((0, helmet_1.default)());
-exports.app.use((0, express_rate_limit_1.default)({
-    windowMs: 15 * 60 * 1000,
-    limit: 200,
-}));
-exports.app.use('/webhook', body_parser_1.default.raw({ type: "*/*" }));
-exports.app.use(express_1.default.json());
-exports.app.use(express_1.default.urlencoded({
-    extended: true,
-}));
-exports.app.use((0, cookie_parser_1.default)());
-exports.app.use((0, cors_1.default)({
-    origin: appConfig_1.appConfig.CLIENT_URL,
-    credentials: true,
-}));
-exports.app.use(authRoutes_1.authRoutes);
-exports.app.use(passwordRoutes_1.passwordRoutes);
-exports.app.use(addressesRoutes_1.addressesRoutes);
-exports.app.use(emailRoutes_1.emailRoutes);
-exports.app.use(paymentRoutes_1.paymentRoutes);
-exports.app.use(personalDetailsRoutes_1.personalDetailRoutes);
-exports.app.use(vehicleRoutes_1.vehicleRoutes);
-exports.app.use(subscriptionRoutes_1.subscriptionRoutes);
-exports.app.use(webhookRoutes_1.webhookRoutes);
-exports.app.use(cartRoutes_1.cartRoutes);
-exports.app.use(errorMiddleware_1.default);
-const mongooseOptions = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-};
-if (!appConfig_1.appConfig.DB_URL) {
-    console.error("DB_URL environment variable is not defined.");
-    process.exit(1);
-}
-mongoose_1.default
-    .connect(appConfig_1.appConfig.DB_URL, mongooseOptions)
-    .then(() => {
-    exports.app.listen(appConfig_1.appConfig.DB_PORT, () => {
-        console.log(`⚡️[database]: MongoDB is running on port ${appConfig_1.appConfig.DB_PORT}`);
-    });
-})
-    .catch((error) => {
-    console.error("Error connecting to the database:", error);
-});
+exports.Server = void 0;
+var express_1 = __importDefault(require("express"));
+var cors_1 = __importDefault(require("cors"));
+var cookie_parser_1 = __importDefault(require("cookie-parser"));
+var helmet_1 = __importDefault(require("helmet"));
+var hpp_1 = __importDefault(require("hpp"));
+var compression_1 = __importDefault(require("compression"));
+var swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+var swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
+var dbUtils_1 = require("./utils/dbUtils");
+var errorMiddleware_1 = require("./middlewares/errorMiddleware");
+var inversify_express_utils_1 = require("inversify-express-utils");
+var Server = /** @class */ (function () {
+    function Server(container, port) {
+        this.server = new inversify_express_utils_1.InversifyExpressServer(container);
+        this.port = port || 3000;
+        this.connectToDatabase();
+        this.initializeMiddlewares();
+        this.initializeSwagger();
+        this.initializeErrorHandling();
+    }
+    Server.prototype.listen = function () {
+        this.server.build().listen(this.port, function () { });
+    };
+    Server.prototype.getServer = function () {
+        return this.server;
+    };
+    Server.prototype.connectToDatabase = function () {
+        (0, dbUtils_1.connectToMongoDatabase)();
+    };
+    Server.prototype.initializeMiddlewares = function () {
+        this.server.setConfig(function (app) {
+            app.use((0, cors_1.default)({ origin: process.env.CLIENT_URL, credentials: true }));
+            app.use((0, hpp_1.default)());
+            app.use((0, helmet_1.default)());
+            app.use((0, compression_1.default)());
+            app.use(express_1.default.json());
+            app.use(express_1.default.urlencoded({ extended: true }));
+            app.use((0, cookie_parser_1.default)());
+            app.use(errorMiddleware_1.errorHandler);
+        });
+    };
+    Server.prototype.initializeSwagger = function () {
+        var options = {
+            swaggerDefinition: {
+                info: {
+                    title: "REST API",
+                    version: "1.0.0",
+                    description: "Example docs",
+                },
+            },
+            apis: ["swagger.yaml"],
+        };
+        var specs = (0, swagger_jsdoc_1.default)(options);
+        this.app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(specs));
+    };
+    return Server;
+}());
+exports.Server = Server;

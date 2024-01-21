@@ -25,7 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.paymentRoutes = void 0;
 const authMiddleware = __importStar(require("../middlewares/authMiddleware"));
-const paymentController = __importStar(require("../controllers/paymentController"));
+const paymentController = __importStar(require("../controllers/stripe/paymentController"));
 const express_1 = require("express");
 exports.paymentRoutes = (0, express_1.Router)();
 exports.paymentRoutes.post("/create-checkout-session", authMiddleware.requireAuth, paymentController.createPaymentCheckout);

@@ -25,7 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.subscriptionRoutes = void 0;
 const authMiddleware = __importStar(require("../middlewares/authMiddleware"));
-const subscriptionController = __importStar(require("../controllers/subscriptionController"));
+const subscriptionController = __importStar(require("../controllers/stripe/subscriptionController"));
 const express_1 = require("express");
 exports.subscriptionRoutes = (0, express_1.Router)();
 exports.subscriptionRoutes.post("/create-subscription-checkout", authMiddleware.requireAuth, subscriptionController.createSubscriptionCheckout);

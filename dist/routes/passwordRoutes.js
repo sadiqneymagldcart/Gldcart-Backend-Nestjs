@@ -24,7 +24,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.passwordRoutes = void 0;
-const userController = __importStar(require("../controllers/userController"));
+const userController = __importStar(require("../controllers/auth/authController"));
 const express_1 = require("express");
 exports.passwordRoutes = (0, express_1.Router)();
 exports.passwordRoutes.post("/forgot-password", userController.initiatePasswordReset);

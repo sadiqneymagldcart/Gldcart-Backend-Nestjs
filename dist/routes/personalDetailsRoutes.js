@@ -25,7 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.personalDetailRoutes = void 0;
 const authMiddleware = __importStar(require("../middlewares/authMiddleware"));
-const userController = __importStar(require("../controllers/userController"));
+const userController = __importStar(require("../controllers/auth/authController"));
 const express_1 = require("express");
 exports.personalDetailRoutes = (0, express_1.Router)();
 exports.personalDetailRoutes.put("/update-personal-details", authMiddleware.requireAuth, userController.updatePersonalDetails);

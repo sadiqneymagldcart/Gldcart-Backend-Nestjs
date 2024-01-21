@@ -1,25 +1,23 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.requireAuth = void 0;
-const api_error_1 = __importDefault(require("../exceptions/api-error"));
-const tokenService_1 = __importDefault(require("../services/tokenService"));
-const requireAuth = (req, res, next) => {
-    const authorizationHeader = req.headers.authorization;
+var api_error_1 = require("../exceptions/api-error");
+var server_1 = require("../server");
+var tokenService_1 = require("../services/token/tokenService");
+var requireAuth = function (req, res, next) {
+    var authorizationHeader = req.headers.authorization;
     if (!authorizationHeader) {
         console.log("no access token was provided");
-        return next(api_error_1.default.UnauthorizedError());
+        return next(api_error_1.ApiError.UnauthorizedError());
     }
-    const accessToken = authorizationHeader.split(' ')[1];
+    var accessToken = authorizationHeader.split(' ')[1];
     if (!accessToken) {
         console.log("invalid access token");
-        return next(api_error_1.default.UnauthorizedError());
+        return next(api_error_1.ApiError.UnauthorizedError());
     }
-    const userData = tokenService_1.default.validateAccessToken(accessToken);
+    var userData = server_1.container.get(tokenService_1.TokenService).validateAccessToken(accessToken);
     if (!userData) {
-        return next(api_error_1.default.UnauthorizedError());
+        return next(api_error_1.ApiError.UnauthorizedError());
     }
     res.locals.user = userData;
     next();
