@@ -1,7 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.webhookRoutes = void 0;
-const webhookService_1 = require("../services/webhookService");
-const express_1 = require("express");
-exports.webhookRoutes = (0, express_1.Router)();
-exports.webhookRoutes.post("/webhook", webhookService_1.handleStripeWebhook);
+exports.WebhookRoutes = void 0;
+const webhookService_1 = require("../services/stripe/webhookService");
+class WebhookRoutes {
+    constructor(router, path) {
+        this.path = path;
+        this.router = router;
+        this.initializeRoutes();
+    }
+    initializeRoutes() {
+        this.router.post(`${this.path}`, webhookService_1.handleStripeWebhook);
+    }
+}
+exports.WebhookRoutes = WebhookRoutes;

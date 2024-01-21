@@ -23,12 +23,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addressesRoutes = void 0;
+exports.AddressRoutes = void 0;
 const authMiddleware = __importStar(require("../middlewares/authMiddleware"));
-const addressController = __importStar(require("../controllers/addressContoller"));
-const express_1 = require("express");
-exports.addressesRoutes = (0, express_1.Router)();
-exports.addressesRoutes.post("/add-address", authMiddleware.requireAuth, addressController.addAddressHandler);
-exports.addressesRoutes.get("/get-address/:id", authMiddleware.requireAuth, addressController.getAddressesHandler);
-exports.addressesRoutes.put("/update-address", authMiddleware.requireAuth, addressController.updateAddressHandler);
-exports.addressesRoutes.delete("/delete-address", addressController.deleteAddressHandler);
+const addressController = __importStar(require("../controllers/user/addressContoller"));
+class AddressRoutes {
+    constructor(router, path) {
+        this.path = path;
+        this.router = router;
+        this.initializeRoutes();
+    }
+    initializeRoutes() {
+        this.router.post("/", authMiddleware.requireAuth, addressController.addAddressHandler);
+        this.router.get("/:id", authMiddleware.requireAuth, addressController.getAddressesHandler);
+        this.router.put("/", authMiddleware.requireAuth, addressController.updateAddressHandler);
+        this.router.delete("/:id", addressController.deleteAddressHandler);
+    }
+}
+exports.AddressRoutes = AddressRoutes;
