@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import ApiError from '../exceptions/api-error';
-import TokenService from '../services/tokenService';
+import {ApiError} from '../exceptions/api-error';
+import {container} from "../server";
+import {TokenService} from "../services/token/tokenService";
 
 export const requireAuth = (req: Request, res: Response, next: NextFunction): void => {
   const authorizationHeader = req.headers.authorization as string;
@@ -15,7 +16,7 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction): vo
     console.log("invalid access token");
     return next(ApiError.UnauthorizedError());
   }
-  const userData = TokenService.validateAccessToken(accessToken);
+  const userData = container.get(TokenService).validateAccessToken(accessToken);
 
   if (!userData) {
     return next(ApiError.UnauthorizedError());

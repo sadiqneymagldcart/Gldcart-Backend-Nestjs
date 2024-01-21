@@ -1,16 +1,17 @@
 import {Response, Request} from 'express';
-import ApiError from '../exceptions/api-error';
+import {ApiError} from '../exceptions/api-error';
+import { logger } from '../utils';
 
-export default function errorHandler(err: Error, req: Request, res: Response
+export function errorHandler(error: Error, request: Request, response: Response
 ) {
-    console.log(err);
-    if (err instanceof ApiError) {
-        const apiError = err as ApiError;
+    logger.logError(error.message, error);
+    if (error instanceof ApiError) {
+        const apiError = error as ApiError;
 
-        res.status(apiError.status).json({
+        response.status(apiError.status).json({
             message: apiError.message,
             errors: apiError.errors,
         });
     }
-    res.status(500).json({message: 'Undefined server error'});
+    response.status(500).json({message: 'Undefined server error'});
 }

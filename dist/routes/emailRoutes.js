@@ -25,7 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.emailRoutes = void 0;
 const rateLimitMiddleware_1 = require("../middlewares/rateLimitMiddleware");
-const userController = __importStar(require("../controllers/userController"));
+const userController = __importStar(require("../controllers/auth/authController"));
 const express_1 = require("express");
 exports.emailRoutes = (0, express_1.Router)();
 exports.emailRoutes.post("/send-contact-email", rateLimitMiddleware_1.rateLimitMiddlewareTyped, userController.sendContactEmail);

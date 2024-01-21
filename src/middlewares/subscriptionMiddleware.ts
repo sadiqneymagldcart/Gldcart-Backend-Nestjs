@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response} from "express";
-import ApiError from "../exceptions/api-error";
+import {ApiError} from "../exceptions/api-error";
 import User from "../models/User";
+import { logger } from "../utils";
 
 export const requireSubscription = (requiredSubscriptionType: string) => {
     return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -23,8 +24,8 @@ export const requireSubscription = (requiredSubscriptionType: string) => {
                 res.status(403).json({ error: 'Access denied for this subscription type' });
             }
             return next();
-        } catch (error) {
-            console.error('Error checking subscription:', error);
+        } catch (error: any) {
+            await logger.logError('Error checking subscription:', error);
             res.status(500).json({ error: 'Internal server error' });
         }
     };

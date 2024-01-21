@@ -25,7 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.vehicleRoutes = void 0;
 const authMiddleware = __importStar(require("../middlewares/authMiddleware"));
-const vehicleController = __importStar(require("../controllers/vehicleController"));
+const vehicleController = __importStar(require("../controllers/shop/vehicleController"));
 const express_1 = require("express");
 exports.vehicleRoutes = (0, express_1.Router)();
 exports.vehicleRoutes.post('/vehicle', authMiddleware.requireAuth, vehicleController.createVehicle);
