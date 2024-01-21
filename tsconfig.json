@@ -1,80 +1,13 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "ES2021",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "incremental": true,
-    "skipLibCheck": true,
-    "strictNullChecks": true,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false,
-    "paths": {
-      "@auth/*": [
-        "src/modules/auth/*"
-      ],
-      "@token/*": [
-        "src/modules/token/*"
-      ],
-      "@user/*": [
-        "src/modules/user/*"
-      ],
-      "@product/*": [
-        "src/modules/product/*"
-      ],
-      "@review/*": [
-        "src/modules/review/*"
-      ],
-      "@category/*": [
-        "src/modules/category/*"
-      ],
-      "@search/*": [
-        "src/modules/search/*"
-      ],
-      "@email/*": [
-        "src/modules/email/*"
-      ],
-      "@offering/*": [
-        "src/modules/offering/*"
-      ],
-      "@renting/*": [
-        "src/modules/renting/*"
-      ],
-      "@cart/*": [
-        "src/modules/cart/*"
-      ],
-      "@item/*": [
-        "src/modules/item/*"
-      ],
-      "@chat/*": [
-        "src/modules/chat/*"
-      ],
-      "@order/*": [
-        "src/modules/order/*"
-      ],
-      "@stripe/*": [
-        "src/modules/stripe/*"
-      ],
-      "@shared/*": [
-        "src/shared/*"
-      ],
-      "@config/*": [
-        "src/config/*"
-      ],
-      "@common/*": [
-        "src/common/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ]
+    "compilerOptions": {
+        "target": "es5",
+        "lib": ["es6", "dom"],
+        "types": ["reflect-metadata"],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "outDir": "./dist",
+        "allowSyntheticDefaultImports": true
     }
-  }
 }
