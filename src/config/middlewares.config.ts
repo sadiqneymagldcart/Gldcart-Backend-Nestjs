@@ -5,10 +5,9 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import {appConfig} from "./appConfig";
-import {configureRoutes} from "./configureRoutes";
-import errorMiddleware from "../middlewares/errorMiddleware";
+import {errorHandler} from "../middlewares/errorMiddleware";
 
-export function setupMiddlewares(app: express.Express) {
+export function initializeMiddlewares(app: express.Express) {
     app.set("trust proxy", 1);
     app.use(helmet());
     app.use(
@@ -31,7 +30,5 @@ export function setupMiddlewares(app: express.Express) {
             credentials: true,
         })
     );
-    configureRoutes(app);
-
-    app.use(errorMiddleware);
+    app.use(errorHandler);
 }
