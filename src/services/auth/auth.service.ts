@@ -1,16 +1,16 @@
-import { TokenService } from "../token/tokenService";
-import { Logger } from "../../utils/logger";
-import { BaseService } from "../baseService";
-import { ApiError } from "../../exceptions/api-error";
-import { UserDto } from "../../dtos/user-dto";
-import { IToken } from "../../models/Token";
-import User, { IUser } from "../../models/User";
+import {TokenService} from "../token/token.service";
+import {Logger} from "../../utils/logger";
+import {BaseService} from "../base.service";
+import {ApiError} from "../../exceptions/api.error";
+import {IToken} from "../../models/Token";
+import User, {IUser} from "../../models/User";
 import bcrypt from "bcrypt";
-import { inject, injectable } from "inversify";
+import {inject, injectable} from "inversify";
 
 @injectable()
 export class AuthService extends BaseService {
     private tokenService: TokenService;
+
     constructor(
         @inject(TokenService) tokenService: TokenService,
         @inject(Logger) logger: Logger,
@@ -27,7 +27,7 @@ export class AuthService extends BaseService {
         password: string,
     ) {
         if (await this.doesUserExist(email)) {
-            throw ApiError.BadRequest("That mail is already registered");
+            throw ApiError.BadRequest("That contact is already registered");
         }
         const hashedPassword: string = await this.hashPassword(password);
         const user: IUser = <IUser>await User.create({
@@ -51,7 +51,7 @@ export class AuthService extends BaseService {
             throw ApiError.BadRequest("Incorrect password");
         }
         await this.logger.logError(`User not found with email: ${email}`);
-        throw ApiError.BadRequest("Incorrect mail");
+        throw ApiError.BadRequest("Incorrect contact");
     }
 
     public async logout(refreshToken: string) {
@@ -72,7 +72,7 @@ export class AuthService extends BaseService {
             await this.logger.logError("Refresh token is invalid");
             throw ApiError.UnauthorizedError();
         }
-        const user = <IUser>await User.findById(userData.id);
+        const user = <IUser>await User.findById(userData._id);
         return this.formUserLoginResponse(user);
     }
 
@@ -92,16 +92,15 @@ export class AuthService extends BaseService {
 
     private async formUserLoginResponse(user: IUser, logMessage?: string) {
         try {
-            const userDto: UserDto = new UserDto(user);
             const tokens: { accessToken: string; refreshToken: string } =
-                this.tokenService.createTokens({ ...userDto });
+                this.tokenService.createTokens({...user});
             await this.tokenService.saveToken(user.id, tokens.refreshToken);
             if (logMessage) {
                 await this.logger.logInfo(logMessage);
             }
             return { ...tokens, user };
         } catch (error: any) {
-            await this.logger.logError("kokos", error);
+            await this.logger.logError(error.message, error);
             throw error;
         }
     }
