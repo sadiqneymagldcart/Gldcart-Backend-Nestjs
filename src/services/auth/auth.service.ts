@@ -2,10 +2,10 @@ import {TokenService} from "../token/token.service";
 import {Logger} from "../../utils/logger";
 import {BaseService} from "../base.service";
 import {ApiError} from "../../exceptions/api.error";
-import {IToken} from "../../models/Token";
-import User, {IUser} from "../../models/User";
+import {IToken} from "../../models/user/Token";
 import bcrypt from "bcrypt";
 import {inject, injectable} from "inversify";
+import User, {IUser} from "../../models/user/User";
 
 @injectable()
 export class AuthService extends BaseService {

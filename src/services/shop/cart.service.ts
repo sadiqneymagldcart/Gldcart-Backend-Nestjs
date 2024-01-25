@@ -1,7 +1,7 @@
 import {Logger} from "../../utils/logger";
-import {Cart, ICart} from "../../models/Cart";
+import {Cart, ICart} from "../../models/shop/Cart";
 import {ApiError} from "../../exceptions/api.error";
-import Product, {IProduct} from "../../models/Product";
+import Product, {IProduct} from "../../models/shop/Product";
 import {Types as MongooseTypes} from "mongoose";
 import {inject, injectable} from "inversify";
 import {BaseService} from "../base.service";
