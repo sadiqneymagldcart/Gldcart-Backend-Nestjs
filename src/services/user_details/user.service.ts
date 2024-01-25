@@ -1,4 +1,4 @@
-import {BaseService} from "../baseService";
+import {BaseService} from "../base.service";
 import {Logger} from "../../utils/logger";
 import User, {IUser} from "../../models/User";
 
