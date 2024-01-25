@@ -1,9 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
-import {ApiError} from '../exceptions/api-error';
-import {container} from "../server";
-import {TokenService} from "../services/token/tokenService";
+import {NextFunction, Request, Response} from "express";
+import {ApiError} from "../exceptions/api.error";
+import {TokenService} from "../services/token/token.service";
+import {container} from "../config/inversify.config";
 
-export const requireAuth = (req: Request, res: Response, next: NextFunction): void => {
+export const requireAuth = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+): void => {
   const authorizationHeader = req.headers.authorization as string;
 
   if (!authorizationHeader) {
@@ -11,7 +15,7 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction): vo
     return next(ApiError.UnauthorizedError());
   }
 
-  const accessToken = authorizationHeader.split(' ')[1];
+  const accessToken = authorizationHeader.split(" ")[1];
   if (!accessToken) {
     console.log("invalid access token");
     return next(ApiError.UnauthorizedError());
