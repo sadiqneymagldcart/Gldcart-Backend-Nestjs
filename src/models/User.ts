@@ -1,6 +1,6 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import mongoose, {Document, Model, Schema} from "mongoose";
 import validator from "validator";
-import { addressSchema, IAddress } from "./Address";
+import {addressSchema, IAddress} from "./Address";
 
 export interface IUser extends Document {
   _id: string;
@@ -32,10 +32,10 @@ const userSchema: Schema<IUser> = new Schema({
   },
   email: {
     type: String,
-    required: [true, "Please, enter an mail"],
+    required: [true, "Please, enter an contact"],
     unique: true,
     lowercase: true,
-    validate: [validator.isEmail, "Please, enter a valid mail"],
+    validate: [validator.isEmail, "Please, enter a valid contact"],
   },
   addresses: [addressSchema],
   picture: {
