@@ -29,7 +29,7 @@ export class App {
         } catch (error) {
             await this.logger.logError(
                 "Database Connection Error: " + error.message,
-                error
+                error,
             );
         }
     }

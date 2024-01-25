@@ -2,9 +2,9 @@ import {BaseService} from "../base.service";
 import {Logger} from "../../utils/logger";
 import {MailService} from "../contact/mail.service";
 import {ApiError} from "../../exceptions/api.error";
-import User, {IUser} from "../../models/User";
 import bcrypt from "bcrypt";
 import {inject, injectable} from "inversify";
+import User, {IUser} from "../../models/user/User";
 
 @injectable()
 export class ResetPasswordService extends BaseService {

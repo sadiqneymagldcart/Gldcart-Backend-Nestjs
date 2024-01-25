@@ -1,10 +1,10 @@
 import {BaseService} from "../base.service";
 import {ApiError} from "../../exceptions/api.error";
 import {Logger} from "../../utils/logger";
-import {IAddress} from "../../models/Address";
-import User, {IUser} from "../../models/User";
+import {IAddress} from "../../models/user/Address";
 import {Types} from "mongoose";
 import {inject, injectable} from "inversify";
+import User, {IUser} from "../../models/user/User";
 
 @injectable()
 export class UserDetailsService extends BaseService {
