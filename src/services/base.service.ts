@@ -1,4 +1,4 @@
-import { inject, injectable } from "inversify";
+import {inject, injectable} from "inversify";
 import {Logger} from "../utils/logger";
 
 @injectable()
