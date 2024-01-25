@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from "express";
-import { v4 as uuidv4 } from "uuid";
-import { controller, httpPost } from "inversify-express-utils";
-import { inject } from "inversify";
-import { ResetPasswordService } from "../../services/user_details/resetPasswordService";
+import {NextFunction, Request, Response} from "express";
+import {v4 as uuidv4} from "uuid";
+import {controller, httpPost} from "inversify-express-utils";
+import {inject} from "inversify";
+import {ResetPasswordService} from "../../services/user_details/reset.password.service";
 
 @controller("/reset-password")
 export class ResetPasswordController {
@@ -26,7 +26,7 @@ export class ResetPasswordController {
             await this.passwordResetService.requestPasswordReset(email, token);
             response
                 .status(200)
-                .json({ message: "Password reset link was sent to your mail." });
+                .json({message: "Password reset link was sent to your contact."});
         } catch (error) {
             next(error);
         }

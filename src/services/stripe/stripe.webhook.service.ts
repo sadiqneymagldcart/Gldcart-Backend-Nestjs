@@ -1,6 +1,6 @@
 import Stripe from "stripe";
-import {OrderService} from "../shop/orderService";
-import {BaseService} from "../baseService";
+import {OrderService} from "../shop/order.service";
+import {BaseService} from "../base.service";
 import {Logger} from "../../utils/logger";
 
 export class StripeWebhookService extends BaseService {

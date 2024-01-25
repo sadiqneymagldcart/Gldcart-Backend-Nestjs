@@ -1,6 +1,6 @@
 import {Logger} from "../../utils/logger";
 import Stripe from "stripe";
-import {BaseService} from "../baseService";
+import {BaseService} from "../base.service";
 
 export class StripeSubscriptionService extends BaseService{
     private stripe: Stripe;
