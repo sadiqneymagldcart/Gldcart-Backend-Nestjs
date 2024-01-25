@@ -12,7 +12,7 @@ export interface IAddress
     phone_number: string;
 }
 
-export const addressSchema :Schema<IAddress> = new Schema({
+export const addressSchema = new Schema<IAddress>({
     recipients_name: {
         type: String,
         required: true
