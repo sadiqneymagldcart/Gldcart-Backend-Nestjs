@@ -1,11 +1,10 @@
-import { NextFunction, Request, Response } from "express";
-import { setRefreshTokenCookie } from "../../utils/tokenUtils";
-import { AuthService } from "../../services/auth/authService";
-import { controller, httpGet, httpPost } from "inversify-express-utils";
-import { inject } from "inversify";
-import "reflect-metadata";
+import {NextFunction, Request, Response} from "express";
+import {setRefreshTokenCookie} from "../../utils/token.utils";
+import {AuthService} from "../../services/auth/auth.service";
+import {controller, httpGet, httpPost} from "inversify-express-utils";
+import {inject} from "inversify";
 
-@controller('/auth')
+@controller("/auth")
 export class AuthController {
     private _authService: AuthService;
 
@@ -13,7 +12,7 @@ export class AuthController {
         this._authService = authService;
     }
 
-    @httpPost('/signup')
+    @httpPost("/signup")
     async registrationHandler(
         request: Request,
         response: Response,
@@ -35,7 +34,8 @@ export class AuthController {
             next(error);
         }
     }
-    @httpPost('/login')
+
+    @httpPost("/login")
     async loginHandler(
         request: Request,
         response: Response,
@@ -53,7 +53,7 @@ export class AuthController {
         }
     }
 
-    @httpPost('/logout')
+    @httpPost("/logout")
     async logoutHandler(
         request: Request,
         response: Response,
@@ -69,7 +69,7 @@ export class AuthController {
         }
     }
 
-    @httpGet('/refresh')
+    @httpGet("/refresh")
     async refreshHandler(
         request: Request,
         response: Response,
