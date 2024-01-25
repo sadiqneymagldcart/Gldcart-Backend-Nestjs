@@ -4,11 +4,13 @@ import {MailService} from "../contact/mail.service";
 import {ApiError} from "../../exceptions/api.error";
 import User, {IUser} from "../../models/User";
 import bcrypt from "bcrypt";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class ResetPasswordService extends BaseService {
     private mailService: MailService;
 
-    constructor(logger: Logger, mailService: MailService) {
+    constructor(@inject(Logger) logger: Logger, @inject(MailService) mailService: MailService) {
         super(logger);
         this.mailService = mailService;
     }
