@@ -1,14 +1,26 @@
-import Token, { IToken } from "../../models/Token";
-import { Logger } from "../../utils/logger";
-import { ITokens } from "../../types/ITokens";
-import { JwtService } from "./jwtService";
-import { BaseService } from "../baseService";
-import { ITokenPayload } from "../../types/ITokenPayload";
-import { inject, injectable } from "inversify";
+import Token, {IToken} from "../../models/Token";
+import {Logger} from "../../utils/logger";
+import {JwtService} from "./jwt.service";
+import {BaseService} from "../base.service";
+import {inject, injectable} from "inversify";
+
+interface ITokenPayload {
+    _id: string;
+    type: string;
+    name: string;
+    surname: string;
+    email: string;
+}
+
+interface ITokens {
+    accessToken: string;
+    refreshToken: string;
+}
 
 @injectable()
 export class TokenService extends BaseService {
     private jwtService: JwtService;
+
     constructor(
         @inject(JwtService) jwtService: JwtService,
         @inject(Logger) logger: Logger,
@@ -25,17 +37,18 @@ export class TokenService extends BaseService {
         userId: string,
         refreshToken: string,
     ): Promise<IToken> {
-        const tokenData: IToken = <IToken>await Token.findOne({ user: userId });
+        const tokenData: IToken = <IToken>await Token.findOne({user: userId});
         if (tokenData) {
             tokenData.refreshToken = refreshToken;
             return tokenData.save();
         }
-        return await Token.create({ user: userId, refreshToken });
+        return await Token.create({user: userId, refreshToken});
     }
+
     public async createAndSaveTokens(payload: ITokenPayload): Promise<IToken> {
         try {
-            const { refreshToken } = this.jwtService.createTokens(payload);
-            return this.saveToken(payload.id, refreshToken);
+            const {refreshToken} = this.jwtService.createTokens(payload);
+            return this.saveToken(payload._id, refreshToken);
         } catch (error) {
             await this.logger.logError(`${error}`);
             throw error;
@@ -45,11 +58,11 @@ export class TokenService extends BaseService {
     public async removeToken(
         refreshToken: string,
     ): Promise<{ deletedCount?: number }> {
-        return Token.deleteOne({ refreshToken });
+        return Token.deleteOne({refreshToken});
     }
 
     public async findToken(refreshToken: string): Promise<IToken | null> {
-        return Token.findOne({ refreshToken });
+        return Token.findOne({refreshToken});
     }
 
     public async validateAccessToken(

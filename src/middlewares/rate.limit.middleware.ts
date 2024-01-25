@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import {NextFunction, Request, Response} from 'express';
 import rateLimit from 'express-rate-limit';
 
 const rateLimitOptions = {
