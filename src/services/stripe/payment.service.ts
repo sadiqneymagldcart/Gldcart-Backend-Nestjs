@@ -1,14 +1,15 @@
 import {Logger} from "../../utils/logger";
-
 import Stripe from "stripe";
 import {IProduct} from "../../models/Product";
 import {BaseService} from "../base.service";
 import {ICheckoutRequestBody} from "../../interfaces/ICheckoutRequestBody";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class PaymentService extends BaseService {
     private readonly stripe: Stripe;
 
-    constructor(logger: Logger, stripe: Stripe) {
+    constructor(@inject(Logger) logger: Logger, @inject(Stripe) stripe: Stripe) {
         super(logger);
         this.stripe = stripe;
     }
@@ -20,20 +21,20 @@ export class PaymentService extends BaseService {
                 name: `${name}`,
                 shipping: {
                     address: {
-                        city: 'Brothers',
-                        country: 'US',
-                        line1: '27 Fredrick Ave',
-                        postal_code: '97712',
-                        state: 'CA',
+                        city: "Brothers",
+                        country: "US",
+                        line1: "27 Fredrick Ave",
+                        postal_code: "97712",
+                        state: "CA",
                     },
                     name: `${name}`,
                 },
                 address: {
-                    city: 'Brothers',
-                    country: 'US',
-                    line1: '27 Fredrick Ave',
-                    postal_code: '97712',
-                    state: 'CA',
+                    city: "Brothers",
+                    country: "US",
+                    line1: "27 Fredrick Ave",
+                    postal_code: "97712",
+                    state: "CA",
                 },
             });
 
@@ -41,12 +42,14 @@ export class PaymentService extends BaseService {
 
             return customer.id;
         } catch (error: any) {
-            await this.logger.logError('Failed to create customer', error);
+            await this.logger.logError("Failed to create customer", error);
             throw error;
         }
     }
 
-    public async createPaymentCheckout(requestBody: ICheckoutRequestBody): Promise<string | null> {
+    public async createPaymentCheckout(
+        requestBody: ICheckoutRequestBody,
+    ): Promise<string | null> {
         try {
             const customer = await this.stripe.customers.create({
                 metadata: {
@@ -90,7 +93,7 @@ export class PaymentService extends BaseService {
 
             return session.url;
         } catch (error: any) {
-            await this.logger.logError('Failed to create checkout session', error);
+            await this.logger.logError("Failed to create checkout session", error);
             throw error;
         }
     }
