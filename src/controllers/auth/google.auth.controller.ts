@@ -1,8 +1,8 @@
 import {Request, Response} from "express";
-import {GoogleAuthService} from "../../services/auth/googleAuthService";
-import {GoogleUserInfo} from "../../types/googleAuth/googleUserInfo";
+import {GoogleAuthService} from "../../services/auth/google.auth.service";
 import {inject, injectable} from "inversify";
-import { httpGet } from "inversify-express-utils";
+import {httpGet} from "inversify-express-utils";
+import {IGoogleUserInfo} from "../../interfaces/IGoogleUserInfo";
 
 @injectable()
 export class GoogleAuthController {
@@ -12,18 +12,22 @@ export class GoogleAuthController {
         this.googleAuthService = googleAuthService;
     }
 
-
-    @httpGet('/google')
+    @httpGet("/tokens/oauth/google")
     public async googleOauthHandler(request: Request, response: Response) {
         try {
             const {code} = request.body;
             const customParameter = request.query.state as string;
-            const oAuthTokens = await this.googleAuthService.getGoogleOAuthTokens({code});
+            const oAuthTokens = await this.googleAuthService.getGoogleOAuthTokens({
+                code,
+            });
             if (oAuthTokens == null) {
                 return;
             }
 
-            const googleUser = await this.googleAuthService.getGoogleUser(oAuthTokens.id_token, oAuthTokens.access_token);
+            const googleUser = await this.googleAuthService.getGoogleUser(
+                oAuthTokens.id_token,
+                oAuthTokens.access_token,
+            );
             if (!googleUser) {
                 response.status(404).send("Google User was not found");
                 return;
@@ -32,19 +36,21 @@ export class GoogleAuthController {
                 response.status(403).send("Google account is not verified");
                 return;
             }
-            const userInfo: GoogleUserInfo = {
+            const userInfo: IGoogleUserInfo = {
                 code: code,
                 type: customParameter,
                 name: googleUser.given_name,
                 surname: googleUser.family_name,
                 email: googleUser.email,
                 picture: googleUser.picture,
-                password: 'gldcart123',
+                password: "gldcart123",
             };
             const result = await this.googleAuthService.loginGoogleUser(userInfo);
             response.status(200).json(result);
         } catch (error) {
-            response.status(500).json({message: 'Error processing OAuth callback.'});
+            response
+                .status(500)
+                .json({message: "Error processing OAuth callback."});
         }
     }
 }
