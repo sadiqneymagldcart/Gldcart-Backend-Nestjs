@@ -1,8 +1,5 @@
-import * as dotenv from "dotenv";
-
-dotenv.config();
 import nodemailer from "nodemailer";
-import {ApiError} from "../../exceptions/api-error";
+import {ApiError} from "../../exceptions/api.error";
 import {Logger} from "../../utils/logger";
 
 export class MailService {
@@ -30,8 +27,8 @@ export class MailService {
             });
             await this.logger.logInfo(`Email was sent to ${process.env.FEEDBACK_EMAIL}`);
         } catch (error: any) {
-            await this.logger.logError('Failed to send mail mail', error);
-            throw ApiError.BadRequest("Failed to send mail");
+            await this.logger.logError('Failed to send contact contact', error);
+            throw ApiError.BadRequest("Failed to send contact");
         }
     }
 
@@ -56,6 +53,6 @@ export class MailService {
            </html>
 `,
         });
-        await this.logger.logInfo('Reset password mail was sent');
+        await this.logger.logInfo('Reset password contact was sent');
     }
 }
