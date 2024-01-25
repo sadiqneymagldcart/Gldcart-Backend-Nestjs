@@ -1,9 +1,9 @@
-import { Logger } from "../../utils/logger";
+import {Logger} from "../../utils/logger";
 
 import Stripe from "stripe";
-import { IProduct } from "../../models/Product";
-import { BaseService } from "../baseService";
-import { ICheckoutRequestBody } from "../../types/ICheckoutRequestBody";
+import {IProduct} from "../../models/Product";
+import {BaseService} from "../base.service";
+import {ICheckoutRequestBody} from "../../interfaces/ICheckoutRequestBody";
 
 export class PaymentService extends BaseService {
     private readonly stripe: Stripe;
