@@ -1,6 +1,6 @@
 import {BaseService} from "../base.service";
 import {Logger} from "../../utils/logger";
-import User, {IUser} from "../../models/User";
+import User, {IUser} from "../../models/user/User";
 
 export class UserService extends BaseService{
 

@@ -1,4 +1,4 @@
-import Token, {IToken} from "../../models/Token";
+import Token, {IToken} from "../../models/user/Token";
 import {Logger} from "../../utils/logger";
 import {JwtService} from "./jwt.service";
 import {BaseService} from "../base.service";

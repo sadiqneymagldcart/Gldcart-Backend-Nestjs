@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from "express";
 import {ApiError} from "../exceptions/api.error";
-import User from "../models/User";
 import {Logger} from "../utils/logger";
 import {container} from "../config/inversify.config";
+import User from "../models/user/User";
 
 export const requireSubscription = (requiredSubscriptionType: string) => {
     return async (

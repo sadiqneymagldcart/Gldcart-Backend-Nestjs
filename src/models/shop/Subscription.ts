@@ -1,4 +1,5 @@
-import mongoose, {Schema, Document} from 'mongoose';
+import mongoose, {Document, Schema} from 'mongoose';
+
 export interface ISubscription extends Document {
     type: string;
     duration: number;
