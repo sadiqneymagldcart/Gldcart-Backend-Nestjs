@@ -3,10 +3,12 @@ import Stripe from "stripe";
 import {IProduct} from "../../models/Product";
 import {Logger} from "../../utils/logger";
 import {BaseService} from "../base.service";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class OrderService extends BaseService{
 
-    constructor(logger: Logger) {
+    constructor(@inject(Logger) logger: Logger) {
         super(logger);
     }
 
