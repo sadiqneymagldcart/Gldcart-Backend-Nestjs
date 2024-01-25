@@ -1,6 +1,6 @@
-import {MailService} from "../../services/mail/mailService";
-import {TokenService} from "../../services/token/tokenService";
+import {TokenService} from "../../services/token/token.service";
 import {NextFunction, Request, Response} from "express";
+import {MailService} from "../../services/contact/mail.service";
 
 export class ContactController
 {
