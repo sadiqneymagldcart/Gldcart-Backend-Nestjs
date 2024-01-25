@@ -1,7 +1,7 @@
-import {BaseService} from "../baseService";
+import {BaseService} from "../base.service";
 import {Logger} from "../../utils/logger";
-import {MailService} from "../mail/mailService";
-import {ApiError} from "../../exceptions/api-error";
+import {MailService} from "../contact/mail.service";
+import {ApiError} from "../../exceptions/api.error";
 import User, {IUser} from "../../models/User";
 import bcrypt from "bcrypt";
 
@@ -36,7 +36,7 @@ export class ResetPasswordService extends BaseService {
             throw ApiError.BadRequest("Incorrect old password");
         }
         await this.logger.logError(`User not found with email: ${email}`);
-        throw ApiError.BadRequest("Incorrect mail");
+        throw ApiError.BadRequest("Incorrect contact");
     }
 
     async requestPasswordReset(email: string, token: string) {
@@ -45,7 +45,7 @@ export class ResetPasswordService extends BaseService {
         );
         if (!user) {
             await this.logger.logError(`User not found with email: ${email}`);
-            throw ApiError.BadRequest("Incorrect mail");
+            throw ApiError.BadRequest("Incorrect contact");
         }
         await this.mailService.sendResetPasswordMail(
             email,
