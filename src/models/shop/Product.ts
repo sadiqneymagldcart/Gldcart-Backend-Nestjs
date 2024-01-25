@@ -23,4 +23,11 @@ export const productSchema = new Schema<IProduct>({
 });
 
 const Product = mongoose.model('Product', productSchema) as Model<IProduct>;
+mongoose.connection.collections['products'].createIndex({
+    name: 'text',
+    short_description: 'text',
+    long_description: 'text',
+    manufacturer: 'text'
+});
+
 export default Product;
