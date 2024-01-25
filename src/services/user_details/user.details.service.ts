@@ -1,5 +1,5 @@
-import {BaseService} from "../baseService";
-import {ApiError} from "../../exceptions/api-error";
+import {BaseService} from "../base.service";
+import {ApiError} from "../../exceptions/api.error";
 import {Logger} from "../../utils/logger";
 import {IAddress} from "../../models/Address";
 import User, {IUser} from "../../models/User";
