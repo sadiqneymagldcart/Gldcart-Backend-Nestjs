@@ -1,18 +1,22 @@
 import {TokenService} from "../../services/token/token.service";
 import {NextFunction, Request, Response} from "express";
 import {MailService} from "../../services/contact/mail.service";
+import {controller, httpPost} from "inversify-express-utils";
+import {inject} from "inversify";
+import {requireAuth} from "../../middlewares/auth.middleware";
 
-export class ContactController
-{
+@controller("/contact")
+export class ContactController {
     private mailService: MailService;
     private tokenService: TokenService;
 
-    constructor(mailService: MailService, tokenService: TokenService) {
-        this.mailService = mailService; 
-        this.tokenService = tokenService; 
+    constructor(@inject(MailService) mailService: MailService, @inject(TokenService) tokenService: TokenService) {
+        this.mailService = mailService;
+        this.tokenService = tokenService;
     }
 
-    async sendContactEmail (request: Request, response: Response, next: NextFunction) {
+    @httpPost("/send", requireAuth)
+    public async sendContactEmail(request: Request, response: Response, next: NextFunction) {
         const {name, email, subject, message, token} = request.body;
         try {
             const userData = token ? await this.tokenService.validateAccessToken(token) : null;
