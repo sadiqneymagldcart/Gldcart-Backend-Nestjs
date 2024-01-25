@@ -2,16 +2,16 @@ import {BaseService} from "../base.service";
 import {TokenService} from "../token/token.service";
 import {Logger} from "../../utils/logger";
 import {ApiError} from "../../exceptions/api.error";
-import User, {IUser} from "../../models/User";
 import axios, {AxiosResponse} from "axios";
 import qs from "qs";
-import {IToken} from "../../models/Token";
+import {IToken} from "../../models/user/Token";
 import {inject, injectable} from "inversify";
 import {IGoogleTokenResult} from "../../interfaces/IGoogleTokenResult";
 import {IOAuthValues} from "../../interfaces/IOAuthValues";
 import {IGoogleUserResult} from "../../interfaces/IGoogleUserResult";
 import {ITokenPayload} from "../../interfaces/ITokenPayload";
 import {IGoogleUserInfo} from "../../interfaces/IGoogleUserInfo";
+import User, {IUser} from "../../models/user/User";
 
 @injectable()
 export class GoogleAuthService extends BaseService {
