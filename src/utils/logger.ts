@@ -1,5 +1,6 @@
-import winston, {format} from 'winston';
-import DailyRotateFile from 'winston-daily-rotate-file';
+import * as winston from "winston";
+import {format} from "winston";
+import winstonDailyRotateFile from "winston-daily-rotate-file";
 import {injectable} from "inversify";
 
 export type LogMessage = string;
@@ -7,93 +8,114 @@ export type LogMessage = string;
 export type LogContext = object;
 
 export enum LogLevel {
-    DEBUG = 'debug',
-    INFO = 'info',
-    WARN = 'warn',
-    ERROR = 'error',
+    DEBUG = "debug",
+    INFO = "info",
+    WARN = "warn",
+    ERROR = "error",
+}
+
+export interface ILogger {
+    logInfo(msg: LogMessage, context?: LogContext): void;
+
+    logWarn(msg: LogMessage, context?: LogContext): void;
+
+    logError(msg: LogMessage, context?: LogContext): void;
+
+    logDebug(msg: LogMessage, context?: LogContext): void;
 }
 
 @injectable()
-export class Logger {
-    private _logger: winston.Logger;
-    private static _appName = 'GLD Cart';
+export class Logger implements ILogger {
+    private logger: winston.Logger;
+    private readonly _appName = "GLD Cart";
 
     constructor() {
-        this._logger = this._initializeWinston();
+        this.logger = this._initializeWinston();
     }
 
-    public logInfo(msg: LogMessage, context?: LogContext) {
-        this._log(msg, LogLevel.INFO, context);
+    public async logInfo(msg: LogMessage, context?: LogContext) {
+        await this._log(msg, LogLevel.INFO, context);
     }
 
-    public logWarn(msg: LogMessage, context?: LogContext) {
-        this._log(msg, LogLevel.WARN, context);
+    public async logWarn(msg: LogMessage, context?: LogContext) {
+        await this._log(msg, LogLevel.WARN, context);
     }
 
-    public logError(msg: LogMessage, context?: LogContext) {
-        this._log(msg, LogLevel.ERROR, context);
+    public async logError(msg: LogMessage, context?: LogContext) {
+        await this._log(msg, LogLevel.ERROR, context);
     }
 
-    public logDebug(msg: LogMessage, context?: LogContext) {
-        if (process.env.NODE_ENV !== 'production') {
-            this._log(msg, LogLevel.DEBUG, context);
+    public async logDebug(msg: LogMessage, context?: LogContext) {
+        if (process.env.NODE_ENV !== "production") {
+            await this._log(msg, LogLevel.DEBUG, context);
         }
     }
 
-    private _log(msg: LogMessage, level: LogLevel, context?: LogContext) {
-        this._logger.log(level, msg, {context: context});
+    private async _log(msg: LogMessage, level: LogLevel, context?: LogContext) {
+        this.logger.log(level, msg, {context: context});
     }
 
     private _initializeWinston() {
         return winston.createLogger({
-            transports: Logger._getTransports(),
+            transports: this._getTransports(),
         });
     }
 
-    private static _getTransports() {
+    private _getTransports() {
         const transports: Array<any> = [
             new winston.transports.Console({
                 format: this._getFormatForConsole(),
             }),
         ];
 
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === "production") {
             transports.push(this._getFileTransport());
         }
 
         return transports;
     }
 
-    private static _getFormatForConsole() {
+    private _getFormatForConsole() {
         return format.combine(
             format.timestamp(),
             format.printf(
-                info =>
-                    `[${info.timestamp}] [${info.level.toUpperCase()}]: ${
-                        info.message
-                    } [CONTEXT] -> ${
-                        info.context ? '\n' + JSON.stringify(info.context, null, 2) : '{}'
-                    }`
+                (info) =>
+                    `[${info.timestamp}] [${info.level.toUpperCase()}]: ${info.message
+                    } [CONTEXT] -> ${info.context ? "\n" + JSON.stringify(info.context, this._getCircularReplacer, 2) : "{}"
+                    }`,
             ),
-            format.colorize({all: true})
+            format.colorize({all: true}),
         );
     }
 
-    private static _getFileTransport() {
-        return new DailyRotateFile({
-            filename: `${Logger._appName}-%DATE%.log`,
+    private _getFileTransport() {
+        return new winstonDailyRotateFile({
+            filename: `${this._appName}-%DATE%.log`,
             zippedArchive: true,
-            maxSize: '10m', // Rotate after 10MB
-            maxFiles: '14d', // Only keep last 14 days
+            maxSize: "10m", // Rotate after 10MB
+            maxFiles: "14d", // Only keep last 14 days
             format: format.combine(
                 format.timestamp(),
-                format(info => {
+                format((info) => {
                     console.log(info);
                     info.app = this._appName;
                     return info;
                 })(),
-                format.json()
+                format.json(),
             ),
         });
+    }
+
+    private _getCircularReplacer() {
+        const seen = new WeakSet();
+        return (key, value) => {
+            if (typeof value === 'object' && value !== null) {
+                if (seen.has(value)) {
+                    return '[Circular Reference]';
+                }
+                seen.add(value);
+            }
+            return value;
+        };
     }
 }
