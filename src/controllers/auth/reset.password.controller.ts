@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {v4 as uuidv4} from "uuid";
 import {controller, httpPost} from "inversify-express-utils";
 import {inject} from "inversify";
-import {ResetPasswordService} from "../../services/user_details/reset.password.service";
+import {ResetPasswordService} from "../../services/user/reset.password.service";
 
 @controller("/reset-password")
 export class ResetPasswordController {
