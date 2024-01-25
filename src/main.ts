@@ -1,19 +1,10 @@
-import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
-import { AppModule } from './app.module';
-import { setup } from '@config/setup';
-import { ConfigService } from '@nestjs/config';
+import {App} from "./app";
+import {InversifyExpressServer} from "inversify-express-utils";
+import {Logger} from "./utils/logger";
+import * as dotenv from "dotenv";
+import {container} from "./config/inversify.config";
 
-async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger:
-      process.env.NODE_ENV === 'development'
-        ? ['log', 'debug', 'error', 'verbose', 'warn']
-        : ['error', 'warn', 'log'],
-  });
-  const configService = app.get(ConfigService);
-  setup(app);
-  await app.listen(configService.get('API_PORT') || 3001);
-}
+dotenv.config();
 
-bootstrap();
+const server = new InversifyExpressServer(container);
+new App(3001, server, new Logger()).start();
