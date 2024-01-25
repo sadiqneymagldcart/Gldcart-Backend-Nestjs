@@ -1,70 +1,43 @@
-import {Logger} from "../../utils/logger";
 import Product, {IProduct} from "../../models/Product";
+import mongoose from "mongoose";
+import {inject, injectable} from "inversify";
+import {BaseService} from "../base.service";
+import {Logger} from "../../utils/logger";
 
-class ProductService {
-    private logger: Logger;
-    constructor() {
-        this.logger = new Logger()
+@injectable()
+export class ProductService extends BaseService {
+    constructor(@inject(Logger) logger: Logger) {
+        super(logger);
     }
+
     async getAllProducts(): Promise<IProduct[]> {
-    try {
-      await this.logger.logInfo('Getting all products');
-      return await Product.find();
-    } catch (error: any) {
-      await this.logger.logError(`Error fetching all products: ${error.message}`);
-      throw error;
+        await this.logger.logInfo('Getting all products');
+        return Product.find();
     }
-  }
 
-  async getProductById(productId: string): Promise<IProduct | null> {
-    try {
-      await this.logger.logInfo(`Getting product with ID: ${productId}`);
-      return await Product.findById(productId);
-    } catch (error: any) {
-      await this.logger.logError(`Error fetching product with ID ${productId}: ${error.message}`);
-      throw error;
+    async getProductById(productId: string): Promise<IProduct | null> {
+        await this.logger.logInfo(`Getting product with ID: ${productId}`);
+        return Product.findById(productId);
     }
-  }
 
-  async createProduct(productData: Partial<IProduct>): Promise<IProduct> {
-    try {
-      await this.logger.logInfo('Creating new product');
-      return await Product.create(productData);
-    } catch (error: any) {
-      await this.logger.logError(`Error creating product: ${error.message}`);
-      throw error;
+    async createProduct(productData: Partial<IProduct>): Promise<IProduct> {
+        await this.logger.logInfo('Creating new product');
+        return await Product.create(productData);
     }
-  }
 
-  async updateProduct(productId: string, updatedData: Partial<IProduct>): Promise<IProduct | null> {
-    try {
-      await this.logger.logInfo(`Updating product with ID: ${productId}`);
-      return await Product.findByIdAndUpdate(productId, updatedData, { new: true });
-    } catch (error: any) {
-      await this.logger.logError(`Error updating product with ID ${productId}: ${error.message}`);
-      throw error;
+    async updateProduct(productId: string, updatedData: Partial<IProduct>): Promise<IProduct | null> {
+        await this.logger.logInfo(`Updating product with ID: ${productId}`);
+        return Product.findByIdAndUpdate(productId, updatedData, {new: true});
     }
-  }
 
-  async deleteProduct(productId: string): Promise<boolean> {
-    try {
-      await this.logger.logInfo(`Deleting product with ID: ${productId}`);
-      const result = await Product.deleteOne({ _id: productId });
-      return result.deletedCount !== 0;
-    } catch (error:any) {
-      await this.logger.logError(`Error deleting product with ID ${productId}: ${error.message}`);
-      throw error;
+    async deleteProduct(productId: string): Promise<boolean> {
+        await this.logger.logInfo(`Deleting product with ID: ${productId}`);
+        const result = await Product.deleteOne({_id: productId});
+        return result.deletedCount !== 0;
     }
-  }
 
-  async searchProductsByCategory(category: string): Promise<IProduct[]> {
-    try {
-      await this.logger.logInfo(`Searching products by category: ${category}`);
-      return await Product.find({ category });
-    } catch (error:any) {
-      await this.logger.logError(`Error searching products by category ${category}: ${error.message}`);
-      throw error;
+    async searchProductsByCategory(category: string): Promise<IProduct[]> {
+        await this.logger.logInfo(`Searching products by category: ${category}`);
+        return Product.find({category_id: new mongoose.Types.ObjectId(category)});
     }
-  }
 }
-export default new ProductService();
