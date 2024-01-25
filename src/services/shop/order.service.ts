@@ -2,7 +2,7 @@ import Order from "../../models/Order";
 import Stripe from "stripe";
 import {IProduct} from "../../models/Product";
 import {Logger} from "../../utils/logger";
-import {BaseService} from "../baseService";
+import {BaseService} from "../base.service";
 
 export class OrderService extends BaseService{
 
