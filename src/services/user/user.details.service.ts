@@ -4,12 +4,15 @@ import {Logger} from "../../utils/logger";
 import {IAddress} from "../../models/Address";
 import User, {IUser} from "../../models/User";
 import {Types} from "mongoose";
+import {inject, injectable} from "inversify";
 
-export class UserDetailsService extends BaseService{
+@injectable()
+export class UserDetailsService extends BaseService {
 
-    constructor(logger:Logger) {
+    constructor(@inject(Logger) logger: Logger) {
         super(logger);
     }
+
     public async addAddress(userId: string, addressData: IAddress) {
         const user = await User.findById(userId);
 
@@ -27,7 +30,7 @@ export class UserDetailsService extends BaseService{
         return user;
     }
 
-     public async updateAddress(userId: string, addressId: Types.ObjectId, addressData: IAddress) {
+    public async updateAddress(userId: string, addressId: Types.ObjectId, addressData: IAddress) {
         const user: IUser | null = await User.findById(userId);
 
         if (!user) {
