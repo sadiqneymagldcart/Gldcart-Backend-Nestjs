@@ -12,7 +12,7 @@ interface ICartItem {
    quantity: number;
 }
 
-const itemSchema: Schema<ICartItem> = new Schema({
+const itemSchema = new Schema<ICartItem>({
     product: { type: Schema.Types.ObjectId, ref: 'Product'},
     quantity: { type: Number, default: 1, required: true },
 })
