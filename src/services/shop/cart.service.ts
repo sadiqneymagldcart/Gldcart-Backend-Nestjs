@@ -1,6 +1,6 @@
 import {Logger} from "../../utils/logger";
-import {ICart, Cart} from "../../models/Cart";
-import {ApiError} from "../../exceptions/api-error";
+import {Cart, ICart} from "../../models/Cart";
+import {ApiError} from "../../exceptions/api.error";
 import Product, {IProduct} from "../../models/Product";
 
 import {Types as MongooseTypes} from 'mongoose';
