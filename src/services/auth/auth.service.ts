@@ -3,9 +3,9 @@ import {Logger} from "../../utils/logger";
 import {BaseService} from "../base.service";
 import {ApiError} from "../../exceptions/api.error";
 import {IToken} from "../../models/user/Token";
-import bcrypt from "bcrypt";
 import {inject, injectable} from "inversify";
 import User, {IUser} from "../../models/user/User";
+import * as bcrypt from "bcrypt";
 
 @injectable()
 export class AuthService extends BaseService {
@@ -41,7 +41,7 @@ export class AuthService extends BaseService {
     }
 
     public async login(email: string, password: string) {
-        const user: IUser = <IUser>await User.findOne({ email });
+        const user: IUser = <IUser>await User.findOne({email});
         if (user) {
             const auth: boolean = await bcrypt.compare(password, user.password);
             if (auth) {
@@ -77,7 +77,7 @@ export class AuthService extends BaseService {
     }
 
     private async doesUserExist(email: string): Promise<boolean> {
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({email});
         return Boolean(existingUser);
     }
 
@@ -98,7 +98,7 @@ export class AuthService extends BaseService {
             if (logMessage) {
                 this.logger.logInfo(logMessage);
             }
-            return { ...tokens, user };
+            return {...tokens, user};
         } catch (error: any) {
             this.logger.logError(error.message, error);
             throw error;
