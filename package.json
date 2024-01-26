@@ -7,8 +7,8 @@
     "node": "20.x"
   },
   "scripts": {
-    "dev": "concurrently \"npx tsc -w\" \"nodemon dist/main.js\"",
-    "start": "node dist/main.js",
+    "dev": "NODE_ENV=development concurrently \"npx tsc -w\" \"nodemon dist/main.js\"",
+    "start": "NODE_ENV=production node dist/main.js",
     "postinstall": "tsc -p tsconfig.json",
     "watch-node": "nodemon dist/main.js",
     "watch-ts": "tsc -w",
