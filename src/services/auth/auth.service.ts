@@ -47,21 +47,21 @@ export class AuthService extends BaseService {
             if (auth) {
                 return this.formUserLoginResponse(user, `User logged in: ${email}`);
             }
-            await this.logger.logError(`Incorrect password for ${email}`);
+            this.logger.logError(`Incorrect password for ${email}`);
             throw ApiError.BadRequest("Incorrect password");
         }
-        await this.logger.logError(`User not found with email: ${email}`);
+        this.logger.logError(`User not found with email: ${email}`);
         throw ApiError.BadRequest("Incorrect contact");
     }
 
     public async logout(refreshToken: string) {
-        await this.logger.logInfo(`User logged out`);
+        this.logger.logInfo(`User logged out`);
         return await this.tokenService.removeToken(refreshToken);
     }
 
     public async refresh(refreshToken: string) {
         if (!refreshToken) {
-            await this.logger.logError("There is no refresh token");
+            this.logger.logError("There is no refresh token");
             throw ApiError.UnauthorizedError();
         }
         const userData = this.tokenService.validateRefreshToken(refreshToken);
@@ -69,7 +69,7 @@ export class AuthService extends BaseService {
         const tokenFromDb: IToken | null =
             await this.tokenService.findToken(refreshToken);
         if (!userData || !tokenFromDb) {
-            await this.logger.logError("Refresh token is invalid");
+            this.logger.logError("Refresh token is invalid");
             throw ApiError.UnauthorizedError();
         }
         const user = <IUser>await User.findById(userData._id);
@@ -96,11 +96,11 @@ export class AuthService extends BaseService {
                 this.tokenService.createTokens({...user});
             await this.tokenService.saveToken(user.id, tokens.refreshToken);
             if (logMessage) {
-                await this.logger.logInfo(logMessage);
+                this.logger.logInfo(logMessage);
             }
             return { ...tokens, user };
         } catch (error: any) {
-            await this.logger.logError(error.message, error);
+            this.logger.logError(error.message, error);
             throw error;
         }
     }
