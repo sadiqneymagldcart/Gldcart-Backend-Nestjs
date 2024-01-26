@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import * as jwt from "jsonwebtoken";
 import {BaseService} from "../base.service";
 import {Logger} from "../../utils/logger";
 import {inject, injectable} from "inversify";
