@@ -6,10 +6,10 @@ import {inject} from "inversify";
 
 @controller("/auth")
 export class AuthController {
-    private _authService: AuthService;
+    private authService: AuthService;
 
     constructor(@inject(AuthService) authService: AuthService) {
-        this._authService = authService;
+        this.authService = authService;
     }
 
     @httpPost("/signup")
@@ -21,7 +21,7 @@ export class AuthController {
         const { type, name, surname, email, password } = request.body;
 
         try {
-            const userData = await this._authService.register(
+            const userData = await this.authService.register(
                 type,
                 name,
                 surname,
@@ -44,8 +44,7 @@ export class AuthController {
         const { email, password } = request.body;
         console.log(email, password);
         try {
-            const userData = await this._authService.login(email, password);
-            console.log(userData.accessToken);
+            const userData = await this.authService.login(email, password);
             setRefreshTokenCookie(response, userData.refreshToken);
             response.status(201).json(userData);
         } catch (error) {
@@ -61,7 +60,7 @@ export class AuthController {
     ): Promise<void> {
         try {
             const refreshToken = request.cookies.refreshToken;
-            const token = await this._authService.logout(refreshToken);
+            const token = await this.authService.logout(refreshToken);
             response.clearCookie("refreshToken");
             response.json(token);
         } catch (e) {
@@ -77,7 +76,7 @@ export class AuthController {
     ) {
         try {
             const refreshToken = request.cookies.refreshToken as string;
-            const userData = await this._authService.refresh(refreshToken);
+            const userData = await this.authService.refresh(refreshToken);
             setRefreshTokenCookie(response, userData.refreshToken);
             return response.json(userData);
         } catch (error) {
