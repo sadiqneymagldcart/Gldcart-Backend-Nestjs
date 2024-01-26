@@ -27,32 +27,32 @@ export interface ILogger {
 @injectable()
 export class Logger implements ILogger {
     private logger: winston.Logger;
-    private readonly _appName = "GLD Cart";
+    private readonly _appName = process.env.APP_NAME || "GLD Cart";
 
     constructor() {
         this.logger = this._initializeWinston();
     }
 
-    public async logInfo(msg: LogMessage, context?: LogContext) {
-        await this._log(msg, LogLevel.INFO, context);
+    public logInfo(msg: LogMessage, context?: LogContext) {
+        this._log(msg, LogLevel.INFO, context);
     }
 
-    public async logWarn(msg: LogMessage, context?: LogContext) {
-        await this._log(msg, LogLevel.WARN, context);
+    public logWarn(msg: LogMessage, context?: LogContext) {
+        this._log(msg, LogLevel.WARN, context);
     }
 
-    public async logError(msg: LogMessage, context?: LogContext) {
-        await this._log(msg, LogLevel.ERROR, context);
+    public logError(msg: LogMessage, context?: LogContext) {
+        this._log(msg, LogLevel.ERROR, context);
     }
 
-    public async logDebug(msg: LogMessage, context?: LogContext) {
+    public logDebug(msg: LogMessage, context?: LogContext) {
         if (process.env.NODE_ENV !== "production") {
-            await this._log(msg, LogLevel.DEBUG, context);
+            this._log(msg, LogLevel.DEBUG, context);
         }
     }
 
-    private async _log(msg: LogMessage, level: LogLevel, context?: LogContext) {
-        this.logger.log(level, msg, {context: context});
+    private _log(msg: LogMessage, level: LogLevel, context?: LogContext) {
+        this.logger.log(level, msg, {context});
     }
 
     private _initializeWinston() {
@@ -78,11 +78,10 @@ export class Logger implements ILogger {
     private _getFormatForConsole() {
         return format.combine(
             format.timestamp(),
-            format.printf(
-                (info) =>
-                    `[${info.timestamp}] [${info.level.toUpperCase()}]: ${info.message
-                    } [CONTEXT] -> ${info.context ? "\n" + JSON.stringify(info.context, this._getCircularReplacer, 2) : "{}"
-                    }`,
+            format.printf((info) =>
+                `[${info.timestamp}] [${info.level.toUpperCase()}]: ${info.message
+                } [CONTEXT] -> ${info.context ? '\n' + JSON.stringify(info.context, this._getCircularReplacer(), 2) : "{}"
+                }`
             ),
             format.colorize({all: true}),
         );
@@ -97,7 +96,6 @@ export class Logger implements ILogger {
             format: format.combine(
                 format.timestamp(),
                 format((info) => {
-                    console.log(info);
                     info.app = this._appName;
                     return info;
                 })(),
