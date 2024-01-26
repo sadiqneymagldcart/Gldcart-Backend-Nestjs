@@ -19,16 +19,16 @@ export class CartService extends BaseService {
             }
             const cartItems: ICart | null = await Cart.findOne({user: userId});
             if (!cartItems) {
-                await this.logger.logInfo(`Cart not found for User: ${userId}`);
+                this.logger.logInfo(`Cart not found for User: ${userId}`);
                 return ApiError.BadRequest("Cart not found");
             }
-            await this.logger.logInfo(
-                `Retrieved cart items successfully for User: ${userId}`,
+            this.logger.logInfo(
+                `Retrieved cart items successfully for User: ${userId}`
             );
             return cartItems;
         } catch (error: any) {
-            await this.logger.logError(
-                `Error while retrieving cart items for User: ${userId}. Error: ${error.message}`,
+            this.logger.logError(
+                `Error while retrieving cart items for User: ${userId}. Error: ${error.message}`
             );
             return ApiError.BadRequest(error.message);
         }
@@ -42,8 +42,8 @@ export class CartService extends BaseService {
         try {
             const product: IProduct | null = await Product.findById(productId);
             if (!product || product.quantity < quantity) {
-                await this.logger.logError(
-                    `Product not found or insufficient quantity for productId: ${productId}`,
+                this.logger.logError(
+                    `Product not found or insufficient quantity for productId: ${productId}`
                 );
                 return ApiError.BadRequest(
                     "Product not found or insufficient quantity",
@@ -53,7 +53,7 @@ export class CartService extends BaseService {
                 {user: userId, "items.product": {$ne: productId}},
                 {
                     $push: {
-                        items: {
+                        cartItems: {
                             product: new MongooseTypes.ObjectId(productId),
                             quantity: quantity,
                         },
@@ -72,16 +72,16 @@ export class CartService extends BaseService {
                     ],
                 };
                 cart = await Cart.create(newCart);
-                await this.logger.logInfo(`New cart created for User: ${userId}`);
+                this.logger.logInfo(`New cart created for User: ${userId}`);
             } else {
-                await this.logger.logInfo(
-                    `Product added to the cart. ProductId: ${productId}, Quantity: ${quantity}`,
+                this.logger.logInfo(
+                    `Product added to the cart. ProductId: ${productId}, Quantity: ${quantity}`
                 );
             }
             return cart;
         } catch (error: any) {
-            await this.logger.logError(
-                `Error while adding cart item for User: ${userId}. Error: ${error.message}`,
+            this.logger.logError(
+                `Error while adding cart item for User: ${userId}. Error: ${error.message}`
             );
             return ApiError.BadRequest(error.message);
         }
@@ -97,20 +97,20 @@ export class CartService extends BaseService {
             }
             const cart = await Cart.findOneAndUpdate(
                 {user: userId},
-                {$pull: {items: {product: productId}}},
+                {$pull: {cartItems: {product: productId}}},
                 {new: true},
             );
             if (!cart) {
                 await this.logger.logInfo(`Cart not found for User: ${userId}`);
                 return ApiError.BadRequest("Cart not found");
             }
-            await this.logger.logInfo(
-                `Product removed successfully from User: ${userId}'s cart`,
+            this.logger.logInfo(
+                `Product removed successfully from User: ${userId}'s cart`
             );
             return cart;
         } catch (error: any) {
-            await this.logger.logError(
-                `Error while removing product from User: ${userId}'s cart. Error: ${error.message}`,
+            this.logger.logError(
+                `Error while removing product from User: ${userId}'s cart. Error: ${error.message}`
             );
             return ApiError.BadRequest(error.message);
         }
