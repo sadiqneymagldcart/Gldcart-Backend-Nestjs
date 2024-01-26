@@ -7,4 +7,4 @@ import {container} from "./config/inversify.config";
 dotenv.config();
 
 const server = new InversifyExpressServer(container);
-new App(3001, server, new Logger()).start();
+new App(server, new Logger()).start();
