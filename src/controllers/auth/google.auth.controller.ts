@@ -3,6 +3,7 @@ import {GoogleAuthService} from "../../services/auth/google.auth.service";
 import {inject, injectable} from "inversify";
 import {httpGet} from "inversify-express-utils";
 import {IGoogleUserInfo} from "../../interfaces/IGoogleUserInfo";
+import {IGoogleUserResult} from "../../interfaces/IGoogleUserResult";
 
 @injectable()
 export class GoogleAuthController {
@@ -23,19 +24,13 @@ export class GoogleAuthController {
             if (oAuthTokens == null) {
                 return;
             }
-
             const googleUser = await this.googleAuthService.getGoogleUser(
                 oAuthTokens.id_token,
                 oAuthTokens.access_token,
             );
-            if (!googleUser) {
-                response.status(404).send("Google User was not found");
-                return;
-            }
-            if (!googleUser.verified_email) {
-                response.status(403).send("Google account is not verified");
-                return;
-            }
+
+            this._validateGoogleUser(googleUser, response);
+
             const userInfo: IGoogleUserInfo = {
                 code: code,
                 type: customParameter,
@@ -45,12 +40,28 @@ export class GoogleAuthController {
                 picture: googleUser.picture,
                 password: "gldcart123",
             };
+
             const result = await this.googleAuthService.loginGoogleUser(userInfo);
             response.status(200).json(result);
+
         } catch (error) {
-            response
-                .status(500)
-                .json({message: "Error processing OAuth callback."});
+            this._handleOAuthError(error, response);
         }
     }
+
+    private _validateGoogleUser(googleUser: IGoogleUserResult | undefined, response: Response) {
+        if (!googleUser) {
+            response.status(404).send("Google User was not found");
+            return;
+        }
+        if (!googleUser.verified_email) {
+            response.status(403).send("Google account is not verified");
+            return;
+        }
+    }
+
+    private _handleOAuthError(error: any, response: Response) {
+        return response.status(500).json({message: "Error processing OAuth callback."});
+    }
+
 }
