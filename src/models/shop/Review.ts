@@ -1,6 +1,6 @@
-import {Document, Schema} from "mongoose";
+import mongoose, {Document, Schema} from "mongoose";
 
-export interface IReviews extends Document {
+export interface IReview extends Document {
     _id: string;
     name: string;
     review: string;
@@ -13,7 +13,7 @@ export interface IReviews extends Document {
     product: Schema.Types.ObjectId;
 }
 
-export const ReviewsSchema = new Schema<IReviews>(
+export const ReviewSchema = new Schema<IReview>(
     {
         name: {
             type: String,
@@ -44,3 +44,4 @@ export const ReviewsSchema = new Schema<IReviews>(
         timestamps: true,
     },
 );
+export const Review = mongoose.model<IReview>("Review", ReviewSchema);
