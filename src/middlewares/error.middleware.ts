@@ -22,10 +22,8 @@ export function errorHandlerMiddleware(
 ) {
     if (error instanceof ApiError) {
         sendApiErrorResponse(error, response);
-        console.log("ApiError");
     } else {
         sendServerErrorResponse(error, response);
-        console.log("Error");
     }
     next();
 }
