@@ -87,6 +87,7 @@ export class GoogleAuthService extends BaseService {
                                        password,
                                    }: IGoogleUserInfo) {
         const firstName = name.split(" ")[0];
+
         const newUser = await User.create({
             type: type,
             name: firstName,

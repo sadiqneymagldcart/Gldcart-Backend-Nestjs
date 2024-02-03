@@ -31,6 +31,7 @@ export class MailService {
             });
             this.logger.logInfo(`Email was sent to ${process.env.FEEDBACK_EMAIL}`);
         } catch (error: any) {
+            console.log(error);
             this.logger.logError("Failed to send contact contact", error);
             throw ApiError.BadRequest("Failed to send contact");
         }
