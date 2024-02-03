@@ -1,17 +1,16 @@
-import {BaseService} from "../base.service";
-import {TokenService} from "../token/token.service";
-import {Logger} from "../../utils/logger";
-import {ApiError} from "../../exceptions/api.error";
-import axios, {AxiosResponse} from "axios";
+import { BaseService } from "../base.service";
+import { TokenService } from "../token/token.service";
+import { Logger } from "../../utils/logger";
+import { ApiError } from "../../exceptions/api.error";
+import axios, { AxiosResponse } from "axios";
 import * as qs from "qs";
-import {IToken} from "../../models/user/Token";
-import {inject, injectable} from "inversify";
-import {IGoogleTokenResult} from "../../interfaces/IGoogleTokenResult";
-import {IOAuthValues} from "../../interfaces/IOAuthValues";
-import {IGoogleUserResult} from "../../interfaces/IGoogleUserResult";
-import {IGoogleUserInfo} from "../../interfaces/IGoogleUserInfo";
-import User, {IUser} from "../../models/user/User";
-import {ITokenPayload} from "../../interfaces/ITokenPayload";
+import { IToken } from "../../models/user/Token";
+import { inject, injectable } from "inversify";
+import { IGoogleTokenResult } from "../../interfaces/IGoogleTokenResult";
+import { IOAuthValues } from "../../interfaces/IOAuthValues";
+import { IGoogleUserResult } from "../../interfaces/IGoogleUserResult";
+import { IGoogleUserInfo } from "../../interfaces/IGoogleUserInfo";
+import User, { IUser } from "../../models/user/User";
 
 @injectable()
 export class GoogleAuthService extends BaseService {
@@ -28,8 +27,8 @@ export class GoogleAuthService extends BaseService {
     }
 
     public async getGoogleOAuthTokens({
-                                          code,
-                                      }: {
+        code,
+    }: {
         code: string;
     }): Promise<IGoogleTokenResult | undefined> {
         const values = this.getOAuthValues(code);
@@ -57,51 +56,29 @@ export class GoogleAuthService extends BaseService {
         }
     }
 
-    private async updateOrCreateGoogleUser({
-                                               type,
-                                               name,
-                                               surname,
-                                               email,
-                                               picture,
-                                               password,
-                                           }: IGoogleUserInfo) {
-        let existingUser = await User.findOne({email: email});
+    private async updateOrCreateGoogleUser(googleUserData: IGoogleUserInfo) {
+        let existingUser = await User.findOne({ email: googleUserData.email });
         if (!existingUser)
-            existingUser = await this.createGoogleUser({
-                type,
-                name,
-                surname,
-                email,
-                picture,
-                password,
-            } as IGoogleUserInfo);
+            existingUser = await this.createGoogleUser(googleUserData);
         return existingUser;
     }
 
-    private async createGoogleUser({
-                                       type,
-                                       name,
-                                       surname,
-                                       email,
-                                       picture,
-                                       password,
-                                   }: IGoogleUserInfo) {
-        const firstName = name.split(" ")[0];
+    private async createGoogleUser(googleUserData: IGoogleUserInfo) {
+        const firstName = googleUserData.name.split(" ")[0];
 
         const newUser = await User.create({
-            type: type,
+            type: googleUserData.type,
             name: firstName,
-            surname: surname,
-            email: email,
-            picture: picture,
-            password: password,
+            surname: googleUserData.surname,
+            email: googleUserData.email,
+            picture: googleUserData.picture,
+            password: "",
         });
-        this.logger.logInfo(`New user created with email: ${email}`);
+        this.logger.logInfo(`New user created with email: ${googleUserData.email}`);
         return newUser;
     }
 
     private async authenticateWithGoogle(user: IUser, picture: string) {
-
         const userInfo = {
             id: user._id,
             type: user.type,
@@ -110,9 +87,10 @@ export class GoogleAuthService extends BaseService {
             email: user.email,
         };
 
-        const tokens: IToken = await this.tokenService.createAndSaveTokens(userInfo);
+        const tokens: IToken =
+            await this.tokenService.createAndSaveTokens(userInfo);
         this.logger.logInfo(`User logged in with Google: ${user.email}`);
-        return {tokens, user: userInfo, picture: picture};
+        return { tokens, user: userInfo, picture: picture };
     }
 
     private getOAuthValues(code: string): IOAuthValues {
@@ -138,7 +116,7 @@ export class GoogleAuthService extends BaseService {
         values: IOAuthValues,
     ): Promise<AxiosResponse<IGoogleTokenResult>> {
         return await axios.post<IGoogleTokenResult>(url, qs.stringify(values), {
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
         });
     }
 
@@ -146,7 +124,7 @@ export class GoogleAuthService extends BaseService {
         return await axios.get<IGoogleUserResult>(
             `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
             {
-                headers: {Authorization: `Bearer ${id_token}`},
+                headers: { Authorization: `Bearer ${id_token}` },
             },
         );
     }
