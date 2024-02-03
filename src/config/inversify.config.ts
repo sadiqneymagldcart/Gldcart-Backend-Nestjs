@@ -1,3 +1,4 @@
+import * as dotenv from "dotenv";
 import { Container } from "inversify";
 import { Logger } from "../utils/logger";
 import { TokenService } from "../services/token/token.service";
@@ -17,6 +18,12 @@ import "../controllers/contact/contact.controller";
 import "../controllers/user/user.controller";
 import "../controllers/user/address.controller";
 import "../controllers/stripe/payment.controller";
+
+let path: string = ".env";
+if (process.env.NODE_ENV === "production") {
+    path = ".env.production";
+}
+dotenv.config({ path: path });
 
 const container = new Container();
 
