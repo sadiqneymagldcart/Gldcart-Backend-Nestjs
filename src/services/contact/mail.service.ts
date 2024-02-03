@@ -1,7 +1,7 @@
-import {Transporter} from "nodemailer";
-import {ApiError} from "../../exceptions/api.error";
-import {Logger} from "../../utils/logger";
-import {inject, injectable} from "inversify";
+import { Transporter } from "nodemailer";
+import { ApiError } from "../../exceptions/api.error";
+import { Logger } from "../../utils/logger";
+import { inject, injectable } from "inversify";
 
 @injectable()
 export class MailService {
@@ -29,11 +29,9 @@ export class MailService {
                 subject: subject,
                 text: `My name is: ${name}. My email is: ${email}. ${message}`,
             });
-            await this.logger.logInfo(
-                `Email was sent to ${process.env.FEEDBACK_EMAIL}`,
-            );
+            this.logger.logInfo(`Email was sent to ${process.env.FEEDBACK_EMAIL}`);
         } catch (error: any) {
-            await this.logger.logError("Failed to send contact contact", error);
+            this.logger.logError("Failed to send contact contact", error);
             throw ApiError.BadRequest("Failed to send contact");
         }
     }
@@ -59,6 +57,6 @@ export class MailService {
            </html>
 `,
         });
-        await this.logger.logInfo("Reset password contact was sent");
+        this.logger.logInfo("Reset password contact was sent");
     }
 }

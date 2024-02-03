@@ -1,11 +1,12 @@
-import {Request, Response} from "express";
-import {GoogleAuthService} from "../../services/auth/google.auth.service";
-import {inject, injectable} from "inversify";
-import {httpGet} from "inversify-express-utils";
-import {IGoogleUserInfo} from "../../interfaces/IGoogleUserInfo";
-import {IGoogleUserResult} from "../../interfaces/IGoogleUserResult";
+import * as express from "express";
+import { GoogleAuthService } from "../../services/auth/google.auth.service";
+import { inject } from "inversify";
+import { controller, httpGet, httpPost } from "inversify-express-utils";
+import { IGoogleUserInfo } from "../../interfaces/IGoogleUserInfo";
+import { IGoogleUserResult } from "../../interfaces/IGoogleUserResult";
+import { setRefreshTokenCookie } from "../../utils/token.utils";
 
-@injectable()
+@controller("/")
 export class GoogleAuthController {
     private googleAuthService: GoogleAuthService;
 
@@ -13,10 +14,13 @@ export class GoogleAuthController {
         this.googleAuthService = googleAuthService;
     }
 
-    @httpGet("/tokens/oauth/google")
-    public async googleOauthHandler(request: Request, response: Response) {
+    @httpGet("tokens/oauth/google")
+    public async googleOauthHandler(
+        request: express.Request,
+        response: express.Response,
+    ) {
         try {
-            const {code} = request.body;
+            const code = request.query.code as string;
             const customParameter = request.query.state as string;
             const oAuthTokens = await this.googleAuthService.getGoogleOAuthTokens({
                 code,
@@ -42,14 +46,24 @@ export class GoogleAuthController {
             };
 
             const result = await this.googleAuthService.loginGoogleUser(userInfo);
-            response.status(200).json(result);
 
+            setRefreshTokenCookie(response, result.tokens.refreshToken);
+            // response.cookie("refreshToken", result.tokens.refreshToken, {
+            //     httpOnly: true,
+            //     maxAge: process.env.COOKIES_MAX_AGE as unknown as number,
+            // });
+
+            const redirectURL = `${process.env.CLIENT_URL}` as string;
+            response.redirect(redirectURL);
         } catch (error) {
             this._handleOAuthError(error, response);
         }
     }
 
-    private _validateGoogleUser(googleUser: IGoogleUserResult | undefined, response: Response) {
+    private _validateGoogleUser(
+        googleUser: IGoogleUserResult | undefined,
+        response: express.Response,
+    ) {
         if (!googleUser) {
             response.status(404).send("Google User was not found");
             return;
@@ -60,8 +74,12 @@ export class GoogleAuthController {
         }
     }
 
-    private _handleOAuthError(error: any, response: Response) {
-        return response.status(500).json({message: "Error processing OAuth callback."});
+    private _handleOAuthError(error: any, response: express.Response) {
+        return response
+            .status(500)
+            .json({ message: "Error processing OAuth callback." });
     }
 
+    @httpPost("")
+    public async() { }
 }

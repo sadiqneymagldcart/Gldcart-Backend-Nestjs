@@ -16,7 +16,7 @@ export class PaymentService extends BaseService {
 
     public async createCustomer(email: string, name: string): Promise<string> {
         try {
-            const customer = await this.createCustomerWithMetadata();
+            const customer = await this.createCustomerWithMetadata({email, name});
             this.logger.logInfo(`Customer created: ${customer.id}`);
             return customer.id;
         } catch (error: any) {
@@ -25,7 +25,9 @@ export class PaymentService extends BaseService {
         }
     }
 
-    public async createPaymentCheckout(requestBody: ICheckoutRequestBody): Promise<string | null> {
+    public async createPaymentCheckout(
+        requestBody: ICheckoutRequestBody,
+    ): Promise<string | null> {
         try {
             const customer = await this.createCustomerWithMetadata({
                 userId: requestBody.userId,
@@ -41,12 +43,14 @@ export class PaymentService extends BaseService {
         }
     }
 
-    private async createCustomerWithMetadata(metadata: Record<string, any> = {}): Promise<Stripe.Customer> {
+    private async createCustomerWithMetadata(
+        metadata: Record<string, any> = {},
+    ): Promise<Stripe.Customer> {
         return this.stripe.customers.create({metadata});
     }
 
     private createLineItems(cartItems: IProduct[]): Array<Object> {
-        return cartItems.map(item => ({
+        return cartItems.map((item) => ({
             price_data: {
                 currency: "usd",
                 product_data: {
@@ -60,7 +64,10 @@ export class PaymentService extends BaseService {
         }));
     }
 
-    private async createCheckoutSession(customerId: string, lineItems: Object[]): Promise<Stripe.Checkout.Session> {
+    private async createCheckoutSession(
+        customerId: string,
+        lineItems: Object[],
+    ): Promise<Stripe.Checkout.Session> {
         return this.stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             shipping_address_collection: {

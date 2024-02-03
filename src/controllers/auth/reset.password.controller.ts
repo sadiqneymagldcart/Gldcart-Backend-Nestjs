@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response} from "express";
+import * as express from "express";
 import {v4 as uuidv4} from "uuid";
 import {controller, httpPost} from "inversify-express-utils";
 import {inject} from "inversify";
@@ -16,9 +16,9 @@ export class ResetPasswordController {
 
     @httpPost("/initiate")
     async initiatePasswordReset(
-        request: Request,
-        response: Response,
-        next: NextFunction,
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
     ) {
         const { email } = request.body;
         try {
@@ -33,9 +33,9 @@ export class ResetPasswordController {
     }
 
     async resetPasswordWithToken(
-        request: Request,
-        response: Response,
-        next: NextFunction,
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
     ) {
         const { token: token } = request.params;
         const { newPassword } = request.body;
@@ -53,9 +53,9 @@ export class ResetPasswordController {
     }
 
     async resetPasswordWithEmail(
-        request: Request,
-        response: Response,
-        next: NextFunction,
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
     ) {
         const { email, oldPassword, newPassword } = request.body;
         try {

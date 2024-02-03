@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response} from "express";
+import * as express from "express";
 import {PaymentService} from "../../services/stripe/payment.service";
 import {inject} from "inversify";
 import {controller, httpPost} from "inversify-express-utils";
@@ -14,9 +14,9 @@ export class PaymentController {
 
     @httpPost("/create-customer")
     public async createCustomer(
-        request: Request,
-        response: Response,
-        next: NextFunction,
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
     ): Promise<void> {
         const {email, name} = request.body;
         try {
@@ -29,9 +29,9 @@ export class PaymentController {
 
     @httpPost("/create-payment-intent")
     public async createPaymentCheckout(
-        request: Request,
-        response: Response,
-        next: NextFunction,
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
     ): Promise<void> {
         const requestBody = request.body as ICheckoutRequestBody;
         try {

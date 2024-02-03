@@ -34,7 +34,7 @@ export class OrderService extends BaseService{
                     payment_status: data.payment_status,
                 });
                 const savedOrder = await newOrder.save();
-                await this.logger.logInfo("Processed OrderModel:", savedOrder);
+                this.logger.logInfo("Processed OrderModel:", savedOrder);
             } catch (err) {
                 console.log(err);
             }
