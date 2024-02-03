@@ -4,7 +4,7 @@ import {AuthService} from "../../services/auth/auth.service";
 import {controller, httpGet, httpPost} from "inversify-express-utils";
 import {inject} from "inversify";
 
-@controller("")
+@controller("/")
 export class AuthController {
     private authService: AuthService;
 
@@ -12,7 +12,7 @@ export class AuthController {
         this.authService = authService;
     }
 
-    @httpPost("/signup")
+    @httpPost("signup")
     async registrationHandler(
         request: express.Request,
         response: express.Response,
@@ -35,7 +35,7 @@ export class AuthController {
         }
     }
 
-    @httpPost("/login")
+    @httpPost("login")
     public async loginHandler(
         request: express.Request,
         response: express.Response,
@@ -52,7 +52,7 @@ export class AuthController {
         }
     }
 
-    @httpPost("/logout")
+    @httpPost("logout")
     public async logoutHandler(
         request: express.Request,
         response: express.Response,
@@ -68,7 +68,7 @@ export class AuthController {
         }
     }
 
-    @httpGet("/refresh")
+    @httpGet("refresh")
     public async refreshHandler(
         request: express.Request,
         response: express.Response,
