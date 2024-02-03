@@ -6,7 +6,7 @@ import {ResetPasswordService} from "../../services/user/reset.password.service";
 
 @controller("/reset-password")
 export class ResetPasswordController {
-    private passwordResetService: ResetPasswordService;
+    private readonly passwordResetService: ResetPasswordService;
 
     constructor(
         @inject(ResetPasswordService) passwordResetService: ResetPasswordService,

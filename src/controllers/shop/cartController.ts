@@ -1,6 +1,6 @@
 import * as express from "express";
-import {inject} from "inversify";
-import {CartService} from "../../services/shop/cart.service";
+import { inject } from "inversify";
+import { CartService } from "../../services/shop/cart.service";
 import {
     controller,
     httpDelete,
@@ -8,7 +8,7 @@ import {
     httpPost,
     httpPut,
 } from "inversify-express-utils";
-import {requireAuth} from "../../middlewares/auth.middleware";
+import { requireAuth } from "../../middlewares/auth.middleware";
 
 @controller("/cart")
 export class CartController {
@@ -24,10 +24,10 @@ export class CartController {
         response: express.Response,
         next: express.NextFunction,
     ) {
-        const {cartId} = request.params;
+        const { cartId } = request.params;
         try {
             const cartItems = await this.cartService.getCartItems(cartId);
-            response.status(200).json({cartItems: cartItems});
+            response.status(200).json({ cartItems: cartItems });
         } catch (error: any) {
             next(error);
         }
@@ -39,7 +39,7 @@ export class CartController {
         response: express.Response,
         next: express.NextFunction,
     ) {
-        const {userId, productId, quantity} = request.body;
+        const { userId, productId, quantity } = request.body;
         if (
             typeof userId !== "string" ||
             typeof productId !== "string" ||
@@ -57,7 +57,7 @@ export class CartController {
                 productId,
                 quantity,
             );
-            response.status(200).json({message: "Item added to cart", cart});
+            response.status(200).json({ message: "Item added to cart", cart });
         } catch (error: any) {
             next(error);
         }
@@ -70,9 +70,9 @@ export class CartController {
         next: express.NextFunction,
     ) {
         try {
-            const {cartId, itemId} = request.params;
+            const { cartId, itemId } = request.params;
             const cart = await this.cartService.removeItem(cartId, itemId);
-            response.status(200).json({message: "Item deleted from cart", cart});
+            response.status(200).json({ message: "Item deleted from cart", cart });
         } catch (error: any) {
             next(error);
         }
@@ -84,7 +84,7 @@ export class CartController {
         response: express.Response,
         next: express.NextFunction,
     ) {
-        const {cartId, itemId, quantity} = request.body;
+        const { cartId, itemId, quantity } = request.body;
         if (
             typeof cartId !== "string" ||
             typeof itemId !== "string" ||
@@ -97,8 +97,12 @@ export class CartController {
             );
         }
         try {
-            const cart = await this.cartService.updateCartItem(cartId, itemId, quantity);
-            response.status(200).json({message: "Item updated in cart", cart});
+            const cart = await this.cartService.updateCartItem(
+                cartId,
+                itemId,
+                quantity,
+            );
+            response.status(200).json({ message: "Item updated in cart", cart });
         } catch (error: any) {
             next(error);
         }
@@ -110,10 +114,10 @@ export class CartController {
         response: express.Response,
         next: express.NextFunction,
     ) {
-        const {cartId} = request.params;
+        const { cartId } = request.params;
         try {
             const cart = await this.cartService.clearCart(cartId);
-            response.status(200).json({message: "Cart cleared", cart});
+            response.status(200).json({ message: "Cart cleared", cart });
         } catch (error: any) {
             next(error);
         }

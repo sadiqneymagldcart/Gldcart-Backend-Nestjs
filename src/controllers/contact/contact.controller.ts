@@ -7,8 +7,8 @@ import {requireAuth} from "../../middlewares/auth.middleware";
 
 @controller("/")
 export class ContactController {
-    private mailService: MailService;
-    private tokenService: TokenService;
+    private readonly mailService: MailService;
+    private readonly tokenService: TokenService;
 
     constructor(@inject(MailService) mailService: MailService, @inject(TokenService) tokenService: TokenService) {
         this.mailService = mailService;
