@@ -1,18 +1,17 @@
 import * as jwt from "jsonwebtoken";
-import {BaseService} from "../base.service";
-import {Logger} from "../../utils/logger";
-import {inject, injectable} from "inversify";
-import {ITokenPayload} from "../../interfaces/ITokenPayload";
-import {ITokens} from "../../interfaces/ITokens";
+import { BaseService } from "../base.service";
+import { Logger } from "../../utils/logger";
+import { inject, injectable } from "inversify";
+import { ITokenPayload } from "../../interfaces/ITokenPayload";
+import { ITokens } from "../../interfaces/ITokens";
 
 @injectable()
 export class JwtService extends BaseService {
-
     constructor(@inject(Logger) loggerService: Logger) {
         super(loggerService);
     }
-    
-    createTokens(payload: ITokenPayload): ITokens {
+
+    public createTokens(payload: ITokenPayload): ITokens {
         const accessToken: string = jwt.sign(
             payload,
             process.env.JWT_ACCESS_SECRET!,
@@ -30,23 +29,35 @@ export class JwtService extends BaseService {
         return { accessToken, refreshToken };
     }
 
-    validateAccessToken(accessToken: string): ITokenPayload | null {
+    public validateAccessToken(accessToken: string) {
         try {
-            return jwt.verify(
+            const decodedToken = jwt.verify(
                 accessToken,
-                process.env.JWT_ACCESS_SECRET!,
-            ) as ITokenPayload;
+                process.env.JWT_REFRESH_SECRET!,
+            ) as any;
+
+            if (decodedToken && decodedToken._doc) {
+                return decodedToken._doc;
+            } else {
+                return null;
+            }
         } catch (e) {
             return null;
         }
     }
 
-    validateRefreshToken(refreshToken: string): ITokenPayload | null {
+    public validateRefreshToken(refreshToken: string) {
         try {
-            return jwt.verify(
+            const decodedToken = jwt.verify(
                 refreshToken,
                 process.env.JWT_REFRESH_SECRET!,
-            ) as ITokenPayload;
+            ) as any;
+
+            if (decodedToken && decodedToken._doc) {
+                return decodedToken._doc;
+            } else {
+                return null;
+            }
         } catch (e) {
             return null;
         }

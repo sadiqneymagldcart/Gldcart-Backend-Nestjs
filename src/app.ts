@@ -1,9 +1,9 @@
-import "reflect-metadata";
 import {InversifyExpressServer} from "inversify-express-utils";
 import {Logger} from "./utils/logger";
 import mongoose from "mongoose";
 import {mongooseOptions} from "./config/mongo.config";
 import {serverConfig} from "./config/server.config";
+import {errorHandlerMiddleware} from "./middlewares/error.middleware";
 
 import * as dotenv from "dotenv";
 
@@ -19,6 +19,7 @@ export class App {
         this.server = server;
         this.logger = logger;
     }
+
     public async start() {
         try {
             await this.connectToDatabase();
@@ -50,7 +51,12 @@ export class App {
     }
 
     private setupServer() {
-        this.server.setConfig(serverConfig);
+        this.server.setConfig((app) => {
+            serverConfig(app);
+        });
+        this.server.setErrorConfig((app) => {
+            app.use(errorHandlerMiddleware);
+        });
         const app = this.server.build();
         app.listen(this.port, () =>
             this.logger.logInfo(

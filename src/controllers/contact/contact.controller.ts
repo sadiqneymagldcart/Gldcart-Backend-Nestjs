@@ -1,11 +1,11 @@
+import * as express from "express";
 import {TokenService} from "../../services/token/token.service";
-import {NextFunction, Request, Response} from "express";
 import {MailService} from "../../services/contact/mail.service";
 import {controller, httpPost} from "inversify-express-utils";
 import {inject} from "inversify";
 import {requireAuth} from "../../middlewares/auth.middleware";
 
-@controller("/contact")
+@controller("/")
 export class ContactController {
     private mailService: MailService;
     private tokenService: TokenService;
@@ -15,8 +15,8 @@ export class ContactController {
         this.tokenService = tokenService;
     }
 
-    @httpPost("/send", requireAuth)
-    public async sendContactEmail(request: Request, response: Response, next: NextFunction) {
+    @httpPost("send-contact-email", requireAuth)
+    public async sendContactEmail(request: express.Request, response: express.Response, next: express.NextFunction) {
         const {name, email, subject, message, token} = request.body;
         try {
             const userData = token ? await this.tokenService.validateAccessToken(token) : null;

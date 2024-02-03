@@ -1,10 +1,10 @@
-import {Logger} from "../../utils/logger";
-import {Cart, ICart} from "../../models/shop/Cart";
-import {ApiError} from "../../exceptions/api.error";
-import Product, {IProduct} from "../../models/shop/Product";
-import {Types as MongooseTypes} from "mongoose";
-import {inject, injectable} from "inversify";
-import {BaseService} from "../base.service";
+import { Logger } from "../../utils/logger";
+import { Cart, ICart } from "../../models/shop/Cart";
+import { ApiError } from "../../exceptions/api.error";
+import Product, { IProduct } from "../../models/shop/Product";
+import { Types as MongooseTypes } from "mongoose";
+import { inject, injectable } from "inversify";
+import { BaseService } from "../base.service";
 
 @injectable()
 export class CartService extends BaseService {
@@ -12,29 +12,37 @@ export class CartService extends BaseService {
         super(logger);
     }
 
-    async getCartItems(userId: string): Promise<ICart | ApiError> {
+    private async handleApiError(userId: string, errorMessage: string, error: any): Promise<ApiError> {
+        this.logger.logError(
+            `Error for User: ${userId}. Error: ${errorMessage}. Details: ${error.message}`
+        );
+        return ApiError.BadRequest(errorMessage);
+    }
+
+    private logInfo(userId: string, message: string): void {
+        this.logger.logInfo(
+            `${message} User: ${userId}`
+        );
+    }
+
+    public async getCartItems(userId: string): Promise<ICart | ApiError> {
         try {
             if (!userId) {
                 return ApiError.BadRequest("Invalid inputs");
             }
-            const cartItems: ICart | null = await Cart.findOne({user: userId});
+            const cartItems: ICart | null = await Cart.findOne({ user: userId });
             if (!cartItems) {
-                this.logger.logInfo(`Cart not found for User: ${userId}`);
+                this.logInfo(userId, "Cart not found for");
                 return ApiError.BadRequest("Cart not found");
             }
-            this.logger.logInfo(
-                `Retrieved cart items successfully for User: ${userId}`
-            );
+            this.logInfo(userId, "Retrieved cart items successfully for");
             return cartItems;
         } catch (error: any) {
-            this.logger.logError(
-                `Error while retrieving cart items for User: ${userId}. Error: ${error.message}`
-            );
-            return ApiError.BadRequest(error.message);
+            return await this.handleApiError(userId, "Error while retrieving cart items for", error)
         }
     }
 
-    async addCartItem(
+    public async addCartItem(
         userId: string,
         productId: string,
         quantity: number,
@@ -42,15 +50,10 @@ export class CartService extends BaseService {
         try {
             const product: IProduct | null = await Product.findById(productId);
             if (!product || product.quantity < quantity) {
-                this.logger.logError(
-                    `Product not found or insufficient quantity for productId: ${productId}`
-                );
-                return ApiError.BadRequest(
-                    "Product not found or insufficient quantity",
-                );
+                return await this.handleApiError(userId, "Product not found or insufficient quantity for product", {productId})
             }
             let cart: ICart | null = await Cart.findOneAndUpdate(
-                {user: userId, "items.product": {$ne: productId}},
+                { user: userId, "items.product": { $ne: productId } },
                 {
                     $push: {
                         cartItems: {
@@ -59,7 +62,7 @@ export class CartService extends BaseService {
                         },
                     },
                 },
-                {new: true},
+                { new: true },
             );
             if (!cart) {
                 let newCart = {
@@ -72,22 +75,19 @@ export class CartService extends BaseService {
                     ],
                 };
                 cart = await Cart.create(newCart);
-                this.logger.logInfo(`New cart created for User: ${userId}`);
+                this.logInfo(userId, "New cart created for");
             } else {
                 this.logger.logInfo(
-                    `Product added to the cart. ProductId: ${productId}, Quantity: ${quantity}`
+                    `Product added to the cart. ProductId: ${productId}, Quantity: ${quantity}`,
                 );
             }
             return cart;
         } catch (error: any) {
-            this.logger.logError(
-                `Error while adding cart item for User: ${userId}. Error: ${error.message}`
-            );
-            return ApiError.BadRequest(error.message);
+            return await this.handleApiError(userId, "Error while adding cart item for", error)
         }
     }
 
-    async removeItem(
+    public async removeItem(
         userId: string,
         productId: string,
     ): Promise<ICart | ApiError> {
@@ -96,23 +96,26 @@ export class CartService extends BaseService {
                 return ApiError.BadRequest("Invalid inputs");
             }
             const cart = await Cart.findOneAndUpdate(
-                {user: userId},
-                {$pull: {cartItems: {product: productId}}},
-                {new: true},
+                { user: userId },
+                { $pull: { cartItems: { product: productId } } },
+                { new: true },
             );
             if (!cart) {
-                await this.logger.logInfo(`Cart not found for User: ${userId}`);
+                this.logInfo(userId, "Cart not found for");
                 return ApiError.BadRequest("Cart not found");
             }
-            this.logger.logInfo(
-                `Product removed successfully from User: ${userId}'s cart`
-            );
+            this.logInfo(userId, "Product removed successfully from cart");
             return cart;
         } catch (error: any) {
-            this.logger.logError(
-                `Error while removing product from User: ${userId}'s cart. Error: ${error.message}`
-            );
-            return ApiError.BadRequest(error.message);
+            return await this.handleApiError(userId, "Error while removing product from cart", error)
         }
+    }
+
+    public async updateCartItem(cartId: string, itemId: string, quantity: number) {
+        // to be implemented
+    }
+
+    public async clearCart(cartId: string): Promise<void> {
+        throw new Error("Method not implemented.");
     }
 }

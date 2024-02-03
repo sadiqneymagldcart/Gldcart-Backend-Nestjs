@@ -5,7 +5,7 @@ export interface IToken extends Document {
     refreshToken: string;
 }
 
-const tokenSchema: Schema<IToken> = new Schema({
+const tokenSchema = new Schema<IToken>({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User'
