@@ -6,7 +6,7 @@ import {inject} from "inversify";
 
 @controller("/")
 export class AuthController {
-    private authService: AuthService;
+    private readonly authService: AuthService;
 
     constructor(@inject(AuthService) authService: AuthService) {
         this.authService = authService;

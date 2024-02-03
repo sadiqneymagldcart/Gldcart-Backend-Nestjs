@@ -8,7 +8,7 @@ import { setRefreshTokenCookie } from "../../utils/token.utils";
 
 @controller("/")
 export class GoogleAuthController {
-    private googleAuthService: GoogleAuthService;
+    private readonly googleAuthService: GoogleAuthService;
 
     constructor(@inject(GoogleAuthService) googleAuthService: GoogleAuthService) {
         this.googleAuthService = googleAuthService;
