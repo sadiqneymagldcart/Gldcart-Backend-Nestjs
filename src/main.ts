@@ -5,4 +5,5 @@ import { Logger } from "./utils/logger";
 import { container } from "./config/inversify.config";
 
 const server = new InversifyExpressServer(container);
-new App(server, new Logger()).start();
+const app = new App(server, new Logger());
+app.start();
