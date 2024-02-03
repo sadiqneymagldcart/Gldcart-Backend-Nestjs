@@ -1,23 +1,31 @@
 import {NextFunction, Request, Response} from "express";
 import {ApiError} from "../exceptions/api.error";
-import {Logger} from "../utils/logger";
-import {container} from "../config/inversify.config";
 
-export function errorHandler(
+function sendApiErrorResponse(error: ApiError, response: Response) {
+    response.status(error.status).json({
+        message: error.message,
+        errors: error.errors,
+    });
+}
+
+function sendServerErrorResponse(error: Error, response: Response) {
+    response
+        .status(501)
+        .json({message: `Internal Server Error: ${error.message}`});
+}
+
+export function errorHandlerMiddleware(
     error: Error,
     request: Request,
     response: Response,
-    next: NextFunction
+    next: NextFunction,
 ) {
-    container.get(Logger).logError(error.message, error);
     if (error instanceof ApiError) {
-        const apiError = error as ApiError;
-
-        response.status(apiError.status).json({
-            message: apiError.message,
-            errors: apiError.errors,
-        });
+        sendApiErrorResponse(error, response);
+        console.log("ApiError");
     } else {
-        response.status(500).json({message: "Undefined server error"});
+        sendServerErrorResponse(error, response);
+        console.log("Error");
     }
+    next();
 }

@@ -1,11 +1,13 @@
-import {TokenService} from "../token/token.service";
-import {Logger} from "../../utils/logger";
-import {BaseService} from "../base.service";
-import {ApiError} from "../../exceptions/api.error";
-import {IToken} from "../../models/user/Token";
-import {inject, injectable} from "inversify";
-import User, {IUser} from "../../models/user/User";
+import { TokenService } from "../token/token.service";
+import { Logger } from "../../utils/logger";
+import { BaseService } from "../base.service";
+import { ApiError } from "../../exceptions/api.error";
+import { IToken } from "../../models/user/Token";
 import * as bcrypt from "bcrypt";
+import { inject, injectable } from "inversify";
+import User, { IUser } from "../../models/user/User";
+import { UserDto } from "../../dto/UserDto";
+import { ITokens } from "../../interfaces/ITokens";
 
 @injectable()
 export class AuthService extends BaseService {
@@ -41,9 +43,9 @@ export class AuthService extends BaseService {
     }
 
     public async login(email: string, password: string) {
-        const user: IUser = <IUser>await User.findOne({email});
+        const user: IUser = <IUser>await User.findOne({ email });
         if (user) {
-            const auth: boolean = await bcrypt.compare(password, user.password);
+            const auth = await bcrypt.compare(password, user.password);
             if (auth) {
                 return this.formUserLoginResponse(user, `User logged in: ${email}`);
             }
@@ -68,20 +70,22 @@ export class AuthService extends BaseService {
 
         const tokenFromDb: IToken | null =
             await this.tokenService.findToken(refreshToken);
+
         if (!userData || !tokenFromDb) {
             this.logger.logError("Refresh token is invalid");
             throw ApiError.UnauthorizedError();
         }
-        const user = <IUser>await User.findById(userData._id);
+        const user = <IUser>await User.findById(userData.id);
+
         return this.formUserLoginResponse(user);
     }
 
-    private async doesUserExist(email: string): Promise<boolean> {
-        const existingUser = await User.findOne({email});
+    private async doesUserExist(email: string) {
+        const existingUser = await User.findOne({ email });
         return Boolean(existingUser);
     }
 
-    private async hashPassword(password: string): Promise<string> {
+    private async hashPassword(password: string) {
         try {
             const salt: string = await bcrypt.genSalt();
             return await bcrypt.hash(password, salt);
@@ -92,16 +96,18 @@ export class AuthService extends BaseService {
 
     private async formUserLoginResponse(user: IUser, logMessage?: string) {
         try {
-            const tokens: { accessToken: string; refreshToken: string } =
-                this.tokenService.createTokens({...user});
-            await this.tokenService.saveToken(user.id, tokens.refreshToken);
+            const userDto = new UserDto(user);
+
+            const tokens: ITokens = this.tokenService.createTokens({ ...userDto });
+
+            await this.tokenService.saveToken(userDto.id, tokens.refreshToken);
             if (logMessage) {
                 this.logger.logInfo(logMessage);
             }
-            return {...tokens, user};
+            return { ...tokens, user: userDto };
         } catch (error: any) {
             this.logger.logError(error.message, error);
-            throw error;
+            throw ApiError.InternalServerError(error.message);
         }
     }
 }

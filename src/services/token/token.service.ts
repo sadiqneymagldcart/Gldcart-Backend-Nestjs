@@ -1,56 +1,54 @@
-import Token, {IToken} from "../../models/user/Token";
-import {Logger} from "../../utils/logger";
-import {JwtService} from "./jwt.service";
-import {BaseService} from "../base.service";
-import {inject, injectable} from "inversify";
-
-interface ITokenPayload {
-    _id: string;
-    type: string;
-    name: string;
-    surname: string;
-    email: string;
-}
-
-interface ITokens {
-    accessToken: string;
-    refreshToken: string;
-}
+import * as jwt from "jsonwebtoken";
+import Token, { IToken } from "../../models/user/Token";
+import { Logger } from "../../utils/logger";
+import { BaseService } from "../base.service";
+import { inject, injectable } from "inversify";
+import { ITokens } from "../../interfaces/ITokens";
+import { ITokenPayload } from "../../interfaces/ITokenPayload";
 
 @injectable()
 export class TokenService extends BaseService {
-    private jwtService: JwtService;
-
-    constructor(
-        @inject(JwtService) jwtService: JwtService,
-        @inject(Logger) logger: Logger,
-    ) {
+    constructor(@inject(Logger) logger: Logger) {
         super(logger);
-        this.jwtService = jwtService;
     }
 
     createTokens(payload: ITokenPayload): ITokens {
-        return this.jwtService.createTokens(payload);
+        const accessToken: string = jwt.sign(
+            payload,
+            process.env.JWT_ACCESS_SECRET!,
+            {
+                expiresIn: "15m",
+            },
+        );
+        const refreshToken: string = jwt.sign(
+            payload,
+            process.env.JWT_REFRESH_SECRET!,
+            {
+                expiresIn: "30d",
+            },
+        );
+        return { accessToken, refreshToken };
     }
 
     public async saveToken(
         userId: string,
         refreshToken: string,
     ): Promise<IToken> {
-        const tokenData: IToken = <IToken>await Token.findOne({user: userId});
+        const tokenData = <IToken>await Token.findOne({ user: userId });
         if (tokenData) {
             tokenData.refreshToken = refreshToken;
             return tokenData.save();
         }
-        return await Token.create({user: userId, refreshToken});
+        return await Token.create({ user: userId, refreshToken });
     }
 
     public async createAndSaveTokens(payload: ITokenPayload): Promise<IToken> {
         try {
-            const {refreshToken} = this.jwtService.createTokens(payload);
-            return this.saveToken(payload._id, refreshToken);
+            const { refreshToken } = this.createTokens(payload);
+            console.log(refreshToken);
+            return this.saveToken(payload.id, refreshToken);
         } catch (error) {
-            await this.logger.logError(`${error}`);
+            this.logger.logError(`${error}`);
             throw error;
         }
     }
@@ -58,20 +56,26 @@ export class TokenService extends BaseService {
     public async removeToken(
         refreshToken: string,
     ): Promise<{ deletedCount?: number }> {
-        return Token.deleteOne({refreshToken});
+        return Token.deleteOne({ refreshToken });
     }
 
     public async findToken(refreshToken: string): Promise<IToken | null> {
-        return Token.findOne({refreshToken});
+        return Token.findOne({ refreshToken });
     }
 
-    public async validateAccessToken(
-        accessToken: string,
-    ): Promise<ITokenPayload | null> {
-        return this.jwtService.validateAccessToken(accessToken);
+    public async validateAccessToken(accessToken: string) {
+        try {
+            return jwt.verify(accessToken, process.env.JWT_REFRESH_SECRET!) as any;
+        } catch (e) {
+            return null;
+        }
     }
 
-    public validateRefreshToken(refreshToken: string): ITokenPayload | null {
-        return this.jwtService.validateRefreshToken(refreshToken);
+    public validateRefreshToken(refreshToken: string) {
+        try {
+            return jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as any;
+        } catch (e) {
+            return null;
+        }
     }
 }
