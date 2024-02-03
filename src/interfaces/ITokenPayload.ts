@@ -1,5 +1,5 @@
 export interface ITokenPayload {
-    _id: string;
+    id: string;
     type: string;
     name: string;
     surname: string;

@@ -3,7 +3,6 @@ import validator from "validator";
 import {addressSchema, IAddress} from "./Address";
 
 export interface IUser extends Document {
-    _id: string;
     type: string;
     name: string;
     surname: string;
@@ -18,7 +17,7 @@ export interface IUser extends Document {
     address?: string;
 }
 
-const userSchema: Schema<IUser> = new Schema({
+const userSchema = new Schema<IUser>({
     type: {
         type: String,
         required: [true, "Client's type is undefined"],
@@ -65,5 +64,5 @@ const userSchema: Schema<IUser> = new Schema({
     },
 });
 
-const User: Model<IUser> = mongoose.model("User", userSchema) as Model<IUser>;
+const User = mongoose.model("User", userSchema) as Model<IUser>;
 export default User;

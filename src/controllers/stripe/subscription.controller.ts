@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response} from "express";
+import * as express from "express";
 import {StripeSubscriptionService} from "../../services/stripe/stripe.subscription.service";
 import {inject, injectable} from "inversify";
 import {httpGet, httpPut} from "inversify-express-utils";
@@ -17,34 +17,34 @@ export class SubscriptionController {
 
     @httpGet("/checkout/:userId/:lookup_key", requireAuth)
     public async createSubscriptionCheckout(
-        req: Request,
-        res: Response,
-        next: NextFunction,
+        request: express.Request,
+        response: express.Response,
+        nextFunction: express.NextFunction,
     ): Promise<void> {
-        const {userId, lookup_key} = req.body;
+        const {userId, lookup_key} = request.body;
         try {
             const checkoutUrl =
                 await this.subscriptionService.createSubscriptionCheckout(
                     userId,
                     lookup_key,
                 );
-            res.json({url: checkoutUrl});
+            response.json({url: checkoutUrl});
         } catch (error) {
-            next(error);
+            nextFunction(error);
         }
     }
 
     @httpPut("/cancel", requireAuth)
     public async cancelSubscription(
-        req: Request,
-        res: Response,
-        next: NextFunction,
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
     ): Promise<any> {
-        const subscriptionId = req.body.subscriptionId;
+        const subscriptionId = request.body.subscriptionId;
         try {
             const deletedSubscription =
                 await this.subscriptionService.cancelSubscription(subscriptionId);
-            res.send(deletedSubscription);
+            response.send(deletedSubscription);
         } catch (error) {
             next(error);
         }

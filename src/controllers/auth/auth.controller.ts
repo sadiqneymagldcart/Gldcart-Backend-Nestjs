@@ -1,10 +1,10 @@
-import {NextFunction, Request, Response} from "express";
+import * as express from "express";
 import {setRefreshTokenCookie} from "../../utils/token.utils";
 import {AuthService} from "../../services/auth/auth.service";
 import {controller, httpGet, httpPost} from "inversify-express-utils";
 import {inject} from "inversify";
 
-@controller("/auth")
+@controller("")
 export class AuthController {
     private authService: AuthService;
 
@@ -14,11 +14,11 @@ export class AuthController {
 
     @httpPost("/signup")
     async registrationHandler(
-        request: Request,
-        response: Response,
-        next: NextFunction,
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
     ): Promise<void> {
-        const { type, name, surname, email, password } = request.body;
+        const {type, name, surname, email, password} = request.body;
 
         try {
             const userData = await this.authService.register(
@@ -36,15 +36,47 @@ export class AuthController {
     }
 
     @httpPost("/login")
-    async loginHandler(
-        request: Request,
-        response: Response,
-        next: NextFunction,
+    public async loginHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
     ): Promise<void> {
-        const { email, password } = request.body;
-        console.log(email, password);
+        const {email, password} = request.body;
+
         try {
             const userData = await this.authService.login(email, password);
+            setRefreshTokenCookie(response, userData.refreshToken);
+            response.status(201).json(userData);
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    @httpPost("/logout")
+    public async logoutHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ): Promise<void> {
+        const refreshToken = request.cookies.refreshToken;
+        try {
+            const token = await this.authService.logout(refreshToken);
+            response.clearCookie("refreshToken");
+            response.json(token);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    @httpGet("/refresh")
+    public async refreshHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        const refreshToken = request.cookies.refreshToken as string;
+        try {
+            const userData = await this.authService.refresh(refreshToken);
             setRefreshTokenCookie(response, userData.refreshToken);
             response.status(201).json(userData);
         } catch (error) {
@@ -52,35 +84,7 @@ export class AuthController {
         }
     }
 
-    @httpPost("/logout")
-    async logoutHandler(
-        request: Request,
-        response: Response,
-        next: NextFunction,
-    ): Promise<void> {
-        try {
-            const refreshToken = request.cookies.refreshToken;
-            const token = await this.authService.logout(refreshToken);
-            response.clearCookie("refreshToken");
-            response.json(token);
-        } catch (e) {
-            next(e);
-        }
-    }
-
-    @httpGet("/refresh")
-    async refreshHandler(
-        request: Request,
-        response: Response,
-        next: NextFunction,
-    ) {
-        try {
-            const refreshToken = request.cookies.refreshToken as string;
-            const userData = await this.authService.refresh(refreshToken);
-            setRefreshTokenCookie(response, userData.refreshToken);
-            return response.json(userData);
-        } catch (error) {
-            next(error);
-        }
+    @httpPost("")
+    public async() {
     }
 }
