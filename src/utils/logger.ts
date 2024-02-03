@@ -2,6 +2,7 @@ import * as winston from "winston";
 import {format} from "winston";
 import winstonDailyRotateFile from "winston-daily-rotate-file";
 import {injectable} from "inversify";
+import {ILogger} from "../interfaces/ILogger";
 
 export type LogMessage = string;
 
@@ -12,16 +13,6 @@ export enum LogLevel {
     INFO = "info",
     WARN = "warn",
     ERROR = "error",
-}
-
-export interface ILogger {
-    logInfo(msg: LogMessage, context?: LogContext): void;
-
-    logWarn(msg: LogMessage, context?: LogContext): void;
-
-    logError(msg: LogMessage, context?: LogContext): void;
-
-    logDebug(msg: LogMessage, context?: LogContext): void;
 }
 
 @injectable()

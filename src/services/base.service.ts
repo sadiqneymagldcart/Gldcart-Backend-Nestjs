@@ -5,7 +5,7 @@ import {Logger} from "../utils/logger";
 export class BaseService {
     protected logger: Logger;
 
-    constructor(@inject(Logger)logger: Logger) {
+    constructor(@inject(Logger) logger: Logger) {
         this.logger = logger;
     }
 }

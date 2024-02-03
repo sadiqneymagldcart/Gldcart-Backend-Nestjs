@@ -17,7 +17,7 @@ export class UserDetailsService extends BaseService {
         const user = await User.findById(userId);
 
         if (!user) {
-            await this.logger.logError(`User ${userId} not found while adding address`);
+            this.logger.logError(`User ${userId} not found while adding address`);
             throw ApiError.BadRequest("User not found");
         }
 
@@ -26,7 +26,7 @@ export class UserDetailsService extends BaseService {
 
         user.addresses.push(addressWithId);
         await user.save();
-        await this.logger.logInfo(`Address added for user ${userId}`, user.addresses);
+        this.logger.logInfo(`Address added for user ${userId}`, user.addresses);
         return user;
     }
 
@@ -34,23 +34,23 @@ export class UserDetailsService extends BaseService {
         const user: IUser | null = await User.findById(userId);
 
         if (!user) {
-            await this.logger.logError(`User ${userId} was not found while updating address for email`);
+            this.logger.logError(`User ${userId} was not found while updating address for email`);
             throw ApiError.BadRequest('User was not found');
         }
         const addressIndex = user.addresses.findIndex(address => String(address.id) === String(addressId));
         if (addressIndex === -1) {
-            await this.logger.logError(`Address was not found for user ${userId}`);
+            this.logger.logError(`Address was not found for user ${userId}`);
             throw ApiError.BadRequest('Address was not found');
         }
         Object.assign(user.addresses[addressIndex], addressData);
         await user.save();
-        await this.logger.logInfo(`Address was updated for user ${userId}`);
+        this.logger.logInfo(`Address was updated for user ${userId}`);
     }
 
     async getAddresses(id: string) {
         const user: IUser | null = await User.findById(id);
         if (!user) {
-            await this.logger.logError(`User not found while fetching addresses for ID: ${id}`);
+            this.logger.logError(`User not found while fetching addresses for ID: ${id}`);
             throw ApiError.BadRequest('User not found');
         }
         return user.addresses;
@@ -59,20 +59,20 @@ export class UserDetailsService extends BaseService {
     async deleteAddress(userId: string, addressId: Types.ObjectId) {
         const user = await User.findById(userId);
         if (!user) {
-            await this.logger.logError(`User ${userId} not found while deleting address for email`);
+            this.logger.logError(`User ${userId} not found while deleting address for email`);
             throw ApiError.BadRequest("User not found");
         }
 
         const addressIndex = user.addresses.findIndex(address => String(address.id) === String(addressId));
         if (addressIndex === -1) {
-            await this.logger.logError(`Address not found for user ${userId}`);
+            this.logger.logError(`Address not found for user ${userId}`);
             throw ApiError.BadRequest('Address not found');
         }
 
         user.addresses.splice(addressIndex, 1);
         await user.save();
 
-        await this.logger.logInfo(`Address deleted for user ${userId}`);
+        this.logger.logInfo(`Address deleted for user ${userId}`);
         return user;
     }
 
@@ -88,10 +88,10 @@ export class UserDetailsService extends BaseService {
             })
         );
         if (!user) {
-            await this.logger.logError(`User not found while updating details for ID: ${id}`);
+            this.logger.logError(`User not found while updating details for ID: ${id}`);
             throw ApiError.BadRequest("User not found");
         }
         await user.save();
-        await this.logger.logInfo(`Personal details updated for user with ID: ${id}`);
+        this.logger.logInfo(`Personal details updated for user with ID: ${id}`);
     }
 }

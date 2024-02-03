@@ -31,9 +31,9 @@ export class StripeWebhookService extends BaseService {
                 <string>process.env.STRIPE_WEBHOOK_SECRET,
             );
         } catch (error: any) {
-            await this.logger.logError(
+            this.logger.logError(
                 "Webhook signature verification failed",
-                error,
+                error
             );
             return null;
         }
@@ -51,14 +51,14 @@ export class StripeWebhookService extends BaseService {
                     );
                     await this.orderService.createOrder(customer, data);
                 } catch (error: any) {
-                    await this.logger.logError(
+                    this.logger.logError(
                         "Error handling checkout session completion",
-                        error,
+                        error
                     );
                 }
                 break;
             default:
-                await this.logger.logInfo(`Unhandled event type ${event.type}`);
+                this.logger.logInfo(`Unhandled event type ${event.type}`);
                 return false;
         }
 

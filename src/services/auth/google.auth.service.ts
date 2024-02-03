@@ -3,15 +3,15 @@ import {TokenService} from "../token/token.service";
 import {Logger} from "../../utils/logger";
 import {ApiError} from "../../exceptions/api.error";
 import axios, {AxiosResponse} from "axios";
-import qs from "qs";
+import * as qs from "qs";
 import {IToken} from "../../models/user/Token";
 import {inject, injectable} from "inversify";
 import {IGoogleTokenResult} from "../../interfaces/IGoogleTokenResult";
 import {IOAuthValues} from "../../interfaces/IOAuthValues";
 import {IGoogleUserResult} from "../../interfaces/IGoogleUserResult";
-import {ITokenPayload} from "../../interfaces/ITokenPayload";
 import {IGoogleUserInfo} from "../../interfaces/IGoogleUserInfo";
 import User, {IUser} from "../../models/user/User";
+import {ITokenPayload} from "../../interfaces/ITokenPayload";
 
 @injectable()
 export class GoogleAuthService extends BaseService {
@@ -28,17 +28,18 @@ export class GoogleAuthService extends BaseService {
     }
 
     public async getGoogleOAuthTokens({
-        code,
-    }: {
+                                          code,
+                                      }: {
         code: string;
     }): Promise<IGoogleTokenResult | undefined> {
         const values = this.getOAuthValues(code);
         try {
-            const res: AxiosResponse<IGoogleTokenResult> = await this.postToUrl(
-                process.env.GOOGLE_TOKEN_URL!,
+            const googleResponse = await this.postToUrl(
+                process.env.GOOGLE_TOKEN_URL,
+
                 values,
             );
-            return res.data;
+            return googleResponse.data;
         } catch (error: any) {
             await this.handleTokenError(error);
         }
@@ -57,14 +58,14 @@ export class GoogleAuthService extends BaseService {
     }
 
     private async updateOrCreateGoogleUser({
-        type,
-        name,
-        surname,
-        email,
-        picture,
-        password,
+                                               type,
+                                               name,
+                                               surname,
+                                               email,
+                                               picture,
+                                               password,
                                            }: IGoogleUserInfo) {
-        let existingUser = await User.findOne({ email: email });
+        let existingUser = await User.findOne({email: email});
         if (!existingUser)
             existingUser = await this.createGoogleUser({
                 type,
@@ -78,15 +79,15 @@ export class GoogleAuthService extends BaseService {
     }
 
     private async createGoogleUser({
-        type,
-        name,
-        surname,
-        email,
-        picture,
-        password,
-                                   }: IGoogleUserInfo): Promise<IUser> {
+                                       type,
+                                       name,
+                                       surname,
+                                       email,
+                                       picture,
+                                       password,
+                                   }: IGoogleUserInfo) {
         const firstName = name.split(" ")[0];
-        const newUser = <IUser>await User.create({
+        const newUser = await User.create({
             type: type,
             name: firstName,
             surname: surname,
@@ -94,20 +95,23 @@ export class GoogleAuthService extends BaseService {
             picture: picture,
             password: password,
         });
-        await this.logger.logInfo(`New user created with email: ${email}`);
+        this.logger.logInfo(`New user created with email: ${email}`);
         return newUser;
     }
 
     private async authenticateWithGoogle(user: IUser, picture: string) {
-        const tokens: IToken = await this.tokenService.createAndSaveTokens({
-            _id: user._id,
+
+        const userInfo = {
+            id: user._id,
             type: user.type,
             name: user.name,
             surname: user.surname,
             email: user.email,
-        } as ITokenPayload);
-        await this.logger.logInfo(`User logged in with Google: ${user.email}`);
-        return { ...tokens, user: user, picture: picture };
+        };
+
+        const tokens: IToken = await this.tokenService.createAndSaveTokens(userInfo);
+        this.logger.logInfo(`User logged in with Google: ${user.email}`);
+        return {tokens, user: userInfo, picture: picture};
     }
 
     private getOAuthValues(code: string): IOAuthValues {
@@ -121,7 +125,7 @@ export class GoogleAuthService extends BaseService {
     }
 
     private async handleTokenError(error: any): Promise<void> {
-        await this.logger.logError(
+        this.logger.logError(
             "Failed to fetch Google OAuth Tokens",
             error.response?.data,
         );
@@ -133,7 +137,7 @@ export class GoogleAuthService extends BaseService {
         values: IOAuthValues,
     ): Promise<AxiosResponse<IGoogleTokenResult>> {
         return await axios.post<IGoogleTokenResult>(url, qs.stringify(values), {
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
         });
     }
 
@@ -141,13 +145,13 @@ export class GoogleAuthService extends BaseService {
         return await axios.get<IGoogleUserResult>(
             `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
             {
-                headers: { Authorization: `Bearer ${id_token}` },
+                headers: {Authorization: `Bearer ${id_token}`},
             },
         );
     }
 
     private async handleUserInfoError(error: any) {
-        await this.logger.logError("Failed to fetch Google User", error.message);
+        this.logger.logError("Failed to fetch Google User", error.message);
         throw new Error(error.message);
     }
 }
