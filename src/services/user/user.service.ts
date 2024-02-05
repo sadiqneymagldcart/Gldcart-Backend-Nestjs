@@ -1,9 +1,9 @@
-import { BaseService } from "../base.service";
-import { Logger } from "../../utils/logger";
-import User, { IUser } from "../../models/user/User";
+import {BaseService} from "../base.service";
+import {Logger} from "../../utils/logger";
+import UserModel, {User} from "../../models/user/User";
 
 export class UserService extends BaseService {
-    constructor(logger: Logger) {
+    public constructor(logger: Logger) {
         super(logger);
     }
 
@@ -14,14 +14,14 @@ export class UserService extends BaseService {
         email: string,
         picture: string,
         password: string,
-    ): Promise<IUser> {
-        const existingUser = <IUser>await User.findOne({ email: email });
+    ): Promise<User> {
+        const existingUser = <User>await UserModel.findOne({email: email});
 
         if (existingUser) return existingUser;
 
         const firstName = name.split(" ")[0];
 
-        const newUser = <IUser>await User.create({
+        const newUser = <User>await UserModel.create({
             type: type,
             name: firstName,
             surname: surname,

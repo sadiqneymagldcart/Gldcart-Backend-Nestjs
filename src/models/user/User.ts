@@ -1,8 +1,8 @@
 import mongoose, {Document, Model, Schema} from "mongoose";
 import validator from "validator";
-import {addressSchema, IAddress} from "./Address";
+import {AddressSchema, IAddress} from "./Address";
 
-export interface IUser extends Document {
+export interface User extends Document {
     type: string;
     name: string;
     surname: string;
@@ -17,7 +17,7 @@ export interface IUser extends Document {
     address?: string;
 }
 
-const userSchema = new Schema<IUser>({
+const userSchema = new Schema<User>({
     type: {
         type: String,
         required: [true, "Client's type is undefined"],
@@ -36,7 +36,7 @@ const userSchema = new Schema<IUser>({
         lowercase: true,
         validate: [validator.isEmail, "Please, enter a valid contact"],
     },
-    addresses: [addressSchema],
+    addresses: [AddressSchema],
     picture: {
         type: String,
     },
@@ -64,5 +64,5 @@ const userSchema = new Schema<IUser>({
     },
 });
 
-const User = mongoose.model("User", userSchema) as Model<IUser>;
-export default User;
+const UserModel = mongoose.model("User", userSchema) as Model<User>;
+export default UserModel;

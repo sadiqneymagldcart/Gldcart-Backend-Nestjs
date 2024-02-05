@@ -1,9 +1,9 @@
 import mongoose, {Document, Model, Schema} from "mongoose";
-import {IProduct, productSchema} from "./Product";
+import {Product, ProductSchema} from "./Product";
 
-export interface IOrder extends Document {
+export interface Order extends Document {
     user: mongoose.Types.ObjectId;
-    products: IProduct[];
+    products: Product[];
     subtotal: number;
     total: number;
     shipping?: object;
@@ -11,10 +11,10 @@ export interface IOrder extends Document {
     payment_status: string;
 }
 
-const orderSchema: Schema<IOrder> = new Schema(
+const orderSchema: Schema<Order> = new Schema(
     {
         user: {type: Schema.Types.ObjectId, ref: 'User'},
-        products: [productSchema],
+        products: [ProductSchema],
         subtotal: {type: Number, required: true},
         total: {type: Number, required: true},
         shipping: {type: Object},
@@ -23,6 +23,6 @@ const orderSchema: Schema<IOrder> = new Schema(
     },
 );
 
-const Order  = mongoose.model('Order', orderSchema) as Model<IOrder>;
+const OrderModel = mongoose.model('Order', orderSchema) as Model<Order>;
 
-export default Order;
+export default OrderModel;

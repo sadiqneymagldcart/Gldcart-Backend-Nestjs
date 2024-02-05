@@ -8,7 +8,7 @@ import {inject} from "inversify";
 export class AuthController {
     private readonly authService: AuthService;
 
-    constructor(@inject(AuthService) authService: AuthService) {
+    public constructor(@inject(AuthService) authService: AuthService) {
         this.authService = authService;
     }
 

@@ -1,15 +1,16 @@
 import mongoose, {Document, Schema} from 'mongoose';
 
-export interface ISubscription extends Document {
+export interface Subscription extends Document {
     type: string;
     duration: number;
     price: number;
 }
-const subscriptionSchema: Schema<ISubscription> = new Schema({
+
+const subscriptionSchema = new Schema<Subscription>({
     type: { type: String, required: true },
     duration: { type: Number, required: true },
     price: { type: Number, required: true },
 });
 
-const Subscription = mongoose.model<ISubscription>('Subscription', subscriptionSchema);
-export default Subscription;
+const SubscriptionModel = mongoose.model<Subscription>('Subscription', subscriptionSchema);
+export default SubscriptionModel;

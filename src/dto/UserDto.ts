@@ -1,4 +1,4 @@
-import { IUser } from "../models/user/User";
+import {User} from "../models/user/User";
 
 export class UserDto {
     id: string;
@@ -7,7 +7,7 @@ export class UserDto {
     surname: string;
     email: string;
 
-    constructor(user: IUser) {
+    public constructor(user: User) {
         this.id = user._id;
         this.type = user.type;
         this.name = user.name;
