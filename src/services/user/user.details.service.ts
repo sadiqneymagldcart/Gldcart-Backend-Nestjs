@@ -4,17 +4,17 @@ import {Logger} from "../../utils/logger";
 import {IAddress} from "../../models/user/Address";
 import {Types} from "mongoose";
 import {inject, injectable} from "inversify";
-import User, {IUser} from "../../models/user/User";
+import UserModel, {User} from "../../models/user/User";
 
 @injectable()
 export class UserDetailsService extends BaseService {
 
-    constructor(@inject(Logger) logger: Logger) {
+    public constructor(@inject(Logger) logger: Logger) {
         super(logger);
     }
 
     public async addAddress(userId: string, addressData: IAddress) {
-        const user = await User.findById(userId);
+        const user = await UserModel.findById(userId);
 
         if (!user) {
             this.logger.logError(`User ${userId} not found while adding address`);
@@ -31,7 +31,7 @@ export class UserDetailsService extends BaseService {
     }
 
     public async updateAddress(userId: string, addressId: Types.ObjectId, addressData: IAddress) {
-        const user: IUser | null = await User.findById(userId);
+        const user: User | null = await UserModel.findById(userId);
 
         if (!user) {
             this.logger.logError(`User ${userId} was not found while updating address for email`);
@@ -48,7 +48,7 @@ export class UserDetailsService extends BaseService {
     }
 
     async getAddresses(id: string) {
-        const user: IUser | null = await User.findById(id);
+        const user: User | null = await UserModel.findById(id);
         if (!user) {
             this.logger.logError(`User not found while fetching addresses for ID: ${id}`);
             throw ApiError.BadRequest('User not found');
@@ -57,7 +57,7 @@ export class UserDetailsService extends BaseService {
     }
 
     async deleteAddress(userId: string, addressId: Types.ObjectId) {
-        const user = await User.findById(userId);
+        const user = await UserModel.findById(userId);
         if (!user) {
             this.logger.logError(`User ${userId} not found while deleting address for email`);
             throw ApiError.BadRequest("User not found");
@@ -77,8 +77,8 @@ export class UserDetailsService extends BaseService {
     }
 
     async updatePersonalDetails(id: string | null, email: string | null, name: string | null, surname: string | null, phone_number: string | null, address: string | null, BIO: string | null) {
-        const user = <IUser>(
-            await User.findByIdAndUpdate(id, {
+        const user = <User>(
+            await UserModel.findByIdAndUpdate(id, {
                 name: name,
                 surname: surname,
                 email: email,

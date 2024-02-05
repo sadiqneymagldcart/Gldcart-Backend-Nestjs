@@ -1,11 +1,11 @@
 import mongoose, {Document, Schema} from "mongoose";
 
-export interface IInventory extends Document {
+export interface Inventory extends Document {
     product_id: Schema.Types.ObjectId;
     quantity: number;
 }
 
-export const InventorySchema = new Schema<IInventory>({
+const InventorySchema = new Schema<Inventory>({
     product_id: {
         type: Schema.Types.ObjectId,
         ref: "Products",
@@ -16,4 +16,7 @@ export const InventorySchema = new Schema<IInventory>({
     },
 });
 
-export const Inventory = mongoose.model<IInventory>("Inventory", InventorySchema);
+export const InventoryModel = mongoose.model<Inventory>(
+    "Inventory",
+    InventorySchema,
+);

@@ -9,7 +9,9 @@ import {requireAuth} from "../../middlewares/auth.middleware";
 export class AddressController {
     private readonly userDetailsService: UserDetailsService;
 
-    constructor(@inject(UserDetailsService) userDetailsService: UserDetailsService) {
+    public constructor(
+        @inject(UserDetailsService) userDetailsService: UserDetailsService,
+    ) {
         this.userDetailsService = userDetailsService;
     }
 
@@ -45,7 +47,11 @@ export class AddressController {
         }
 
         try {
-            await this.userDetailsService.updateAddress(userId, addressId, addressData);
+            await this.userDetailsService.updateAddress(
+                userId,
+                addressId,
+                addressData,
+            );
             res.status(200).json({message: "Address was updated successfully"});
         } catch (error) {
             next(error);

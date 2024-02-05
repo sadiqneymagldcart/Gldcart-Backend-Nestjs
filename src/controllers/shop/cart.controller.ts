@@ -1,20 +1,14 @@
 import * as express from "express";
-import { inject } from "inversify";
-import { CartService } from "../../services/shop/cart.service";
-import {
-    controller,
-    httpDelete,
-    httpGet,
-    httpPost,
-    httpPut,
-} from "inversify-express-utils";
-import { requireAuth } from "../../middlewares/auth.middleware";
+import {inject} from "inversify";
+import {CartService} from "../../services/shop/cart.service";
+import {controller, httpDelete, httpGet, httpPost, httpPut,} from "inversify-express-utils";
+import {requireAuth} from "../../middlewares/auth.middleware";
 
 @controller("/cart")
 export class CartController {
     private readonly cartService: CartService;
 
-    constructor(@inject(CartService) cartService: CartService) {
+    public constructor(@inject(CartService) cartService: CartService) {
         this.cartService = cartService;
     }
 
@@ -33,7 +27,7 @@ export class CartController {
         }
     }
 
-    @httpPost("/add", requireAuth)
+    @httpPost("/", requireAuth)
     public async addCartItemHandler(
         request: express.Request,
         response: express.Response,
@@ -45,7 +39,7 @@ export class CartController {
             typeof productId !== "string" ||
             typeof quantity !== "number"
         ) {
-            return next(
+            next(
                 new Error(
                     "Invalid request parameters. The userId and productId should be strings and quantity should be a number",
                 ),

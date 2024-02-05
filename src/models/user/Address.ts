@@ -12,7 +12,7 @@ export interface IAddress
     phone_number: string;
 }
 
-export const addressSchema = new Schema<IAddress>({
+export const AddressSchema = new Schema<IAddress>({
     recipients_name: {
         type: String,
         required: true

@@ -1,14 +1,14 @@
-import { Transporter } from "nodemailer";
-import { ApiError } from "../../exceptions/api.error";
-import { Logger } from "../../utils/logger";
-import { inject, injectable } from "inversify";
+import {Transporter} from "nodemailer";
+import {ApiError} from "../../exceptions/api.error";
+import {Logger} from "../../utils/logger";
+import {inject, injectable} from "inversify";
 
 @injectable()
 export class MailService {
     private transporter: Transporter;
     private logger: Logger;
 
-    constructor(
+    public constructor(
         @inject(Logger) logger: Logger,
         @inject("NodemailerTransporter") transporter: Transporter,
     ) {
