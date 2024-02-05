@@ -8,7 +8,7 @@ import {ResetPasswordService} from "../../services/user/reset.password.service";
 export class ResetPasswordController {
     private readonly passwordResetService: ResetPasswordService;
 
-    constructor(
+    public constructor(
         @inject(ResetPasswordService) passwordResetService: ResetPasswordService,
     ) {
         this.passwordResetService = passwordResetService;

@@ -9,7 +9,7 @@ export class StripeWebhookService extends BaseService {
     private orderService: OrderService;
     private stripe: Stripe;
 
-    constructor(
+    public constructor(
         @inject(Logger) logger: Logger,
         @inject(OrderService) orderService: OrderService,
         @inject(Stripe) stripe: Stripe,
@@ -31,10 +31,7 @@ export class StripeWebhookService extends BaseService {
                 <string>process.env.STRIPE_WEBHOOK_SECRET,
             );
         } catch (error: any) {
-            this.logger.logError(
-                "Webhook signature verification failed",
-                error
-            );
+            this.logger.logError("Webhook signature verification failed", error);
             return null;
         }
     }
@@ -49,11 +46,11 @@ export class StripeWebhookService extends BaseService {
                     const customer = await this.stripe.customers.retrieve(
                         (data as { customer: string }).customer,
                     );
-                    await this.orderService.createOrder(customer, data);
+                    await this.orderService.placeStripeOrder(customer, data);
                 } catch (error: any) {
                     this.logger.logError(
                         "Error handling checkout session completion",
-                        error
+                        error,
                     );
                 }
                 break;

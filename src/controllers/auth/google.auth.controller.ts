@@ -1,16 +1,16 @@
 import * as express from "express";
-import { GoogleAuthService } from "../../services/auth/google.auth.service";
-import { inject } from "inversify";
-import { controller, httpGet, httpPost } from "inversify-express-utils";
-import { IGoogleUserInfo } from "../../interfaces/IGoogleUserInfo";
-import { IGoogleUserResult } from "../../interfaces/IGoogleUserResult";
-import { setRefreshTokenCookie } from "../../utils/token.utils";
+import {GoogleAuthService} from "../../services/auth/google.auth.service";
+import {inject} from "inversify";
+import {controller, httpGet, httpPost} from "inversify-express-utils";
+import {IGoogleUserInfo} from "../../interfaces/IGoogleUserInfo";
+import {IGoogleUserResult} from "../../interfaces/IGoogleUserResult";
+import {setRefreshTokenCookie} from "../../utils/token.utils";
 
 @controller("/")
 export class GoogleAuthController {
     private readonly googleAuthService: GoogleAuthService;
 
-    constructor(@inject(GoogleAuthService) googleAuthService: GoogleAuthService) {
+    public constructor(@inject(GoogleAuthService) googleAuthService: GoogleAuthService) {
         this.googleAuthService = googleAuthService;
     }
 

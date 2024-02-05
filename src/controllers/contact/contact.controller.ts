@@ -10,7 +10,7 @@ export class ContactController {
     private readonly mailService: MailService;
     private readonly tokenService: TokenService;
 
-    constructor(@inject(MailService) mailService: MailService, @inject(TokenService) tokenService: TokenService) {
+    public constructor(@inject(MailService) mailService: MailService, @inject(TokenService) tokenService: TokenService) {
         this.mailService = mailService;
         this.tokenService = tokenService;
     }

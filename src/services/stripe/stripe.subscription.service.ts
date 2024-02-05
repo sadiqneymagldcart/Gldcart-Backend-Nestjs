@@ -7,7 +7,7 @@ import {inject, injectable} from "inversify";
 export class StripeSubscriptionService extends BaseService {
     private stripe: Stripe;
 
-    constructor(@inject(Logger) logger: Logger, @inject(Stripe) stripe: Stripe) {
+    public constructor(@inject(Logger) logger: Logger, @inject(Stripe) stripe: Stripe) {
         super(logger);
         this.stripe = stripe;
     }
@@ -41,13 +41,13 @@ export class StripeSubscriptionService extends BaseService {
                 cancel_url: `${process.env.CLIENT_URL}?canceled=true`,
             });
 
-            await this.logger.logInfo(
+            this.logger.logInfo(
                 `Subscription checkout session created: ${session.id}`,
             );
 
             return session.url;
         } catch (error: any) {
-            await this.logger.logError(
+            this.logger.logError(
                 "Failed to create subscription checkout session",
                 error,
             );
@@ -60,11 +60,11 @@ export class StripeSubscriptionService extends BaseService {
             const canceledSubscription =
                 await this.stripe.subscriptions.cancel(subscriptionId);
 
-            await this.logger.logInfo(`Subscription cancelled: ${subscriptionId}`);
+            this.logger.logInfo(`Subscription cancelled: ${subscriptionId}`);
 
             return canceledSubscription;
         } catch (error: any) {
-            await this.logger.logError("Failed to cancel subscription", error);
+            this.logger.logError("Failed to cancel subscription", error);
             throw error;
         }
     }
