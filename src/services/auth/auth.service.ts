@@ -1,19 +1,19 @@
-import { TokenService } from "../token/token.service";
-import { Logger } from "../../utils/logger";
-import { BaseService } from "../base.service";
-import { ApiError } from "../../exceptions/api.error";
-import { IToken } from "../../models/user/Token";
+import {TokenService} from "../token/token.service";
+import {Logger} from "../../utils/logger";
+import {BaseService} from "../base.service";
+import {ApiError} from "../../exceptions/api.error";
+import {IToken} from "../../models/user/Token";
 import * as bcrypt from "bcrypt";
-import { inject, injectable } from "inversify";
-import User, { IUser } from "../../models/user/User";
-import { UserDto } from "../../dto/UserDto";
-import { ITokens } from "../../interfaces/ITokens";
+import {inject, injectable} from "inversify";
+import UserModel, {User} from "../../models/user/User";
+import {UserDto} from "../../dto/UserDto";
+import {ITokens} from "../../interfaces/ITokens";
 
 @injectable()
 export class AuthService extends BaseService {
     private tokenService: TokenService;
 
-    constructor(
+    public constructor(
         @inject(TokenService) tokenService: TokenService,
         @inject(Logger) logger: Logger,
     ) {
@@ -32,7 +32,7 @@ export class AuthService extends BaseService {
             throw ApiError.BadRequest("That contact is already registered");
         }
         const hashedPassword: string = await this.hashPassword(password);
-        const user: IUser = <IUser>await User.create({
+        const user: User = <User>await UserModel.create({
             type,
             name,
             surname,
@@ -43,7 +43,7 @@ export class AuthService extends BaseService {
     }
 
     public async login(email: string, password: string) {
-        const user: IUser = <IUser>await User.findOne({ email });
+        const user: User = <User>await UserModel.findOne({email});
         if (user) {
             const auth = await bcrypt.compare(password, user.password);
             if (auth) {
@@ -75,13 +75,13 @@ export class AuthService extends BaseService {
             this.logger.logError("Refresh token is invalid");
             throw ApiError.UnauthorizedError();
         }
-        const user = <IUser>await User.findById(userData.id);
+        const user = <User>await UserModel.findById(userData.id);
 
         return this.formUserLoginResponse(user);
     }
 
     private async doesUserExist(email: string) {
-        const existingUser = await User.findOne({ email });
+        const existingUser = await UserModel.findOne({email});
         return Boolean(existingUser);
     }
 
@@ -94,7 +94,7 @@ export class AuthService extends BaseService {
         }
     }
 
-    private async formUserLoginResponse(user: IUser, logMessage?: string) {
+    private async formUserLoginResponse(user: User, logMessage?: string) {
         try {
             const userDto = new UserDto(user);
 

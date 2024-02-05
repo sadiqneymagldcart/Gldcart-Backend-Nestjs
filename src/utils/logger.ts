@@ -20,7 +20,7 @@ export class Logger implements ILogger {
     private logger: winston.Logger;
     private readonly _appName = process.env.APP_NAME || "GLD Cart";
 
-    constructor() {
+    public constructor() {
         this.logger = this._initializeWinston();
     }
 
