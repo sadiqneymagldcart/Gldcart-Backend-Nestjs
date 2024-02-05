@@ -54,7 +54,7 @@ export class PaymentService extends BaseService {
             price_data: {
                 currency: "usd",
                 product_data: {
-                    name: item.name,
+                    name: item.product_name,
                     images: [item.images[0]],
                     description: item.short_description,
                 },

@@ -1,35 +1,28 @@
 import mongoose, {Document, Model, Schema} from "mongoose";
 
 export interface Product extends Document {
-    name: string;
-    short_description?: string;
-    long_description?: string;
-    price: number;
+    product_name: string;
+    description?: string;
     images: string[];
-    manufacturer?: string;
-    category_id: Schema.Types.ObjectId;
-    quantity: number;
+    category: string;
+    subcategory: string;
     attributes: Map<string, string>;
 }
 
 export const ProductSchema = new Schema<Product>({
-    name: {type: String, required: true, trim: true},
-    short_description: {type: String, trim: true},
-    long_description: {type: String, trim: true},
-    price: {type: Number, required: true},
+    product_name: {type: String, required: true, trim: true},
+    category: {type: String, required: true, trim: true},
+    subcategory: {type: String, required: true, trim: true},
+    description: {type: String, trim: true},
     images: [{type: String}],
-    manufacturer: {type: String, trim: true},
-    category_id: {type: Schema.Types.ObjectId, ref: "Category", required: true},
-    quantity: {type: Number, required: true, default: 0},
     attributes: {type: Map, of: String, required: true},
 });
 
 ProductSchema.index({
     name: "text",
-    short_description: "text",
-    long_description: "text",
+    category: "text",
+    subcategory: "text",
     manufacturer: "text",
-    quantity: "text",
     attributes: "text",
 });
 
