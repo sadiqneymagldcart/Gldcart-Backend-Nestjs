@@ -1,13 +1,13 @@
 import * as jwt from "jsonwebtoken";
-import { BaseService } from "../base.service";
-import { Logger } from "../../utils/logger";
-import { inject, injectable } from "inversify";
-import { ITokenPayload } from "../../interfaces/ITokenPayload";
-import { ITokens } from "../../interfaces/ITokens";
+import {BaseService} from "../base.service";
+import {Logger} from "../../utils/logger";
+import {inject, injectable} from "inversify";
+import {ITokenPayload} from "../../interfaces/ITokenPayload";
+import {ITokens} from "../../interfaces/ITokens";
 
 @injectable()
 export class JwtService extends BaseService {
-    constructor(@inject(Logger) loggerService: Logger) {
+    public constructor(@inject(Logger) loggerService: Logger) {
         super(loggerService);
     }
 

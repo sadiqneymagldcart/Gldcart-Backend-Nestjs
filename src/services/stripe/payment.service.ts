@@ -1,6 +1,6 @@
 import {Logger} from "../../utils/logger";
 import Stripe from "stripe";
-import {IProduct} from "../../models/shop/Product";
+import {Product} from "../../models/shop/Product";
 import {BaseService} from "../base.service";
 import {ICheckoutRequestBody} from "../../interfaces/ICheckoutRequestBody";
 import {inject, injectable} from "inversify";
@@ -9,7 +9,7 @@ import {inject, injectable} from "inversify";
 export class PaymentService extends BaseService {
     private readonly stripe: Stripe;
 
-    constructor(@inject(Logger) logger: Logger, @inject(Stripe) stripe: Stripe) {
+    public constructor(@inject(Logger) logger: Logger, @inject(Stripe) stripe: Stripe) {
         super(logger);
         this.stripe = stripe;
     }
@@ -49,7 +49,7 @@ export class PaymentService extends BaseService {
         return this.stripe.customers.create({metadata});
     }
 
-    private createLineItems(cartItems: IProduct[]): Array<Object> {
+    private createLineItems(cartItems: Product[]): Array<Object> {
         return cartItems.map((item) => ({
             price_data: {
                 currency: "usd",

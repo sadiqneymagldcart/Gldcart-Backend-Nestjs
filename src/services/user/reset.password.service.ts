@@ -4,19 +4,22 @@ import {MailService} from "../contact/mail.service";
 import {ApiError} from "../../exceptions/api.error";
 import bcrypt from "bcrypt";
 import {inject, injectable} from "inversify";
-import User, {IUser} from "../../models/user/User";
+import UserModel, {User} from "../../models/user/User";
 
 @injectable()
 export class ResetPasswordService extends BaseService {
     private mailService: MailService;
 
-    constructor(@inject(Logger) logger: Logger, @inject(MailService) mailService: MailService) {
+    public constructor(
+        @inject(Logger) logger: Logger,
+        @inject(MailService) mailService: MailService,
+    ) {
         super(logger);
         this.mailService = mailService;
     }
 
     async changePasswordWithToken(token: string, newPassword: string) {
-        const user = <IUser>await User.findOne({passwordResetToken: token});
+        const user = <User>await UserModel.findOne({passwordResetToken: token});
         if (!user) {
             throw ApiError.BadRequest("Invalid or expired token");
         }
@@ -25,8 +28,12 @@ export class ResetPasswordService extends BaseService {
         await user.save();
     }
 
-    async changePasswordWithEmail(email: string, oldPassword: string, newPassword: string) {
-        const user = <IUser>await User.findOne({email});
+    async changePasswordWithEmail(
+        email: string,
+        oldPassword: string,
+        newPassword: string,
+    ) {
+        const user = <User>await UserModel.findOne({email});
         if (user) {
             const auth: boolean = await bcrypt.compare(oldPassword, user.password);
             if (auth) {
@@ -42,8 +49,8 @@ export class ResetPasswordService extends BaseService {
     }
 
     async requestPasswordReset(email: string, token: string) {
-        const user = <IUser>(
-            await User.findOneAndUpdate({email}, {passwordResetToken: token})
+        const user = <User>(
+            await UserModel.findOneAndUpdate({email}, {passwordResetToken: token})
         );
         if (!user) {
             await this.logger.logError(`User not found with email: ${email}`);
@@ -51,7 +58,7 @@ export class ResetPasswordService extends BaseService {
         }
         await this.mailService.sendResetPasswordMail(
             email,
-            `${process.env.CLIENT_URL}/reset-password/${token}`
+            `${process.env.CLIENT_URL}/reset-password/${token}`,
         );
     }
 
