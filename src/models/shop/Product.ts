@@ -1,7 +1,6 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
 export interface Product extends Document {
-    title: string;
     product_name: string;
     description?: string;
     images: string[];
@@ -11,7 +10,6 @@ export interface Product extends Document {
 }
 
 export const ProductSchema = new Schema<Product>({
-    title: { type: String, required: true, trim: true },
     product_name: { type: String, required: true, trim: true },
     category: { type: String, required: true, trim: true },
     subcategory: { type: String, required: true, trim: true },
@@ -25,7 +23,6 @@ ProductSchema.index({
     category: "text",
     subcategory: "text",
     manufacturer: "text",
-    attributes: "text",
 });
 
 export const ProductModel = mongoose.model(
