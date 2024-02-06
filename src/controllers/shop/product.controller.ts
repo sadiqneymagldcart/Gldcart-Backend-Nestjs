@@ -34,6 +34,8 @@ export class ProductController {
         try {
             const files = request.files as Express.Multer.File[];
             const images = await this.imageService.uploadImages(files);
+            console.log(images);
+            
             const productData: Product = {
                 ...request.body,
                 images: images,
@@ -41,6 +43,7 @@ export class ProductController {
             const product = await this.productService.addProduct(productData);
             response.status(201).json(product);
         } catch (error) {
+            console.log(error);
             next(error);
         }
     }
