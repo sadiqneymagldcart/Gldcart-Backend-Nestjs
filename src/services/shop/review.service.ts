@@ -1,8 +1,8 @@
-import {inject, injectable} from "inversify";
-import {BaseService} from "../base.service";
-import {Review, ReviewModel} from "../../models/shop/Review";
+import { inject, injectable } from "inversify";
+import { BaseService } from "../base.service";
+import { Review, ReviewModel } from "../../models/shop/Review";
 import mongoose from "mongoose";
-import {Logger} from "../../utils/logger";
+import { Logger } from "../../utils/logger";
 
 @injectable()
 export class ReviewService extends BaseService {
@@ -12,7 +12,9 @@ export class ReviewService extends BaseService {
 
     public async getReviewsByProduct(productId: string): Promise<Review[]> {
         this.logger.logInfo(`Getting reviews for product with ID: ${productId}`);
-        return ReviewModel.find({product_id: new mongoose.Types.ObjectId(productId)});
+        return ReviewModel.find({
+            product_id: new mongoose.Types.ObjectId(productId),
+        });
     }
 
     public async getReviewById(reviewId: string): Promise<Review | null> {
@@ -30,12 +32,12 @@ export class ReviewService extends BaseService {
         updatedData: Partial<Review>,
     ): Promise<Review | null> {
         this.logger.logInfo(`Updating review with ID: ${reviewId}`);
-        return ReviewModel.findByIdAndUpdate(reviewId, updatedData, {new: true});
+        return ReviewModel.findByIdAndUpdate(reviewId, updatedData, { new: true });
     }
 
     public async deleteReview(reviewId: string): Promise<boolean> {
         this.logger.logInfo(`Deleting review with ID: ${reviewId}`);
-        const result = await ReviewModel.deleteOne({_id: reviewId});
+        const result = await ReviewModel.deleteOne({ _id: reviewId });
         return result.deletedCount !== 0;
     }
 }
