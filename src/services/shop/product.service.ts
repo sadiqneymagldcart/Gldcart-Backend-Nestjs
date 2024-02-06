@@ -1,12 +1,11 @@
-import {Product, ProductModel} from "../../models/shop/Product";
+import { Product, ProductModel } from "../../models/shop/Product";
 import mongoose from "mongoose";
-import {inject, injectable} from "inversify";
-import {BaseService} from "../base.service";
-import {Logger} from "../../utils/logger";
+import { inject, injectable } from "inversify";
+import { BaseService } from "../base.service";
+import { Logger } from "../../utils/logger";
 
 @injectable()
 export class ProductService extends BaseService {
-
     public constructor(@inject(Logger) logger: Logger) {
         super(logger);
     }
@@ -24,7 +23,7 @@ export class ProductService extends BaseService {
 
     public async getAllProductsWithStock(): Promise<Product[]> {
         this.logger.logInfo("Getting all products with stock");
-        return ProductModel.find({quantity: {$gt: 0}});
+        return ProductModel.find({ quantity: { $gt: 0 } });
     }
 
     public async getProductByCategory(category: string): Promise<Product[]> {
@@ -51,7 +50,7 @@ export class ProductService extends BaseService {
 
     public async deleteProduct(productId: string): Promise<boolean> {
         this.logger.logInfo(`Deleting product with ID: ${productId}`);
-        const result = await ProductModel.deleteOne({_id: productId});
+        const result = await ProductModel.deleteOne({ _id: productId });
         return result.deletedCount !== 0;
     }
 
@@ -64,7 +63,7 @@ export class ProductService extends BaseService {
 
     public async searchProductsGlobal(query: string): Promise<Product[]> {
         this.logger.logInfo(`Searching products by query: ${query}`);
-        return ProductModel.find({$text: {$search: query}});
+        return ProductModel.find({ $text: { $search: query } });
     }
 
     public async searchProductsByManufacturer(
@@ -72,13 +71,13 @@ export class ProductService extends BaseService {
     ): Promise<Product[]> {
         this.logger.logInfo(`Searching products by manufacturer: ${manufacturer}`);
         return ProductModel.find({
-            manufacturer: {$regex: manufacturer, $options: "i"},
+            manufacturer: { $regex: manufacturer, $options: "i" },
         });
     }
 
     public async searchProductsByPrice(price: string): Promise<Product[]> {
         this.logger.logInfo(`Searching products by price: ${price}`);
-        return ProductModel.find({price: {$lte: price}});
+        return ProductModel.find({ price: { $lte: price } });
     }
 
     public async searchProductsByPriceRange(
@@ -88,7 +87,7 @@ export class ProductService extends BaseService {
         this.logger.logInfo(
             `Searching products by price range: ${minPrice} - ${maxPrice}`,
         );
-        return ProductModel.find({price: {$gte: minPrice, $lte: maxPrice}});
+        return ProductModel.find({ price: { $gte: minPrice, $lte: maxPrice } });
     }
 
     public async searchProductsByPriceAndCategory(
@@ -99,7 +98,7 @@ export class ProductService extends BaseService {
             `Searching products by price: ${price} and category: ${category}`,
         );
         return ProductModel.find({
-            price: {$lte: price},
+            price: { $lte: price },
             category_id: new mongoose.Types.ObjectId(category),
         });
     }
@@ -112,8 +111,8 @@ export class ProductService extends BaseService {
             `Searching products by price: ${price} and manufacturer: ${manufacturer}`,
         );
         return ProductModel.find({
-            price: {$lte: price},
-            manufacturer: {$regex: manufacturer, $options: "i"},
+            price: { $lte: price },
+            manufacturer: { $regex: manufacturer, $options: "i" },
         });
     }
 
@@ -126,9 +125,9 @@ export class ProductService extends BaseService {
             `Searching products by price: ${price}, category: ${category} and manufacturer: ${manufacturer}`,
         );
         return ProductModel.find({
-            price: {$lte: price},
+            price: { $lte: price },
             category_id: new mongoose.Types.ObjectId(category),
-            manufacturer: {$regex: manufacturer, $options: "i"},
+            manufacturer: { $regex: manufacturer, $options: "i" },
         });
     }
 
@@ -141,7 +140,7 @@ export class ProductService extends BaseService {
         );
         return ProductModel.find({
             category_id: new mongoose.Types.ObjectId(category),
-            manufacturer: {$regex: manufacturer, $options: "i"},
+            manufacturer: { $regex: manufacturer, $options: "i" },
         });
     }
 
@@ -155,7 +154,7 @@ export class ProductService extends BaseService {
         );
         return ProductModel.find({
             category_id: new mongoose.Types.ObjectId(category),
-            price: {$gte: minPrice, $lte: maxPrice},
+            price: { $gte: minPrice, $lte: maxPrice },
         });
     }
 
@@ -168,8 +167,8 @@ export class ProductService extends BaseService {
             `Searching products by manufacturer: ${manufacturer} and price range: ${minPrice} - ${maxPrice}`,
         );
         return ProductModel.find({
-            manufacturer: {$regex: manufacturer, $options: "i"},
-            price: {$gte: minPrice, $lte: maxPrice},
+            manufacturer: { $regex: manufacturer, $options: "i" },
+            price: { $gte: minPrice, $lte: maxPrice },
         });
     }
 
@@ -184,8 +183,8 @@ export class ProductService extends BaseService {
         );
         return ProductModel.find({
             category_id: new mongoose.Types.ObjectId(category),
-            manufacturer: {$regex: manufacturer, $options: "i"},
-            price: {$gte: minPrice, $lte: maxPrice},
+            manufacturer: { $regex: manufacturer, $options: "i" },
+            price: { $gte: minPrice, $lte: maxPrice },
         });
     }
 }

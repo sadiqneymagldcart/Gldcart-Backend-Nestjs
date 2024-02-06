@@ -1,23 +1,31 @@
 import * as express from "express";
-import {controller, httpDelete, httpGet, httpPost,} from "inversify-express-utils";
-import {ProductService} from "../../services/shop/product.service";
-import {inject} from "inversify";
-import {requireAuth} from "../../middlewares/auth.middleware";
-import {multerMiddleware} from "../../middlewares/malter.middleware";
-import {ImageService} from "../../services/shop/image.service";
-import {Product} from "../../models/shop/Product";
+import {
+    controller,
+    httpDelete,
+    httpGet,
+    httpPost,
+} from "inversify-express-utils";
+import { ProductService } from "../../services/shop/product.service";
+import { inject } from "inversify";
+import { requireAuth } from "../../middlewares/auth.middleware";
+import { multerMiddleware } from "../../middlewares/malter.middleware";
+import { ImageService } from "../../services/shop/image.service";
+import { Product } from "../../models/shop/Product";
 
 @controller("/products")
 export class ProductController {
     private readonly productService: ProductService;
     private readonly imageService: ImageService;
 
-    public constructor(@inject(ProductService) productService: ProductService, @inject(ImageService) imageService: ImageService) {
+    public constructor(
+        @inject(ProductService) productService: ProductService,
+        @inject(ImageService) imageService: ImageService,
+    ) {
         this.productService = productService;
         this.imageService = imageService;
     }
 
-    @httpPost("/", multerMiddleware.array("images"), requireAuth)
+    @httpPost("/", multerMiddleware.array("images"))
     public async addProductHandler(
         request: express.Request,
         response: express.Response,
@@ -29,7 +37,7 @@ export class ProductController {
             const productData: Product = {
                 ...request.body,
                 images: images,
-            }
+            };
             const product = await this.productService.addProduct(productData);
             response.status(201).json(product);
         } catch (error) {
@@ -104,7 +112,10 @@ export class ProductController {
         try {
             const productId = request.params.productId;
             const updatedData = request.body;
-            const product = await this.productService.updateProduct(productId, updatedData);
+            const product = await this.productService.updateProduct(
+                productId,
+                updatedData,
+            );
             response.status(200).json(product);
         } catch (error) {
             next(error);
@@ -134,7 +145,8 @@ export class ProductController {
     ) {
         try {
             const category = request.params.category;
-            const products = await this.productService.searchProductsByCategory(category);
+            const products =
+                await this.productService.searchProductsByCategory(category);
             response.status(200).json(products);
         } catch (error) {
             next(error);
@@ -164,7 +176,8 @@ export class ProductController {
     ) {
         try {
             const manufacturer = request.params.manufacturer;
-            const products = await this.productService.searchProductsByManufacturer(manufacturer);
+            const products =
+                await this.productService.searchProductsByManufacturer(manufacturer);
             response.status(200).json(products);
         } catch (error) {
             next(error);
@@ -195,15 +208,16 @@ export class ProductController {
         try {
             const minPrice = request.params.minPrice;
             const maxPrice = request.params.maxPrice;
-            const products = await this.productService.searchProductsByPriceRange(minPrice, maxPrice);
+            const products = await this.productService.searchProductsByPriceRange(
+                minPrice,
+                maxPrice,
+            );
             response.status(200).json(products);
         } catch (error) {
             next(error);
         }
     }
 
-
     @httpPost("")
-    public async() {
-    }
+    public async() { }
 }
