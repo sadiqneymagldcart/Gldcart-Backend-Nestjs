@@ -41,6 +41,7 @@ export class ProductController {
                 images: images,
             };
             const product = await this.productService.addProduct(productData);
+            console.log(product);
             response.status(201).json(product);
         } catch (error) {
             console.log(error);
