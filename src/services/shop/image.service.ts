@@ -13,8 +13,8 @@ export class ImageService extends BaseService {
         return await Promise.all(
             files.map(async (file) => {
                 const result = await uploadToCloudinary(file);
-                console.log(result.secure_url);
-                return result.secure_url;
+                console.log(result.url);
+                return result.url;
             }),
         );
     }
