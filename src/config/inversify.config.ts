@@ -1,19 +1,18 @@
 import * as dotenv from "dotenv";
-import {Container} from "inversify";
-import {Logger} from "../utils/logger";
-import {TokenService} from "../services/token/token.service";
-import {AuthService} from "../services/auth/auth.service";
-import {GoogleAuthService} from "../services/auth/google.auth.service";
-import {MailService} from "../services/contact/mail.service";
-import {PaymentService} from "../services/stripe/payment.service";
+import { Container } from "inversify";
+import { Logger } from "../utils/logger";
+import { TokenService } from "../services/token/token.service";
+import { AuthService } from "../services/auth/auth.service";
+import { GoogleAuthService } from "../services/auth/google.auth.service";
+import { MailService } from "../services/contact/mail.service";
+import { PaymentService } from "../services/stripe/payment.service";
 import Stripe from "stripe";
-import {Transporter} from "nodemailer";
-import {UserDetailsService} from "../services/user/user.details.service";
-import {ReviewService} from "../services/shop/review.service";
-import {configureNodemailer} from "./nodemailer.config";
-import {ProductService} from "../services/shop/product.service";
-import {ImageService} from "../services/shop/image.service";
-
+import { Transporter } from "nodemailer";
+import { UserDetailsService } from "../services/user/user.details.service";
+import { ReviewService } from "../services/shop/review.service";
+import { configureNodemailer } from "./nodemailer.config";
+import { ProductService } from "../services/shop/product.service";
+import { ImageService } from "../services/shop/image.service";
 
 //Controllers
 import "../controllers/auth/auth.controller";
@@ -29,7 +28,7 @@ let path: string = ".env";
 if (process.env.NODE_ENV === "production") {
     path = ".env.production";
 }
-dotenv.config({path: path});
+dotenv.config({ path: path });
 
 const container = new Container();
 
@@ -53,4 +52,4 @@ container.bind(ReviewService).toSelf();
 container.bind(ImageService).toSelf();
 container.bind(ProductService).toSelf();
 
-export {container};
+export { container };
