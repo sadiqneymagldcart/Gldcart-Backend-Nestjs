@@ -1,12 +1,16 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
+interface ProductAttributes {
+    [key: string]: string;
+}
+
 export interface Product extends Document {
     product_name: string;
     description?: string;
     images: string[];
     category: string;
     subcategory: string;
-    attributes: Record<string, any>;
+    attributes: ProductAttributes;
 }
 
 export const ProductSchema = new Schema<Product>({
