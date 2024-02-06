@@ -25,7 +25,7 @@ export class ProductController {
         this.imageService = imageService;
     }
 
-    @httpPost("/", multerMiddleware.any())
+    @httpPost("/", multerMiddleware.array("images"))
     public async addProductHandler(
         request: express.Request,
         response: express.Response,
