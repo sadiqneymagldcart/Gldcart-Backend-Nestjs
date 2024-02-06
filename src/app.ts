@@ -1,9 +1,9 @@
-import {InversifyExpressServer} from "inversify-express-utils";
-import {Logger} from "./utils/logger";
+import { InversifyExpressServer } from "inversify-express-utils";
+import { Logger } from "./utils/logger";
 import mongoose from "mongoose";
-import {mongooseOptions} from "./config/mongo.config";
-import {serverConfig} from "./config/server.config";
-import {errorHandlerMiddleware} from "./middlewares/error.middleware";
+import { mongooseOptions } from "./config/mongo.config";
+import { serverConfig } from "./config/server.config";
+import { errorHandlerMiddleware } from "./middlewares/error.middleware";
 
 import * as dotenv from "dotenv";
 

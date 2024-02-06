@@ -1,7 +1,7 @@
-import {inject, injectable} from "inversify";
-import {BaseService} from "../base.service";
-import {uploadToCloudinary} from "../../utils/cloudinary.util";
-import {Logger} from "../../utils/logger";
+import { inject, injectable } from "inversify";
+import { BaseService } from "../base.service";
+import { uploadToCloudinary } from "../../utils/cloudinary.util";
+import { Logger } from "../../utils/logger";
 
 @injectable()
 export class ImageService extends BaseService {
@@ -10,10 +10,12 @@ export class ImageService extends BaseService {
     }
 
     public async uploadImages(files: Express.Multer.File[]): Promise<string[]> {
-        return await Promise.all(files.map(async (file) => {
-            const result = await uploadToCloudinary(file);
-            return result.secure_url;
-        }));
+        return await Promise.all(
+            files.map(async (file) => {
+                const result = await uploadToCloudinary(file);
+                console.log(result.secure_url);
+                return result.secure_url;
+            }),
+        );
     }
-
 }
