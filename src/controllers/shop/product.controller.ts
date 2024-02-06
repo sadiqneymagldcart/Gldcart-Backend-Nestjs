@@ -25,7 +25,7 @@ export class ProductController {
         this.imageService = imageService;
     }
 
-    @httpPost("/", multerMiddleware.array("images"))
+    @httpPost("/", multerMiddleware.any())
     public async addProductHandler(
         request: express.Request,
         response: express.Response,
@@ -35,7 +35,7 @@ export class ProductController {
             const files = request.files as Express.Multer.File[];
             const images = await this.imageService.uploadImages(files);
             console.log(images);
-            
+
             const productData: Product = {
                 ...request.body,
                 images: images,
