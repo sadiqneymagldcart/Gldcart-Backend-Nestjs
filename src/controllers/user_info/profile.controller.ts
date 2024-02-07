@@ -32,10 +32,10 @@ export class ProfileController {
             const files = request.files as Express.Multer.File[];
             const images = await this.imageService.uploadImages(files);
 
-            const { user_id } = request.body;
+            const { userId } = request.body;
 
             console.log(images);
-            await this.profileService.updateProfilePicture(user_id, images[0]);
+            await this.profileService.updateProfilePicture(userId, images[0]);
             response
                 .status(200)
                 .json({ message: `User's profile picture was updated succesfully` });

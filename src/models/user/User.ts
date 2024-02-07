@@ -14,6 +14,7 @@ export interface User extends Document {
     activeSubscription: string | null;
     BIO?: string;
     phone_number?: string;
+    status?: string;
     address?: string;
 }
 
@@ -57,6 +58,9 @@ const userSchema = new Schema<User>({
         type: String,
     },
     phone_number: {
+        type: String,
+    },
+    status: {
         type: String,
     },
     address: {
