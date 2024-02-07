@@ -34,17 +34,34 @@ export class ProductController {
         try {
             const files = request.files as Express.Multer.File[];
             const images = await this.imageService.uploadImages(files);
-            console.log(images);
 
             const productData: Product = {
                 ...request.body,
                 images: images,
             };
             const product = await this.productService.addProduct(productData);
-            console.log(product);
             response.status(201).json(product);
         } catch (error) {
             console.log(error);
+            next(error);
+        }
+    }
+
+    @httpGet("/pagination")
+    public async getProductsWithPaginationHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const page = parseInt(request.query.page as string);
+            const limit = parseInt(request.query.limit as string);
+            const products = await this.productService.getProductsWithPagination(
+                page,
+                limit,
+            );
+            response.status(200).json(products);
+        } catch (error) {
             next(error);
         }
     }
@@ -221,8 +238,6 @@ export class ProductController {
             next(error);
         }
     }
-
-
 
     @httpPost("")
     public async() { }
