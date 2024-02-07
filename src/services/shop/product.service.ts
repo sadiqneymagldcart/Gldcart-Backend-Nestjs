@@ -26,11 +26,21 @@ export class ProductService extends BaseService {
         return ProductModel.find({ quantity: { $gt: 0 } });
     }
 
+    public async getProductsWithPagination(
+        page: number,
+        limit: number,
+    ): Promise<Product[]> {
+        this.logger.logInfo(
+            `Getting products with pagination. Page: ${page}, Limit: ${limit}`,
+        );
+        return ProductModel.find()
+            .skip((page - 1) * limit)
+            .limit(limit);
+    }
+
     public async getProductByCategory(category: string): Promise<Product[]> {
         this.logger.logInfo(`Getting products by category: ${category}`);
-        return ProductModel.find({
-            category_id: new mongoose.Types.ObjectId(category),
-        });
+        return ProductModel.find({ category: category });
     }
 
     public async getProductById(productId: string): Promise<Product | null> {
@@ -56,9 +66,7 @@ export class ProductService extends BaseService {
 
     public async searchProductsByCategory(category: string): Promise<Product[]> {
         this.logger.logInfo(`Searching products by category: ${category}`);
-        return ProductModel.find({
-            category_id: new mongoose.Types.ObjectId(category),
-        });
+        return ProductModel.find({category: category});
     }
 
     public async searchProductsGlobal(query: string): Promise<Product[]> {
