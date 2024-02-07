@@ -8,7 +8,6 @@ import { MailService } from "../services/contact/mail.service";
 import { PaymentService } from "../services/stripe/payment.service";
 import Stripe from "stripe";
 import { Transporter } from "nodemailer";
-import { UserDetailsService } from "../services/user/user.details.service";
 import { ReviewService } from "../services/shop/review.service";
 import { configureNodemailer } from "./nodemailer.config";
 import { ProductService } from "../services/shop/product.service";
@@ -23,6 +22,9 @@ import "../controllers/user/address.controller";
 import "../controllers/stripe/payment.controller";
 import "../controllers/shop/review.controller";
 import "../controllers/shop/product.controller";
+import "../controllers/shop/professional.services.controller";
+import { ProfessionalServicesService } from "../services/shop/professional-services.service";
+import { UserDetailsService } from "../services/user_info/user.details.service";
 
 let path: string = ".env";
 if (process.env.NODE_ENV === "production") {
@@ -51,5 +53,6 @@ container.bind(UserDetailsService).toSelf();
 container.bind(ReviewService).toSelf();
 container.bind(ImageService).toSelf();
 container.bind(ProductService).toSelf();
+container.bind(ProfessionalServicesService).toSelf();
 
 export { container };
