@@ -1,9 +1,15 @@
-import {NextFunction, Request, Response} from "express";
-import {controller, httpDelete, httpGet, httpPost, httpPut,} from "inversify-express-utils";
-import {Types} from "mongoose";
-import {inject} from "inversify";
-import {UserDetailsService} from "../../services/user/user.details.service";
-import {requireAuth} from "../../middlewares/auth.middleware";
+import { NextFunction, Request, Response } from "express";
+import {
+    controller,
+    httpDelete,
+    httpGet,
+    httpPost,
+    httpPut,
+} from "inversify-express-utils";
+import { Types } from "mongoose";
+import { inject } from "inversify";
+import { UserDetailsService } from "../../services/user_info/user.details.service";
+import { requireAuth } from "../../middlewares/auth.middleware";
 
 @controller("/address")
 export class AddressController {
@@ -21,14 +27,14 @@ export class AddressController {
         res: Response,
         next: NextFunction,
     ) {
-        const {userId, addressData} = req.body;
+        const { userId, addressData } = req.body;
 
         if (!Types.ObjectId.isValid(userId)) {
             return next(new Error("Invalid userId"));
         }
         try {
             await this.userDetailsService.addAddress(userId, addressData);
-            res.status(200).json({message: "Address was added successfully."});
+            res.status(200).json({ message: "Address was added successfully." });
         } catch (error) {
             next(error);
         }
@@ -40,7 +46,7 @@ export class AddressController {
         res: Response,
         next: NextFunction,
     ) {
-        const {userId, addressData, addressId} = req.body;
+        const { userId, addressData, addressId } = req.body;
 
         if (!Types.ObjectId.isValid(userId) || !Types.ObjectId.isValid(addressId)) {
             return next(new Error("Invalid userId or addressId"));
@@ -52,7 +58,7 @@ export class AddressController {
                 addressId,
                 addressData,
             );
-            res.status(200).json({message: "Address was updated successfully"});
+            res.status(200).json({ message: "Address was updated successfully" });
         } catch (error) {
             next(error);
         }
@@ -64,7 +70,7 @@ export class AddressController {
         res: Response,
         next: NextFunction,
     ) {
-        const {userId, addressId} = req.body;
+        const { userId, addressId } = req.body;
 
         if (!Types.ObjectId.isValid(userId) || !Types.ObjectId.isValid(addressId)) {
             return next(new Error("Invalid userId or addressId"));
@@ -72,7 +78,7 @@ export class AddressController {
 
         try {
             await this.userDetailsService.deleteAddress(userId, addressId);
-            res.status(200).json({message: "Address was deleted successfully"});
+            res.status(200).json({ message: "Address was deleted successfully" });
         } catch (error) {
             next(error);
         }

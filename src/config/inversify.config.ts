@@ -12,19 +12,17 @@ import { ReviewService } from "../services/shop/review.service";
 import { configureNodemailer } from "./nodemailer.config";
 import { ProductService } from "../services/shop/product.service";
 import { ImageService } from "../services/shop/image.service";
+import { ProfessionalServicesService } from "../services/shop/professional-services.service";
+import { UserDetailsService } from "../services/user_info/user.details.service";
 
 //Controllers
 import "../controllers/auth/auth.controller";
 import "../controllers/auth/google.auth.controller";
 import "../controllers/contact/contact.controller";
-import "../controllers/user/user.controller";
-import "../controllers/user/address.controller";
 import "../controllers/stripe/payment.controller";
 import "../controllers/shop/review.controller";
 import "../controllers/shop/product.controller";
 import "../controllers/shop/professional.services.controller";
-import { ProfessionalServicesService } from "../services/shop/professional-services.service";
-import { UserDetailsService } from "../services/user_info/user.details.service";
 
 let path: string = ".env";
 if (process.env.NODE_ENV === "production") {
