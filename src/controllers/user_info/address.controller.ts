@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import * as express from "express";
 import {
     controller,
     httpDelete,
@@ -23,9 +23,9 @@ export class AddressController {
 
     @httpPost("/add", requireAuth)
     public async addAddressHandler(
-        req: Request,
-        res: Response,
-        next: NextFunction,
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
     ) {
         const { userId, addressData } = req.body;
 
@@ -42,9 +42,9 @@ export class AddressController {
 
     @httpPut("/update", requireAuth)
     public async updateAddressHandler(
-        req: Request,
-        res: Response,
-        next: NextFunction,
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
     ) {
         const { userId, addressData, addressId } = req.body;
 
@@ -66,9 +66,9 @@ export class AddressController {
 
     @httpDelete("/delete", requireAuth)
     public async deleteAddressHandler(
-        req: Request,
-        res: Response,
-        next: NextFunction,
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
     ) {
         const { userId, addressId } = req.body;
 
@@ -86,9 +86,9 @@ export class AddressController {
 
     @httpGet("/:id", requireAuth)
     public async getAddressesHandler(
-        req: Request,
-        res: Response,
-        next: NextFunction,
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
     ) {
         const id = req.params.id;
 
