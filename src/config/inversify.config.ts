@@ -23,6 +23,7 @@ import "../controllers/stripe/payment.controller";
 import "../controllers/shop/review.controller";
 import "../controllers/shop/product.controller";
 import "../controllers/shop/professional.services.controller";
+import "../controllers/user_info/user.details.controller";
 
 let path: string = ".env";
 if (process.env.NODE_ENV === "production") {
