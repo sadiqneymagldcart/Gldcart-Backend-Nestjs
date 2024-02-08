@@ -7,7 +7,7 @@ import {inject, injectable} from "inversify";
 import UserModel, {User} from "../../models/user/User";
 
 @injectable()
-export class ResetPasswordService extends BaseService {
+export class PasswordService extends BaseService {
     private mailService: MailService;
 
     public constructor(
@@ -41,10 +41,10 @@ export class ResetPasswordService extends BaseService {
                 await user.save();
                 return;
             }
-            await this.logger.logError(`Incorrect old password for email: ${email}`);
+            this.logger.logError(`Incorrect old password for email: ${email}`);
             throw ApiError.BadRequest("Incorrect old password");
         }
-        await this.logger.logError(`User not found with email: ${email}`);
+        this.logger.logError(`User not found with email: ${email}`);
         throw ApiError.BadRequest("Incorrect contact");
     }
 
@@ -53,7 +53,7 @@ export class ResetPasswordService extends BaseService {
             await UserModel.findOneAndUpdate({email}, {passwordResetToken: token})
         );
         if (!user) {
-            await this.logger.logError(`User not found with email: ${email}`);
+             this.logger.logError(`User not found with email: ${email}`);
             throw ApiError.BadRequest("Incorrect contact");
         }
         await this.mailService.sendResetPasswordMail(

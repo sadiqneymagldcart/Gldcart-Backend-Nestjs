@@ -1,15 +1,15 @@
 import * as express from "express";
-import {v4 as uuidv4} from "uuid";
-import {controller, httpPost} from "inversify-express-utils";
-import {inject} from "inversify";
-import {ResetPasswordService} from "../../services/user/reset.password.service";
+import { v4 as uuidv4 } from "uuid";
+import { controller, httpPost } from "inversify-express-utils";
+import { inject } from "inversify";
+import { PasswordService } from "../../services/user_info/reset.password.service";
 
-@controller("/reset-password")
-export class ResetPasswordController {
-    private readonly passwordResetService: ResetPasswordService;
+@controller("/password")
+export class PasswordController {
+    private readonly passwordResetService: PasswordService;
 
     public constructor(
-        @inject(ResetPasswordService) passwordResetService: ResetPasswordService,
+        @inject(PasswordService) passwordResetService: PasswordService,
     ) {
         this.passwordResetService = passwordResetService;
     }
@@ -26,13 +26,14 @@ export class ResetPasswordController {
             await this.passwordResetService.requestPasswordReset(email, token);
             response
                 .status(200)
-                .json({message: "Password reset link was sent to your contact."});
+                .json({ message: "Password reset link was sent to your contact." });
         } catch (error) {
             next(error);
         }
     }
 
-    async resetPasswordWithToken(
+    @httpPost("/reset/:token")
+    public async resetPasswordWithToken(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -52,7 +53,8 @@ export class ResetPasswordController {
         }
     }
 
-    async resetPasswordWithEmail(
+    @httpPost("/reset")
+    public async resetPasswordWithEmail(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
