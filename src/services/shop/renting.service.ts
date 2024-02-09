@@ -19,4 +19,19 @@ export class RentingService extends BaseService {
         this.logger.logInfo(`Fetching renting with id: ${id}`);
         return await RentingModel.findById(id);
     }
+
+    public async deleteRenting(id: string) {
+        this.logger.logInfo(`Deleting renting with id: ${id}`);
+        return await RentingModel.findByIdAndDelete(id);
+    }
+    public async updateRenting(id: string, rentingData: any) {
+        this.logger.logInfo(`Updating renting with id: ${id}`);
+        return await RentingModel.findByIdAndUpdate(id, rentingData, {
+            new: true,
+        });
+    }
+    public async getRentingsByCategory(category: string) {
+        this.logger.logInfo(`Fetching rentings with category: ${category}`);
+        return await RentingModel.find({ category });
+    }
 }

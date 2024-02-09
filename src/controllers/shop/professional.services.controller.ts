@@ -74,4 +74,33 @@ export class ProfessionalServicesController {
         }
     }
 
+    @httpGet("/", requireAuth)
+    public async getAllServicesHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const services = await this.servicesService.getAllServices();
+            response.status(200).json(services);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    @httpGet("/category/:category", requireAuth)
+    public async getServicesByCategoryHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const category = request.params.category;
+            const services = await this.servicesService.getServicesByCategory(category);
+            response.status(200).json(services);
+        } catch (error) {
+            next(error);
+        }
+    }
+
 }
