@@ -20,7 +20,7 @@ export class PasswordController {
         response: express.Response,
         next: express.NextFunction,
     ) {
-        const { email } = request.body;
+        const email = request.body.email;
         try {
             const token: string = uuidv4();
             await this.passwordResetService.requestPasswordReset(email, token);
@@ -39,7 +39,7 @@ export class PasswordController {
         next: express.NextFunction,
     ) {
         const token = request.params.token;
-        const newPassword  = request.body;
+        const newPassword = request.body.newPassword;
         try {
             await this.passwordResetService.changePasswordWithToken(
                 token,
@@ -49,6 +49,7 @@ export class PasswordController {
                 .status(200)
                 .json({ message: "Password was reset successfully." });
         } catch (error) {
+            console.log(error);
             next(error);
         }
     }

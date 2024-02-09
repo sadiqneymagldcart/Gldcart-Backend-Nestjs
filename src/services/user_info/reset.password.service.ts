@@ -2,7 +2,7 @@ import {BaseService} from "../base.service";
 import {Logger} from "../../utils/logger";
 import {MailService} from "../contact/mail.service";
 import {ApiError} from "../../exceptions/api.error";
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
 import {inject, injectable} from "inversify";
 import UserModel, {User} from "../../models/user/User";
 
