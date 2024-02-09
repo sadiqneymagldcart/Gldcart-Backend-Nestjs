@@ -15,23 +15,19 @@ import { requireAuth } from "../../middlewares/auth.middleware";
 export class AddressController {
     private readonly addressService: AddressService;
 
-    public constructor(
-        @inject(AddressService) addressService: AddressService,
-    ) {
+    public constructor(@inject(AddressService) addressService: AddressService) {
         this.addressService = addressService;
     }
 
-    @httpPost("/")
+    @httpPost("/:userId")
     public async addAddressHandler(
         req: express.Request,
         res: express.Response,
         next: express.NextFunction,
     ) {
-        const { userId, addressData } = req.body;
+        const userId = req.params.userId;
+        const addressData = req.body;
 
-        if (!Types.ObjectId.isValid(userId)) {
-            return next(new Error("Invalid userId"));
-        }
         try {
             await this.addressService.addAddress(userId, addressData);
             res.status(200).json({ message: "Address was added successfully." });
@@ -40,17 +36,15 @@ export class AddressController {
         }
     }
 
-    @httpPut("/")
+    @httpPut("/:userId/:addressId")
     public async updateAddressHandler(
         req: express.Request,
         res: express.Response,
         next: express.NextFunction,
     ) {
-        const { userId, addressData, addressId } = req.body;
-
-        if (!Types.ObjectId.isValid(userId) || !Types.ObjectId.isValid(addressId)) {
-            return next(new Error("Invalid userId or addressId"));
-        }
+        const userId = req.params.userId;
+        const addressId = req.params.addressId;
+        const addressData = req.body;
 
         try {
             await this.addressService.updateAddress(userId, addressId, addressData);
@@ -60,17 +54,14 @@ export class AddressController {
         }
     }
 
-    @httpDelete("/")
+    @httpDelete("/:userId/:addressId")
     public async deleteAddressHandler(
         req: express.Request,
         res: express.Response,
         next: express.NextFunction,
     ) {
-        const { userId, addressId } = req.body;
-
-        if (!Types.ObjectId.isValid(userId) || !Types.ObjectId.isValid(addressId)) {
-            return next(new Error("Invalid userId or addressId"));
-        }
+        const userId = req.params.userId;
+        const addressId = req.params.addressId;
 
         try {
             await this.addressService.deleteAddress(userId, addressId);
@@ -80,20 +71,16 @@ export class AddressController {
         }
     }
 
-    @httpGet("/:id")
+    @httpGet("/:userId")
     public async getAddressesHandler(
         req: express.Request,
         res: express.Response,
         next: express.NextFunction,
     ) {
-        const id = req.params.id;
-
-        if (!Types.ObjectId.isValid(id)) {
-            return next(new Error("Invalid userId"));
-        }
+        const userId = req.params.userId;
 
         try {
-            const addresses = await this.addressService.getAddresses(id);
+            const addresses = await this.addressService.getAddresses(userId);
             res.status(200).json(addresses);
         } catch (error) {
             next(error);
