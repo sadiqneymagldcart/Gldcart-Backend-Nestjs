@@ -1,6 +1,6 @@
 import * as express from "express";
 import { inject } from "inversify";
-import { controller, httpPost } from "inversify-express-utils";
+import { controller, httpGet, httpPost } from "inversify-express-utils";
 import { RentingService } from "../../services/shop/renting.service";
 import { multerMiddleware } from "../../middlewares/malter.middleware";
 import { requireAuth } from "../../middlewares/auth.middleware";
@@ -35,6 +35,35 @@ export class RentingController {
             };
             const renting = await this.rentingService.addRenting(rentingData);
             response.status(201).json(renting);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    @httpGet("/", requireAuth)
+    public async getRentingsHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const rentings = await this.rentingService.getRentings();
+            response.status(200).json(rentings);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    @httpGet("/category/:category", requireAuth)
+    public async getRentingsByCategoryHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const category = request.params.category;
+            const rentings = await this.rentingService.getRentingsByCategory(category);
+            response.status(200).json(rentings);
         } catch (error) {
             next(error);
         }
