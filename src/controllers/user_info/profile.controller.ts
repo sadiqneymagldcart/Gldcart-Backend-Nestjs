@@ -6,7 +6,7 @@ import { multerMiddleware } from "../../middlewares/malter.middleware";
 import { requireAuth } from "../../middlewares/auth.middleware";
 import { ImageService } from "../../services/shop/image.service";
 
-@controller("/profile")
+@controller("/personal")
 export class ProfileController {
     private readonly profileService: ProfileService;
     private readonly imageService: ImageService;
@@ -20,7 +20,6 @@ export class ProfileController {
 
     @httpPut(
         "/",
-        requireAuth,
         multerMiddleware.single("profilePicture"),
     )
     public async updateProfilePicture(
