@@ -58,7 +58,7 @@ export class PasswordService extends BaseService {
         }
         await this.mailService.sendResetPasswordMail(
             email,
-            `${process.env.CLIENT_URL}/reset-password/${token}`,
+            `${process.env.CLIENT_URL}/password/${token}`,
         );
     }
 
