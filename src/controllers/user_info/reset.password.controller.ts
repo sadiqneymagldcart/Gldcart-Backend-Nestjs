@@ -38,8 +38,8 @@ export class PasswordController {
         response: express.Response,
         next: express.NextFunction,
     ) {
-        const { token: token } = request.params;
-        const { newPassword } = request.body;
+        const token = request.params.token;
+        const newPassword  = request.body;
         try {
             await this.passwordResetService.changePasswordWithToken(
                 token,
