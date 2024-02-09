@@ -13,6 +13,11 @@ export class AddressService extends BaseService {
     }
 
     public async addAddress(userId: string, addressData: IAddress) {
+        if (!Types.ObjectId.isValid(userId)) {
+            this.logger.logError(`Invalid userId: ${userId}`);
+            throw ApiError.BadRequest("Invalid userId");
+        }
+
         const user = await UserModel.findById(userId);
 
         if (!user) {
@@ -25,15 +30,22 @@ export class AddressService extends BaseService {
 
         user.addresses.push(addressWithId);
         await user.save();
-        this.logger.logInfo(`Address added for user ${userId}`, user.addresses);
+        this.logger.logInfo(`Address added for user ${userId}`);
         return user;
     }
 
     public async updateAddress(
         userId: string,
-        addressId: Types.ObjectId,
+        addressId: string,
         addressData: IAddress,
     ) {
+        if (!Types.ObjectId.isValid(userId) || !Types.ObjectId.isValid(addressId)) {
+            this.logger.logError(
+                `Invalid userId: ${userId} or addressId: ${addressId}`,
+            );
+            throw ApiError.BadRequest("Invalid userId or addressId");
+        }
+
         const user: User | null = await UserModel.findById(userId);
 
         if (!user) {
@@ -54,18 +66,30 @@ export class AddressService extends BaseService {
         this.logger.logInfo(`Address was updated for user ${userId}`);
     }
 
-    public async getAddresses(id: string) {
-        const user: User | null = await UserModel.findById(id);
+    public async getAddresses(userId: string) {
+        if (!Types.ObjectId.isValid(userId)) {
+            this.logger.logError(`Invalid userId: ${userId}`);
+            throw ApiError.BadRequest("Invalid userId");
+        }
+
+        const user: User | null = await UserModel.findById(userId);
         if (!user) {
             this.logger.logError(
-                `User not found while fetching addresses for ID: ${id}`,
+                `User not found while fetching addresses for ID: ${userId}`,
             );
             throw ApiError.BadRequest("User not found");
         }
         return user.addresses;
     }
 
-    public async deleteAddress(userId: string, addressId: Types.ObjectId) {
+    public async deleteAddress(userId: string, addressId: string) {
+        if (!Types.ObjectId.isValid(userId) || !Types.ObjectId.isValid(addressId)) {
+            this.logger.logError(
+                `Invalid userId: ${userId} or addressId: ${addressId}`,
+            );
+            throw ApiError.BadRequest("Invalid userId or addressId");
+        }
+
         const user = await UserModel.findById(userId);
         if (!user) {
             this.logger.logError(
@@ -85,7 +109,7 @@ export class AddressService extends BaseService {
         user.addresses.splice(addressIndex, 1);
         await user.save();
 
-        this.logger.logInfo(`Address deleted for user ${userId}`);
+        this.logger.logInfo(`Address was deleted for user ${userId}`);
         return user;
     }
 
