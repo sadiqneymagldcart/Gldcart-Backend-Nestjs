@@ -158,7 +158,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/search/category/:category", requireAuth)
+    @httpGet("/search/category/:category")
     public async searchProductsByCategoryHandler(
         request: express.Request,
         response: express.Response,
@@ -174,7 +174,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/search/:query", requireAuth)
+    @httpGet("/search/:query")
     public async searchProductsGlobalHandler(
         request: express.Request,
         response: express.Response,
@@ -189,7 +189,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/search/manufacturer/:manufacturer", requireAuth)
+    @httpGet("/search/manufacturer/:manufacturer")
     public async searchProductsByManufacturerHandler(
         request: express.Request,
         response: express.Response,
@@ -205,7 +205,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/search/price/:price", requireAuth)
+    @httpGet("/search/price/:price")
     public async searchProductsByPriceHandler(
         request: express.Request,
         response: express.Response,
@@ -220,7 +220,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/search/price-range/:minPrice/:maxPrice", requireAuth)
+    @httpGet("/search/price-range/:minPrice/:maxPrice")
     public async searchProductsByPriceRangeHandler(
         request: express.Request,
         response: express.Response,

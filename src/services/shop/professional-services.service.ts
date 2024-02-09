@@ -29,7 +29,7 @@ export class ProfessionalServicesService extends BaseService {
         return ServicesModel.countDocuments();
     }
 
-    public async getServices(): Promise<ProfessionalService[]> {
+    public async getAllServices(): Promise<ProfessionalService[]> {
         this.logger.logInfo("Getting products");
         return ServicesModel.find();
     }
@@ -66,5 +66,12 @@ export class ProfessionalServicesService extends BaseService {
     ): Promise<ProfessionalService[]> {
         this.logger.logInfo("Getting products by user id");
         return ServicesModel.find({ userId });
+    }
+
+    public async getServicesByCategory(
+        category: string,
+    ): Promise<ProfessionalService[]> {
+        this.logger.logInfo(`Getting products by category ${category}`);
+        return ServicesModel.find({ category });
     }
 }
