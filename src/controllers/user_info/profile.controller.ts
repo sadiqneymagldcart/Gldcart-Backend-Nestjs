@@ -1,5 +1,5 @@
 import * as express from "express";
-import { controller, httpPost } from "inversify-express-utils";
+import { controller, httpPost, httpPut } from "inversify-express-utils";
 import { ProfileService } from "../../services/user_info/profile.service";
 import { inject } from "inversify";
 import { multerMiddleware } from "../../middlewares/malter.middleware";
@@ -18,8 +18,8 @@ export class ProfileController {
         this.imageService = imageService;
     }
 
-    @httpPost(
-        "/update-profile-picture",
+    @httpPut(
+        "/",
         requireAuth,
         multerMiddleware.single("profilePicture"),
     )
