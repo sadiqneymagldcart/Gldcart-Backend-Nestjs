@@ -8,20 +8,20 @@ import {
 } from "inversify-express-utils";
 import { Types } from "mongoose";
 import { inject } from "inversify";
-import { UserDetailsService } from "../../services/user_info/user.details.service";
+import { AddressService } from "../../services/user_info/address.service";
 import { requireAuth } from "../../middlewares/auth.middleware";
 
 @controller("/address")
 export class AddressController {
-    private readonly userDetailsService: UserDetailsService;
+    private readonly addressService: AddressService;
 
     public constructor(
-        @inject(UserDetailsService) userDetailsService: UserDetailsService,
+        @inject(AddressService) addressService: AddressService,
     ) {
-        this.userDetailsService = userDetailsService;
+        this.addressService = addressService;
     }
 
-    @httpPost("/add", requireAuth)
+    @httpPost("/")
     public async addAddressHandler(
         req: express.Request,
         res: express.Response,
@@ -33,14 +33,14 @@ export class AddressController {
             return next(new Error("Invalid userId"));
         }
         try {
-            await this.userDetailsService.addAddress(userId, addressData);
+            await this.addressService.addAddress(userId, addressData);
             res.status(200).json({ message: "Address was added successfully." });
         } catch (error) {
             next(error);
         }
     }
 
-    @httpPut("/update", requireAuth)
+    @httpPut("/")
     public async updateAddressHandler(
         req: express.Request,
         res: express.Response,
@@ -53,18 +53,14 @@ export class AddressController {
         }
 
         try {
-            await this.userDetailsService.updateAddress(
-                userId,
-                addressId,
-                addressData,
-            );
+            await this.addressService.updateAddress(userId, addressId, addressData);
             res.status(200).json({ message: "Address was updated successfully" });
         } catch (error) {
             next(error);
         }
     }
 
-    @httpDelete("/delete", requireAuth)
+    @httpDelete("/")
     public async deleteAddressHandler(
         req: express.Request,
         res: express.Response,
@@ -77,14 +73,14 @@ export class AddressController {
         }
 
         try {
-            await this.userDetailsService.deleteAddress(userId, addressId);
+            await this.addressService.deleteAddress(userId, addressId);
             res.status(200).json({ message: "Address was deleted successfully" });
         } catch (error) {
             next(error);
         }
     }
 
-    @httpGet("/:id", requireAuth)
+    @httpGet("/:id")
     public async getAddressesHandler(
         req: express.Request,
         res: express.Response,
@@ -97,7 +93,7 @@ export class AddressController {
         }
 
         try {
-            const addresses = await this.userDetailsService.getAddresses(id);
+            const addresses = await this.addressService.getAddresses(id);
             res.status(200).json(addresses);
         } catch (error) {
             next(error);
