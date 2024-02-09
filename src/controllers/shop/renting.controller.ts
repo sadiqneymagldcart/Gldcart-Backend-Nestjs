@@ -19,7 +19,7 @@ export class RentingController {
         this.imageService = imageService;
     }
 
-    @httpPost("/", multerMiddleware.array("images"), requireAuth)
+    @httpPost("/", multerMiddleware.any(), requireAuth)
     public async addRentingHandler(
         request: express.Request,
         response: express.Response,
