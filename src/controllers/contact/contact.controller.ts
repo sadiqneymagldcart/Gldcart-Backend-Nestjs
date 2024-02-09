@@ -15,7 +15,7 @@ export class ContactController {
         this.tokenService = tokenService;
     }
 
-    @httpPost("send-contact-email", requireAuth)
+    @httpPost("send-contact-email")
     public async sendContactEmail(request: express.Request, response: express.Response, next: express.NextFunction) {
         const {name, email, subject, message, token} = request.body;
         try {
