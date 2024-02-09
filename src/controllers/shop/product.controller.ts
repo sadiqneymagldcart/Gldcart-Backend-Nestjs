@@ -25,7 +25,7 @@ export class ProductController {
         this.imageService = imageService;
     }
 
-    @httpPost("/", multerMiddleware.any())
+    @httpPost("/", multerMiddleware.any(), requireAuth)
     public async addProductHandler(
         request: express.Request,
         response: express.Response,
@@ -47,7 +47,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/pagination")
+    @httpGet("/pagination", requireAuth)
     public async getProductsWithPaginationHandler(
         request: express.Request,
         response: express.Response,
@@ -66,7 +66,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/")
+    @httpGet("/", requireAuth)
     public async getAllProductsHandler(
         request: express.Request,
         response: express.Response,
@@ -80,7 +80,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/stock")
+    @httpGet("/stock", requireAuth)
     public async getAllProductsWithStockHandler(
         request: express.Request,
         response: express.Response,
@@ -94,7 +94,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/category/:category")
+    @httpGet("/category/:category", requireAuth)
     public async getProductByCategoryHandler(
         request: express.Request,
         response: express.Response,
@@ -109,7 +109,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/:productId")
+    @httpGet("/:productId", requireAuth)
     public async getProductByIdHandler(
         request: express.Request,
         response: express.Response,
@@ -158,7 +158,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/search/category/:category")
+    @httpGet("/search/category/:category", requireAuth)
     public async searchProductsByCategoryHandler(
         request: express.Request,
         response: express.Response,
@@ -174,7 +174,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/search/:query")
+    @httpGet("/search/:query", requireAuth)
     public async searchProductsGlobalHandler(
         request: express.Request,
         response: express.Response,
@@ -189,7 +189,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/search/manufacturer/:manufacturer")
+    @httpGet("/search/manufacturer/:manufacturer", requireAuth)
     public async searchProductsByManufacturerHandler(
         request: express.Request,
         response: express.Response,
@@ -205,7 +205,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/search/price/:price")
+    @httpGet("/search/price/:price", requireAuth)
     public async searchProductsByPriceHandler(
         request: express.Request,
         response: express.Response,
@@ -220,7 +220,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/search/price-range/:minPrice/:maxPrice")
+    @httpGet("/search/price-range/:minPrice/:maxPrice", requireAuth)
     public async searchProductsByPriceRangeHandler(
         request: express.Request,
         response: express.Response,
