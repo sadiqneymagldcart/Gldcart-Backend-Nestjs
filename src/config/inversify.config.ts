@@ -24,6 +24,7 @@ import "../controllers/auth/google.auth.controller";
 import "../controllers/shop/review.controller";
 import "../controllers/shop/product.controller";
 import "../controllers/shop/professional.services.controller";
+import "../controllers/shop/renting.controller";
 
 //Contact
 import "../controllers/contact/contact.controller";
@@ -36,6 +37,7 @@ import "../controllers/user_info/reset.password.controller";
 //Stripe
 import "../controllers/stripe/payment.controller";
 import { ProfileService } from "../services/user_info/profile.service";
+import { RentingService } from "../services/shop/renting.service";
 
 
 
@@ -76,6 +78,7 @@ function bindShopServices(container: Container) {
     container.bind(ImageService).toSelf();
     container.bind(ProductService).toSelf();
     container.bind(ProfessionalServicesService).toSelf();
+    container.bind(RentingService).toSelf();
 }
 
 function initializeContainer(): Container {
