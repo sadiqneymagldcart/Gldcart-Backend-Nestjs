@@ -6,6 +6,7 @@ import { serverConfig } from "./config/server.config";
 import { errorHandlerMiddleware } from "./middlewares/error.middleware";
 
 import * as dotenv from "dotenv";
+import { loadEnvironmentVariables } from "./config/env.config";
 
 export class App {
     private readonly port: string | number;
@@ -13,7 +14,7 @@ export class App {
     private readonly server: InversifyExpressServer;
 
     public constructor(server: InversifyExpressServer, logger: Logger) {
-        this.loadEnvironmentVariables();
+        loadEnvironmentVariables();
         this.validateEnvironmentVariables();
         this.port = process.env.PORT || 3000;
         this.server = server;
@@ -29,16 +30,7 @@ export class App {
             process.exit(1);
         }
     }
-
-    private loadEnvironmentVariables() {
-        let path: string = ".env";
-        if (process.env.NODE_ENV === "production") {
-            path = ".env.production";
-            console.log("Using production environment variables");
-        }
-        dotenv.config({ path: path });
-    }
-
+    
     private validateEnvironmentVariables() {
         if (!process.env.PORT || !process.env.DB_URL) {
             throw new Error("Environment variable PORT or DB_URL is not set");
