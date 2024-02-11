@@ -1,5 +1,5 @@
 import { inject } from "inversify";
-import { RentingModel } from "../../models/shop/Renting";
+import { RentingModel } from "../../models/shop/product/Renting";
 import { Logger } from "../../utils/logger";
 import { BaseService } from "../base.service";
 

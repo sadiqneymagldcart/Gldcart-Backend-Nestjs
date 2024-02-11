@@ -112,33 +112,4 @@ export class AddressService extends BaseService {
         this.logger.logInfo(`Address was deleted for user ${userId}`);
         return user;
     }
-
-    public async updatePersonalDetails(
-        id: string | null,
-        email: string | null,
-        name: string | null,
-        surname: string | null,
-        phone_number: string | null,
-        address: string | null,
-        BIO: string | null,
-    ) {
-        const user = <User>await UserModel.findByIdAndUpdate(id, {
-            name: name,
-            surname: surname,
-            email: email,
-            phone_number: phone_number,
-            address: address,
-            BIO: BIO,
-        });
-        if (!user) {
-            this.logger.logError(
-                `User not found while updating details for ID: ${id}`,
-            );
-            throw ApiError.BadRequest("User not found");
-        }
-        await user.save();
-        this.logger.logInfo(`Personal details updated for user with ID: ${id}`);
-    }
-
-    public async updatePersonalProfilePicture() { }
 }
