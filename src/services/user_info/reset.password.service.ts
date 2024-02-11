@@ -56,10 +56,11 @@ export class PasswordService extends BaseService {
              this.logger.logError(`User not found with email: ${email}`);
             throw ApiError.BadRequest("Incorrect contact");
         }
-        await this.mailService.sendResetPasswordMail(
-            email,
-            `${process.env.CLIENT_URL}/password/${token}`,
-        );
+        // await this.mailService.sendResetPasswordMail(
+        //     email,
+        //     `${process.env.CLIENT_URL}/password/${token}`,
+        // );
+        await this.mailService.sendHtmlEmail();
     }
 
     private async hashPassword(password: string): Promise<string> {

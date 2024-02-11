@@ -15,6 +15,13 @@ import { AddressService } from "../services/user_info/address.service";
 import { PasswordService } from "../services/user_info/reset.password.service";
 import { ProfileService } from "../services/user_info/profile.service";
 import { RentingService } from "../services/shop/renting.service";
+import { VerificationService } from "../services/auth/verification.service";
+import { CartService } from "../services/shop/cart.service";
+import { WishlistService } from "../services/shop/wishlist.service";
+import { OrderService } from "../services/shop/order.service";
+import { OTPService } from "../services/auth/otp.service";
+import { StripeSubscriptionService } from "../services/stripe/stripe.subscription.service";
+import { StripeWebhookService } from "../services/stripe/stripe.webhook.service";
 
 import { configureNodemailer } from "./nodemailer.config";
 import { loadEnvironmentVariables } from "./env.config";
@@ -41,11 +48,8 @@ import "../controllers/user_info/reset.password.controller";
 import "../controllers/stripe/payment.controller";
 //Verification
 import "../controllers/auth/verification.controller";
-import { VerificationService } from "../services/auth/verification.service";
-import { CartService } from "../services/shop/cart.service";
-import { WishlistService } from "../services/shop/wishlist.service";
-import { OrderService } from "../services/shop/order.service";
-import { OTPService } from "../services/auth/otp.service";
+
+
 
 function bindAuthServices(container: Container) {
     container.bind(TokenService).toSelf();
@@ -61,6 +65,8 @@ function bindStripeServices(container: Container) {
         });
     });
     container.bind(PaymentService).toSelf();
+    container.bind(StripeSubscriptionService).toSelf();
+    container.bind(StripeWebhookService).toSelf();
 }
 
 function bindMailServices(container: Container) {

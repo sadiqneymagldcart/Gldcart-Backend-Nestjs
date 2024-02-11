@@ -1,10 +1,10 @@
 import * as jwt from "jsonwebtoken";
-import TokenModel, {IToken} from "../../models/user/Token";
-import {Logger} from "../../utils/logger";
-import {BaseService} from "../base.service";
-import {inject, injectable} from "inversify";
-import {ITokens} from "../../interfaces/ITokens";
-import {ITokenPayload} from "../../interfaces/ITokenPayload";
+import TokenModel, { IToken } from "../../models/user/Token";
+import { Logger } from "../../utils/logger";
+import { BaseService } from "../base.service";
+import { inject, injectable } from "inversify";
+import { ITokens } from "../../interfaces/ITokens";
+import { ITokenPayload } from "../../interfaces/ITokenPayload";
 
 @injectable()
 export class TokenService extends BaseService {
@@ -34,12 +34,12 @@ export class TokenService extends BaseService {
         userId: string,
         refreshToken: string,
     ): Promise<IToken> {
-        const tokenData = <IToken>await TokenModel.findOne({user: userId});
+        const tokenData = <IToken>await TokenModel.findOne({ user: userId });
         if (tokenData) {
             tokenData.refreshToken = refreshToken;
             return tokenData.save();
         }
-        return await TokenModel.create({user: userId, refreshToken});
+        return await TokenModel.create({ user: userId, refreshToken });
     }
 
     public async createAndSaveTokens(payload: ITokenPayload): Promise<IToken> {
@@ -56,11 +56,11 @@ export class TokenService extends BaseService {
     public async removeToken(
         refreshToken: string,
     ): Promise<{ deletedCount?: number }> {
-        return TokenModel.deleteOne({refreshToken});
+        return TokenModel.deleteOne({ refreshToken });
     }
 
     public async findToken(refreshToken: string): Promise<IToken | null> {
-        return TokenModel.findOne({refreshToken});
+        return TokenModel.findOne({ refreshToken });
     }
 
     public async validateAccessToken(accessToken: string) {
