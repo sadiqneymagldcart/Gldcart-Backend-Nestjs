@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
 import {BaseService} from "../base.service";
 import {Logger} from "../../utils/logger";
-import {Inventory, InventoryModel} from "../../models/shop/Inventory";
+import {Inventory, InventoryModel} from "../../models/shop/test/Inventory";
 
 @injectable()
 export class InventoryService extends BaseService {
