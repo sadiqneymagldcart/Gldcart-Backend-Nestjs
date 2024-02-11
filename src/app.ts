@@ -4,8 +4,6 @@ import mongoose from "mongoose";
 import { mongooseOptions } from "./config/mongo.config";
 import { serverConfig } from "./config/server.config";
 import { errorHandlerMiddleware } from "./middlewares/error.middleware";
-
-import * as dotenv from "dotenv";
 import { loadEnvironmentVariables } from "./config/env.config";
 
 export class App {
@@ -30,7 +28,7 @@ export class App {
             process.exit(1);
         }
     }
-    
+
     private validateEnvironmentVariables() {
         if (!process.env.PORT || !process.env.DB_URL) {
             throw new Error("Environment variable PORT or DB_URL is not set");

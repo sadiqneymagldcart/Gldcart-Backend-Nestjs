@@ -1,5 +1,5 @@
 import mongoose, {Document, Model, Schema} from "mongoose";
-import {Product, ProductSchema} from "./Product";
+import {Product, ProductSchema} from "../product/Product";
 
 export interface Order extends Document {
     user: mongoose.Types.ObjectId;

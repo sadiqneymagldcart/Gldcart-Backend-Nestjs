@@ -1,6 +1,6 @@
-import {BaseService} from "../base.service";
-import {Logger} from "../../utils/logger";
-import UserModel, {User} from "../../models/user/User";
+import { BaseService } from "../base.service";
+import { Logger } from "../../utils/logger";
+import UserModel, { User } from "../../models/user/User";
 
 export class UserService extends BaseService {
     public constructor(logger: Logger) {
@@ -15,7 +15,7 @@ export class UserService extends BaseService {
         picture: string,
         password: string,
     ): Promise<User> {
-        const existingUser = <User>await UserModel.findOne({email: email});
+        const existingUser = <User>await UserModel.findOne({ email: email });
 
         if (existingUser) return existingUser;
 
