@@ -1,4 +1,4 @@
-import { Product, ProductModel } from "../../models/shop/Product";
+import { Product, ProductModel } from "../../models/shop/product/Product";
 import mongoose from "mongoose";
 import { inject, injectable } from "inversify";
 import { BaseService } from "../base.service";
