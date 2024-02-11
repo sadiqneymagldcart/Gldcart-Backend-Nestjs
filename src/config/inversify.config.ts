@@ -49,8 +49,6 @@ import "../controllers/stripe/payment.controller";
 //Verification
 import "../controllers/auth/verification.controller";
 
-
-
 function bindAuthServices(container: Container) {
     container.bind(TokenService).toSelf();
     container.bind(AuthService).toSelf();
