@@ -1,7 +1,7 @@
-import {inject, injectable} from "inversify";
-import {BaseService} from "../base.service";
-import {Logger} from "../../utils/logger";
-import {Inventory, InventoryModel} from "../../models/shop/test/Inventory";
+import { inject, injectable } from "inversify";
+import { BaseService } from "../base.service";
+import { Logger } from "../../utils/logger";
+import { Inventory, InventoryModel } from "../../models/shop/test/Inventory";
 
 @injectable()
 export class InventoryService extends BaseService {
@@ -10,16 +10,16 @@ export class InventoryService extends BaseService {
   }
 
   public async updateInventory(
-      product_id: string,
-      quantity: number,
+    product_id: string,
+    quantity: number,
   ): Promise<Inventory> {
     try {
-      const inventory = await InventoryModel.findOne({product_id});
+      const inventory = await InventoryModel.findOne({ product_id });
       if (inventory) {
         inventory.quantity = quantity;
         return await inventory.save();
       } else {
-        return await InventoryModel.create({product_id, quantity});
+        return await InventoryModel.create({ product_id, quantity });
       }
     } catch (error) {
       this.logger.logError(error);
@@ -29,7 +29,7 @@ export class InventoryService extends BaseService {
 
   public async isProductInStock(product_id: string, quantity: number) {
     try {
-      const inventory = await InventoryModel.findOne({product_id});
+      const inventory = await InventoryModel.findOne({ product_id });
       if (inventory) {
         return inventory.quantity >= quantity;
       } else {
