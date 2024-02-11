@@ -18,10 +18,7 @@ export class ProfileController {
         this.imageService = imageService;
     }
 
-    @httpPut(
-        "/",
-        multerMiddleware.single("profilePicture"),
-    )
+    @httpPut("/", multerMiddleware.any())
     public async updateProfilePicture(
         request: express.Request,
         response: express.Response,
@@ -43,4 +40,29 @@ export class ProfileController {
         }
     }
 
+    @httpPut("/details")
+    public async updatePersonalDetails(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const { id, email, name, surname, phone_number, address, BIO } =
+                request.body;
+            await this.profileService.updatePersonalDetails(
+                id,
+                email,
+                name,
+                surname,
+                phone_number,
+                address,
+                BIO,
+            );
+            response
+                .status(200)
+                .json({ message: `User's personal details were updated succesfully` });
+        } catch (error) {
+            next(error);
+        }
+    }
 }

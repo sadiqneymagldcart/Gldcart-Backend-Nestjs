@@ -73,26 +73,26 @@ export class MailService {
         }
     }
 
-    public async sendContactMail(
-        name: string,
-        email: string,
-        subject: string,
-        message: string,
-    ) {
-        try {
-            await this.transporter.sendMail({
-                from: "GLDCart Feedback",
-                to: process.env.FEEDBACK_EMAIL,
-                subject: subject,
-                text: `My name is: ${name}. My email is: ${email}. ${message}`,
-            });
-            this.logger.logInfo(`Email was sent to ${process.env.FEEDBACK_EMAIL}`);
-        } catch (error: any) {
-            console.log(error);
-            this.logger.logError("Failed to send contact contact", error);
-            throw ApiError.BadRequest("Failed to send contact");
-        }
-    }
+    // public async sendContactMail(
+    //     name: string,
+    //     email: string,
+    //     subject: string,
+    //     message: string,
+    // ) {
+    //     try {
+    //         await this.transporter.sendMail({
+    //             from: "GLDCart Feedback",
+    //             to: process.env.FEEDBACK_EMAIL,
+    //             subject: subject,
+    //             text: `My name is: ${name}. My email is: ${email}. ${message}`,
+    //         });
+    //         this.logger.logInfo(`Email was sent to ${process.env.FEEDBACK_EMAIL}`);
+    //     } catch (error: any) {
+    //         console.log(error);
+    //         this.logger.logError("Failed to send contact contact", error);
+    //         throw ApiError.BadRequest("Failed to send contact");
+    //     }
+    // }
 
     public async sendResetPasswordMail(email: string, link: string) {
         await this.transporter.sendMail({

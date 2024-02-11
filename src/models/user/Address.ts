@@ -1,7 +1,6 @@
-import {Schema, Types} from "mongoose";
+import { Schema, Types } from "mongoose";
 
-export interface IAddress
-{
+export interface IAddress {
     id?: Types.ObjectId;
     recipients_name: string;
     street_address: string;
@@ -15,29 +14,29 @@ export interface IAddress
 export const AddressSchema = new Schema<IAddress>({
     recipients_name: {
         type: String,
-        required: true
+        required: true,
     },
     street_address: {
         type: String,
-        required: true
+        required: true,
     },
     city: {
         type: String,
-        required: true
+        required: true,
     },
     state: {
-        type: String
+        type: String,
     },
     country: {
         type: String,
-        required: true
+        required: true,
     },
     ZIP_code: {
         type: String,
-        required: true
+        required: true,
     },
     phone_number: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 });
