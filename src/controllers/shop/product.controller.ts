@@ -10,7 +10,7 @@ import { inject } from "inversify";
 import { requireAuth } from "../../middlewares/auth.middleware";
 import { multerMiddleware } from "../../middlewares/malter.middleware";
 import { ImageService } from "../../services/shop/image.service";
-import { Product } from "../../models/shop/Product";
+import { Product } from "../../models/shop/product/Product";
 
 @controller("/products")
 export class ProductController {
