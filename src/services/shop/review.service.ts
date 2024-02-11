@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { BaseService } from "../base.service";
-import { Review, ReviewModel } from "../../models/shop/Review";
+import { Review, ReviewModel } from "../../models/shop/review/Review";
 import mongoose from "mongoose";
 import { Logger } from "../../utils/logger";
 
