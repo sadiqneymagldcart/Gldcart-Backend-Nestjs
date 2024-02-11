@@ -1,6 +1,6 @@
 import {BaseService} from "../base.service";
 import {Logger} from "../../utils/logger";
-import {MailService} from "../contact/mail.service";
+import {MailService} from "../mail/mail.service";
 import {ApiError} from "../../exceptions/api.error";
 import * as bcrypt from "bcrypt";
 import {inject, injectable} from "inversify";
@@ -18,7 +18,7 @@ export class PasswordService extends BaseService {
         this.mailService = mailService;
     }
 
-    async changePasswordWithToken(token: string, newPassword: string) {
+    public async changePasswordWithToken(token: string, newPassword: string) {
         const user = <User>await UserModel.findOne({passwordResetToken: token});
         if (!user) {
             throw ApiError.BadRequest("Invalid or expired token");
@@ -28,7 +28,7 @@ export class PasswordService extends BaseService {
         await user.save();
     }
 
-    async changePasswordWithEmail(
+    public async changePasswordWithEmail(
         email: string,
         oldPassword: string,
         newPassword: string,
@@ -48,7 +48,7 @@ export class PasswordService extends BaseService {
         throw ApiError.BadRequest("Incorrect contact");
     }
 
-    async requestPasswordReset(email: string, token: string) {
+    public async requestPasswordReset(email: string, token: string) {
         const user = <User>(
             await UserModel.findOneAndUpdate({email}, {passwordResetToken: token})
         );

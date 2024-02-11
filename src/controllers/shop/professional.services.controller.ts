@@ -30,6 +30,10 @@ export class ProfessionalServicesController {
             const files = request.files as Express.Multer.File[];
             const images = await this.imageService.uploadImages(files);
 
+            if(images.length === 0) {
+                return response.status(400).json({ message: "At least one image is required." });
+            }
+
             const serviceData: ProfessionalService = {
                 ...request.body,
                 images: images,
@@ -50,6 +54,7 @@ export class ProfessionalServicesController {
     ) {
         try {
             const { page, limit } = request.body;
+            const endIndex = page * limit;
             const services = await this.servicesService.getServicesWithPagination(
                 page,
                 limit,

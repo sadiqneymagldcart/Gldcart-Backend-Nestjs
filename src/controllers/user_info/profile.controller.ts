@@ -42,4 +42,5 @@ export class ProfileController {
             next(error);
         }
     }
+
 }
