@@ -24,6 +24,7 @@ export class PasswordController {
         try {
             const token: string = uuidv4();
             await this.passwordResetService.requestPasswordReset(email, token);
+
             response
                 .status(200)
                 .json({ message: "Password reset link was sent to your contact." });

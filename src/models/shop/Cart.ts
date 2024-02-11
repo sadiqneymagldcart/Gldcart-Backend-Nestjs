@@ -1,41 +1,37 @@
-import mongoose, {Document, Model, Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-interface Cart extends Document {
-    user: mongoose.Types.ObjectId;
-    cartItems: CartItem[];
-    totalPrice: number;
+export interface Cart extends Document {
+    userId: Schema.Types.ObjectId;
+    items: CartItem[];
+    total: number;
     createdAt: Date;
     updatedAt: Date;
 }
 
-interface CartItem {
-    product: Schema.Types.ObjectId;
+export interface CartItem {
+    productId: Schema.Types.ObjectId;
     quantity: number;
     price: number;
+    total: number;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
-const cartItemSchema = new Schema<CartItem>(
-    {
-        product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
-        quantity: { type: Number, default: 1, required: true },
-        price: {
-            type: Number,
-            required: true,
-        },
-    },
-    {
-        timestamps: true,
-    },
-);
+const CartItemSchema = new Schema<CartItem>({
+    productId: { type: Schema.Types.ObjectId, ref: "Product" },
+    quantity: { type: Number, default: 1 },
+    price: { type: Number, required: true },
+    total: { type: Number, required: true },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
+});
 
-const cartSchema = new Schema<Cart>(
-    {
-        user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-        cartItems: [cartItemSchema],
-        totalPrice: { type: Number, required: true },
-    },
-    { timestamps: true },
-);
+export const cartSchema = new Schema<Cart>({
+    userId: { type: Schema.Types.ObjectId, ref: "User" },
+    items: [CartItemSchema],
+    total: { type: Number, required: true },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
+});
 
-const CartModel = mongoose.model("Cart", cartSchema) as Model<Cart>;
-export {Cart, CartItem, CartModel};
+export const CartModel = mongoose.model<Cart>("Cart", cartSchema);

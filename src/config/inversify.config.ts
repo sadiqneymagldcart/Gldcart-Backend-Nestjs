@@ -3,17 +3,20 @@ import { Logger } from "../utils/logger";
 import { TokenService } from "../services/token/token.service";
 import { AuthService } from "../services/auth/auth.service";
 import { GoogleAuthService } from "../services/auth/google.auth.service";
-import { MailService } from "../services/contact/mail.service";
+import { MailService } from "../services/mail/mail.service";
 import { PaymentService } from "../services/stripe/payment.service";
 import Stripe from "stripe";
 import { Transporter } from "nodemailer";
 import { ReviewService } from "../services/shop/review.service";
-import { configureNodemailer } from "./nodemailer.config";
 import { ProductService } from "../services/shop/product.service";
 import { ImageService } from "../services/shop/image.service";
 import { ProfessionalServicesService } from "../services/shop/professional-services.service";
 import { AddressService } from "../services/user_info/address.service";
 import { PasswordService } from "../services/user_info/reset.password.service";
+import { ProfileService } from "../services/user_info/profile.service";
+import { RentingService } from "../services/shop/renting.service";
+
+import { configureNodemailer } from "./nodemailer.config";
 import { loadEnvironmentVariables } from "./env.config";
 
 //Auth
@@ -36,10 +39,13 @@ import "../controllers/user_info/reset.password.controller";
 
 //Stripe
 import "../controllers/stripe/payment.controller";
-import { ProfileService } from "../services/user_info/profile.service";
-import { RentingService } from "../services/shop/renting.service";
-
-
+//Verification
+import "../controllers/auth/verification.controller";
+import { VerificationService } from "../services/auth/verification.service";
+import { CartService } from "../services/shop/cart.service";
+import { WishlistService } from "../services/shop/wishlist.service";
+import { OrderService } from "../services/shop/order.service";
+import { OTPService } from "../services/auth/otp.service";
 
 function bindAuthServices(container: Container) {
     container.bind(TokenService).toSelf();
@@ -79,6 +85,14 @@ function bindShopServices(container: Container) {
     container.bind(ProductService).toSelf();
     container.bind(ProfessionalServicesService).toSelf();
     container.bind(RentingService).toSelf();
+    container.bind(CartService).toSelf();
+    container.bind(WishlistService).toSelf();
+    container.bind(OrderService).toSelf();
+}
+
+function bindVerificationService(container: Container) {
+    container.bind(VerificationService).toSelf();
+    container.bind(OTPService).toSelf();
 }
 
 function initializeContainer(): Container {
@@ -96,5 +110,6 @@ bindMailServices(container);
 bindContactServices(container);
 bindUserInfoServices(container);
 bindShopServices(container);
+bindVerificationService(container);
 
 export { container };
