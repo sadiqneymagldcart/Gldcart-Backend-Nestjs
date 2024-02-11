@@ -5,7 +5,7 @@ import { RentingService } from "../../services/shop/renting.service";
 import { multerMiddleware } from "../../middlewares/malter.middleware";
 import { requireAuth } from "../../middlewares/auth.middleware";
 import { ImageService } from "../../services/shop/image.service";
-import { Renting } from "../../models/shop/Renting";
+import { Renting } from "../../models/shop/product/Renting";
 
 @controller("/renting")
 export class RentingController {
