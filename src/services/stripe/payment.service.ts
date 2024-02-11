@@ -1,6 +1,6 @@
 import { Logger } from "../../utils/logger";
 import Stripe from "stripe";
-import { Product } from "../../models/shop/Product";
+import { Product } from "../../models/shop/product/Product";
 import { BaseService } from "../base.service";
 import { ICheckoutRequestBody } from "../../interfaces/ICheckoutRequestBody";
 import { inject, injectable } from "inversify";
