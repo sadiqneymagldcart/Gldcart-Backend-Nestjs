@@ -66,6 +66,20 @@ export class ProductController {
         }
     }
 
+    @httpGet("/count", requireAuth)
+    public async getProductCountHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const count = await this.productService.getProductsCount();
+            response.status(200).json(count);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     @httpGet("/", requireAuth)
     public async getAllProductsHandler(
         request: express.Request,

@@ -27,6 +27,11 @@ export class ReviewService extends BaseService {
         return await ReviewModel.create(reviewData);
     }
 
+    public async getReviewsByUser(userId: string): Promise<Review[]> {
+        this.logger.logInfo(`Getting reviews for user with ID: ${userId}`);
+        return ReviewModel.find({ user_id: new mongoose.Types.ObjectId(userId) });
+    }
+
     public async updateReview(
         reviewId: string,
         updatedData: Partial<Review>,

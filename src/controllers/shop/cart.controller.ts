@@ -1,118 +1,145 @@
 import * as express from "express";
-import {inject} from "inversify";
-import {CartService} from "../../services/shop/cart.service";
-import {controller, httpDelete, httpGet, httpPost, httpPut,} from "inversify-express-utils";
-import {requireAuth} from "../../middlewares/auth.middleware";
+import { inject } from "inversify";
+import { CartService } from "../../services/shop/cart.service";
+import {
+    controller,
+    httpGet,
+    httpPost,
+    httpPut,
+    httpDelete,
+} from "inversify-express-utils";
+import { requireAuth } from "../../middlewares/auth.middleware";
 
 @controller("/cart")
 export class CartController {
-    private readonly cartService: CartService;
-
+    private cartService: CartService;
     public constructor(@inject(CartService) cartService: CartService) {
         this.cartService = cartService;
     }
 
-    @httpGet("/:cartId", requireAuth)
-    public async getCartItemsHandler(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        const { cartId } = request.params;
-        try {
-            const cartItems = await this.cartService.getCartItems(cartId);
-            response.status(200).json({ cartItems: cartItems });
-        } catch (error: any) {
-            next(error);
-        }
-    }
-
     @httpPost("/", requireAuth)
-    public async addCartItemHandler(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        const { userId, productId, quantity } = request.body;
-        if (
-            typeof userId !== "string" ||
-            typeof productId !== "string" ||
-            typeof quantity !== "number"
-        ) {
-            next(
-                new Error(
-                    "Invalid request parameters. The userId and productId should be strings and quantity should be a number",
-                ),
-            );
-        }
-        try {
-            const cart = await this.cartService.addCartItem(
-                userId,
-                productId,
-                quantity,
-            );
-            response.status(200).json({ message: "Item added to cart", cart });
-        } catch (error: any) {
-            next(error);
-        }
-    }
-
-    @httpDelete("/:cartId/:itemId", requireAuth)
-    public async removeCartItemHandler(
+    public async createCartHandler(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
         try {
-            const { cartId, itemId } = request.params;
-            const cart = await this.cartService.removeItem(cartId, itemId);
-            response.status(200).json({ message: "Item deleted from cart", cart });
-        } catch (error: any) {
+            const cart = await this.cartService.createCart(request.body);
+            response.status(201).json(cart);
+        } catch (error) {
             next(error);
         }
     }
 
-    @httpPut("/update")
+    @httpPut("/", requireAuth)
+    public async updateCartHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const cart = await this.cartService.updateCart(
+                request.body.userId,
+                request.body,
+            );
+            response.status(200).json(cart);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    @httpDelete("/", requireAuth)
+    public async deleteCartHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const cart = await this.cartService.deleteCart(request.body.userId);
+            response.status(200).json(cart);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    @httpGet("/:cartId", requireAuth)
+    public async getCartByIdHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const cart = await this.cartService.getCartById(request.params.cartId);
+            response.status(200).json(cart);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    @httpGet("/user/:userId", requireAuth)
+    public async getCartByUserIdHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const cart = await this.cartService.getCartByUserId(
+                request.params.userId,
+            );
+            response.status(200).json(cart);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    @httpPost("/add-item", requireAuth)
+    public async addItemToCartHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const cart = await this.cartService.addItemToCart(
+                request.body.userId,
+                request.body.item,
+            );
+            response.status(200).json(cart);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    @httpPut("/update-item", requireAuth)
     public async updateCartItemHandler(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
-        const { cartId, itemId, quantity } = request.body;
-        if (
-            typeof cartId !== "string" ||
-            typeof itemId !== "string" ||
-            typeof quantity !== "number"
-        ) {
-            return next(
-                new Error(
-                    "Invalid request parameters. The cartId and itemId should be strings and quantity should be a number",
-                ),
-            );
-        }
         try {
             const cart = await this.cartService.updateCartItem(
-                cartId,
-                itemId,
-                quantity,
+                request.body.userId,
+                request.body.itemId,
+                request.body.item,
             );
-            response.status(200).json({ message: "Item updated in cart", cart });
-        } catch (error: any) {
+            response.status(200).json(cart);
+        } catch (error) {
             next(error);
         }
     }
 
-    @httpDelete("/clear/:cartId")
-    public async clearCartHandler(
+    @httpDelete("/delete-item", requireAuth)
+    public async deleteItemFromCartHandler(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
-        const { cartId } = request.params;
         try {
-            const cart = await this.cartService.clearCart(cartId);
-            response.status(200).json({ message: "Cart cleared", cart });
-        } catch (error: any) {
+            const cart = await this.cartService.deleteCartItem(
+                request.body.userId,
+                request.body.itemId,
+            );
+            response.status(200).json(cart);
+        } catch (error) {
             next(error);
         }
     }
