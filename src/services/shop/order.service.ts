@@ -1,6 +1,6 @@
-import OrderModel from "../../models/shop/Order";
+import OrderModel from "../../models/shop/order/Order";
 import Stripe from "stripe";
-import {Product} from "../../models/shop/Product";
+import {Product} from "../../models/shop/product/Product";
 import {Logger} from "../../utils/logger";
 import {BaseService} from "../base.service";
 import {inject, injectable} from "inversify";
