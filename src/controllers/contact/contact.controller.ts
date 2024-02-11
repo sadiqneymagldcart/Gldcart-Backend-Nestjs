@@ -18,7 +18,7 @@ export class ContactController {
         this.tokenService = tokenService;
     }
 
-    @httpPost("/send-contact-email")
+    @httpPost("/email")
     public async sendContactEmail(
         request: express.Request,
         response: express.Response,
