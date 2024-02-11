@@ -24,6 +24,26 @@ export class ProfessionalServicesService extends BaseService {
             .limit(limit);
     }
 
+    public async getServicesByQuery(
+        query: string,
+    ): Promise<ProfessionalService[]> {
+        this.logger.logInfo(`Getting products by query: ${query}`);
+        return ServicesModel.find({ $text: { $search: query } });
+    }
+
+    public async getServicesByCategoryWithPagination(
+        category: string,
+        page: number,
+        limit: number,
+    ): Promise<ProfessionalService[]> {
+        this.logger.logInfo(
+            `Getting products by category with pagination. Category: ${category}, Page: ${page}, Limit: ${limit}`,
+        );
+        return ServicesModel.find({ category })
+            .skip((page - 1) * limit)
+            .limit(limit);
+    }
+
     public async getServicesCount(): Promise<number> {
         this.logger.logInfo("Getting products count");
         return ServicesModel.countDocuments();

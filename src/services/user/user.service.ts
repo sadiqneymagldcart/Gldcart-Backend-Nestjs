@@ -26,7 +26,7 @@ export class UserService extends BaseService {
             name: firstName,
             surname: surname,
             email: email,
-            picture: picture,
+            profile_picture: picture,
             password: password,
         });
         this.logger.logInfo(`New user created with email: ${email}`);
