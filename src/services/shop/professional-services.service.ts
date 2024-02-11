@@ -4,7 +4,7 @@ import { Logger } from "../../utils/logger";
 import {
     ProfessionalService,
     ServicesModel,
-} from "../../models/shop/ProfessionalService";
+} from "../../models/shop/product/ProfessionalService";
 
 @injectable()
 export class ProfessionalServicesService extends BaseService {

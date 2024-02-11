@@ -6,7 +6,6 @@ import {
     httpPost,
     httpPut,
 } from "inversify-express-utils";
-import { Types } from "mongoose";
 import { inject } from "inversify";
 import { AddressService } from "../../services/user_info/address.service";
 import { requireAuth } from "../../middlewares/auth.middleware";
