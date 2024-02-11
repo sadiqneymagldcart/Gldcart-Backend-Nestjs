@@ -2,7 +2,6 @@ import * as express from "express";
 import {PaymentService} from "../../services/stripe/payment.service";
 import {inject} from "inversify";
 import {controller, httpPost} from "inversify-express-utils";
-import {ICheckoutRequestBody} from "../../interfaces/ICheckoutRequestBody";
 
 @controller("/payment")
 export class PaymentController {
@@ -33,12 +32,27 @@ export class PaymentController {
         response: express.Response,
         next: express.NextFunction,
     ): Promise<void> {
-        const requestBody = request.body as ICheckoutRequestBody;
         try {
+
             const checkoutUrl = await this.paymentService.createPaymentCheckout(
-                requestBody,
+                request.body,
             );
             response.json({url: checkoutUrl});
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    @httpPost("/webhook")
+    public async webhook(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ): Promise<void> {
+        try {
+            const event = request.body;
+            await this.paymentService.webhook(event);
+            response.send({received: true});
         } catch (error) {
             next(error);
         }

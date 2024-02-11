@@ -1,22 +1,25 @@
-import {Logger} from "../../utils/logger";
+import { Logger } from "../../utils/logger";
 import Stripe from "stripe";
-import {Product} from "../../models/shop/Product";
-import {BaseService} from "../base.service";
-import {ICheckoutRequestBody} from "../../interfaces/ICheckoutRequestBody";
-import {inject, injectable} from "inversify";
+import { Product } from "../../models/shop/Product";
+import { BaseService } from "../base.service";
+import { ICheckoutRequestBody } from "../../interfaces/ICheckoutRequestBody";
+import { inject, injectable } from "inversify";
 
 @injectable()
 export class PaymentService extends BaseService {
     private readonly stripe: Stripe;
 
-    public constructor(@inject(Logger) logger: Logger, @inject(Stripe) stripe: Stripe) {
+    public constructor(
+        @inject(Logger) logger: Logger,
+        @inject(Stripe) stripe: Stripe,
+    ) {
         super(logger);
         this.stripe = stripe;
     }
 
     public async createCustomer(email: string, name: string): Promise<string> {
         try {
-            const customer = await this.createCustomerWithMetadata({email, name});
+            const customer = await this.createCustomerWithMetadata({ email, name });
             this.logger.logInfo(`Customer created: ${customer.id}`);
             return customer.id;
         } catch (error: any) {
@@ -26,14 +29,14 @@ export class PaymentService extends BaseService {
     }
 
     public async createPaymentCheckout(
-        requestBody: ICheckoutRequestBody,
+        paymentData: ICheckoutRequestBody,
     ): Promise<string | null> {
         try {
             const customer = await this.createCustomerWithMetadata({
-                userId: requestBody.userId,
-                cart: JSON.stringify(requestBody.cartItems),
+                userId: paymentData.userId,
+                cart: JSON.stringify(paymentData.cartItems),
             });
-            const lineItems = this.createLineItems(requestBody.cartItems);
+            const lineItems = this.createLineItems(paymentData.cartItems);
             const session = await this.createCheckoutSession(customer.id, lineItems);
             this.logger.logInfo(`Checkout session created: ${session.id}`);
             return session.url;
@@ -46,7 +49,7 @@ export class PaymentService extends BaseService {
     private async createCustomerWithMetadata(
         metadata: Record<string, any> = {},
     ): Promise<Stripe.Customer> {
-        return this.stripe.customers.create({metadata});
+        return this.stripe.customers.create({ metadata });
     }
 
     private createLineItems(cartItems: Product[]): Array<Object> {
@@ -82,5 +85,17 @@ export class PaymentService extends BaseService {
             success_url: `${process.env.CLIENT_URL}/checkout-success`,
             cancel_url: `${process.env.CLIENT_URL}/checkout-failed`,
         });
+    }
+
+    public async webhook(event: Stripe.Event): Promise<void> {
+        try {
+            const session = event.data.object as Stripe.Checkout.Session;
+            if (session.payment_status === "paid") {
+                this.logger.logInfo(`Payment received: ${session.id}`);
+            }
+        } catch (error: any) {
+            this.logger.logError("Failed to process webhook", error);
+            throw error;
+        }
     }
 }

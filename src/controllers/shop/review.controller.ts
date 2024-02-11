@@ -42,6 +42,21 @@ export class ReviewController {
         }
     }
 
+    @httpGet("/:userId")
+    public async getReviewsByUser(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const userId = request.params.userId;
+            const review = this.reviewService.getReviewsByUser(userId);
+            response.status(200).json(review);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     @httpPost("/")
     public async createReview(
         request: express.Request,

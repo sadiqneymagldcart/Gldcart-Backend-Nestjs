@@ -71,7 +71,7 @@ export class GoogleAuthService extends BaseService {
             name: firstName,
             surname: googleUserData.surname,
             email: googleUserData.email,
-            picture: googleUserData.picture,
+            profile_picture: googleUserData.picture,
             password: "",
         });
         this.logger.logInfo(`New user created with email: ${googleUserData.email}`);

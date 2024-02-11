@@ -9,5 +9,9 @@ export class OtpController {
     public constructor(@inject(OTPService) otpService: OTPService) { }
 
     // send otp
+    public async sendOtp() {}
+
+
     // verify otp
+    public async verifyOtp() {}
 }

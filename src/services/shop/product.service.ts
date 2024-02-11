@@ -38,6 +38,11 @@ export class ProductService extends BaseService {
             .limit(limit);
     }
 
+    public async getProductsCount(): Promise<number> {
+        this.logger.logInfo("Getting products count");
+        return ProductModel.countDocuments();
+    }
+
     public async getProductByCategory(category: string): Promise<Product[]> {
         this.logger.logInfo(`Getting products by category: ${category}`);
         return ProductModel.find({ category: category });
@@ -46,6 +51,16 @@ export class ProductService extends BaseService {
     public async getProductById(productId: string): Promise<Product | null> {
         this.logger.logInfo(`Getting product with ID: ${productId}`);
         return ProductModel.findById(productId);
+    }
+
+    public async getProductBySlug(slug: string): Promise<Product | null> {
+        this.logger.logInfo(`Getting product with slug: ${slug}`);
+        return ProductModel.findOne({ slug: slug });
+    }
+
+    public async getProductsCountByCategory(category: string): Promise<number> {
+        this.logger.logInfo(`Getting products count by category: ${category}`);
+        return ProductModel.findOne({ category: category }).count();
     }
 
     public async updateProduct(
@@ -66,7 +81,7 @@ export class ProductService extends BaseService {
 
     public async searchProductsByCategory(category: string): Promise<Product[]> {
         this.logger.logInfo(`Searching products by category: ${category}`);
-        return ProductModel.find({category: category});
+        return ProductModel.find({ category: category });
     }
 
     public async searchProductsGlobal(query: string): Promise<Product[]> {
