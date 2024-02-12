@@ -31,11 +31,16 @@ export class CartService extends BaseService {
         return await CartModel.findOne({ userId, "items.productId": productId });
     }
     public async addItemToCart(userId: string, item: CartItem) {
-        return await CartModel.findOneAndUpdate(
-            { userId },
-            { $push: { items: item } },
-            { new: true },
-        );
+        try {
+            return await CartModel.findOneAndUpdate(
+                { userId },
+                { $push: { items: item } },
+                { new: true, upsert: true},
+            );
+        } catch (err) {
+            console.log("Hi");
+            console.log(err);
+        }
     }
     public async updateCartItem(
         userId: string,

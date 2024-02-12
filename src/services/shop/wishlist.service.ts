@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { Logger } from "../../utils/logger";
 import { BaseService } from "../base.service";
-import UserModel from "../../models/user/User";
+import {UserModel} from "../../models/user/User";
 
 @injectable()
 export class WishlistService extends BaseService {

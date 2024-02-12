@@ -3,7 +3,7 @@ import { inject, injectable } from "inversify";
 import { Logger } from "../../utils/logger";
 import { MailService } from "../mail/mail.service";
 import { BaseService } from "../base.service";
-import UserModel from "../../models/user/User";
+import {UserModel} from "../../models/user/User";
 import { ApiError } from "../../exceptions/api.error";
 
 @injectable()
@@ -37,8 +37,9 @@ export class VerificationService extends BaseService {
             throw ApiError.BadRequest("User not found");
         }
         await this.mailService.sendHtmlEmailWithAttachments(
+            "User",
             process.env.FEEDBACK_EMAIL,
-            "Please verify your email",
+            "User's documents for verification",
             `<a href="http://localhost:3001/verification/verify-user/${token}">Click here to verify the user</a>`,
             attachments,
         );

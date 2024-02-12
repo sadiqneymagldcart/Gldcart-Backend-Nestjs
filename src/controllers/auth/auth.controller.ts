@@ -1,8 +1,8 @@
 import * as express from "express";
-import {setRefreshTokenCookie} from "../../utils/token.utils";
-import {AuthService} from "../../services/auth/auth.service";
-import {controller, httpGet, httpPost} from "inversify-express-utils";
-import {inject} from "inversify";
+import { setRefreshTokenCookie } from "../../utils/token.utils";
+import { AuthService } from "../../services/auth/auth.service";
+import { controller, httpGet, httpPost } from "inversify-express-utils";
+import { inject } from "inversify";
 
 @controller("/")
 export class AuthController {
@@ -18,7 +18,7 @@ export class AuthController {
         response: express.Response,
         next: express.NextFunction,
     ): Promise<void> {
-        const {type, name, surname, email, password} = request.body;
+        const { type, name, surname, email, password } = request.body;
 
         try {
             const userData = await this.authService.register(
@@ -41,7 +41,7 @@ export class AuthController {
         response: express.Response,
         next: express.NextFunction,
     ): Promise<void> {
-        const {email, password} = request.body;
+        const { email, password } = request.body;
 
         try {
             const userData = await this.authService.login(email, password);
@@ -85,6 +85,5 @@ export class AuthController {
     }
 
     @httpPost("")
-    public async() {
-    }
+    public async() { }
 }
