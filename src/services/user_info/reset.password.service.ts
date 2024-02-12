@@ -1,14 +1,14 @@
-import {BaseService} from "../base.service";
-import {Logger} from "../../utils/logger";
-import {MailService} from "../mail/mail.service";
-import {ApiError} from "../../exceptions/api.error";
+import { BaseService } from "../base.service";
+import { Logger } from "../../utils/logger";
+import { MailService } from "../mail/mail.service";
+import { ApiError } from "../../exceptions/api.error";
 import * as bcrypt from "bcrypt";
-import {inject, injectable} from "inversify";
-import UserModel, {User} from "../../models/user/User";
+import { inject, injectable } from "inversify";
+import { User, UserModel } from "../../models/user/User";
 
 @injectable()
 export class PasswordService extends BaseService {
-    private mailService: MailService;
+    private readonly mailService: MailService;
 
     public constructor(
         @inject(Logger) logger: Logger,
@@ -19,7 +19,7 @@ export class PasswordService extends BaseService {
     }
 
     public async changePasswordWithToken(token: string, newPassword: string) {
-        const user = <User>await UserModel.findOne({passwordResetToken: token});
+        const user = <User>await UserModel.findOne({ passwordResetToken: token });
         if (!user) {
             throw ApiError.BadRequest("Invalid or expired token");
         }
@@ -33,7 +33,7 @@ export class PasswordService extends BaseService {
         oldPassword: string,
         newPassword: string,
     ) {
-        const user = <User>await UserModel.findOne({email});
+        const user = <User>await UserModel.findOne({ email });
         if (user) {
             const auth: boolean = await bcrypt.compare(oldPassword, user.password);
             if (auth) {
@@ -50,17 +50,39 @@ export class PasswordService extends BaseService {
 
     public async requestPasswordReset(email: string, token: string) {
         const user = <User>(
-            await UserModel.findOneAndUpdate({email}, {passwordResetToken: token})
+            await UserModel.findOneAndUpdate({ email }, { passwordResetToken: token })
         );
         if (!user) {
-             this.logger.logError(`User not found with email: ${email}`);
+            this.logger.logError(`User not found with email: ${email}`);
             throw ApiError.BadRequest("Incorrect contact");
         }
-        await this.mailService.sendResetPasswordMail(
-            email,
-            `${process.env.CLIENT_URL}/password/${token}`,
+
+        const link = `${process.env.CLIENT_URL}/password/${token}`;
+        const data = {
+            from: "GLDCart",
+            to: email,
+            subject: "Password Reset",
+            html: `<!DOCTYPE html>
+           <html lang="en">
+           <head>
+           <meta charset="UTF-8">
+           <title>Password Reset</title>
+           </head>
+           <body>
+           <p>Hello,</p>
+           <p>You have requested to reset your password. To reset your password, please click on the following link:</p>
+           <p><a href="${link}">Reset Password</a></p>
+           <p>If you did not request a password reset, please ignore this email.</p>
+           <p>Thank you!</p>
+           </body>
+           </html>`,
+        };
+        await this.mailService.sendHtmlEmail(
+            data.from,
+            data.to,
+            data.subject,
+            data.html,
         );
-        // await this.mailService.sendHtmlEmail();
     }
 
     private async hashPassword(password: string): Promise<string> {

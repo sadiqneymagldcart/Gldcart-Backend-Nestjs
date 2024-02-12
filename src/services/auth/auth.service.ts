@@ -5,7 +5,7 @@ import {ApiError} from "../../exceptions/api.error";
 import {IToken} from "../../models/user/Token";
 import * as bcrypt from "bcrypt";
 import {inject, injectable} from "inversify";
-import UserModel, {User} from "../../models/user/User";
+import {User, UserModel} from "../../models/user/User";
 import {UserDto} from "../../dto/UserDto";
 import {ITokens} from "../../interfaces/ITokens";
 

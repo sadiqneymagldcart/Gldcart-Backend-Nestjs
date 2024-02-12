@@ -4,7 +4,7 @@ import { Logger } from "../../utils/logger";
 import { IAddress } from "../../models/user/Address";
 import { Types } from "mongoose";
 import { inject, injectable } from "inversify";
-import UserModel, { User } from "../../models/user/User";
+import {User, UserModel} from "../../models/user/User";
 
 @injectable()
 export class AddressService extends BaseService {
