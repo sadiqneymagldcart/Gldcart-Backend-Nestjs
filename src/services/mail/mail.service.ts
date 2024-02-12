@@ -54,9 +54,9 @@ export class MailService {
     public async sendHtmlEmailWithAttachments(
         from: string,
         to: string,
-        subject?: string,
-        html?: string,
-        attachments?: any,
+        subject: string,
+        html: string,
+        attachments: any,
     ) {
         try {
             await this.transporter.sendMail({
