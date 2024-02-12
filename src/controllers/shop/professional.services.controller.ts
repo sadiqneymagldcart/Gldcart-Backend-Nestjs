@@ -5,12 +5,13 @@ import { ProfessionalServicesService } from "../../services/shop/professional-se
 import { ImageService } from "../../services/shop/image.service";
 import { multerMiddleware } from "../../middlewares/malter.middleware";
 import { requireAuth } from "../../middlewares/auth.middleware";
-import { ProfessionalService } from "../../models/shop/ProfessionalService";
+import { ProfessionalService } from "../../models/shop/product/ProfessionalService";
 
 @controller("/professional-services")
 export class ProfessionalServicesController {
     private readonly imageService: ImageService;
     private readonly servicesService: ProfessionalServicesService;
+
     public constructor(
         @inject(ProfessionalServicesService)
         servicesService: ProfessionalServicesService,
@@ -30,8 +31,10 @@ export class ProfessionalServicesController {
             const files = request.files as Express.Multer.File[];
             const images = await this.imageService.uploadImages(files);
 
-            if(images.length === 0) {
-                return response.status(400).json({ message: "At least one image is required." });
+            if (images.length === 0) {
+                return response
+                    .status(400)
+                    .json({ message: "At least one image is required." });
             }
 
             const serviceData: ProfessionalService = {
@@ -101,11 +104,11 @@ export class ProfessionalServicesController {
     ) {
         try {
             const category = request.params.category;
-            const services = await this.servicesService.getServicesByCategory(category);
+            const services =
+                await this.servicesService.getServicesByCategory(category);
             response.status(200).json(services);
         } catch (error) {
             next(error);
         }
     }
-
 }

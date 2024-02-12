@@ -12,7 +12,7 @@ import { requireAuth } from "../../middlewares/auth.middleware";
 
 @controller("/cart")
 export class CartController {
-    private cartService: CartService;
+    private readonly cartService: CartService;
     public constructor(@inject(CartService) cartService: CartService) {
         this.cartService = cartService;
     }
@@ -92,7 +92,7 @@ export class CartController {
         }
     }
 
-    @httpPost("/add-item", requireAuth)
+    @httpPost("/add-item")
     public async addItemToCartHandler(
         request: express.Request,
         response: express.Response,
