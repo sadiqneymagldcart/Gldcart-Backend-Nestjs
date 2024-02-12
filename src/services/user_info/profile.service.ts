@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { BaseService } from "../base.service";
 import { Logger } from "../../utils/logger";
-import UserModel from "../../models/user/User";
+import {UserModel} from "../../models/user/User";
 import { ApiError } from "../../exceptions/api.error";
 
 @injectable()

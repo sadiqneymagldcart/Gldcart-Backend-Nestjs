@@ -35,6 +35,7 @@ import "../controllers/shop/review.controller";
 import "../controllers/shop/product.controller";
 import "../controllers/shop/professional.services.controller";
 import "../controllers/shop/renting.controller";
+import "../controllers/shop/cart.controller";
 
 //Contact
 import "../controllers/contact/contact.controller";
@@ -48,6 +49,8 @@ import "../controllers/user_info/reset.password.controller";
 import "../controllers/stripe/payment.controller";
 //Verification
 import "../controllers/auth/verification.controller";
+import {STRIPE_SECRET_KEY, stripeConfig} from "./stripe.config";
+
 
 function bindAuthServices(container: Container) {
     container.bind(TokenService).toSelf();
@@ -57,10 +60,7 @@ function bindAuthServices(container: Container) {
 
 function bindStripeServices(container: Container) {
     container.bind(Stripe).toDynamicValue(() => {
-        return new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-            apiVersion: "2023-08-16",
-            typescript: true,
-        });
+        return new Stripe(STRIPE_SECRET_KEY, stripeConfig);
     });
     container.bind(PaymentService).toSelf();
     container.bind(StripeSubscriptionService).toSelf();

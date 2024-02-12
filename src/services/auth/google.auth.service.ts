@@ -10,7 +10,7 @@ import {IGoogleTokenResult} from "../../interfaces/IGoogleTokenResult";
 import {IOAuthValues} from "../../interfaces/IOAuthValues";
 import {IGoogleUserResult} from "../../interfaces/IGoogleUserResult";
 import {IGoogleUserInfo} from "../../interfaces/IGoogleUserInfo";
-import UserModel, {User} from "../../models/user/User";
+import {User, UserModel} from "../../models/user/User";
 
 @injectable()
 export class GoogleAuthService extends BaseService {
