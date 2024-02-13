@@ -44,7 +44,7 @@ export class WishlistController {
         try {
             const wishlist = await this.wishlistService.addItemToCart(
                 request.body.userId,
-                request.body,
+                request.body.item,
             );
             response.status(201).json(wishlist);
         } catch (error) {
