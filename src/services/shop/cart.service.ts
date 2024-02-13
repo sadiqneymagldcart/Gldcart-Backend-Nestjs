@@ -31,17 +31,13 @@ export class CartService extends BaseService {
         return await CartModel.findOne({ userId, "items.productId": productId });
     }
     public async addItemToCart(userId: string, item: CartItem) {
-        try {
-            return await CartModel.findOneAndUpdate(
-                { userId },
-                { $push: { items: item } },
-                { new: true, upsert: true},
-            );
-        } catch (err) {
-            console.log("Hi");
-            console.log(err);
-        }
+        return await CartModel.findOneAndUpdate(
+            { userId },
+            { $push: { items: item } },
+            { new: true, upsert: true },
+        );
     }
+
     public async updateCartItem(
         userId: string,
         productId: string,
@@ -53,13 +49,14 @@ export class CartService extends BaseService {
             { new: true },
         );
     }
-    public async deleteCartItem(userId: string, productId: string) {
+    public async removeItemFromCart(userId: string, productId: string) {
         return await CartModel.findOneAndUpdate(
             { userId },
             { $pull: { items: { productId } } },
             { new: true },
         );
     }
+
     public async clearCart(userId: string) {
         return await CartModel.findOneAndUpdate(
             { userId },
