@@ -19,7 +19,7 @@ export class WishlistController {
         this.wishlistService = wishlistService;
     }
 
-    @httpGet("/", requireAuth)
+    @httpGet("/:userId", requireAuth)
     public async getWishlistHandler(
         request: express.Request,
         response: express.Response,
@@ -27,7 +27,7 @@ export class WishlistController {
     ) {
         try {
             const wishlist = await this.wishlistService.getWishlistByUser(
-                request.body.userId,
+                request.params.userId,
             );
             response.status(200).json(wishlist);
         } catch (error) {
