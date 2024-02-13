@@ -1,15 +1,11 @@
 import * as express from "express";
-import { controller, httpPost } from "inversify-express-utils";
-import { multerMiddleware } from "../../middlewares/malter.middleware";
-import { uploadToCloudinary } from "../../utils/cloudinary.util";
-import { inject } from "inversify";
-import { IStorage } from "../../interfaces/Storage";
+import {controller, httpPost} from "inversify-express-utils";
+import {multerMiddleware} from "../../middlewares/malter.middleware";
+import {uploadToCloudinary} from "../../utils/cloudinary.util";
 
 @controller("/image")
 export class FileController {
-    private readonly storage: IStorage;
-    public constructor(@inject(IStorage) storage: IStorage) {
-        this.storage = storage;
+    public constructor() {
     }
 
     @httpPost("/", multerMiddleware.array("images", 2))
@@ -28,12 +24,13 @@ export class FileController {
 
             await Promise.all(uploadPromises);
 
-            res.status(200).json({ message: "Images uploaded successfully" });
+            res.status(200).json({message: 'Images uploaded successfully'});
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(500).json({error: error.message});
         }
     }
 
     @httpPost("")
-    public async() { }
+    public async() {
+    }
 }

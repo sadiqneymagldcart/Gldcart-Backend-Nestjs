@@ -1,7 +1,10 @@
 import { inject, injectable } from "inversify";
-import { Logger } from "../../utils/logger";
 import { BaseService } from "../base.service";
-import {UserModel} from "../../models/user/User";
+import { Logger } from "../../utils/logger";
+import {
+    WishlistItem,
+    WishlistModel,
+} from "../../models/shop/wishlist/Wishlist";
 
 @injectable()
 export class WishlistService extends BaseService {
@@ -9,46 +12,33 @@ export class WishlistService extends BaseService {
         super(logger);
     }
 
-    public async getWishlist(userId: string) {
-        const user = await UserModel.findById(userId);
-        if (user) {
-            return user.wishlist;
-        }
+    public async getWishlistByUser(userId: string) {
+        return await WishlistModel.findOne({ userId }).populate("items.productId");
+    }
+    public async addItemToCart(userId: string, item: WishlistItem) {
+        return await WishlistModel.findOneAndUpdate(
+            { userId },
+            { $push: { items: item } },
+            { new: true, upsert: true },
+        );
     }
 
-    public async addProductToWishlist(
+    public async updateCartItem(
         userId: string,
         productId: string,
+        item: WishlistItem,
     ) {
-        const user = await UserModel.findById(userId);
-        if (user) {
-            user.wishlist.push(productId);
-            await user.save();
-            this.logger.logInfo("Added product to wishlist:", user);
-        }
+        return await WishlistModel.findOneAndUpdate(
+            { userId, "items.productId": productId },
+            { $set: { "items.$": item } },
+            { new: true },
+        );
     }
-
-    public async updateWishlist(
-        userId: string,
-        wishlist: string[],
-    ) {
-        const user = await UserModel.findById(userId);
-        if (user) {
-            user.wishlist = wishlist;
-            await user.save();
-            this.logger.logInfo("Updated wishlist:", user);
-        }
-    }
-
-    public async removeProductFromWishlist(
-        userId: string,
-        productId: string,
-    ) {
-        const user = await UserModel.findById(userId);
-        if (user) {
-            user.wishlist = user.wishlist.filter((id) => id !== productId);
-            await user.save();
-            this.logger.logInfo("Removed product from wishlist:", user);
-        }
+    public async removeItemFromWishlist(userId: string, productId: string) {
+        return await WishlistModel.findOneAndUpdate(
+            { userId },
+            { $pull: { items: { productId } } },
+            { new: true },
+        );
     }
 }
