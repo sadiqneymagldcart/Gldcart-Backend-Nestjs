@@ -76,7 +76,7 @@ export class CartController {
         }
     }
 
-    @httpGet("/user/:userId", requireAuth)
+    @httpGet("/user/:userId")
     public async getCartByUserIdHandler(
         request: express.Request,
         response: express.Response,
@@ -127,16 +127,16 @@ export class CartController {
         }
     }
 
-    @httpDelete("/delete-item", requireAuth)
-    public async deleteItemFromCartHandler(
+    @httpDelete("/remove-item")
+    public async removeItemFromCartHandler(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
         try {
-            const cart = await this.cartService.deleteCartItem(
+            const cart = await this.cartService.removeItemFromCart(
                 request.body.userId,
-                request.body.itemId,
+                request.body.productId,
             );
             response.status(200).json(cart);
         } catch (error) {
