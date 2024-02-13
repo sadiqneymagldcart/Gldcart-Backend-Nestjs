@@ -49,6 +49,8 @@ import "../controllers/user_info/reset.password.controller";
 import "../controllers/stripe/payment.controller";
 //Verification
 import "../controllers/auth/verification.controller";
+import "../controllers/shop/wishlist.controller";
+
 import {STRIPE_SECRET_KEY, stripeConfig} from "./stripe.config";
 
 
