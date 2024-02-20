@@ -42,7 +42,7 @@ export class WishlistController {
         next: express.NextFunction,
     ) {
         try {
-            const wishlist = await this.wishlistService.addItemToCart(
+            const wishlist = await this.wishlistService.addItemToWishlist(
                 request.body.userId,
                 request.body.item,
             );
@@ -70,7 +70,7 @@ export class WishlistController {
         }
     }
 
-    @httpDelete("/", requireAuth)
+    @httpDelete("/")
     public async removeItemFromWishlistHandler(
         request: express.Request,
         response: express.Response,
