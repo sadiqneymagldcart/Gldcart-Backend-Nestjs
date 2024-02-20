@@ -13,7 +13,7 @@ export interface CartItem {
     total: number;
 }
 
-const CartItemSchema = new Schema<CartItem>(
+const cartItemSchema = new Schema<CartItem>(
     {
         product: { type: Schema.Types.ObjectId, ref: "Product" },
         quantity: { type: Number, default: 1 },
@@ -26,7 +26,7 @@ const CartItemSchema = new Schema<CartItem>(
 export const cartSchema = new Schema<Cart>(
     {
         userId: { type: Schema.Types.ObjectId, ref: "User" },
-        items: [CartItemSchema],
+        items: [cartItemSchema],
         total: { type: Number, required: false },
     },
     { timestamps: true },
