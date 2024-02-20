@@ -25,7 +25,7 @@ export const ProductSchema = new Schema<Product>({
 });
 
 ProductSchema.index({
-    name: "text",
+    product_name: "text",
     category: "text",
     subcategory: "text",
 });
