@@ -13,7 +13,7 @@ export class WishlistService extends BaseService {
     }
 
     public async getWishlistByUser(userId: string) {
-        return await WishlistModel.findOne({ userId }).populate("items.productId");
+        return await WishlistModel.findOne({ userId });
     }
     public async addItemToCart(userId: string, item: WishlistItem) {
         return await WishlistModel.findOneAndUpdate(
