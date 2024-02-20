@@ -6,14 +6,14 @@ import { multerMiddleware } from "../middlewares/malter.middleware";
 
 @controller("/files")
 export class FileController {
-    private readonly fileService: FileService;
-    public constructor(@inject(FileService) fileService: FileService) {
-        this.fileService = fileService;
+    private readonly imageService: FileService;
+    public constructor(@inject(FileService) imageService: FileService) {
+        this.imageService = imageService;
     }
 
     @httpGet("/", multerMiddleware.any())
     public async uploadFiles(files: Express.Multer.File[]): Promise<string[]> {
-        return await this.fileService.uploadImagesWithCloudinary(files);
+        return await this.imageService.uploadImagesWithCloudinary(files);
     }
 
     @httpGet("/aws", multerMiddleware.any())
@@ -24,7 +24,7 @@ export class FileController {
     ) {
         try {
             const files = request.files as Express.Multer.File[];
-            const url = await this.fileService.uploadImagesWithAws(files);
+            const url = await this.imageService.uploadImagesWithAws(files);
             response.status(200).json(url);
         } catch (error) {
             next(error);
