@@ -13,9 +13,9 @@ export class WishlistService extends BaseService {
     }
 
     public async getWishlistByUser(userId: string) {
-        return await WishlistModel.findOne({ userId });
+        return await WishlistModel.findOne({ userId }).populate("items.product");
     }
-    public async addItemToCart(userId: string, item: WishlistItem) {
+    public async addItemToWishlist(userId: string, item: WishlistItem) {
         return await WishlistModel.findOneAndUpdate(
             { userId },
             { $push: { items: item } },
@@ -29,7 +29,7 @@ export class WishlistService extends BaseService {
         item: WishlistItem,
     ) {
         return await WishlistModel.findOneAndUpdate(
-            { userId, "items.productId": productId },
+            { userId, "items.product": productId },
             { $set: { "items.$": item } },
             { new: true },
         );

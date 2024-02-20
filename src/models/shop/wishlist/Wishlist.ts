@@ -6,12 +6,12 @@ export interface Wishlist extends Document {
 }
 
 export interface WishlistItem {
-    productId: Schema.Types.ObjectId;
+    product: Schema.Types.ObjectId;
 }
 
 const wishlistItemSchema = new Schema<WishlistItem>(
     {
-        productId: { type: Schema.Types.ObjectId, ref: "Product" },
+        product: { type: Schema.Types.ObjectId, ref: "Product" },
     },
     { timestamps: true },
 );
