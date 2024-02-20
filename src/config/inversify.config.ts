@@ -35,6 +35,7 @@ import "../controllers/shop/product.controller";
 import "../controllers/shop/professional.services.controller";
 import "../controllers/shop/renting.controller";
 import "../controllers/shop/cart.controller";
+import "../controllers/shop/global.search.controller";
 
 //Contact
 import "../controllers/contact/contact.controller";
@@ -54,6 +55,7 @@ import "../controllers/file.controller";
 import {STRIPE_SECRET_KEY, stripeConfig} from "./stripe.config";
 import { FileService } from "../services/shop/image.service";
 import { AwsStorage } from "../storages/aws.storage";
+import { SearchService } from "../services/shop/global.search.service";
 
 
 function bindAuthServices(container: Container) {
@@ -100,6 +102,7 @@ function bindShopServices(container: Container) {
     container.bind(CartService).toSelf();
     container.bind(WishlistService).toSelf();
     container.bind(OrderService).toSelf();
+    container.bind(SearchService).toSelf();
 }
 
 function bindVerificationService(container: Container) {
