@@ -9,20 +9,34 @@ import { ProductService } from "../../services/shop/product.service";
 import { inject } from "inversify";
 import { requireAuth } from "../../middlewares/auth.middleware";
 import { multerMiddleware } from "../../middlewares/malter.middleware";
-import { ImageService } from "../../services/shop/image.service";
+import { FileService } from "../../services/shop/image.service";
 import { Product } from "../../models/shop/product/Product";
+import { PutObjectCommand, S3, S3Client } from "@aws-sdk/client-s3";
+
+const bucketName = process.env.BUCKET_NAME;
+const bucketRegion = process.env.BUCKET_REGION;
+const accessKey = process.env.AWS_ACCESS;
+const secretKey = process.env.AWS_SECRET;
+
+const s3 = new S3Client({
+    region: bucketRegion,
+    credentials: {
+        accessKeyId: accessKey,
+        secretAccessKey: secretKey,
+    },
+});
 
 @controller("/products")
 export class ProductController {
     private readonly productService: ProductService;
-    private readonly imageService: ImageService;
+    private readonly fileService: FileService;
 
     public constructor(
         @inject(ProductService) productService: ProductService,
-        @inject(ImageService) imageService: ImageService,
+        @inject(FileService) fileService: FileService,
     ) {
         this.productService = productService;
-        this.imageService = imageService;
+        this.fileService = fileService;
     }
 
     @httpPost("/", multerMiddleware.any(), requireAuth)
@@ -33,11 +47,22 @@ export class ProductController {
     ) {
         try {
             const files = request.files as Express.Multer.File[];
-            const images = await this.imageService.uploadImages(files);
+
+            const params = {
+                Bucket: bucketName,
+                Key: files[0].originalname,
+                Body: files[0].buffer,
+                ContentType: files[0].mimetype,
+            };
+
+            const command = new PutObjectCommand(params);
+            await s3.send(command);
+
+            // const images = await this.imageService.uploadImages(files);
 
             const productData: Product = {
                 ...request.body,
-                images: images,
+                images: files,
             };
             const product = await this.productService.addProduct(productData);
             response.status(201).json(product);
