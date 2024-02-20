@@ -1,7 +1,9 @@
+import { injectable } from "inversify";
 import { Storage } from "../interfaces/Storage";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
-export class AW3Storage implements Storage {
+@injectable()
+export class AwsStorage implements Storage {
     private readonly s3: S3Client;
     private readonly bucketName: string;
     private readonly bucketRegion: string;

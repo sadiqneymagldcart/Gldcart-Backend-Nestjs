@@ -19,7 +19,7 @@ export class WishlistController {
         this.wishlistService = wishlistService;
     }
 
-    @httpGet("/:userId", requireAuth)
+    @httpGet("/:userId")
     public async getWishlistHandler(
         request: express.Request,
         response: express.Response,
