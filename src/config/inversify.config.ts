@@ -53,6 +53,7 @@ import "../controllers/file.controller";
 
 import {STRIPE_SECRET_KEY, stripeConfig} from "./stripe.config";
 import { FileService } from "../services/shop/image.service";
+import { AwsStorage } from "../storages/aws.storage";
 
 
 function bindAuthServices(container: Container) {
@@ -79,6 +80,10 @@ function bindMailServices(container: Container) {
 
 function bindContactServices(container: Container) {
     container.bind(AddressService).toSelf();
+}
+
+function bindStorages(container: Container) {
+    container.bind(AwsStorage).toSelf();
 }
 
 function bindUserInfoServices(container: Container) {
@@ -113,6 +118,7 @@ loadEnvironmentVariables();
 
 const container = initializeContainer();
 bindAuthServices(container);
+bindStorages(container);
 bindStripeServices(container);
 bindMailServices(container);
 bindContactServices(container);
