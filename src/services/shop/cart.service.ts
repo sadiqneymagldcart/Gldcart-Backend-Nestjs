@@ -10,27 +10,36 @@ export class CartService extends BaseService {
     }
 
     public async createCart(cart: Cart) {
+        this.logger.logInfo(`Creating cart for user ${cart.userId}`);
         return await CartModel.create(cart);
     }
 
     public async updateCart(userId: string, cart: Cart) {
+        this.logger.logInfo(`Updating cart for user ${userId}`);
         return await CartModel.findOneAndUpdate({ userId }, cart, { new: true });
     }
 
     public async deleteCart(userId: string) {
+        this.logger.logInfo(`Deleting cart for user ${userId}`);
         return await CartModel.findOneAndDelete({ userId });
     }
 
     public async getCartById(cartId: string) {
+        this.logger.logInfo(`Getting cart with id ${cartId}`);
         return await CartModel.findById(cartId).populate("items.productId");
     }
     public async getCartByUserId(userId: string) {
-        return await CartModel.findOne({ userId }).populate("items.productId");
+        this.logger.logInfo(`Getting cart for user ${userId}`);
+        return await CartModel.findOne({ userId });
     }
     public async getCartByUserIdAndProductId(userId: string, productId: string) {
+        this.logger.logInfo(
+            `Getting cart for user ${userId} with product id ${productId}`,
+        );
         return await CartModel.findOne({ userId, "items.productId": productId });
     }
     public async addItemToCart(userId: string, item: CartItem) {
+        this.logger
         return await CartModel.findOneAndUpdate(
             { userId },
             { $push: { items: item } },
