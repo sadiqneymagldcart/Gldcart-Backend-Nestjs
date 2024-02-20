@@ -26,11 +26,11 @@ export class CartService extends BaseService {
 
     public async getCartById(cartId: string) {
         this.logger.logInfo(`Getting cart with id ${cartId}`);
-        return await CartModel.findById(cartId).populate("items.productId");
+        return await CartModel.findById(cartId).populate("items.product");
     }
     public async getCartByUserId(userId: string) {
         this.logger.logInfo(`Getting cart for user ${userId}`);
-        return await CartModel.findOne({ userId });
+        return await CartModel.findOne({ userId }).populate("items.product");
     }
     public async getCartByUserIdAndProductId(userId: string, productId: string) {
         this.logger.logInfo(
