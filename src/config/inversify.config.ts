@@ -9,7 +9,6 @@ import Stripe from "stripe";
 import { Transporter } from "nodemailer";
 import { ReviewService } from "../services/shop/review.service";
 import { ProductService } from "../services/shop/product.service";
-import { ImageService } from "../services/shop/image.service";
 import { ProfessionalServicesService } from "../services/shop/professional-services.service";
 import { AddressService } from "../services/user_info/address.service";
 import { PasswordService } from "../services/user_info/reset.password.service";
@@ -50,8 +49,10 @@ import "../controllers/stripe/payment.controller";
 //Verification
 import "../controllers/auth/verification.controller";
 import "../controllers/shop/wishlist.controller";
+import "../controllers/file.controller";
 
 import {STRIPE_SECRET_KEY, stripeConfig} from "./stripe.config";
+import { FileService } from "../services/shop/image.service";
 
 
 function bindAuthServices(container: Container) {
@@ -87,7 +88,7 @@ function bindUserInfoServices(container: Container) {
 
 function bindShopServices(container: Container) {
     container.bind(ReviewService).toSelf();
-    container.bind(ImageService).toSelf();
+    container.bind(FileService).toSelf();
     container.bind(ProductService).toSelf();
     container.bind(ProfessionalServicesService).toSelf();
     container.bind(RentingService).toSelf();
@@ -106,6 +107,7 @@ function initializeContainer(): Container {
     container.bind(Logger).toSelf();
     return container;
 }
+
 
 loadEnvironmentVariables();
 

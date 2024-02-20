@@ -4,15 +4,15 @@ import { ProfileService } from "../../services/user_info/profile.service";
 import { inject } from "inversify";
 import { multerMiddleware } from "../../middlewares/malter.middleware";
 import { requireAuth } from "../../middlewares/auth.middleware";
-import { ImageService } from "../../services/shop/image.service";
+import { FileService } from "../../services/shop/image.service";
 
 @controller("/personal")
 export class ProfileController {
     private readonly profileService: ProfileService;
-    private readonly imageService: ImageService;
+    private readonly imageService: FileService;
     constructor(
         @inject(ProfileService) profileService: ProfileService,
-        @inject(ImageService) imageService: ImageService,
+        @inject(FileService) imageService: FileService,
     ) {
         this.profileService = profileService;
         this.imageService = imageService;
@@ -26,7 +26,7 @@ export class ProfileController {
     ) {
         try {
             const files = request.files as Express.Multer.File[];
-            const images = await this.imageService.uploadImages(files);
+            const images = await this.imageService.uploadImagesWithCloudinary(files);
 
             const { userId } = request.body;
 
