@@ -2,23 +2,23 @@ import * as express from "express";
 import { inject } from "inversify";
 import { controller, httpGet, httpPost } from "inversify-express-utils";
 import { ProfessionalServicesService } from "../../services/shop/professional-services.service";
-import { ImageService } from "../../services/shop/image.service";
+import { FileService } from "../../services/shop/image.service";
 import { multerMiddleware } from "../../middlewares/malter.middleware";
 import { requireAuth } from "../../middlewares/auth.middleware";
 import { ProfessionalService } from "../../models/shop/product/ProfessionalService";
 
 @controller("/professional-services")
 export class ProfessionalServicesController {
-    private readonly imageService: ImageService;
+    private readonly fileService: FileService;
     private readonly servicesService: ProfessionalServicesService;
 
     public constructor(
         @inject(ProfessionalServicesService)
         servicesService: ProfessionalServicesService,
-        @inject(ImageService) imageService: ImageService,
+        @inject(FileService) fileService: FileService,
     ) {
         this.servicesService = servicesService;
-        this.imageService = imageService;
+        this.fileService = fileService;
     }
 
     @httpPost("/", multerMiddleware.any(), requireAuth)
@@ -29,7 +29,7 @@ export class ProfessionalServicesController {
     ) {
         try {
             const files = request.files as Express.Multer.File[];
-            const images = await this.imageService.uploadImages(files);
+            const images = await this.fileService.uploadImagesWithAws(files);
 
             if (images.length === 0) {
                 return response
