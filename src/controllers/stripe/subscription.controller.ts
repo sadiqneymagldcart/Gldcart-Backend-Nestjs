@@ -1,8 +1,8 @@
 import * as express from "express";
-import {StripeSubscriptionService} from "../../services/stripe/stripe.subscription.service";
-import {inject, injectable} from "inversify";
-import {httpGet, httpPut} from "inversify-express-utils";
-import {requireAuth} from "../../middlewares/auth.middleware";
+import { StripeSubscriptionService } from "../../services/stripe/stripe.subscription.service";
+import { inject, injectable } from "inversify";
+import { httpGet, httpPut } from "inversify-express-utils";
+import { requireAuth } from "../../middlewares/auth.middleware";
 
 @injectable()
 export class SubscriptionController {
@@ -10,7 +10,7 @@ export class SubscriptionController {
 
     constructor(
         @inject(StripeSubscriptionService)
-            subscriptionService: StripeSubscriptionService,
+        subscriptionService: StripeSubscriptionService,
     ) {
         this.subscriptionService = subscriptionService;
     }
@@ -21,14 +21,14 @@ export class SubscriptionController {
         response: express.Response,
         nextFunction: express.NextFunction,
     ): Promise<void> {
-        const {userId, lookup_key} = request.body;
+        const { userId, lookup_key } = request.body;
         try {
             const checkoutUrl =
                 await this.subscriptionService.createSubscriptionCheckout(
                     userId,
                     lookup_key,
                 );
-            response.json({url: checkoutUrl});
+            response.json({ url: checkoutUrl });
         } catch (error) {
             nextFunction(error);
         }

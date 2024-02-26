@@ -48,13 +48,7 @@ export class GoogleAuthController {
             };
 
             const result = await this.googleAuthService.loginGoogleUser(userInfo);
-
             setRefreshTokenCookie(response, result.tokens.refreshToken);
-            // response.cookie("refreshToken", result.tokens.refreshToken, {
-            //     httpOnly: true,
-            //     maxAge: process.env.COOKIES_MAX_AGE as unknown as number,
-            // });
-
             const redirectURL = `${process.env.CLIENT_URL}` as string;
             response.redirect(redirectURL);
         } catch (error) {

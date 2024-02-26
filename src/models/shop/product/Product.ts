@@ -28,6 +28,7 @@ ProductSchema.index({
     product_name: "text",
     category: "text",
     subcategory: "text",
+    attributes: "text",
 });
 
 export const ProductModel = mongoose.model(

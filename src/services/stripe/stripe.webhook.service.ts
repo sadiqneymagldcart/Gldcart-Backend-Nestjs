@@ -1,8 +1,8 @@
 import Stripe from "stripe";
-import {OrderService} from "../shop/order.service";
-import {BaseService} from "../base.service";
-import {Logger} from "../../utils/logger";
-import {inject, injectable} from "inversify";
+import { OrderService } from "../shop/order.service";
+import { BaseService } from "../base.service";
+import { Logger } from "../../utils/logger";
+import { inject, injectable } from "inversify";
 
 @injectable()
 export class StripeWebhookService extends BaseService {
@@ -43,10 +43,10 @@ export class StripeWebhookService extends BaseService {
         switch (eventType) {
             case "checkout.session.completed":
                 try {
-                    const customer = await this.stripe.customers.retrieve(
+                    await this.stripe.customers.retrieve(
                         (data as { customer: string }).customer,
                     );
-                    await this.orderService.placeStripeOrder(customer, data);
+                    await this.orderService.placeStripeOrder(data);
                 } catch (error: any) {
                     this.logger.logError(
                         "Error handling checkout session completion",
@@ -58,7 +58,6 @@ export class StripeWebhookService extends BaseService {
                 this.logger.logInfo(`Unhandled event type ${event.type}`);
                 return false;
         }
-
         return true;
     }
 }

@@ -31,7 +31,6 @@ export class ContactController {
                 : null;
             const recipientEmail = email || userData?.email;
             if (recipientEmail) {
-                /* await this.mailService.sendContactMail(name, recipientEmail, subject, message); */
                 await this.mailService.sendHtmlEmail(
                     "GLDCart Feedback",
                     process.env.FEEDBACK_EMAIL,
