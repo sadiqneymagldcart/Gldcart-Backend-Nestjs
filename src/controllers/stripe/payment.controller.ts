@@ -39,7 +39,6 @@ export class PaymentController {
         next: express.NextFunction,
     ): Promise<void> {
         try {
-
             const checkoutUrl = await this.paymentService.createPaymentCheckout(
                 request.body,
             );
@@ -58,7 +57,6 @@ export class PaymentController {
         const { amount, currency } = request.body;
         try {
             const intent = await this.paymentService.createIntent(amount, currency);
-            // save order here 
             response.json({ client_secret: intent.client_secret });
         } catch (error) {
             next(error);
@@ -71,13 +69,26 @@ export class PaymentController {
         response: express.Response,
         next: express.NextFunction,
     ): Promise<void> {
+        let event = request.body;
+        const signature = request.headers["stripe-signature"] as string;
         try {
-            console.log("Webhook received");
-            const event = request.body;
-            console.log(event);
-            // await this.paymentService.webhook(event);
-            await this.orderService.placeStripeOrder(event);
-            response.send({ received: true });
+            event = this.paymentService.verifyWebhook(
+                signature,
+                JSON.stringify(event),
+            );
+            switch (event.type) {
+                case "payment_intent.succeeded":
+                    const paymentIntent = event.data.object;
+                    await this.orderService.updateOrderStatus(paymentIntent.id, "paid");
+                    break;
+                case "payment_intent.payment_failed":
+                    const paymentIntentFailed = event.data.object;
+                    await this.orderService.updateOrderStatus(paymentIntentFailed.id, "failed");
+                    break;
+                default:
+                    break;
+            }
+            response.json({ received: true });
         } catch (error) {
             next(error);
         }
