@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema } from "mongoose";
 
 interface RentingAttributes {
     [key: string]: string;
@@ -40,12 +40,10 @@ export const RentingSchema = new Schema<Renting>({
 });
 
 RentingSchema.index({
-    renting_name: 'text',
-    category: 'text',
-    subcategory: 'text',
+    renting_name: "text",
+    category: "text",
+    subcategory: "text",
+    attributes: "text",
 });
 
-export const RentingModel = mongoose.model<Renting>(
-    'Renting',
-    RentingSchema,
-);
+export const RentingModel = mongoose.model<Renting>("Renting", RentingSchema);

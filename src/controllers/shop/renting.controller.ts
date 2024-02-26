@@ -4,19 +4,20 @@ import { controller, httpGet, httpPost } from "inversify-express-utils";
 import { RentingService } from "../../services/shop/renting.service";
 import { multerMiddleware } from "../../middlewares/malter.middleware";
 import { requireAuth } from "../../middlewares/auth.middleware";
-import { FileService } from "../../services/shop/image.service";
 import { Renting } from "../../models/shop/product/Renting";
+import { AwsStorage } from "../../storages/aws.storage";
 
 @controller("/renting")
 export class RentingController {
-    private readonly imageService: FileService;
     private readonly rentingService: RentingService;
+    private readonly storage: AwsStorage;
+
     public constructor(
         @inject(RentingService) rentingService: RentingService,
-        @inject(FileService) imageService: FileService,
+        @inject(AwsStorage) storage: AwsStorage,
     ) {
         this.rentingService = rentingService;
-        this.imageService = imageService;
+        this.storage = storage;
     }
 
     @httpPost("/", multerMiddleware.any(), requireAuth)
@@ -27,7 +28,7 @@ export class RentingController {
     ) {
         try {
             const files = request.files as Express.Multer.File[];
-            const images = await this.imageService.uploadImagesWithCloudinary(files);
+            const images = await this.storage.upload(files);
 
             const rentingData: Renting = {
                 ...request.body,
@@ -62,7 +63,8 @@ export class RentingController {
     ) {
         try {
             const category = request.params.category;
-            const rentings = await this.rentingService.getRentingsByCategory(category);
+            const rentings =
+                await this.rentingService.getRentingsByCategory(category);
             response.status(200).json(rentings);
         } catch (error) {
             next(error);

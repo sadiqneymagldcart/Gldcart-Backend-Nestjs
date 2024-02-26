@@ -1,11 +1,11 @@
 import mongoose, {Document, Model, Schema} from 'mongoose';
 
-export interface IToken extends Document {
+export interface Token extends Document {
     user: Schema.Types.ObjectId;
     refreshToken: string;
 }
 
-const tokenSchema = new Schema<IToken>({
+const tokenSchema = new Schema<Token>({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User'
@@ -16,6 +16,6 @@ const tokenSchema = new Schema<IToken>({
     },
 });
 
-const TokenModel: Model<IToken> = mongoose.model('Token', tokenSchema) as Model<IToken>;
+const TokenModel: Model<Token> = mongoose.model('Token', tokenSchema) as Model<Token>;
 
 export default TokenModel;
