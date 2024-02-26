@@ -12,19 +12,6 @@ export class SearchService extends BaseService {
     }
 
     public async searchGlobally(query: string) {
-        this.logger.logInfo(
-            `Searching for products, rentings and services with query: ${query}`,
-        );
-        const products = await ProductModel.find({ $text: { $search: query } });
-        const rentings = await RentingModel.find({ $text: { $search: query } });
-        const services = await ServicesModel.find({ $text: { $search: query } });
-        return { products, rentings, services };
-    }
-
-    public async searchGloballyByLetter(query: string) {
-        this.logger.logInfo(
-            `Searching for products, rentings and services with query: ${query}`,
-        );
         const products = await ProductModel.find({
             $or: [
                 { product_name: { $regex: `^${query}`, $options: "i" } },
@@ -48,4 +35,4 @@ export class SearchService extends BaseService {
         });
         return { products, rentings, services };
     }
-    }
+}

@@ -4,13 +4,13 @@ import {Logger} from "../../utils/logger";
 import {ApiError} from "../../exceptions/api.error";
 import axios, {AxiosResponse} from "axios";
 import * as qs from "qs";
-import {IToken} from "../../models/user/Token";
+import {Token} from "../../models/user/Token";
 import {inject, injectable} from "inversify";
-import {IGoogleTokenResult} from "../../interfaces/IGoogleTokenResult";
-import {IOAuthValues} from "../../interfaces/IOAuthValues";
-import {IGoogleUserResult} from "../../interfaces/IGoogleUserResult";
-import {IGoogleUserInfo} from "../../interfaces/IGoogleUserInfo";
 import {User, UserModel} from "../../models/user/User";
+import { GoogleTokenResult } from "../../interfaces/GoogleTokenResult";
+import { GoogleUserInfo } from "../../interfaces/GoogleUserInfo";
+import { GoogleUserResult } from "../../interfaces/GoogleUserResult";
+import { OAuthValues } from "../../interfaces/OAuthValues";
 
 @injectable()
 export class GoogleAuthService extends BaseService {
@@ -21,7 +21,7 @@ export class GoogleAuthService extends BaseService {
         this.tokenService = tokenService;
     }
 
-    public async loginGoogleUser(userInfo: IGoogleUserInfo) {
+    public async loginGoogleUser(userInfo: GoogleUserInfo) {
         const user = await this.updateOrCreateGoogleUser(userInfo);
         return this.authenticateWithGoogle(user, userInfo.picture);
     }
@@ -30,7 +30,7 @@ export class GoogleAuthService extends BaseService {
         code,
     }: {
         code: string;
-    }): Promise<IGoogleTokenResult | undefined> {
+    }): Promise<GoogleTokenResult | undefined> {
         const values = this.getOAuthValues(code);
         try {
             const googleResponse = await this.postToUrl(
@@ -47,7 +47,7 @@ export class GoogleAuthService extends BaseService {
     public async getGoogleUser(
         id_token: string,
         access_token: string,
-    ): Promise<IGoogleUserResult | undefined> {
+    ): Promise<GoogleUserResult | undefined> {
         try {
             const res = await this.getGoogleUserInfo(id_token, access_token);
             return res.data;
@@ -56,14 +56,14 @@ export class GoogleAuthService extends BaseService {
         }
     }
 
-    private async updateOrCreateGoogleUser(googleUserData: IGoogleUserInfo) {
+    private async updateOrCreateGoogleUser(googleUserData: GoogleUserInfo) {
         let existingUser = await UserModel.findOne({email: googleUserData.email});
         if (!existingUser)
             existingUser = await this.createGoogleUser(googleUserData);
         return existingUser;
     }
 
-    private async createGoogleUser(googleUserData: IGoogleUserInfo) {
+    private async createGoogleUser(googleUserData: GoogleUserInfo) {
         const firstName = googleUserData.name.split(" ")[0];
 
         const newUser = await UserModel.create({
@@ -87,13 +87,13 @@ export class GoogleAuthService extends BaseService {
             email: user.email,
         };
 
-        const tokens: IToken =
+        const tokens: Token =
             await this.tokenService.createAndSaveTokens(userInfo);
         this.logger.logInfo(`User logged in with Google: ${user.email}`);
         return { tokens, user: userInfo, picture: picture };
     }
 
-    private getOAuthValues(code: string): IOAuthValues {
+    private getOAuthValues(code: string): OAuthValues {
         return {
             code,
             client_id: process.env.GOOGLE_CLIENT_ID!,
@@ -113,15 +113,15 @@ export class GoogleAuthService extends BaseService {
 
     private async postToUrl(
         url: string,
-        values: IOAuthValues,
-    ): Promise<AxiosResponse<IGoogleTokenResult>> {
-        return await axios.post<IGoogleTokenResult>(url, qs.stringify(values), {
+        values: OAuthValues,
+    ): Promise<AxiosResponse<GoogleTokenResult>> {
+        return await axios.post<GoogleTokenResult>(url, qs.stringify(values), {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         });
     }
 
     private async getGoogleUserInfo(id_token: string, access_token: string) {
-        return await axios.get<IGoogleUserResult>(
+        return await axios.get<GoogleUserResult>(
             `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
             {
                 headers: { Authorization: `Bearer ${id_token}` },

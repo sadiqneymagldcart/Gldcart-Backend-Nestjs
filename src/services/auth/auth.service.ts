@@ -1,13 +1,13 @@
-import {TokenService} from "../token/token.service";
-import {Logger} from "../../utils/logger";
-import {BaseService} from "../base.service";
-import {ApiError} from "../../exceptions/api.error";
-import {IToken} from "../../models/user/Token";
+import { TokenService } from "../token/token.service";
+import { Logger } from "../../utils/logger";
+import { BaseService } from "../base.service";
+import { ApiError } from "../../exceptions/api.error";
+import { Token } from "../../models/user/Token";
 import * as bcrypt from "bcrypt";
-import {inject, injectable} from "inversify";
-import {User, UserModel} from "../../models/user/User";
-import {UserDto} from "../../dto/UserDto";
-import {ITokens} from "../../interfaces/ITokens";
+import { inject, injectable } from "inversify";
+import { User, UserModel } from "../../models/user/User";
+import { Tokens } from "../../interfaces/Tokens";
+import { UserDto } from "../../dto/user.dto";
 
 @injectable()
 export class AuthService extends BaseService {
@@ -43,7 +43,7 @@ export class AuthService extends BaseService {
     }
 
     public async login(email: string, password: string) {
-        const user: User = <User>await UserModel.findOne({email});
+        const user: User = <User>await UserModel.findOne({ email });
         if (user) {
             const auth = await bcrypt.compare(password, user.password);
             if (auth) {
@@ -68,7 +68,7 @@ export class AuthService extends BaseService {
         }
         const userData = this.tokenService.validateRefreshToken(refreshToken);
 
-        const tokenFromDb: IToken | null =
+        const tokenFromDb: Token | null =
             await this.tokenService.findToken(refreshToken);
 
         if (!userData || !tokenFromDb) {
@@ -81,7 +81,7 @@ export class AuthService extends BaseService {
     }
 
     private async doesUserExist(email: string) {
-        const existingUser = await UserModel.findOne({email});
+        const existingUser = await UserModel.findOne({ email });
         return Boolean(existingUser);
     }
 
@@ -98,7 +98,7 @@ export class AuthService extends BaseService {
         try {
             const userDto = new UserDto(user);
 
-            const tokens: ITokens = this.tokenService.createTokens({ ...userDto });
+            const tokens: Tokens = this.tokenService.createTokens({ ...userDto });
 
             await this.tokenService.saveToken(userDto.id, tokens.refreshToken);
             if (logMessage) {

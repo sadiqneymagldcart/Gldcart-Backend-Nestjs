@@ -1,10 +1,10 @@
 import * as jwt from "jsonwebtoken";
-import TokenModel, { IToken } from "../../models/user/Token";
+import TokenModel, { Token } from "../../models/user/Token";
 import { Logger } from "../../utils/logger";
 import { BaseService } from "../base.service";
 import { inject, injectable } from "inversify";
-import { ITokens } from "../../interfaces/ITokens";
-import { ITokenPayload } from "../../interfaces/ITokenPayload";
+import { TokenPayload } from "../../interfaces/TokenPayload";
+import { Tokens } from "../../interfaces/Tokens";
 
 @injectable()
 export class TokenService extends BaseService {
@@ -12,7 +12,7 @@ export class TokenService extends BaseService {
         super(logger);
     }
 
-    createTokens(payload: ITokenPayload): ITokens {
+    createTokens(payload: TokenPayload): Tokens {
         const accessToken: string = jwt.sign(
             payload,
             process.env.JWT_ACCESS_SECRET!,
@@ -30,11 +30,8 @@ export class TokenService extends BaseService {
         return { accessToken, refreshToken };
     }
 
-    public async saveToken(
-        userId: string,
-        refreshToken: string,
-    ): Promise<IToken> {
-        const tokenData = <IToken>await TokenModel.findOne({ user: userId });
+    public async saveToken(userId: string, refreshToken: string): Promise<Token> {
+        const tokenData = <Token>await TokenModel.findOne({ user: userId });
         if (tokenData) {
             tokenData.refreshToken = refreshToken;
             return tokenData.save();
@@ -42,7 +39,7 @@ export class TokenService extends BaseService {
         return await TokenModel.create({ user: userId, refreshToken });
     }
 
-    public async createAndSaveTokens(payload: ITokenPayload): Promise<IToken> {
+    public async createAndSaveTokens(payload: TokenPayload): Promise<Token> {
         try {
             const { refreshToken } = this.createTokens(payload);
             console.log(refreshToken);
@@ -59,7 +56,7 @@ export class TokenService extends BaseService {
         return TokenModel.deleteOne({ refreshToken });
     }
 
-    public async findToken(refreshToken: string): Promise<IToken | null> {
+    public async findToken(refreshToken: string): Promise<Token | null> {
         return TokenModel.findOne({ refreshToken });
     }
 

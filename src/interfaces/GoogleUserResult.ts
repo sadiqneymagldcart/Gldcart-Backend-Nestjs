@@ -1,4 +1,4 @@
-export interface IGoogleUserResult {
+export interface GoogleUserResult {
     id: string;
     email: string;
     verified_email: boolean;

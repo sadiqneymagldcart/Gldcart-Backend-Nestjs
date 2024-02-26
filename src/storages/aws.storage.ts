@@ -29,6 +29,7 @@ export class AwsStorage implements Storage {
             files.forEach(async (file) => {
                 const params = {
                     Bucket: this.bucketName,
+                    // Region: this.bucketRegion,
                     Key: this.randomFileName(file.originalname),
                     Body: file.buffer,
                     ContentType: file.mimetype,

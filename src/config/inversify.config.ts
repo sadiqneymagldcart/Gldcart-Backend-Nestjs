@@ -4,7 +4,7 @@ import { TokenService } from "../services/token/token.service";
 import { AuthService } from "../services/auth/auth.service";
 import { GoogleAuthService } from "../services/auth/google.auth.service";
 import { MailService } from "../services/mail/mail.service";
-import { PaymentService } from "../services/stripe/payment.service";
+import { StripeService } from "../services/stripe/payment.service";
 import Stripe from "stripe";
 import { Transporter } from "nodemailer";
 import { ReviewService } from "../services/shop/review.service";
@@ -36,6 +36,7 @@ import "../controllers/shop/professional.services.controller";
 import "../controllers/shop/renting.controller";
 import "../controllers/shop/cart.controller";
 import "../controllers/shop/global.search.controller";
+import "../controllers/shop/order.controller";
 
 //Contact
 import "../controllers/contact/contact.controller";
@@ -68,7 +69,7 @@ function bindStripeServices(container: Container) {
     container.bind(Stripe).toDynamicValue(() => {
         return new Stripe(STRIPE_SECRET_KEY, stripeConfig);
     });
-    container.bind(PaymentService).toSelf();
+    container.bind(StripeService).toSelf();
     container.bind(StripeSubscriptionService).toSelf();
     container.bind(StripeWebhookService).toSelf();
 }

@@ -1,5 +1,5 @@
 import * as express from "express";
-import {Application} from "express";
+import { Application } from "express";
 import * as compression from "compression";
 import * as cookieParser from "cookie-parser";
 import * as cors from "cors";
@@ -18,9 +18,8 @@ export function serverConfig(app: Application) {
 
     app.use("/webhook", bodyParser.raw({ type: "*/*" }));
 
-    app.use(express.urlencoded({extended: false}));
+    app.use(express.urlencoded({ extended: false }));
     app.use(express.json());
 
     app.use(cookieParser());
-
 }
