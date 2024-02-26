@@ -4,6 +4,7 @@ import { BaseService } from "../base.service";
 import { inject, injectable } from "inversify";
 import { CartItem } from "../../models/shop/cart/Cart";
 import { CheckoutRequestBody } from "../../interfaces/CheckoutRequestBody";
+import { ApiError } from "../../exceptions/api.error";
 
 @injectable()
 export class StripeService extends BaseService {
@@ -15,6 +16,22 @@ export class StripeService extends BaseService {
     ) {
         super(logger);
         this.stripe = stripe;
+    }
+
+    public async verifyWebhook(
+        signature: string,
+        payload: string,
+    ): Promise<Stripe.Event> {
+        try {
+            return this.stripe.webhooks.constructEvent(
+                payload,
+                signature,
+                process.env.STRIPE_WEBHOOK_SECRET,
+            );
+        } catch (error: any) {
+            this.logger.logError("Failed to verify webhook", error);
+            throw ApiError.BadRequest("Webhook verification failed");
+        }
     }
 
     public async createCustomer(email: string, name: string): Promise<string> {
@@ -104,15 +121,5 @@ export class StripeService extends BaseService {
         });
     }
 
-    public async webhook(event: Stripe.Event): Promise<void> {
-        try {
-            const session = event.data.object as Stripe.Checkout.Session;
-            if (session.payment_status === "paid") {
-                this.logger.logInfo(`Payment received: ${session.id}`);
-            }
-        } catch (error: any) {
-            this.logger.logError("Failed to process webhook", error);
-            throw error;
-        }
-    }
+    public async webhook(event: Stripe.Event): Promise<void> { }
 }
