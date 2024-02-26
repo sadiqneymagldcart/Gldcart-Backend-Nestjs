@@ -43,6 +43,7 @@ ProfessionalServiceSchema.index({
     service_name: "text",
     category: "text",
     subcategory: "text",
+    attributes: "text",
 });
 
 export const ServicesModel = mongoose.model<ProfessionalService>(
