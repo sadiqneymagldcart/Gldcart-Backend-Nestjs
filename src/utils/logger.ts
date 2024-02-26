@@ -2,7 +2,7 @@ import * as winston from "winston";
 import {format} from "winston";
 import winstonDailyRotateFile from "winston-daily-rotate-file";
 import {injectable} from "inversify";
-import {ILogger} from "../interfaces/ILogger";
+import {ILogger} from "../interfaces/Logger";
 
 export type LogMessage = string;
 
@@ -18,76 +18,76 @@ export enum LogLevel {
 @injectable()
 export class Logger implements ILogger {
     private logger: winston.Logger;
-    private readonly _appName = process.env.APP_NAME || "GLD Cart";
+    private readonly appName = process.env.APP_NAME || "GLD Cart";
 
     public constructor() {
-        this.logger = this._initializeWinston();
+        this.logger = this.initializeWinston();
     }
 
     public logInfo(msg: LogMessage, context?: LogContext) {
-        this._log(msg, LogLevel.INFO, context);
+        this.log(msg, LogLevel.INFO, context);
     }
 
     public logWarn(msg: LogMessage, context?: LogContext) {
-        this._log(msg, LogLevel.WARN, context);
+        this.log(msg, LogLevel.WARN, context);
     }
 
     public logError(msg: LogMessage, context?: LogContext) {
-        this._log(msg, LogLevel.ERROR, context);
+        this.log(msg, LogLevel.ERROR, context);
     }
 
     public logDebug(msg: LogMessage, context?: LogContext) {
         if (process.env.NODE_ENV !== "production") {
-            this._log(msg, LogLevel.DEBUG, context);
+            this.log(msg, LogLevel.DEBUG, context);
         }
     }
 
-    private _log(msg: LogMessage, level: LogLevel, context?: LogContext) {
+    private log(msg: LogMessage, level: LogLevel, context?: LogContext) {
         this.logger.log(level, msg, {context});
     }
 
-    private _initializeWinston() {
+    private initializeWinston() {
         return winston.createLogger({
-            transports: this._getTransports(),
+            transports: this.getTransports(),
         });
     }
 
-    private _getTransports() {
+    private getTransports() {
         const transports: Array<any> = [
             new winston.transports.Console({
-                format: this._getFormatForConsole(),
+                format: this.getFormatForConsole(),
             }),
         ];
 
         if (process.env.NODE_ENV === "production") {
-            transports.push(this._getFileTransport());
+            transports.push(this.getFileTransport());
         }
 
         return transports;
     }
 
-    private _getFormatForConsole() {
+    private getFormatForConsole() {
         return format.combine(
             format.timestamp(),
             format.printf((info) =>
                 `[${info.timestamp}] [${info.level.toUpperCase()}]: ${info.message
-                } [CONTEXT] -> ${info.context ? '\n' + JSON.stringify(info.context, this._getCircularReplacer(), 2) : "{}"
+                } [CONTEXT] -> ${info.context ? '\n' + JSON.stringify(info.context, this.getCircularReplacer(), 2) : "{}"
                 }`
             ),
             format.colorize({all: true}),
         );
     }
 
-    private _getFileTransport() {
+    private getFileTransport() {
         return new winstonDailyRotateFile({
-            filename: `${this._appName}-%DATE%.log`,
+            filename: `${this.appName}-%DATE%.log`,
             zippedArchive: true,
             maxSize: "10m", // Rotate after 10MB
             maxFiles: "14d", // Only keep last 14 days
             format: format.combine(
                 format.timestamp(),
                 format((info) => {
-                    info.app = this._appName;
+                    info.app = this.appName;
                     return info;
                 })(),
                 format.json(),
@@ -95,7 +95,7 @@ export class Logger implements ILogger {
         });
     }
 
-    private _getCircularReplacer() {
+    private getCircularReplacer() {
         const seen = new WeakSet();
         return (key, value) => {
             if (typeof value === 'object' && value !== null) {

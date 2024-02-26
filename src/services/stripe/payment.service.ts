@@ -1,12 +1,12 @@
 import { Logger } from "../../utils/logger";
 import Stripe from "stripe";
-import { Product } from "../../models/shop/product/Product";
 import { BaseService } from "../base.service";
-import { ICheckoutRequestBody } from "../../interfaces/ICheckoutRequestBody";
 import { inject, injectable } from "inversify";
+import { CartItem } from "../../models/shop/cart/Cart";
+import { CheckoutRequestBody } from "../../interfaces/CheckoutRequestBody";
 
 @injectable()
-export class PaymentService extends BaseService {
+export class StripeService extends BaseService {
     private readonly stripe: Stripe;
 
     public constructor(
@@ -29,7 +29,7 @@ export class PaymentService extends BaseService {
     }
 
     public async createPaymentCheckout(
-        paymentData: ICheckoutRequestBody,
+        paymentData: CheckoutRequestBody,
     ): Promise<string | null> {
         try {
             const customer = await this.createCustomerWithMetadata({
@@ -46,20 +46,39 @@ export class PaymentService extends BaseService {
         }
     }
 
+    public async createIntent(
+        amount: number,
+        currency: string,
+    ): Promise<Stripe.PaymentIntent> {
+        try {
+            const paymentIntent = await this.stripe.paymentIntents.create({
+                amount: amount,
+                currency: currency,
+                automatic_payment_methods: {
+                    enabled: true,
+                },
+            });
+            this.logger.logInfo(`Payment intent created: ${paymentIntent.id}`);
+            return paymentIntent;
+        } catch (error: any) {
+            this.logger.logError("Failed to create payment intent", error);
+            throw error;
+        }
+    }
+
     private async createCustomerWithMetadata(
         metadata: Record<string, any> = {},
     ): Promise<Stripe.Customer> {
         return this.stripe.customers.create({ metadata });
     }
 
-    private createLineItems(cartItems: Product[]): Array<Object> {
+    private createLineItems(cartItems: CartItem[]): Array<Object> {
         return cartItems.map((item) => ({
             price_data: {
                 currency: "usd",
                 product_data: {
-                    name: item.product_name,
-                    images: [item.images[0]],
-                    description: item.short_description,
+                    name: "Product",
+                    id: item.product,
                 },
                 unit_amount: item.price * 100,
             },
@@ -73,9 +92,7 @@ export class PaymentService extends BaseService {
     ): Promise<Stripe.Checkout.Session> {
         return this.stripe.checkout.sessions.create({
             payment_method_types: ["card"],
-            shipping_address_collection: {
-                allowed_countries: ["US", "UA", "SK"],
-            },
+
             phone_number_collection: {
                 enabled: true,
             },

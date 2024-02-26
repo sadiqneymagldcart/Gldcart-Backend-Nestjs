@@ -1,14 +1,20 @@
 import * as express from "express";
-import {PaymentService} from "../../services/stripe/payment.service";
-import {inject} from "inversify";
-import {controller, httpPost} from "inversify-express-utils";
+import { StripeService } from "../../services/stripe/payment.service";
+import { inject } from "inversify";
+import { controller, httpPost } from "inversify-express-utils";
+import { OrderService } from "../../services/shop/order.service";
 
-@controller("/payment")
+@controller("/payments")
 export class PaymentController {
-    private readonly paymentService: PaymentService;
+    private readonly paymentService: StripeService;
+    private readonly orderService: OrderService;
 
-    constructor(@inject(PaymentService) paymentService: PaymentService) {
+    public constructor(
+        @inject(StripeService) paymentService: StripeService,
+        @inject(OrderService) orderService: OrderService,
+    ) {
         this.paymentService = paymentService;
+        this.orderService = orderService;
     }
 
     @httpPost("/create-customer")
@@ -17,7 +23,7 @@ export class PaymentController {
         response: express.Response,
         next: express.NextFunction,
     ): Promise<void> {
-        const {email, name} = request.body;
+        const { email, name } = request.body;
         try {
             const customerId = await this.paymentService.createCustomer(email, name);
             response.send(customerId);
@@ -26,7 +32,7 @@ export class PaymentController {
         }
     }
 
-    @httpPost("/create-payment-intent")
+    @httpPost("/create-payment-checkout")
     public async createPaymentCheckout(
         request: express.Request,
         response: express.Response,
@@ -37,7 +43,23 @@ export class PaymentController {
             const checkoutUrl = await this.paymentService.createPaymentCheckout(
                 request.body,
             );
-            response.json({url: checkoutUrl});
+            response.json({ url: checkoutUrl });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    @httpPost("/create-payment-intent")
+    public async chargeWithToken(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ): Promise<void> {
+        const { amount, currency } = request.body;
+        try {
+            const intent = await this.paymentService.createIntent(amount, currency);
+            // save order here 
+            response.json({ client_secret: intent.client_secret });
         } catch (error) {
             next(error);
         }
@@ -50,9 +72,12 @@ export class PaymentController {
         next: express.NextFunction,
     ): Promise<void> {
         try {
+            console.log("Webhook received");
             const event = request.body;
-            await this.paymentService.webhook(event);
-            response.send({received: true});
+            console.log(event);
+            // await this.paymentService.webhook(event);
+            await this.orderService.placeStripeOrder(event);
+            response.send({ received: true });
         } catch (error) {
             next(error);
         }
