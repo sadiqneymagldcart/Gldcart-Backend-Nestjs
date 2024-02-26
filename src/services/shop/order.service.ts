@@ -10,9 +10,20 @@ export class OrderService extends BaseService {
         super(logger);
     }
 
+    public async updateOrderStatus(id: string, status: string): Promise<Order | null> {
+        try {
+            return OrderModel.findOneAndUpdate({ payment_id: id }, { status }, { new: true });
+        }
+        catch (error: any) {
+            this.logger.logError("Failed to update order status", error);
+            throw error;
+        }
+    }
+
     public async createOrder(data: Order): Promise<Order> {
         try {
             const order = new OrderModel(data);
+            this.logger.logInfo(`Order created: ${order.id}`);
             return order.save();
         } catch (error: any) {
             this.logger.logError("Failed to create order", error);
@@ -32,8 +43,7 @@ export class OrderService extends BaseService {
     public async updateOrder(id: string, data: any): Promise<Order | null> {
         try {
             return OrderModel.findByIdAndUpdate(id, data, { new: true });
-        }
-        catch (error: any) {
+        } catch (error: any) {
             this.logger.logError("Failed to update order", error);
             throw error;
         }
@@ -50,7 +60,7 @@ export class OrderService extends BaseService {
             throw error;
         }
     }
-    //
+
     private async createStripeOrder(data: any): Promise<Order> {
         const order = new OrderModel({
             customerId: data.customer,
