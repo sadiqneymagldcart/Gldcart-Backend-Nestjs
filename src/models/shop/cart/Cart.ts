@@ -17,8 +17,8 @@ const cartItemSchema = new Schema<CartItem>(
     {
         product: { type: Schema.Types.ObjectId, ref: "Product" },
         quantity: { type: Number, default: 1 },
-        price: { type: Number, required: false },
-        total: { type: Number, required: false },
+        price: { type: Number, required: true },
+        total: { type: Number, required: true },
     },
     { timestamps: true },
 );

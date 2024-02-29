@@ -54,9 +54,13 @@ export class PaymentController {
         response: express.Response,
         next: express.NextFunction,
     ): Promise<void> {
-        const { amount, currency } = request.body;
+        const { amount, currency, metadata } = request.body;
         try {
-            const intent = await this.paymentService.createIntent(amount, currency);
+            const intent = await this.paymentService.createIntent(
+                amount,
+                currency,
+                metadata,
+            );
             response.json({ client_secret: intent.client_secret });
         } catch (error) {
             next(error);
@@ -69,21 +73,27 @@ export class PaymentController {
         response: express.Response,
         next: express.NextFunction,
     ): Promise<void> {
-        let event = request.body;
-        const signature = request.headers["stripe-signature"] as string;
+        const event = this.paymentService.createEvent(request);
+        if (!event) {
+            response.status(400).send(`Webhook Error: Invalid event`);
+            return;
+        }
+        console.log(event.type);
         try {
-            event = this.paymentService.verifyWebhook(
-                signature,
-                JSON.stringify(event),
-            );
             switch (event.type) {
-                case "payment_intent.succeeded":
+                case "payment_intent.created":
+                    console.log("Payment intent created");
+                case "charge.succeeded":
                     const paymentIntent = event.data.object;
+                    console.log(paymentIntent);
                     await this.orderService.updateOrderStatus(paymentIntent.id, "paid");
                     break;
                 case "payment_intent.payment_failed":
                     const paymentIntentFailed = event.data.object;
-                    await this.orderService.updateOrderStatus(paymentIntentFailed.id, "failed");
+                    await this.orderService.updateOrderStatus(
+                        paymentIntentFailed.id,
+                        "failed",
+                    );
                     break;
                 default:
                     break;
@@ -93,4 +103,6 @@ export class PaymentController {
             next(error);
         }
     }
+
+    @httpPost("") public async() { }
 }

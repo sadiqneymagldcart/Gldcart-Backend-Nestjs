@@ -136,7 +136,7 @@ export class CartController {
         try {
             const cart = await this.cartService.removeItemFromCart(
                 request.body.userId,
-                request.body.productId,
+                request.body.itemId,
             );
             response.status(200).json(cart);
         } catch (error) {
