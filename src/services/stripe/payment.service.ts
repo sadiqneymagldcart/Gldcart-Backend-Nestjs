@@ -30,7 +30,24 @@ export class StripeService extends BaseService {
             );
         } catch (error: any) {
             this.logger.logError("Failed to verify webhook", error);
-            throw ApiError.BadRequest("Webhook verification failed");
+            throw error;
+        }
+    }
+    public createEvent(request: any): Stripe.Event | null {
+        const signature = request.headers["stripe-signature"] as
+            | string
+            | string[]
+            | Buffer;
+        try {
+            const event = this.stripe.webhooks.constructEvent(
+                request.body,
+                signature,
+                <string>process.env.STRIPE_WEBHOOK_SECRET,
+            );
+            return event;
+        } catch (error: any) {
+            this.logger.logError("Webhook signature verification failed", error);
+            return null;
         }
     }
 
@@ -66,6 +83,7 @@ export class StripeService extends BaseService {
     public async createIntent(
         amount: number,
         currency: string,
+        metadata: Record<string, any>,
     ): Promise<Stripe.PaymentIntent> {
         try {
             const paymentIntent = await this.stripe.paymentIntents.create({
@@ -74,6 +92,7 @@ export class StripeService extends BaseService {
                 automatic_payment_methods: {
                     enabled: true,
                 },
+                metadata: metadata,
             });
             this.logger.logInfo(`Payment intent created: ${paymentIntent.id}`);
             return paymentIntent;
@@ -120,6 +139,4 @@ export class StripeService extends BaseService {
             cancel_url: `${process.env.CLIENT_URL}/checkout-failed`,
         });
     }
-
-    public async webhook(event: Stripe.Event): Promise<void> { }
 }
