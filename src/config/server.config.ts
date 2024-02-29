@@ -10,13 +10,14 @@ import helmet from "helmet";
 export function serverConfig(app: Application) {
     app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 
+    app.use("/payments/webhook", bodyParser.raw({ type: "*/*" }));
+
     app.use(hpp());
 
     app.use(helmet());
 
     app.use(compression());
 
-    app.use("/webhook", bodyParser.raw({ type: "*/*" }));
 
     app.use(express.urlencoded({ extended: false }));
     app.use(express.json());

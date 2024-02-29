@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { Logger } from "../../utils/logger";
 import { BaseService } from "../base.service";
 import { inject, injectable } from "inversify";
+import { ApiError } from "../../exceptions/api.error";
 
 @injectable()
 export class OrderService extends BaseService {
@@ -10,13 +11,19 @@ export class OrderService extends BaseService {
         super(logger);
     }
 
-    public async updateOrderStatus(id: string, status: string): Promise<Order | null> {
+    public async updateOrderStatus(
+        id: string,
+        status: string,
+    ): Promise<Order | null> {
         try {
-            return OrderModel.findOneAndUpdate({ payment_id: id }, { status }, { new: true });
-        }
-        catch (error: any) {
+            return OrderModel.findOneAndUpdate(
+                { payment_id: id },
+                { status },
+                { new: true },
+            );
+        } catch (error: any) {
             this.logger.logError("Failed to update order status", error);
-            throw error;
+            throw ApiError.BadRequest("Failed to update order status");
         }
     }
 
@@ -27,7 +34,7 @@ export class OrderService extends BaseService {
             return order.save();
         } catch (error: any) {
             this.logger.logError("Failed to create order", error);
-            throw error;
+            throw ApiError.BadRequest("Failed to create order");
         }
     }
 
@@ -36,7 +43,7 @@ export class OrderService extends BaseService {
             return OrderModel.findById(id);
         } catch (error: any) {
             this.logger.logError("Failed to get order", error);
-            throw error;
+            throw ApiError.BadRequest("Failed to get order");
         }
     }
 
@@ -45,7 +52,7 @@ export class OrderService extends BaseService {
             return OrderModel.findByIdAndUpdate(id, data, { new: true });
         } catch (error: any) {
             this.logger.logError("Failed to update order", error);
-            throw error;
+            throw ApiError.BadRequest("Failed to update order");
         }
     }
 
@@ -57,18 +64,24 @@ export class OrderService extends BaseService {
             return order;
         } catch (error: any) {
             this.logger.logError("Failed to create order", error);
-            throw error;
+            throw ApiError.BadRequest("Failed to create order");
         }
     }
 
     private async createStripeOrder(data: any): Promise<Order> {
-        const order = new OrderModel({
-            customerId: data.customer,
-            paymentId: data.id,
-            amount: data.amount_total,
-            currency: data.currency,
-            status: data.status,
-        });
-        return order.save();
+        try {
+            const order = new OrderModel({
+                payment_id: data.id,
+                amount: data.amount,
+                currency: data.currency,
+                status: "paid",
+                customer: data.customer,
+                items: data.items,
+            });
+            return order.save();
+        } catch (error: any) {
+            this.logger.logError("Failed to create order", error);
+            throw ApiError.BadRequest("Failed to create order");
+        }
     }
 }

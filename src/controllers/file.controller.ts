@@ -7,17 +7,17 @@ import { AwsStorage } from "../storages/aws.storage";
 
 @controller("/files")
 export class FileController {
-    private readonly imageService: FileService;
+    private readonly fileService: FileService;
     private readonly awsStorage: AwsStorage;
 
-    public constructor(@inject(FileService) imageService: FileService, @inject(AwsStorage) awsStorage: AwsStorage) {
-        this.imageService = imageService;
+    public constructor(@inject(FileService) fileService: FileService, @inject(AwsStorage) awsStorage: AwsStorage) {
+        this.fileService = fileService;
         this.awsStorage = awsStorage;
     }
 
-    @httpGet("/", multerMiddleware.any())
+    @httpGet("/cloudinary", multerMiddleware.any())
     public async uploadFiles(files: Express.Multer.File[]): Promise<string[]> {
-        return await this.imageService.uploadImagesWithCloudinary(files);
+        return await this.fileService.uploadImagesWithCloudinary(files);
     }
 
     @httpPost("/aws", multerMiddleware.any())
