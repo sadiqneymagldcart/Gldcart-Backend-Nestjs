@@ -1,7 +1,6 @@
-import {NextFunction, Request, Response} from "express";
-import {ApiError} from "../exceptions/api.error";
-import {TokenService} from "../services/token/token.service";
-import {container} from "../config/inversify.config";
+import * as jwt from "jsonwebtoken";
+import { NextFunction, Request, Response } from "express";
+import { ApiError } from "../exceptions/api.error";
 
 export const requireAuth = (
     req: Request,
@@ -20,7 +19,7 @@ export const requireAuth = (
         console.log("invalid access token");
         return next(ApiError.UnauthorizedError());
     }
-    const userData = container.get(TokenService).validateAccessToken(accessToken);
+    const userData = jwt.verify(accessToken, process.env.JWT_REFRESH_SECRET!);
 
     if (!userData) {
         return next(ApiError.UnauthorizedError());
