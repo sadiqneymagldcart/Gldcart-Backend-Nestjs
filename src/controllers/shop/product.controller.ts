@@ -25,7 +25,7 @@ export class ProductController {
         this.awsStorage = awsStorage;
     }
 
-    @httpPost("/", multerMiddleware.any(), requireAuth)
+    @httpPost("/", multerMiddleware.any())
     public async addProductHandler(
         request: express.Request,
         response: express.Response,
@@ -34,8 +34,6 @@ export class ProductController {
         try {
             const files = request.files as Express.Multer.File[];
             const images = await this.awsStorage.upload(files);
-            console.log(images);
-
             const productData: Product = {
                 ...request.body,
                 images: images,
