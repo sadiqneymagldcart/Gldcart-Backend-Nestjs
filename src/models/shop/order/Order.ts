@@ -2,7 +2,6 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 
 export interface Order extends Document {
     user: mongoose.Types.ObjectId;
-    payment_id: string;
     products: string[];
     subtotal: number;
     total: number;
@@ -13,7 +12,6 @@ export interface Order extends Document {
 const orderSchema = new Schema<Order>(
     {
         user: { type: Schema.Types.ObjectId, ref: "User" },
-        payment_id: { type: String },
         products: [{ type: Schema.Types.ObjectId, ref: "Product" }],
         subtotal: { type: Number, required: true },
         total: { type: Number, required: true },

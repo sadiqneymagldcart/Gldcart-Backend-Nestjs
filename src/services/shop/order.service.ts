@@ -16,11 +16,7 @@ export class OrderService extends BaseService {
         status: string,
     ): Promise<Order | null> {
         try {
-            return OrderModel.findOneAndUpdate(
-                { payment_id: id },
-                { status },
-                { new: true },
-            );
+            return await OrderModel.findByIdAndUpdate(id, { status }, { new: true });
         } catch (error: any) {
             this.logger.logError("Failed to update order status", error);
             throw ApiError.BadRequest("Failed to update order status");

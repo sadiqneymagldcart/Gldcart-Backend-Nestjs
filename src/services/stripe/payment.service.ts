@@ -92,6 +92,7 @@ export class StripeService extends BaseService {
                 automatic_payment_methods: {
                     enabled: true,
                 },
+                confirm: false,
                 metadata: metadata,
             });
             this.logger.logInfo(`Payment intent created: ${paymentIntent.id}`);

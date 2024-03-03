@@ -83,7 +83,7 @@ export class CartController {
         next: express.NextFunction,
     ) {
         try {
-            const cart = await this.cartService.getCartByUserId(
+            const cart = await this.cartService.getCartItemsWithTotalPrice(
                 request.params.userId,
             );
             response.status(200).json(cart);
