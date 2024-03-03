@@ -14,7 +14,7 @@ const fileFilter = (request: express.Request, file: Express.Multer.File, cb: any
 
 const multerMiddleware = multer({
     storage: storage,
-    // fileFilter: fileFilter,
+    fileFilter: fileFilter,
 });
 
 export {multerMiddleware};
