@@ -2,8 +2,8 @@ import * as express from "express";
 import { GoogleAuthService } from "../../services/auth/google.auth.service";
 import { inject } from "inversify";
 import { controller, httpGet, httpPost } from "inversify-express-utils";
-import { IGoogleUserInfo } from "../../interfaces/IGoogleUserInfo";
-import { IGoogleUserResult } from "../../interfaces/IGoogleUserResult";
+import { GoogleUserInfo } from "../../interfaces/GoogleUserInfo";
+import { GoogleUserResult } from "../../interfaces/GoogleUserResult";
 import { setRefreshTokenCookie } from "../../utils/token.utils";
 
 @controller("/tokens/oauth/google")
@@ -37,7 +37,7 @@ export class GoogleAuthController {
 
             this._validateGoogleUser(googleUser, response);
 
-            const userInfo: IGoogleUserInfo = {
+            const userInfo: GoogleUserInfo = {
                 code: code,
                 type: customParameter,
                 name: googleUser.given_name,
@@ -57,7 +57,7 @@ export class GoogleAuthController {
     }
 
     private _validateGoogleUser(
-        googleUser: IGoogleUserResult | undefined,
+        googleUser: GoogleUserResult | undefined,
         response: express.Response,
     ) {
         if (!googleUser) {
