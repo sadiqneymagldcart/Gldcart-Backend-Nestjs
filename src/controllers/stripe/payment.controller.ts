@@ -3,6 +3,7 @@ import { StripeService } from "../../services/stripe/payment.service";
 import { inject } from "inversify";
 import { controller, httpPost } from "inversify-express-utils";
 import { OrderService } from "../../services/shop/order.service";
+import { Order } from "../../models/shop/order/Order";
 
 @controller("/payments")
 export class PaymentController {
@@ -49,7 +50,7 @@ export class PaymentController {
     }
 
     @httpPost("/create-payment-intent")
-    public async chargeWithToken(
+    public async createPaymentIntent(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -84,16 +85,11 @@ export class PaymentController {
                 case "payment_intent.created":
                     console.log("Payment intent created");
                 case "charge.succeeded":
-                    const paymentIntent = event.data.object;
-                    console.log(paymentIntent);
-                    await this.orderService.updateOrderStatus(paymentIntent.id, "paid");
+                    const intent = event.data.object;
+                    console.log("Charge succeeded", intent);
                     break;
                 case "payment_intent.payment_failed":
-                    const paymentIntentFailed = event.data.object;
-                    await this.orderService.updateOrderStatus(
-                        paymentIntentFailed.id,
-                        "failed",
-                    );
+                    console.log("Payment failed");
                     break;
                 default:
                     break;

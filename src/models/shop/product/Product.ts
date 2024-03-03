@@ -6,8 +6,10 @@ interface ProductAttributes {
 
 export interface Product extends Document {
     product_name: string;
+    price?: number;
+    stock?: number;
     description?: string;
-    images: string[];
+    images?: string[];
     category: string;
     subcategory: string;
     attributes: ProductAttributes;
@@ -16,6 +18,8 @@ export interface Product extends Document {
 
 export const ProductSchema = new Schema<Product>({
     product_name: { type: String, required: true, trim: true },
+    price: { type: Number, required: true },
+    stock: { type: Number, required: true },
     category: { type: String, required: true, trim: true },
     subcategory: { type: String, required: true, trim: true },
     description: { type: String, trim: true },

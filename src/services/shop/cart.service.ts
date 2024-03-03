@@ -73,108 +73,26 @@ export class CartService extends BaseService {
             { new: true },
         );
     }
-    public async calculateCartTotal(userId: string) {
-        const cart = await CartModel.findOne({ userId });
-        if (!cart) {
-            return 0;
-        }
-        const total = cart.items.reduce(
-            (acc, item) => acc + item.price * item.quantity,
-            0,
-        );
-        return total;
-    }
-    public async calculateCartTotalWithShipping(userId: string) {
-        const cart = await CartModel.findOne({ userId });
-        if (!cart) {
-            return 0;
-        }
-        const total = cart.items.reduce(
-            (acc, item) => acc + item.price * item.quantity,
-            0,
-        );
-        return total + 10;
-    }
-    public async calculateCartTotalWithTax(userId: string) {
-        const cart = await CartModel.findOne({ userId });
-        if (!cart) {
-            return 0;
-        }
-        const total = cart.items.reduce(
-            (acc, item) => acc + item.price * item.quantity,
-            0,
-        );
-        return total * 1.1;
-    }
-    public async calculateCartTotalWithShippingAndTax(userId: string) {
-        const cart = await CartModel.findOne({ userId });
-        if (!cart) {
-            return 0;
-        }
-        const total = cart.items.reduce(
-            (acc, item) => acc + item.price * item.quantity,
-            0,
-        );
-        return total * 1.1 + 10;
+
+    public async getCartItemsWithTotalPrice(userId: string) {
+        const cart = await CartModel.findOne({ userId }).populate("items.product");
+
+        let totalPrice = 0;
+        cart.items.forEach((item) => {
+            totalPrice += item.product.price * item.quantity;
+        });
+        return { items: cart.items, totalPrice };
     }
 
-    public async calculateCartTotalWithDiscount(
-        userId: string,
-        discount: number,
-    ) {
-        const cart = await CartModel.findOne({ userId });
-        if (!cart) {
-            return 0;
-        }
-        const total = cart.items.reduce(
-            (acc, item) => acc + item.price * item.quantity,
-            0,
+    public async addItemsToCartWithTotalPrice(userId: string, items: CartItem[]) {
+        let totalPrice = 0;
+        items.forEach((item) => {
+            totalPrice += item.product.price * item.quantity;
+        });
+        return await CartModel.findOneAndUpdate(
+            { userId },
+            { $push: { items }, totalPrice },
+            { new: true, upsert: true },
         );
-        return total - discount;
-    }
-
-    public async calculateCartTotalWithShippingAndDiscount(
-        userId: string,
-        discount: number,
-    ) {
-        const cart = await CartModel.findOne({ userId });
-        if (!cart) {
-            return 0;
-        }
-        const total = cart.items.reduce(
-            (acc, item) => acc + item.price * item.quantity,
-            0,
-        );
-        return total - discount + 10;
-    }
-
-    public async calculateCartTotalWithTaxAndDiscount(
-        userId: string,
-        discount: number,
-    ) {
-        const cart = await CartModel.findOne({ userId });
-        if (!cart) {
-            return 0;
-        }
-        const total = cart.items.reduce(
-            (acc, item) => acc + item.price * item.quantity,
-            0,
-        );
-        return (total - discount) * 1.1;
-    }
-
-    public async calculateCartTotalWithShippingAndTaxAndDiscount(
-        userId: string,
-        discount: number,
-    ) {
-        const cart = await CartModel.findOne({ userId });
-        if (!cart) {
-            return 0;
-        }
-        const total = cart.items.reduce(
-            (acc, item) => acc + item.price * item.quantity,
-            0,
-        );
-        return (total - discount) * 1.1 + 10;
     }
 }
