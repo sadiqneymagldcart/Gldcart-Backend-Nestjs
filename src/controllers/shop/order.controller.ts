@@ -19,7 +19,7 @@ export class OrderController {
     ): Promise<void> {
         try {
             const order = await this.orderService.createOrder(request.body);
-            response.json(order);
+            response.status(200).json(order);
         } catch (error) {
             next(error);
         }
@@ -31,9 +31,25 @@ export class OrderController {
         response: express.Response,
         next: express.NextFunction,
     ): Promise<void> {
-        const { id } = request.query as unknown as { id: string };
+        const id = request.query.id as string;
         try {
             const order = await this.orderService.getOrder(id);
+            response.json(order);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    @httpPost("/update-order")
+    public async updateOrder(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ): Promise<void> {
+        try {
+            const id = request.query.id as string;
+            const data = request.body;
+            const order = await this.orderService.updateOrder(id, data);
             response.json(order);
         } catch (error) {
             next(error);

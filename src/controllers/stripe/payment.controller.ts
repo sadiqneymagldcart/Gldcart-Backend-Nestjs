@@ -3,7 +3,6 @@ import { StripeService } from "../../services/stripe/payment.service";
 import { inject } from "inversify";
 import { controller, httpPost } from "inversify-express-utils";
 import { OrderService } from "../../services/shop/order.service";
-import { Order } from "../../models/shop/order/Order";
 
 @controller("/payments")
 export class PaymentController {
@@ -77,19 +76,17 @@ export class PaymentController {
         const event = this.paymentService.createEvent(request);
         if (!event) {
             response.status(400).send(`Webhook Error: Invalid event`);
-            return;
+            return
         }
         console.log(event.type);
         try {
             switch (event.type) {
-                case "payment_intent.created":
-                    console.log("Payment intent created");
                 case "charge.succeeded":
-                    const intent = event.data.object;
-                    console.log("Charge succeeded", intent);
-                    break;
-                case "payment_intent.payment_failed":
-                    console.log("Payment failed");
+                    const data = event.data.object;
+                    await this.orderService.updateOrderStatus(
+                        data.metadata.orderId,
+                        "paid",
+                    );
                     break;
                 default:
                     break;
