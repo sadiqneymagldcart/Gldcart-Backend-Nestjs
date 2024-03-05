@@ -1,8 +1,8 @@
 import * as winston from "winston";
-import {format} from "winston";
+import { format } from "winston";
 import winstonDailyRotateFile from "winston-daily-rotate-file";
-import {injectable} from "inversify";
-import {ILogger} from "../interfaces/Logger";
+import { injectable } from "inversify";
+import { ILogger } from "../interfaces/Logger";
 
 export type LogMessage = string;
 
@@ -43,7 +43,7 @@ export class Logger implements ILogger {
     }
 
     private log(msg: LogMessage, level: LogLevel, context?: LogContext) {
-        this.logger.log(level, msg, {context});
+        this.logger.log(level, msg, { context });
     }
 
     private initializeWinston() {
@@ -69,12 +69,16 @@ export class Logger implements ILogger {
     private getFormatForConsole() {
         return format.combine(
             format.timestamp(),
-            format.printf((info) =>
-                `[${info.timestamp}] [${info.level.toUpperCase()}]: ${info.message
-                } [CONTEXT] -> ${info.context ? '\n' + JSON.stringify(info.context, this.getCircularReplacer(), 2) : "{}"
-                }`
+            format.printf(
+                (info) =>
+                    `[${info.timestamp}] [${info.level.toUpperCase()}]: ${info.message
+                    } [CONTEXT] -> ${info.context
+                        ? "\n" +
+                        JSON.stringify(info.context, this.getCircularReplacer(), 2)
+                        : "{}"
+                    }`,
             ),
-            format.colorize({all: true}),
+            format.colorize({ all: true }),
         );
     }
 
@@ -98,9 +102,9 @@ export class Logger implements ILogger {
     private getCircularReplacer() {
         const seen = new WeakSet();
         return (key, value) => {
-            if (typeof value === 'object' && value !== null) {
+            if (typeof value === "object" && value !== null) {
                 if (seen.has(value)) {
-                    return '[Circular Reference]';
+                    return "[Circular Reference]";
                 }
                 seen.add(value);
             }
