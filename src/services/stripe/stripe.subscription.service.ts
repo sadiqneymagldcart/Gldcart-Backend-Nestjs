@@ -12,7 +12,7 @@ export class StripeSubscriptionService extends BaseService {
         this.stripe = stripe;
     }
 
-    async createSubscriptionCheckout(
+    public async createSubscriptionCheckout(
         userId: string,
         lookupKey: string,
     ): Promise<string | null> {
@@ -55,7 +55,7 @@ export class StripeSubscriptionService extends BaseService {
         }
     }
 
-    async cancelSubscription(subscriptionId: string): Promise<any> {
+    public async cancelSubscription(subscriptionId: string): Promise<any> {
         try {
             const canceledSubscription =
                 await this.stripe.subscriptions.cancel(subscriptionId);
