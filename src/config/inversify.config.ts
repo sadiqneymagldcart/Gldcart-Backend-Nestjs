@@ -119,8 +119,8 @@ function initializeContainer(): Container {
 
 
 loadEnvironmentVariables();
-
 const container = initializeContainer();
+
 bindAuthServices(container);
 bindStorages(container);
 bindStripeServices(container);

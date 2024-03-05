@@ -133,6 +133,9 @@ export class CartController {
         response: express.Response,
         next: express.NextFunction,
     ) {
+        if(!request.body.userId || !request.body.itemId) {
+            response.status(400).json({ message: "userId and itemId are required" });
+        }
         try {
             const cart = await this.cartService.removeItemFromCart(
                 request.body.userId,
