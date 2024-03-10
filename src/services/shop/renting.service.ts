@@ -1,7 +1,7 @@
 import { inject } from "inversify";
 import { RentingModel } from "../../models/shop/product/Renting";
 import { Logger } from "../../utils/logger";
-import { BaseService } from "../base.service";
+import { BaseService } from "../base/base.service";
 
 export class RentingService extends BaseService {
     public constructor(@inject(Logger) logger: Logger) {

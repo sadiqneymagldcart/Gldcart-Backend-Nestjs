@@ -1,4 +1,4 @@
-import { BaseService } from "../base.service";
+import { BaseService } from "../base/base.service";
 import { ApiError } from "../../exceptions/api.error";
 import { Logger } from "../../utils/logger";
 import { IAddress } from "../../models/user/Address";

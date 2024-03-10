@@ -1,9 +1,9 @@
 import OrderModel, { Order } from "../../models/shop/order/Order";
 import Stripe from "stripe";
 import { Logger } from "../../utils/logger";
-import { BaseService } from "../base.service";
 import { inject, injectable } from "inversify";
 import { ApiError } from "../../exceptions/api.error";
+import { BaseService } from "../base/base.service";
 
 @injectable()
 export class OrderService extends BaseService {

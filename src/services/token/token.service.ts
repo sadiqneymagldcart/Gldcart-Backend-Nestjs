@@ -1,7 +1,7 @@
 import * as jwt from "jsonwebtoken";
 import TokenModel, { Token } from "../../models/user/Token";
 import { Logger } from "../../utils/logger";
-import { BaseService } from "../base.service";
+import { BaseService } from "../base/base.service";
 import { inject, injectable } from "inversify";
 import { TokenPayload } from "../../interfaces/TokenPayload";
 import { Tokens } from "../../interfaces/Tokens";

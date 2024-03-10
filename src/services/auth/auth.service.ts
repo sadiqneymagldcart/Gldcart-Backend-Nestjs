@@ -1,6 +1,6 @@
 import { TokenService } from "../token/token.service";
 import { Logger } from "../../utils/logger";
-import { BaseService } from "../base.service";
+import { BaseService } from "../base/base.service";
 import { ApiError } from "../../exceptions/api.error";
 import { Token } from "../../models/user/Token";
 import * as bcrypt from "bcrypt";

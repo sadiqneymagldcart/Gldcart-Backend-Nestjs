@@ -1,10 +1,9 @@
 import { Logger } from "../../utils/logger";
 import Stripe from "stripe";
-import { BaseService } from "../base.service";
+import { BaseService } from "../base/base.service";
 import { inject, injectable } from "inversify";
 import { CartItem } from "../../models/shop/cart/Cart";
 import { CheckoutRequestBody } from "../../interfaces/CheckoutRequestBody";
-import { ApiError } from "../../exceptions/api.error";
 
 @injectable()
 export class StripeService extends BaseService {
