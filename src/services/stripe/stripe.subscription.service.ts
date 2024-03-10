@@ -5,7 +5,7 @@ import { BaseService } from "../base/base.service";
 
 @injectable()
 export class StripeSubscriptionService extends BaseService {
-    private stripe: Stripe;
+    private readonly stripe: Stripe;
 
     public constructor(@inject(Logger) logger: Logger, @inject(Stripe) stripe: Stripe) {
         super(logger);

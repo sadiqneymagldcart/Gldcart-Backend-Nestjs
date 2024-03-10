@@ -6,8 +6,8 @@ import { inject, injectable } from "inversify";
 
 @injectable()
 export class StripeWebhookService extends BaseService {
-    private orderService: OrderService;
-    private stripe: Stripe;
+    private readonly orderService: OrderService;
+    private readonly stripe: Stripe;
 
     public constructor(
         @inject(Logger) logger: Logger,

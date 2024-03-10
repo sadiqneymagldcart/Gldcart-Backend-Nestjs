@@ -11,7 +11,7 @@ import { UserDto } from "../../dto/user.dto";
 
 @injectable()
 export class AuthService extends BaseService {
-    private tokenService: TokenService;
+    private readonly tokenService: TokenService;
 
     public constructor(
         @inject(TokenService) tokenService: TokenService,
