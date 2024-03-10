@@ -61,21 +61,7 @@ export class CartController {
             next(error);
         }
     }
-
-    @httpGet("/:cartId", requireAuth)
-    public async getCartByIdHandler(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const cart = await this.cartService.getCartById(request.params.cartId);
-            response.status(200).json(cart);
-        } catch (error) {
-            next(error);
-        }
-    }
-
+    
     @httpGet("/user/:userId")
     public async getCartByUserIdHandler(
         request: express.Request,
@@ -103,7 +89,7 @@ export class CartController {
                 request.body.userId,
                 request.body.item,
             );
-            response.status(200).json(cart);
+            response.status(201).json(cart);
         } catch (error) {
             next(error);
         }

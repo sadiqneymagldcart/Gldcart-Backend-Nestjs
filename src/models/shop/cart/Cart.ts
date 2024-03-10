@@ -14,7 +14,7 @@ export interface CartItem {
 const cartItemSchema = new Schema<CartItem>(
     {
         productId: { type: Schema.Types.ObjectId, ref: "Product" },
-        quantity: { type: Number, default: 1 },
+        quantity: { type: Number },
     },
     { timestamps: true },
 );
