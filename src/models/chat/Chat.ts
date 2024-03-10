@@ -1,33 +1,16 @@
-import { Schema } from "mongoose";
-import { Message, MessageSchema } from "./Message";
+import mongoose, { Model, Schema } from "mongoose";
 
 export interface Chat extends Document {
-        members: string[];
-        messages: Message[];
-        createdAt: Date;
-        updatedAt: Date;
-        deletedAt: Date;
+    participants: string[];
+    messages: string[];
 }
 
-export const ChatSchema = new Schema<Chat>({
-        members: {
-                type: [String],
-                required: true,
-        },
-        messages: {
-                type: [MessageSchema],
-                required: true,
-        },
-        createdAt: {
-                type: Date,
-                required: true,
-        },
-        updatedAt: {
-                type: Date,
-                required: true,
-        },
-        deletedAt: {
-                type: Date,
-                required: false,
-        },
-});
+const chatSchema = new Schema<Chat>(
+    {
+        participants: [{ type: Schema.Types.ObjectId, ref: "User" }],
+        messages: [{ type: Schema.Types.ObjectId, ref: "Message" }],
+    },
+    { timestamps: true },
+);
+
+export const ChatModel = mongoose.model("Chat", chatSchema) as Model<Chat>;
