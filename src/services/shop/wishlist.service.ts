@@ -1,10 +1,10 @@
 import { inject, injectable } from "inversify";
-import { BaseService } from "../base.service";
 import { Logger } from "../../utils/logger";
 import {
     WishlistItem,
     WishlistModel,
 } from "../../models/shop/wishlist/Wishlist";
+import { BaseService } from "../base/base.service";
 
 @injectable()
 export class WishlistService extends BaseService {

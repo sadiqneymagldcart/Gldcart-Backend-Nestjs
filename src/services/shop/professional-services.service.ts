@@ -1,10 +1,10 @@
 import { inject, injectable } from "inversify";
-import { BaseService } from "../base.service";
 import { Logger } from "../../utils/logger";
 import {
     ProfessionalService,
     ServicesModel,
 } from "../../models/shop/product/ProfessionalService";
+import { BaseService } from "../base/base.service";
 
 @injectable()
 export class ProfessionalServicesService extends BaseService {
