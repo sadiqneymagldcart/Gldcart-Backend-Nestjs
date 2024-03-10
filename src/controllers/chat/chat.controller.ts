@@ -5,7 +5,7 @@ import { ChatService } from "../../services/chat/chat.service";
 
 @controller("/chat")
 export class ChatController {
-    private chatService: ChatService;
+    private readonly chatService: ChatService;
     constructor(@inject(ChatService) chatService: ChatService) {
         this.chatService = chatService;
     }

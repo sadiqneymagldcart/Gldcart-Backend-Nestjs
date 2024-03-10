@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { BaseService } from "../base.service";
+import { BaseService } from "../base/base.service";
 import { Logger } from "../../utils/logger";
 import { Inventory, InventoryModel } from "../../models/shop/test/Inventory";
 

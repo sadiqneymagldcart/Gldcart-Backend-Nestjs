@@ -1,7 +1,7 @@
 import { Product, ProductModel } from "../../models/shop/product/Product";
 import mongoose from "mongoose";
 import { inject, injectable } from "inversify";
-import { BaseService } from "../base.service";
+import { BaseService } from "../base/base.service";
 import { Logger } from "../../utils/logger";
 
 @injectable()
