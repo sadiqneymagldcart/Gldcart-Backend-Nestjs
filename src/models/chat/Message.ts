@@ -3,16 +3,16 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 export interface Message extends Document {
     chatId: string;
     text: string;
-    sender: string;
-    recipient: string;
+    senderId: string;
+    recipientId: string;
 }
 
 const messageSchema = new Schema(
     {
         chatId: { type: Schema.Types.ObjectId, ref: "Chat", required: true },
         text: { type: String, required: true },
-        sender: { type: String, required: true },
-        recipient: { type: String, required: true },
+        senderId: { type: Schema.Types.ObjectId, ref: "User", required: true},
+        recipientId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     },
     { timestamps: true },
 );
