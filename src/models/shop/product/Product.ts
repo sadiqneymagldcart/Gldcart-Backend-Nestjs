@@ -18,7 +18,7 @@ export interface Product extends Document {
 
 export const ProductSchema = new Schema<Product>({
   product_name: { type: String, required: true, trim: true },
-  price: { type: Number, required: true },
+  price: { type: Number, required: false },
   stock: { type: Number, required: true },
   category: { type: String, required: true, trim: true },
   subcategory: { type: String, required: true, trim: true },
