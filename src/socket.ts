@@ -1,32 +1,34 @@
-import { Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { ChatModel } from "./models/chat/Chat";
 import { Message, MessageModel } from "./models/chat/Message";
 
-export async function createSocket(io: any) {
+export async function createSocket(io: Server) {
     io.on("connection", (socket: Socket) => {
         socket.on("join", async (chatId: string) => {
             try {
-                let chat = await ChatModel.findById(chatId);
+                const chat = await ChatModel.findById(chatId);
                 if (!chat) {
                     throw new Error("Chat not found");
                 }
                 socket.join(chatId);
-                socket.emit("joined", chat);
+                io.to(chatId).emit("joined", chatId);
             } catch (error) {
-                console.log(error);
+                socket.emit("error", { message: error.message });
             }
         });
         socket.on("message", async (message: Message) => {
             try {
-                let chat = await ChatModel.findById(message.chatId);
-
+                if (!message.text || !message.senderId || !message.chatId) {
+                    throw new Error("Invalid message data");
+                }
+                const chat = await ChatModel.findById(message.chatId);
                 if (!chat) {
                     throw new Error("Chat not found");
                 }
-                await MessageModel.create(message);
-                io.to(message.chatId).emit("message", message);
+                const savedMessage = await MessageModel.create(message);
+                io.to(message.chatId).emit("message", savedMessage);
             } catch (error) {
-                console.log(error);
+                socket.emit("error", { message: error.message });
             }
         });
         socket.on("leave", (chatId: string) => {
