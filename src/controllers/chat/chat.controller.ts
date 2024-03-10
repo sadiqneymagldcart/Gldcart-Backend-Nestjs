@@ -1,43 +1,57 @@
-import * as express from 'express';
+import * as express from "express";
 import { controller, httpGet, httpPost } from "inversify-express-utils";
-import { ChatModel } from '../../models/chat/Chat';
-import { MessageModel } from '../../models/chat/Message';
+import { inject } from "inversify";
+import { ChatService } from "../../services/chat/chat.service";
 
-@controller('/chat')
+@controller("/chat")
 export class ChatController {
-    @httpGet('/')
-    public async getChats(req: express.Request, res: express.Response) {
+    private chatService: ChatService;
+    constructor(@inject(ChatService) chatService: ChatService) {
+        this.chatService = chatService;
+    }
+
+    @httpGet("/")
+    public async getChats(
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
+    ) {
         try {
-            const userId = req.query.userId;
-            // const chats = await ChatModel.find({ participants: userId }).populate("participants").populate("messages");
-            const chats = await ChatModel.find({ participants: userId });
-            res.status(200).json(chats);
+            const userId = req.query.userId as string;
+            const chats = await this.chatService.getChats(userId);
+            res.json(chats);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    @httpPost('/')
-    public async createChat(req: express.Request, res: express.Response) {
+    @httpPost("/")
+    public async createChat(
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
+    ) {
         try {
-            const { participants } = req.body;
-            const newChat = new ChatModel({ participants });
-            await newChat.save();
-            res.status(200).json(newChat);
+            const participants = req.body.participants as string[];
+            const chat = await this.chatService.createChat(participants);
+            res.json(chat);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    @httpPost('/message')
-    public async sendMessage(req: express.Request, res: express.Response) {
+    @httpGet("/:chatId")
+    public async getChatMessages(
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
+    ) {
         try {
-            const { chatId, text, sender, recipient } = req.body;
-            const newMessage = new MessageModel({ chatId, text, sender, recipient });
-            await newMessage.save();
-            res.status(200).json(newMessage);
+            const chatId = req.params.chatId;
+            const messages = await this.chatService.getChatMessages(chatId);
+            res.json(messages);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 }
