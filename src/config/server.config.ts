@@ -18,7 +18,6 @@ export function serverConfig(app: Application) {
 
     app.use(compression());
 
-
     app.use(express.urlencoded({ extended: false }));
     app.use(express.json());
 

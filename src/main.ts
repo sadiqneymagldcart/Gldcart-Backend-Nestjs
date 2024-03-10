@@ -7,3 +7,5 @@ import { container } from "./config/inversify.config";
 const server = new InversifyExpressServer(container);
 const app = new App(server, new Logger());
 app.start();
+
+

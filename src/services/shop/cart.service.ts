@@ -24,27 +24,32 @@ export class CartService extends BaseService {
         return await CartModel.findOneAndDelete({ userId });
     }
 
-    public async getCartById(cartId: string) {
-        this.logger.logInfo(`Getting cart with id ${cartId}`);
-        return await CartModel.findById(cartId).populate("items.productId");
-    }
     public async getCartByUserId(userId: string) {
         this.logger.logInfo(`Getting cart for user ${userId}`);
-        return await CartModel.findOne({ userId }).populate("items.product");
+        return await CartModel.findOne({ userId }).populate("items.productId");
     }
+
     public async getCartByUserIdAndProductId(userId: string, productId: string) {
         this.logger.logInfo(
             `Getting cart for user ${userId} with product id ${productId}`,
         );
         return await CartModel.findOne({ userId, "items.productId": productId });
     }
+
     public async addItemToCart(userId: string, item: CartItem) {
-        this.logger;
-        return await CartModel.findOneAndUpdate(
-            { userId },
-            { $push: { items: item } },
-            { new: true, upsert: true },
+        const existingCart = await CartModel.findOne({ userId });
+        if (!existingCart) {
+            return await CartModel.create({ userId, items: [item] });
+        }
+        const existingItemIndex = existingCart.items.findIndex(
+            (cartItem) => cartItem.productId.toString() === item.productId.toString(),
         );
+        if (existingItemIndex !== -1) {
+            existingCart.items[existingItemIndex].quantity += item.quantity;
+            return await existingCart.save();
+        }
+        existingCart.items.push(item);
+        return await existingCart.save();
     }
 
     public async updateCartItem(
@@ -78,25 +83,10 @@ export class CartService extends BaseService {
         const cart = await CartModel.findOne({ userId }).populate(
             "items.productId",
         );
-
-        let totalPrice = 0;
+        let subTotal = 0;
         cart.items.forEach((item) => {
-            totalPrice += item.productId.price * item.quantity;
+            subTotal += item.productId.price * item.quantity;
         });
-        return { items: cart.items, totalPrice };
-    }
-
-    public async addItemsToCartWithTotalPrice(userId: string, items: CartItem[]) {
-        let totalPrice = 0;
-
-        items.forEach((item) => {
-            totalPrice += item.productId.price * item.quantity;
-        });
-
-        return await CartModel.findOneAndUpdate(
-            { userId },
-            { $push: { items }, totalPrice },
-            { new: true, upsert: true },
-        );
+        return { items: cart.items, subTotal: subTotal };
     }
 }

@@ -53,6 +53,10 @@ import "../controllers/auth/verification.controller";
 import "../controllers/shop/wishlist.controller";
 import "../controllers/file.controller";
 
+
+// Chat
+import "../controllers/chat/chat.controller";
+
 import {STRIPE_SECRET_KEY, stripeConfig} from "./stripe.config";
 import { FileService } from "../services/shop/image.service";
 import { AwsStorage } from "../storages/aws.storage";
