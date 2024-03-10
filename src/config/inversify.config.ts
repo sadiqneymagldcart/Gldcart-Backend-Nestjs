@@ -1,3 +1,4 @@
+import Stripe from "stripe";
 import { Container } from "inversify";
 import { Logger } from "../utils/logger";
 import { TokenService } from "../services/token/token.service";
@@ -5,7 +6,6 @@ import { AuthService } from "../services/auth/auth.service";
 import { GoogleAuthService } from "../services/auth/google.auth.service";
 import { MailService } from "../services/mail/mail.service";
 import { StripeService } from "../services/stripe/payment.service";
-import Stripe from "stripe";
 import { Transporter } from "nodemailer";
 import { ReviewService } from "../services/shop/review.service";
 import { ProductService } from "../services/shop/product.service";
@@ -21,6 +21,11 @@ import { OrderService } from "../services/shop/order.service";
 import { OTPService } from "../services/auth/otp.service";
 import { StripeSubscriptionService } from "../services/stripe/stripe.subscription.service";
 import { StripeWebhookService } from "../services/stripe/stripe.webhook.service";
+import { STRIPE_SECRET_KEY, stripeConfig } from "./stripe.config";
+import { FileService } from "../services/shop/image.service";
+import { AwsStorage } from "../storages/aws.storage";
+import { SearchService } from "../services/shop/global.search.service";
+import { ChatService } from "../services/chat/chat.service";
 
 import { configureNodemailer } from "./nodemailer.config";
 import { loadEnvironmentVariables } from "./env.config";
@@ -28,7 +33,6 @@ import { loadEnvironmentVariables } from "./env.config";
 //Auth
 import "../controllers/auth/auth.controller";
 import "../controllers/auth/google.auth.controller";
-
 //Shop
 import "../controllers/shop/review.controller";
 import "../controllers/shop/product.controller";
@@ -37,31 +41,20 @@ import "../controllers/shop/renting.controller";
 import "../controllers/shop/cart.controller";
 import "../controllers/shop/global.search.controller";
 import "../controllers/shop/order.controller";
-
 //Contact
 import "../controllers/contact/contact.controller";
-
 //User info
 import "../controllers/user_info/address.controller";
 import "../controllers/user_info/profile.controller";
 import "../controllers/user_info/reset.password.controller";
-
 //Stripe
 import "../controllers/stripe/payment.controller";
 //Verification
 import "../controllers/auth/verification.controller";
 import "../controllers/shop/wishlist.controller";
 import "../controllers/file.controller";
-
-
 // Chat
 import "../controllers/chat/chat.controller";
-
-import {STRIPE_SECRET_KEY, stripeConfig} from "./stripe.config";
-import { FileService } from "../services/shop/image.service";
-import { AwsStorage } from "../storages/aws.storage";
-import { SearchService } from "../services/shop/global.search.service";
-
 
 function bindAuthServices(container: Container) {
     container.bind(TokenService).toSelf();
@@ -115,12 +108,15 @@ function bindVerificationService(container: Container) {
     container.bind(OTPService).toSelf();
 }
 
+function bindChatService(container: Container) {
+    container.bind(ChatService).toSelf();
+}
+
 function initializeContainer(): Container {
     const container = new Container();
     container.bind(Logger).toSelf();
     return container;
 }
-
 
 loadEnvironmentVariables();
 const container = initializeContainer();
@@ -133,5 +129,6 @@ bindContactServices(container);
 bindUserInfoServices(container);
 bindShopServices(container);
 bindVerificationService(container);
+bindChatService(container);
 
 export { container };
