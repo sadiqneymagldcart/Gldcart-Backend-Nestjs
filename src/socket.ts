@@ -1,9 +1,9 @@
-import { Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { ChatModel } from "./models/chat/Chat";
 import { Message, MessageModel } from "./models/chat/Message";
 import { AwsStorage } from "./storages/aws.storage";
 
-export async function createSocket(io: any, awsStorage: AwsStorage) {
+export async function createSocket(io: Server, awsStorage: AwsStorage) {
     io.on("connection", (socket: Socket) => {
         socket.on("join", async (chatId: string) => {
             try {
