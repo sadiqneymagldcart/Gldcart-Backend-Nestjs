@@ -1,6 +1,6 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
-export interface Message extends Document {
+export interface Message {
     chatId: string;
     text: string;
     senderId: string;
