@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { BaseService } from "../base.service";
+import { BaseService } from "../base/base.service";
 import { uploadToCloudinary } from "../../utils/cloudinary.util";
 import { Logger } from "../../utils/logger";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";

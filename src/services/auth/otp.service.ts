@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
-import { BaseService } from "../base.service";
 import { Logger } from "../../utils/logger";
+import { BaseService } from "../base/base.service";
 
 @injectable()
 export class OTPService extends BaseService {

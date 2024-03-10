@@ -1,7 +1,7 @@
 import {Logger} from "../../utils/logger";
 import Stripe from "stripe";
-import {BaseService} from "../base.service";
 import {inject, injectable} from "inversify";
+import { BaseService } from "../base/base.service";
 
 @injectable()
 export class StripeSubscriptionService extends BaseService {
