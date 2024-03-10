@@ -8,7 +8,7 @@ import { BaseService } from "../base/base.service";
 
 @injectable()
 export class VerificationService extends BaseService {
-    private mailService: MailService;
+    private readonly mailService: MailService;
 
     public constructor(
         @inject(Logger) logger: Logger,

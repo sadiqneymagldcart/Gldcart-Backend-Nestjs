@@ -5,8 +5,8 @@ import { inject, injectable } from "inversify";
 
 @injectable()
 export class MailService {
-    private transporter: Transporter;
-    private logger: Logger;
+    private readonly transporter: Transporter;
+    private readonly logger: Logger;
 
     public constructor(
         @inject(Logger) logger: Logger,
