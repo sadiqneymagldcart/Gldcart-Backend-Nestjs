@@ -2,9 +2,9 @@ import { v4 as uuidv4 } from "uuid";
 import { inject, injectable } from "inversify";
 import { Logger } from "../../utils/logger";
 import { MailService } from "../mail/mail.service";
-import { BaseService } from "../base.service";
 import {UserModel} from "../../models/user/User";
 import { ApiError } from "../../exceptions/api.error";
+import { BaseService } from "../base/base.service";
 
 @injectable()
 export class VerificationService extends BaseService {

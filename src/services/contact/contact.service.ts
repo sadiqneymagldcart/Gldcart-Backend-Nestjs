@@ -1,6 +1,5 @@
 import { injectable } from "inversify";
-import { BaseService } from "../base.service";
-import { MailService } from "../mail/mail.service";
+import { BaseService } from "../base/base.service";
 
 @injectable()
 export class ContactService extends BaseService {
