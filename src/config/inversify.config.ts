@@ -55,6 +55,8 @@ import "../controllers/shop/wishlist.controller";
 import "../controllers/file.controller";
 // Chat
 import "../controllers/chat/chat.controller";
+import "../controllers/chat/message.controller";
+import { MessageService } from "../services/chat/message.service";
 
 function bindAuthServices(container: Container) {
     container.bind(TokenService).toSelf();
@@ -108,8 +110,9 @@ function bindVerificationService(container: Container) {
     container.bind(OTPService).toSelf();
 }
 
-function bindChatService(container: Container) {
+function bindChatServices(container: Container) {
     container.bind(ChatService).toSelf();
+    container.bind(MessageService).toSelf();
 }
 
 function initializeContainer(): Container {
@@ -129,6 +132,6 @@ bindContactServices(container);
 bindUserInfoServices(container);
 bindShopServices(container);
 bindVerificationService(container);
-bindChatService(container);
+bindChatServices(container);
 
 export { container };
