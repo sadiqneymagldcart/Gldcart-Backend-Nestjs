@@ -1,18 +1,18 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import mongoose, { Model, Schema } from "mongoose";
 
-export interface Message {
+export interface Message extends Document {
     chatId: string;
     text: string;
     senderId: string;
     recipientId: string;
 }
 
-const messageSchema = new Schema(
+const messageSchema = new Schema<Message>(
     {
-        chatId: { type: Schema.Types.ObjectId, ref: "Chat", required: true },
+        chatId: { type: Schema.Types.ObjectId, ref: "Chat" },
         text: { type: String, required: true },
-        senderId: { type: Schema.Types.ObjectId, ref: "User", required: true},
-        recipientId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+        senderId: { type: Schema.Types.ObjectId, ref: "User" },
+        recipientId: { type: Schema.Types.ObjectId, ref: "User" },
     },
     { timestamps: true },
 );
@@ -24,4 +24,7 @@ messageSchema.index({
     recipient: 1,
 });
 
-export const MessageModel = mongoose.model("Message", messageSchema);
+export const MessageModel = mongoose.model(
+    "Message",
+    messageSchema,
+) as Model<Message>;
