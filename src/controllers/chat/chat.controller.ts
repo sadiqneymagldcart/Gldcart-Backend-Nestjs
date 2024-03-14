@@ -6,20 +6,20 @@ import { ChatService } from "../../services/chat/chat.service";
 @controller("/chat")
 export class ChatController {
     private readonly chatService: ChatService;
-    constructor(@inject(ChatService) chatService: ChatService) {
+    public constructor(@inject(ChatService) chatService: ChatService) {
         this.chatService = chatService;
     }
 
     @httpGet("/")
     public async getChats(
-        req: express.Request,
-        res: express.Response,
+        request: express.Request,
+        response: express.Response,
         next: express.NextFunction,
     ) {
         try {
-            const userId = req.query.userId as string;
+            const userId = request.query.userId as string;
             const chats = await this.chatService.getChats(userId);
-            res.json(chats);
+            response.json(chats);
         } catch (error) {
             next(error);
         }
@@ -40,7 +40,7 @@ export class ChatController {
         }
     }
 
-    @httpGet("/:chatId")
+    @httpGet("/messages/:chatId")
     public async getChatMessages(
         req: express.Request,
         res: express.Response,
@@ -50,6 +50,21 @@ export class ChatController {
             const chatId = req.params.chatId;
             const messages = await this.chatService.getChatMessages(chatId);
             res.json(messages);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    @httpGet("/:chatId")
+    public async getChatById(
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const chatId = req.params.chatId;
+            const chat = await this.chatService.getChatById(chatId);
+            res.json(chat);
         } catch (error) {
             next(error);
         }
