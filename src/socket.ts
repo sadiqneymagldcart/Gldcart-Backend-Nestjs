@@ -87,7 +87,7 @@ export class CustomSocket {
         path: "participants",
         select: { name: 1, surname: 1, type: 1, is_online: 1 },
       });
-      socket.emit("chats-list", chats);
+      socket.emit("chats", chats);
     } catch (error) {
       this.handleError(socket, error);
     }
