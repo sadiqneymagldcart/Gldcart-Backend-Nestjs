@@ -18,7 +18,9 @@ export class CustomSocket {
     this.awsStorage = awsStorage;
     this.httpServer = http.createServer();
     this.io = new Server(this.httpServer, {
-      connectionStateRecovery: {},
+      connectionStateRecovery: {
+        maxDisconnectionDuration: 2 * 60 * 1000,
+      },
       cors: {
         origin: "*",
       },
@@ -32,7 +34,7 @@ export class CustomSocket {
   private async setupSocketHandlers() {
     this.io.on("connection", async (socket: Socket) => {
       const userId = socket.handshake.query.userId;
-      // console.log("User connected", userId);
+      console.log("User connected", userId);
       await UserModel.updateOne({ _id: userId }, { is_online: true });
       this.handleConnection(socket);
     });
@@ -40,6 +42,9 @@ export class CustomSocket {
 
   private async handleConnection(socket: Socket) {
     socket.on("join", (chatId: string) => this.handleJoin(socket, chatId));
+    socket.on("chats", (userId: string) =>
+      this.handleChatsList(socket, userId),
+    );
     socket.on("message", (message: Message) =>
       this.handleMessage(socket, message),
     );
@@ -71,6 +76,19 @@ export class CustomSocket {
       socket.to(message.chatId).emit("message", savedMessage);
     } catch (error) {
       console.error(error);
+      this.handleError(socket, error);
+    }
+  }
+
+  private async handleChatsList(socket: Socket, userId: string) {
+    try {
+      console.log("Getting chats for user", userId);
+      const chats = await ChatModel.find({ participants: userId }).populate({
+        path: "participants",
+        select: { name: 1, surname: 1, type: 1, is_online: 1 },
+      });
+      socket.emit("chats-list", chats);
+    } catch (error) {
       this.handleError(socket, error);
     }
   }
