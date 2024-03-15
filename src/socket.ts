@@ -18,9 +18,7 @@ export class CustomSocket {
     this.awsStorage = awsStorage;
     this.httpServer = http.createServer();
     this.io = new Server(this.httpServer, {
-      connectionStateRecovery: {
-        maxDisconnectionDuration: 2 * 60 * 1000,
-      },
+      connectionStateRecovery: {},
       cors: {
         origin: "*",
       },
@@ -33,18 +31,16 @@ export class CustomSocket {
 
   private async setupSocketHandlers() {
     this.io.on("connection", async (socket: Socket) => {
-      const userId = socket.handshake.query.userId;
+      const userId = socket.handshake.query.userId as string;
       console.log("User connected", userId);
       await UserModel.updateOne({ _id: userId }, { is_online: true });
+      this.handleChatsList(socket, userId);
       this.handleConnection(socket);
     });
   }
 
   private async handleConnection(socket: Socket) {
     socket.on("join", (chatId: string) => this.handleJoin(socket, chatId));
-    socket.on("chats", (userId: string) =>
-      this.handleChatsList(socket, userId),
-    );
     socket.on("message", (message: Message) =>
       this.handleMessage(socket, message),
     );
