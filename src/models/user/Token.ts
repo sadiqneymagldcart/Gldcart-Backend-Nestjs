@@ -1,4 +1,4 @@
-import mongoose, {Document, Model, Schema} from 'mongoose';
+import mongoose, { Document, Model, Schema } from "mongoose";
 
 export interface Token extends Document {
     user: Schema.Types.ObjectId;
@@ -8,7 +8,7 @@ export interface Token extends Document {
 const tokenSchema = new Schema<Token>({
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: "User",
     },
     refreshToken: {
         type: String,
@@ -16,6 +16,6 @@ const tokenSchema = new Schema<Token>({
     },
 });
 
-const TokenModel = mongoose.model('Token', tokenSchema) as Model<Token>;
+const TokenModel = mongoose.model("Token", tokenSchema) as Model<Token>;
 
 export default TokenModel;
