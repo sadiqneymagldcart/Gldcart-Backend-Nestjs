@@ -21,6 +21,7 @@ export interface User extends Document {
     verification_token?: string;
     confirmed?: boolean;
     verified?: boolean;
+    is_online?: boolean;
 }
 
 const userSchema = new Schema<User>({
@@ -101,6 +102,10 @@ const userSchema = new Schema<User>({
         default: false,
     },
     verified: {
+        type: Boolean,
+        default: false,
+    },
+    is_online: {
         type: Boolean,
         default: false,
     },
