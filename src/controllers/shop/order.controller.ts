@@ -19,7 +19,7 @@ export class OrderController {
     ): Promise<void> {
         try {
             const order = await this.orderService.createOrder(request.body);
-            response.status(200).json(order);
+            response.status(201).json(order);
         } catch (error) {
             next(error);
         }
