@@ -6,8 +6,9 @@ interface RentingAttributes {
 
 export interface Renting extends Document {
     renting_name: string;
+    price: number;
     description?: string;
-    images: string[];
+    images?: string[];
     category: string;
     subcategory: string;
     attributes: RentingAttributes;
@@ -23,7 +24,7 @@ export const RentingSchema = new Schema<Renting>({
     },
     images: {
         type: [String],
-        required: true,
+        required: false,
     },
     category: {
         type: String,
@@ -35,6 +36,10 @@ export const RentingSchema = new Schema<Renting>({
     },
     attributes: {
         type: Schema.Types.Mixed,
+        required: true,
+    },
+    price: {
+        type: Number,
         required: true,
     },
 });
