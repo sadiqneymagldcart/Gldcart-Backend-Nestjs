@@ -20,8 +20,8 @@ export class RentingController {
         this.storage = storage;
     }
 
-    @httpPost("/", multerMiddleware.any(), requireAuth)
-    public async addRentingHandler(
+    @httpPost("/", multerMiddleware.any())
+    public async addRentingProductHandler(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -29,12 +29,11 @@ export class RentingController {
         try {
             const files = request.files as Express.Multer.File[];
             const images = await this.storage.upload(files);
-
             const rentingData: Renting = {
                 ...request.body,
                 images: images,
             };
-            const renting = await this.rentingService.addRenting(rentingData);
+            const renting = await this.rentingService.addRentingProduct(rentingData);
             response.status(201).json(renting);
         } catch (error) {
             next(error);
