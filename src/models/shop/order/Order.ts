@@ -4,7 +4,8 @@ export interface Order extends Document {
     user: mongoose.Types.ObjectId;
     products: string[];
     total: number;
-    shipping?: object;
+    billing_details?: object;
+    order_notes?: string;
     status: string;
 }
 
@@ -13,7 +14,8 @@ const orderSchema = new Schema<Order>(
         user: { type: Schema.Types.ObjectId, ref: "User" },
         products: [{ type: Schema.Types.ObjectId, ref: "Product" }],
         total: { type: Number, required: true },
-        shipping: { type: Object },
+        billing_details: { type: Object },
+        order_notes: { type: String },
         status: {
             type: String,
             enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
