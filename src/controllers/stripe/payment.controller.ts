@@ -6,14 +6,14 @@ import { OrderService } from "../../services/shop/order.service";
 
 @controller("/payments")
 export class PaymentController {
-    private readonly paymentService: StripeService;
+    private readonly stripeService: StripeService;
     private readonly orderService: OrderService;
 
     public constructor(
         @inject(StripeService) paymentService: StripeService,
         @inject(OrderService) orderService: OrderService,
     ) {
-        this.paymentService = paymentService;
+        this.stripeService = paymentService;
         this.orderService = orderService;
     }
 
@@ -25,7 +25,7 @@ export class PaymentController {
     ): Promise<void> {
         const { email, name } = request.body;
         try {
-            const customerId = await this.paymentService.createCustomer(email, name);
+            const customerId = await this.stripeService.createCustomer(email, name);
             response.send(customerId);
         } catch (error) {
             next(error);
@@ -39,7 +39,7 @@ export class PaymentController {
         next: express.NextFunction,
     ): Promise<void> {
         try {
-            const checkoutUrl = await this.paymentService.createPaymentCheckout(
+            const checkoutUrl = await this.stripeService.createPaymentCheckout(
                 request.body,
             );
             response.json({ url: checkoutUrl });
@@ -56,7 +56,7 @@ export class PaymentController {
     ): Promise<void> {
         const { amount, currency, metadata } = request.body;
         try {
-            const intent = await this.paymentService.createIntent(
+            const intent = await this.stripeService.createIntent(
                 amount,
                 currency,
                 metadata,
@@ -73,7 +73,7 @@ export class PaymentController {
         response: express.Response,
         next: express.NextFunction,
     ): Promise<void> {
-        const event = this.paymentService.createEvent(request);
+        const event = this.stripeService.createEvent(request);
         if (!event) {
             response.status(400).send(`Webhook Error: Invalid event`);
             return
