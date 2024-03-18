@@ -9,6 +9,7 @@ import {
 } from "inversify-express-utils";
 import { WishlistService } from "../../services/shop/wishlist.service";
 import { requireAuth } from "../../middlewares/auth.middleware";
+import { WishlistModel } from "../../models/shop/wishlist/Wishlist";
 
 @controller("/wishlist")
 export class WishlistController {
@@ -71,7 +72,7 @@ export class WishlistController {
         }
     }
 
-    @httpDelete("/")
+    @httpDelete("/remove-item")
     public async removeItemFromWishlistHandler(
         request: express.Request,
         response: express.Response,
