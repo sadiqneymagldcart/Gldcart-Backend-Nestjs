@@ -59,7 +59,7 @@ export class CartService extends BaseService {
         item: CartItem,
     ) {
         return await CartModel.findOneAndUpdate(
-            { userId, "items.productId": productId },
+            { userId, "items.product": productId },
             { $set: { "items.$": item } },
             { new: true },
         );
