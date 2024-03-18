@@ -26,23 +26,24 @@ export class CartService extends BaseService {
 
     public async getCartByUserId(userId: string) {
         this.logger.logInfo(`Getting cart for user ${userId}`);
-        return await CartModel.findOne({ userId }).populate("items.productId");
+        return await CartModel.findOne({ userId }).populate("items.product");
     }
 
     public async getCartByUserIdAndProductId(userId: string, productId: string) {
         this.logger.logInfo(
             `Getting cart for user ${userId} with product id ${productId}`,
         );
-        return await CartModel.findOne({ userId, "items.productId": productId });
+        return await CartModel.findOne({ userId, "items.product": productId });
     }
 
     public async addItemToCart(userId: string, item: CartItem) {
+        console.log("Adding item to cart", userId, item);
         const existingCart = await CartModel.findOne({ userId });
         if (!existingCart) {
             return await CartModel.create({ userId, items: [item] });
         }
         const existingItemIndex = existingCart.items.findIndex(
-            (cartItem) => cartItem.productId.toString() === item.productId.toString(),
+            (cartItem) => cartItem.product.toString() === item.product.toString(),
         );
         if (existingItemIndex !== -1) {
             existingCart.items[existingItemIndex].quantity += item.quantity;
@@ -81,11 +82,11 @@ export class CartService extends BaseService {
 
     public async getCartItemsWithTotalPrice(userId: string) {
         const cart = await CartModel.findOne({ userId }).populate(
-            "items.productId",
+            "items.product",
         );
         let subTotal = 0;
         cart.items.forEach((item) => {
-            subTotal += item.productId.price * item.quantity;
+            subTotal += item.product.price * item.quantity;
         });
         return { items: cart.items, subTotal: subTotal };
     }
