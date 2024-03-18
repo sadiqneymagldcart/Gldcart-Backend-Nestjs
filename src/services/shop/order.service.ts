@@ -34,9 +34,12 @@ export class OrderService extends BaseService {
         }
     }
 
-    public async getOrder(id: string): Promise<Order | null> {
+    public async getOrder(userId: string): Promise<Order | null> {
         try {
-            return OrderModel.findById(id);
+            return OrderModel.findOne({ userId }).populate({
+                path: "products",
+                select: { product_name: 1, price: 1 },
+            });
         } catch (error: any) {
             this.logger.logError("Failed to get order", error);
             throw ApiError.BadRequest("Failed to get order");
