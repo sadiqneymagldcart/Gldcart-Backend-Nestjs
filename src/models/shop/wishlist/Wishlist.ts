@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { Product } from "../product/Product";
 
 export interface Wishlist extends Document {
     userId: Schema.Types.ObjectId;
@@ -6,14 +7,13 @@ export interface Wishlist extends Document {
 }
 
 export interface WishlistItem {
-    product: Schema.Types.ObjectId;
+    productId: Product;
 }
 
 const wishlistItemSchema = new Schema<WishlistItem>(
     {
-        product: { type: Schema.Types.ObjectId, ref: "Product" },
+        productId: { type: Schema.Types.ObjectId, ref: "Product", unique: true},
     },
-    { timestamps: true },
 );
 
 export const wishlistSchema = new Schema<Wishlist>(
@@ -21,7 +21,6 @@ export const wishlistSchema = new Schema<Wishlist>(
         userId: { type: Schema.Types.ObjectId, ref: "User" },
         items: [wishlistItemSchema],
     },
-    { timestamps: true },
 );
 
 export const WishlistModel = mongoose.model<Wishlist>(
