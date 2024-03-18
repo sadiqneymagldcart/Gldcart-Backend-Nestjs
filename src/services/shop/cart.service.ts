@@ -70,7 +70,7 @@ export class CartService extends BaseService {
             { userId },
             { $pull: { items: { product: productId } } },
             { new: true },
-        );
+        ).populate("items.product");
     }
 
     public async clearCart(userId: string) {
