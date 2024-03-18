@@ -45,10 +45,14 @@ export class WishlistService extends BaseService {
             { new: true },
         );
     }
+
     public async removeItemFromWishlist(userId: string, productId: string) {
+        this.logger.logInfo(
+            `Removing item from wishlist for user ${userId} with product id ${productId}`,
+        );
         return await WishlistModel.findOneAndUpdate(
             { userId },
-            { $pull: { items: { productId } } },
+            { $pull: { items: { product: productId } } },
             { new: true },
         );
     }

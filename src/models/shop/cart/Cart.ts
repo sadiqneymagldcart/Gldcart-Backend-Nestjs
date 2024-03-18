@@ -7,13 +7,13 @@ export interface Cart extends Document {
 }
 
 export interface CartItem {
-    productId: Product;
+    product: Product;
     quantity: number;
 }
 
 const cartItemSchema = new Schema<CartItem>(
     {
-        productId: { type: Schema.Types.ObjectId, ref: "Product" },
+        product: { type: Schema.Types.ObjectId, ref: "Product" },
         quantity: { type: Number },
     },
     { timestamps: true },
