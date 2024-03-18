@@ -46,9 +46,19 @@ export class OrderService extends BaseService {
         }
     }
 
-    public async updateOrder(id: string, data: any): Promise<Order | null> {
+    public async updateOrder(
+        id: string,
+        data: any,
+    ): Promise<Order | null> {
         try {
-            return OrderModel.findByIdAndUpdate(id, data, { new: true });
+            return OrderModel.findByIdAndUpdate(
+                id,
+                {
+                    billing_details: data.billing_details,
+                    order_notes: data.order_notes,
+                },
+                { new: true },
+            );
         } catch (error: any) {
             this.logger.logError("Failed to update order", error);
             throw ApiError.BadRequest("Failed to update order");
