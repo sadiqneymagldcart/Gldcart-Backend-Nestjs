@@ -15,7 +15,7 @@ export class WishlistService extends BaseService {
     public async getWishlistByUser(userId: string) {
         return await WishlistModel.findOne({ userId }).populate({
             path: "items.product",
-            select: { product_name: 1, price: 1, images: 1 },
+            select: { product_name: 1, images: 1, price: 1 },
         });
     }
 
