@@ -32,11 +32,11 @@ export class ProductController {
         next: express.NextFunction,
     ) {
         try {
-            // const files = request.files as Express.Multer.File[];
-            // const images = await this.awsStorage.upload(files);
+            const files = request.files as Express.Multer.File[];
+            const images = await this.awsStorage.upload(files);
             const productData: Product = {
                 ...request.body,
-                // images: images,
+                images: images,
             };
             const product = await this.productService.addProduct(productData);
             response.status(201).json(product);
