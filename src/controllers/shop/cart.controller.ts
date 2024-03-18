@@ -119,13 +119,13 @@ export class CartController {
         response: express.Response,
         next: express.NextFunction,
     ) {
-        if (!request.body.userId || !request.body.itemId) {
-            response.status(400).json({ message: "userId and itemId are required" });
+        if (!request.body.userId || !request.body.productId) {
+            response.status(400).json({ message: "userId and productId are required" });
         }
         try {
             const cart = await this.cartService.removeItemFromCart(
                 request.body.userId,
-                request.body.itemId,
+                request.body.productId,
             );
             response.status(200).json(cart);
         } catch (error) {
