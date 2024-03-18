@@ -54,6 +54,9 @@ export class WishlistService extends BaseService {
             { userId },
             { $pull: { items: { product: productId } } },
             { new: true },
-        );
+        ).populate({
+            path: "items.product",
+            select: { product_name: 1, images: 1, price: 1 },
+        });
     }
 }
