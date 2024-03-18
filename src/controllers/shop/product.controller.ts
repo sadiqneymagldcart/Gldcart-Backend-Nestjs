@@ -122,7 +122,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/:productId", requireAuth)
+    @httpGet("/:productId")
     public async getProductByIdHandler(
         request: express.Request,
         response: express.Response,
@@ -130,8 +130,9 @@ export class ProductController {
     ) {
         try {
             const productId = request.params.productId;
+            console.log(productId);
             const product = await this.productService.getProductById(productId);
-            response.status(200).json(product);
+            response.status(201).json(product);
         } catch (error) {
             next(error);
         }
