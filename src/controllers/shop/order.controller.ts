@@ -40,14 +40,14 @@ export class OrderController {
         }
     }
 
-    @httpPost("/update-order")
+    @httpPut("/update-order/:id")
     public async updateOrder(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ): Promise<void> {
         try {
-            const id = request.query.id as string;
+            const id = request.params.id as string;
             const data = request.body;
             const order = await this.orderService.updateOrder(id, data);
             response.json(order);

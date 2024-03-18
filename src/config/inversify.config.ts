@@ -66,6 +66,7 @@ function bindAuthServices(container: Container) {
 
 function bindStripeServices(container: Container) {
     container.bind(Stripe).toDynamicValue(() => {
+        console.log(STRIPE_SECRET_KEY, stripeConfig);
         return new Stripe(STRIPE_SECRET_KEY, stripeConfig);
     });
     container.bind(StripeService).toSelf();
