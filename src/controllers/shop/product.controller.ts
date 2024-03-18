@@ -79,7 +79,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/", requireAuth)
+    @httpGet("/")
     public async getAllProductsHandler(
         request: express.Request,
         response: express.Response,
@@ -87,7 +87,7 @@ export class ProductController {
     ) {
         try {
             const products = await this.productService.getAllProducts();
-            response.status(200).json(products);
+            response.status(201).json(products);
         } catch (error) {
             next(error);
         }
@@ -107,7 +107,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/category/:category", requireAuth)
+    @httpGet("/category/:category")
     public async getProductByCategoryHandler(
         request: express.Request,
         response: express.Response,
