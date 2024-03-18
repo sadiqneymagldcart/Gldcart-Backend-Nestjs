@@ -1,12 +1,12 @@
-import {BaseService} from "../base/base.service";
-import {TokenService} from "../token/token.service";
-import {Logger} from "../../utils/logger";
-import {ApiError} from "../../exceptions/api.error";
-import axios, {AxiosResponse} from "axios";
+import { BaseService } from "../base/base.service";
+import { TokenService } from "../token/token.service";
+import { Logger } from "../../utils/logger";
+import { ApiError } from "../../exceptions/api.error";
+import axios, { AxiosResponse } from "axios";
 import * as qs from "qs";
-import {Token} from "../../models/user/Token";
-import {inject, injectable} from "inversify";
-import {User, UserModel} from "../../models/user/User";
+import { Token } from "../../models/user/Token";
+import { inject, injectable } from "inversify";
+import { User, UserModel } from "../../models/user/User";
 import { GoogleTokenResult } from "../../interfaces/GoogleTokenResult";
 import { GoogleUserInfo } from "../../interfaces/GoogleUserInfo";
 import { GoogleUserResult } from "../../interfaces/GoogleUserResult";
@@ -16,7 +16,10 @@ import { OAuthValues } from "../../interfaces/OAuthValues";
 export class GoogleAuthService extends BaseService {
     private tokenService: TokenService;
 
-    public constructor(@inject(Logger) logger: Logger, tokenService: TokenService) {
+    public constructor(
+        @inject(Logger) logger: Logger,
+        tokenService: TokenService,
+    ) {
         super(logger);
         this.tokenService = tokenService;
     }
@@ -35,7 +38,6 @@ export class GoogleAuthService extends BaseService {
         try {
             const googleResponse = await this.postToUrl(
                 process.env.GOOGLE_TOKEN_URL,
-
                 values,
             );
             return googleResponse.data;
@@ -57,7 +59,7 @@ export class GoogleAuthService extends BaseService {
     }
 
     private async updateOrCreateGoogleUser(googleUserData: GoogleUserInfo) {
-        let existingUser = await UserModel.findOne({email: googleUserData.email});
+        let existingUser = await UserModel.findOne({ email: googleUserData.email });
         if (!existingUser)
             existingUser = await this.createGoogleUser(googleUserData);
         return existingUser;
@@ -72,7 +74,7 @@ export class GoogleAuthService extends BaseService {
             surname: googleUserData.surname,
             email: googleUserData.email,
             profile_picture: googleUserData.picture,
-            password: "",
+            password: googleUserData.password,
         });
         this.logger.logInfo(`New user created with email: ${googleUserData.email}`);
         return newUser;
@@ -87,8 +89,7 @@ export class GoogleAuthService extends BaseService {
             email: user.email,
         };
 
-        const tokens: Token =
-            await this.tokenService.createAndSaveTokens(userInfo);
+        const tokens: Token = await this.tokenService.createAndSaveTokens(userInfo);
         this.logger.logInfo(`User logged in with Google: ${user.email}`);
         return { tokens, user: userInfo, picture: picture };
     }
