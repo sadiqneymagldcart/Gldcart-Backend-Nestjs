@@ -54,6 +54,17 @@ export class StripeWebhookService extends BaseService {
                     );
                 }
                 break;
+            case "charge.succeeded":
+                this.logger.logInfo("Charge succeeded");
+                try {
+                    await this.orderService.updateOrderStatus(
+                        (data as { metadata: { order_id: string } }).metadata.order_id,
+                        "paid",
+                    );
+                } catch (error: any) {
+                    this.logger.logError("Error handling payment intent success", error);
+                }
+                break;
             default:
                 this.logger.logInfo(`Unhandled event type ${event.type}`);
                 return false;
