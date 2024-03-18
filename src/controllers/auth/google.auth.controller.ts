@@ -46,6 +46,7 @@ export class GoogleAuthController {
                 picture: googleUser.picture,
                 password: "gldcart123",
             };
+            console.log(userInfo);
 
             const result = await this.googleAuthService.loginGoogleUser(userInfo);
             setRefreshTokenCookie(response, result.tokens.refreshToken);
