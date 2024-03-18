@@ -25,8 +25,8 @@ export class OrderController {
         }
     }
 
-    @httpGet("/get-order")
-    public async getOrder(
+    @httpGet("/:userId")
+    public async getOrderByUserId(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
