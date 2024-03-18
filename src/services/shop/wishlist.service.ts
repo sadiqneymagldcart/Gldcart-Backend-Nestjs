@@ -13,7 +13,10 @@ export class WishlistService extends BaseService {
     }
 
     public async getWishlistByUser(userId: string) {
-        return await WishlistModel.findOne({ userId }).populate("items.productId");
+        return await WishlistModel.findOne({ userId }).populate({
+            path: "items.product",
+            select: { product_name: 1, price: 1, images: 1 },
+        });
     }
 
     public async addItemToWishlist(userId: string, item: WishlistItem) {
@@ -22,7 +25,7 @@ export class WishlistService extends BaseService {
             return await WishlistModel.create({ userId, items: [item] });
         }
         const existingItemIndex = existingCart.items.findIndex(
-            (cartItem) => cartItem.productId.toString() === item.productId.toString(),
+            (cartItem) => cartItem.product.toString() === item.product.toString(),
         );
         if (existingItemIndex !== -1) {
             return await existingCart.save();
