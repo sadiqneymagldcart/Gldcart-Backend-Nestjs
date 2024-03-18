@@ -65,9 +65,10 @@ export class CartService extends BaseService {
         );
     }
     public async removeItemFromCart(userId: string, productId: string) {
+        this.logger.logInfo(`Removing item from cart for user ${userId}`);
         return await CartModel.findOneAndUpdate(
             { userId },
-            { $pull: { items: { productId } } },
+            { $pull: { items: { product: productId } } },
             { new: true },
         );
     }
@@ -81,9 +82,7 @@ export class CartService extends BaseService {
     }
 
     public async getCartItemsWithTotalPrice(userId: string) {
-        const cart = await CartModel.findOne({ userId }).populate(
-            "items.product",
-        );
+        const cart = await CartModel.findOne({ userId }).populate("items.product");
         let subTotal = 0;
         cart.items.forEach((item) => {
             subTotal += item.product.price * item.quantity;
