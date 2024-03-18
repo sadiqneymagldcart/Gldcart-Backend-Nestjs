@@ -41,13 +41,14 @@ export class WishlistController {
         response: express.Response,
         next: express.NextFunction,
     ) {
+        console.log(request.body);
         try {
             const wishlist = await this.wishlistService.addItemToWishlist(
                 request.body.userId,
                 request.body.item,
             );
             response.status(201).json(wishlist);
-        } catch (error) {
+        } catch (error: any) {
             next(error);
         }
     }
