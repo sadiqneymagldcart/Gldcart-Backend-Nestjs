@@ -11,7 +11,7 @@ export class ProductService extends BaseService {
     }
 
     public async addProduct(product: Product): Promise<Product> {
-        this.logger.logInfo("Adding product");
+        this.logger.logInfo("Adding product", product);
         const newProduct = new ProductModel(product);
         return newProduct.save();
     }
