@@ -12,7 +12,7 @@ export interface WishlistItem {
 
 const wishlistItemSchema = new Schema<WishlistItem>(
     {
-        product: { type: Schema.Types.ObjectId, ref: "Product", unique: true},
+        product: { type: Schema.Types.ObjectId, ref: "Product"},
     },
 );
 
