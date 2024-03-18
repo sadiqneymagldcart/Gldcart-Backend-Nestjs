@@ -13,21 +13,29 @@ export class WishlistService extends BaseService {
     }
 
     public async getWishlistByUser(userId: string) {
-        return await WishlistModel.findOne({ userId }).populate("items.product");
-    }
-    public async addItemToWishlist(userId: string, item: WishlistItem) {
-        return await WishlistModel.findOneAndUpdate(
-            { userId },
-            { $push: { items: item } },
-            { new: true, upsert: true },
-        );
+        return await WishlistModel.findOne({ userId }).populate("items.productId");
     }
 
+    public async addItemToWishlist(userId: string, item: WishlistItem) {
+        const existingCart = await WishlistModel.findOne({ userId });
+        if (!existingCart) {
+            return await WishlistModel.create({ userId, items: [item] });
+        }
+        const existingItemIndex = existingCart.items.findIndex(
+            (cartItem) => cartItem.productId.toString() === item.productId.toString(),
+        );
+        if (existingItemIndex !== -1) {
+            return await existingCart.save();
+        }
+        existingCart.items.push(item);
+        return await existingCart.save();
+    }
     public async updateCartItem(
         userId: string,
         productId: string,
         item: WishlistItem,
     ) {
+        this.logger.logInfo(`Updating item in wishlist for user ${userId}`);
         return await WishlistModel.findOneAndUpdate(
             { userId, "items.product": productId },
             { $set: { "items.$": item } },
