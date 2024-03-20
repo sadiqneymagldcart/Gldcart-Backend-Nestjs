@@ -55,7 +55,7 @@ export class CustomSocket {
       const chat = await ChatModel.findById(chatId);
       if (!chat) throw new Error("Chat not found");
       socket.join(chatId);
-      this.io.to(chatId).emit("joined", chatId);
+      // this.io.to(chatId).emit("joined", chatId);
     } catch (error) {
       this.handleError(socket, error);
     }
@@ -92,13 +92,14 @@ export class CustomSocket {
   private async handleFile(socket: Socket, data: any) {
     try {
       const urls = await this.uploadFile(data.file);
-      const message: Message = {
+      const message = {
         chatId: data.chatId,
         senderId: data.senderId,
         text: `${urls[0]}`,
         recipientId: data.recipientId,
       };
-      await this.saveMessageAndBroadcast(message);
+      socket.to(data.chatId).emit("file", message);
+      // await this.saveMessageAndBroadcast(socket, message);
     } catch (error) {
       this.handleError(socket, error);
     }
@@ -122,11 +123,11 @@ export class CustomSocket {
     socket.emit("error", { message: error.message });
   }
 
-  private async saveMessageAndBroadcast(message: Message) {
+  private async saveMessageAndBroadcast(socket: Socket, message: any) {
     const chat = await ChatModel.findById(message.chatId);
     if (!chat) throw new Error("Chat not found");
     const savedMessage = await MessageModel.create(message);
-    this.io.to(message.chatId).emit("message", savedMessage);
+    socket.to(message.chatId).emit("message", savedMessage);
   }
 
   public start() {
