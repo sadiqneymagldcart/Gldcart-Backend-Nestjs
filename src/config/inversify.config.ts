@@ -10,9 +10,9 @@ import { Transporter } from "nodemailer";
 import { ReviewService } from "../services/shop/review.service";
 import { ProductService } from "../services/shop/product.service";
 import { ProfessionalServicesService } from "../services/shop/professional-services.service";
-import { AddressService } from "../services/user_info/address.service";
-import { PasswordService } from "../services/user_info/reset.password.service";
-import { ProfileService } from "../services/user_info/profile.service";
+import { AddressService } from "../services/user/address.service";
+import { PasswordService } from "../services/user/reset.password.service";
+import { ProfileService } from "../services/user/profile.service";
 import { RentingService } from "../services/shop/renting.service";
 import { VerificationService } from "../services/auth/verification.service";
 import { CartService } from "../services/shop/cart.service";
@@ -44,9 +44,9 @@ import "../controllers/shop/order.controller";
 //Contact
 import "../controllers/contact/contact.controller";
 //User info
-import "../controllers/user_info/address.controller";
-import "../controllers/user_info/profile.controller";
-import "../controllers/user_info/reset.password.controller";
+import "../controllers/user/address.controller";
+import "../controllers/user/profile.controller";
+import "../controllers/user/reset.password.controller";
 //Stripe
 import "../controllers/stripe/payment.controller";
 //Verification

@@ -1,5 +1,5 @@
-import { Server, Socket } from "socket.io";
 import * as http from "http";
+import { Server, Socket } from "socket.io";
 import { UserModel } from "./models/user/User";
 import { CustomFile } from "./interfaces/CustomFile";
 import { AwsStorage } from "./storages/aws.storage";
@@ -21,7 +21,7 @@ export class CustomSocket {
     this.io = new Server(httpServer, {
       connectionStateRecovery: {},
       cors: {
-        origin: "*",
+        origin: process.env.CLIENT_URL,
       },
     });
     this.logger = logger;
@@ -33,8 +33,8 @@ export class CustomSocket {
       const userId = socket.handshake.query.userId as string;
       this.logger.logInfo("User connected", { userId });
       await this.updateUserOnlineStatus(userId, true);
-      this.handleChatsList(socket, userId);
-      this.handleConnection(socket);
+      await this.handleChatsList(socket, userId);
+      await this.handleConnection(socket);
     });
   }
 

@@ -3,18 +3,26 @@ import { StripeService } from "../../services/stripe/payment.service";
 import { inject } from "inversify";
 import { controller, httpPost } from "inversify-express-utils";
 import { OrderService } from "../../services/shop/order.service";
+import { ProductService } from "../../services/shop/product.service";
+import { Logger } from "../../utils/logger";
 
 @controller("/payments")
 export class PaymentController {
     private readonly stripeService: StripeService;
     private readonly orderService: OrderService;
+    private readonly productService: ProductService;
+    private readonly logger: Logger;
 
     public constructor(
         @inject(StripeService) paymentService: StripeService,
         @inject(OrderService) orderService: OrderService,
+        @inject(ProductService) productService: ProductService,
+        @inject(Logger) logger: Logger,
     ) {
         this.stripeService = paymentService;
         this.orderService = orderService;
+        this.productService = productService;
+        this.logger = logger;
     }
 
     @httpPost("/create-customer")
@@ -76,9 +84,8 @@ export class PaymentController {
         const event = this.stripeService.createEvent(request);
         if (!event) {
             response.status(400).send(`Webhook Error: Invalid event`);
-            return
+            return;
         }
-        console.log(event.type);
         try {
             switch (event.type) {
                 case "charge.succeeded":
@@ -86,6 +93,11 @@ export class PaymentController {
                     await this.orderService.updateOrderStatus(
                         data.metadata.orderId,
                         "paid",
+                    );
+                    this.logger.logInfo(`Order ${data.metadata.orderId} paid`);
+                    await this.productService.updateProductStock(
+                        data.metadata.productId,
+                        -data.metadata.quantity,
                     );
                     break;
                 default:
@@ -96,6 +108,5 @@ export class PaymentController {
             next(error);
         }
     }
-
     @httpPost("") public async() { }
 }

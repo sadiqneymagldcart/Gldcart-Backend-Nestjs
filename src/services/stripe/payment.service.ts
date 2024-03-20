@@ -3,7 +3,6 @@ import Stripe from "stripe";
 import { BaseService } from "../base/base.service";
 import { inject, injectable } from "inversify";
 import { CartItem } from "../../models/shop/cart/Cart";
-import { CheckoutRequestBody } from "../../interfaces/CheckoutRequestBody";
 
 @injectable()
 export class StripeService extends BaseService {
@@ -61,15 +60,26 @@ export class StripeService extends BaseService {
         }
     }
 
-    public async createPaymentCheckout(
-        paymentData: CheckoutRequestBody,
-    ): Promise<string | null> {
+    public async createPaymentCheckout(paymentData: {
+        userId: string;
+        cartItems: CartItem[];
+    }): Promise<string | null> {
         try {
             const customer = await this.createCustomerWithMetadata({
                 userId: paymentData.userId,
                 cart: JSON.stringify(paymentData.cartItems),
             });
-            const lineItems = this.createLineItems(paymentData.cartItems);
+            this.logger.logInfo(`Customer created: ${customer.id}`);
+            const lineItems = paymentData.cartItems.map((item) => ({
+                price_data: {
+                    currency: "usd",
+                    product_data: {
+                        name: item.product.product_name,
+                    },
+                    unit_amount: item.product.price * 100,
+                },
+                quantity: item.quantity,
+            }));
             const session = await this.createCheckoutSession(customer.id, lineItems);
             this.logger.logInfo(`Checkout session created: ${session.id}`);
             return session.url;
@@ -106,20 +116,6 @@ export class StripeService extends BaseService {
         metadata: Record<string, any> = {},
     ): Promise<Stripe.Customer> {
         return this.stripe.customers.create({ metadata });
-    }
-
-    private createLineItems(cartItems: CartItem[]): Array<Object> {
-        return cartItems.map((item) => ({
-            price_data: {
-                currency: "usd",
-                product_data: {
-                    name: "Product",
-                    id: item.product,
-                },
-                unit_amount: item.price * 100,
-            },
-            quantity: item.quantity,
-        }));
     }
 
     private async createCheckoutSession(
