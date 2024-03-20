@@ -9,7 +9,7 @@ export interface Product extends Document {
   price: number;
   stock: number;
   description?: string;
-  images?: string[];
+  images: string[];
   category: string;
   subcategory: string;
   attributes: ProductAttributes;
@@ -23,7 +23,7 @@ export const ProductSchema = new Schema<Product>({
   category: { type: String, required: true, trim: true },
   subcategory: { type: String, required: true, trim: true },
   description: { type: String, trim: true },
-  images: [{ type: String }],
+  images: [{ type: String }, { required: true }],
   attributes: { type: Schema.Types.Mixed, required: true },
   reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
 });

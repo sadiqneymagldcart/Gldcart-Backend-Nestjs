@@ -24,6 +24,8 @@ export class CartController {
         next: express.NextFunction,
     ) {
         try {
+            if (!request.body.userId)
+                return response.status(400).json({ message: "userId is required" });
             const cart = await this.cartService.createCart(request.body);
             response.status(201).json(cart);
         } catch (error) {
@@ -55,6 +57,8 @@ export class CartController {
         next: express.NextFunction,
     ) {
         try {
+            if (!request.body.userId)
+                return response.status(400).json({ message: "userId is required" });
             const cart = await this.cartService.deleteCart(request.body.userId);
             response.status(200).json(cart);
         } catch (error) {
@@ -63,11 +67,13 @@ export class CartController {
     }
 
     @httpGet("/user/:userId")
-    public async getCartByUserIdHandler(
+    public async getCart(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
+        if (!request.params.userId)
+            return response.status(400).json({ message: "userId is required" });
         try {
             const cart = await this.cartService.getCartItemsWithTotalPrice(
                 request.params.userId,
@@ -79,11 +85,15 @@ export class CartController {
     }
 
     @httpPost("/add-item")
-    public async addItemToCartHandler(
+    public async addItem(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
+        if (!request.body.userId || !request.body.item)
+            return response
+                .status(400)
+                .json({ message: "userId and item are required" });
         try {
             const cart = await this.cartService.addItemToCart(
                 request.body.userId,
@@ -96,11 +106,16 @@ export class CartController {
     }
 
     @httpPut("/update-item", requireAuth)
-    public async updateCartItemHandler(
+    public async updateItem(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
+        if (!request.body.userId || !request.body.itemId || !request.body.item) {
+            response
+                .status(400)
+                .json({ message: "userId, itemId and item are required" });
+        }
         try {
             const cart = await this.cartService.updateCartItem(
                 request.body.userId,
@@ -114,13 +129,15 @@ export class CartController {
     }
 
     @httpDelete("/remove-item")
-    public async removeItemFromCartHandler(
+    public async removeItem(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
         if (!request.body.userId || !request.body.productId) {
-            response.status(400).json({ message: "userId and productId are required" });
+            response
+                .status(400)
+                .json({ message: "userId and productId are required" });
         }
         try {
             const cart = await this.cartService.removeItemFromCart(

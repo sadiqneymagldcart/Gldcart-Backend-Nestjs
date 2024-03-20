@@ -86,8 +86,8 @@ export class Logger implements ILogger {
         return new winstonDailyRotateFile({
             filename: `${this.appName}-%DATE%.log`,
             zippedArchive: true,
-            maxSize: "10m", // Rotate after 10MB
-            maxFiles: "14d", // Only keep last 14 days
+            maxSize: "10m", 
+            maxFiles: "14d", 
             format: format.combine(
                 format.timestamp(),
                 format((info) => {
