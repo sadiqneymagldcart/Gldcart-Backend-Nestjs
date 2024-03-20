@@ -8,7 +8,7 @@ import { requireAuth } from "../../middlewares/auth.middleware";
 export class SubscriptionController {
     private readonly subscriptionService: StripeSubscriptionService;
 
-    constructor(
+    public constructor(
         @inject(StripeSubscriptionService)
         subscriptionService: StripeSubscriptionService,
     ) {
