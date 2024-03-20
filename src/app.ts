@@ -14,11 +14,7 @@ export class App {
     private readonly maxRetries: number = 3;
     private retryCount: number = 0;
 
-    constructor(
-        port: number,
-        logger: Logger,
-        server: InversifyExpressServer,
-    ) {
+    constructor(port: number, logger: Logger, server: InversifyExpressServer) {
         this.port = port;
         this.server = server;
         this.logger = logger;
@@ -32,7 +28,7 @@ export class App {
         try {
             this.validateEnvironmentVariables();
             await this.connectToDatabase();
-            this.setupInversifyServer();
+            this.configServer();
             this.createHttpServer();
             this.startListening();
         } catch (error) {
@@ -52,14 +48,14 @@ export class App {
     private async connectToDatabase(): Promise<void> {
         try {
             await mongoose.connect(process.env.DB_URL!, mongooseOptions);
-            this.logger.logInfo(`⚡️[database] MongoDB connected`);
+            this.logger.logInfo(`⚡️[mongoDB] Connected to ${process.env.DB_URL}`);
         } catch (error) {
             this.logger.logError("Error connecting to database", error);
             throw error;
         }
     }
 
-    private setupInversifyServer(): void {
+    private configServer(): void {
         this.server.setConfig((app) => {
             serverConfig(app);
         });
@@ -115,4 +111,3 @@ export class App {
         });
     }
 }
-
