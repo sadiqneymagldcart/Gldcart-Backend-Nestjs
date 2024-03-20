@@ -9,24 +9,22 @@ import { Message, MessageModel } from "./models/chat/Message";
 
 export class CustomSocket {
   private readonly logger: Logger;
-  private readonly port: number;
   private readonly awsStorage: AwsStorage;
-  private readonly httpServer: http.Server;
   private io: Server;
-  private isStarted: boolean;
 
-  constructor(awsStorage: AwsStorage, logger: Logger, port: number) {
+  public constructor(
+    awsStorage: AwsStorage,
+    logger: Logger,
+    httpServer: http.Server,
+  ) {
     this.awsStorage = awsStorage;
-    this.httpServer = http.createServer();
-    this.io = new Server(this.httpServer, {
+    this.io = new Server(httpServer, {
       connectionStateRecovery: {},
       cors: {
         origin: "*",
       },
     });
     this.logger = logger;
-    this.port = port;
-    this.isStarted = false;
     this.setupSocketHandlers();
   }
 
@@ -128,20 +126,5 @@ export class CustomSocket {
   private handleError(socket: Socket, error: Error) {
     this.logger.logError("Error occurred", error);
     socket.emit("error", { message: error.message });
-  }
-
-  public start() {
-    if (!this.isStarted) {
-      this.httpServer.listen(this.port, () => {
-        this.logger.logInfo(
-          `⚡️[socket]: Socket server is running on address ${JSON.stringify(
-            this.httpServer.address(),
-          )}`,
-        );
-      });
-      this.isStarted = true;
-    } else {
-      this.logger.logInfo("Socket server is already running.");
-    }
   }
 }
