@@ -10,7 +10,7 @@ import { FileService } from "../../services/shop/image.service";
 export class ProfileController {
     private readonly profileService: ProfileService;
     private readonly imageService: FileService;
-    constructor(
+    public constructor(
         @inject(ProfileService) profileService: ProfileService,
         @inject(FileService) imageService: FileService,
     ) {
