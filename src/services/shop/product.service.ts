@@ -23,7 +23,7 @@ export class ProductService extends BaseService {
 
     public async getAllProductsWithStock(): Promise<Product[]> {
         this.logger.logInfo("Getting all products with stock");
-        return ProductModel.find({ quantity: { $gt: 0 } });
+        return ProductModel.find({ stock: { $gt: 0 } });
     }
 
     public async getProductsWithPagination(
@@ -71,6 +71,18 @@ export class ProductService extends BaseService {
         return ProductModel.findByIdAndUpdate(productId, updatedData, {
             new: true,
         });
+    }
+
+    public async updateProductStock(
+        productId: string,
+        quantity: number,
+    ): Promise<Product | null> {
+        this.logger.logInfo(`Updating product stock with ID: ${productId}`);
+        return ProductModel.findByIdAndUpdate(
+            productId,
+            { $inc: { stock: quantity } },
+            { new: true },
+        );
     }
 
     public async deleteProduct(productId: string): Promise<boolean> {

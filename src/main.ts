@@ -7,10 +7,9 @@ import { AwsStorage } from "./storages/aws.storage";
 import { CustomSocket } from "./socket";
 
 const server = new InversifyExpressServer(container);
-const app = new App(3001, new Logger(), server);
+const logger = container.get<Logger>(Logger);
+const awsStorage = container.get<AwsStorage>(AwsStorage);
+const app = new App(3001, logger, server);
 app.start().then(() => {
-    const httpServer = app.getHttpServer();
-    const awsStorage = container.get<AwsStorage>(AwsStorage);
-    const logger = container.get<Logger>(Logger);
-    new CustomSocket(awsStorage, logger, httpServer);
+    new CustomSocket(awsStorage, logger, app.getHttpServer());
 });
