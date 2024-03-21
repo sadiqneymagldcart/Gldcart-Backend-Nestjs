@@ -1,17 +1,17 @@
-import { controller } from "inversify-express-utils";
+import {
+    BaseHttpController,
+    controller,
+    httpPost,
+} from "inversify-express-utils";
 import { OTPService } from "../../services/auth/otp.service";
 import { inject } from "inversify";
 
 @controller("/otp")
-export class OtpController {
+export class OtpController extends BaseHttpController {
     private readonly otpService: OTPService;
 
-    public constructor(@inject(OTPService) otpService: OTPService) { }
-
-    // send otp
-    public async sendOtp() {}
-
-
-    // verify otp
-    public async verifyOtp() {}
+    public constructor(@inject(OTPService) otpService: OTPService) {
+        super();
+        this.otpService = otpService;
+    }
 }
