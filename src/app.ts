@@ -1,20 +1,24 @@
-import { InversifyExpressServer } from "inversify-express-utils";
-import { Logger } from "./utils/logger";
+import * as http from "http";
 import mongoose from "mongoose";
 import { mongooseOptions } from "./config/mongo.config";
 import { serverConfig } from "./config/server.config";
 import { errorHandlerMiddleware } from "./middlewares/error.middleware";
-import * as http from "http";
+import { InversifyExpressServer } from "inversify-express-utils";
+import { Logger } from "./utils/logger";
 
 export class App {
-    private readonly port: number;
-    private readonly logger: Logger;
     private readonly server: InversifyExpressServer;
-    private httpServer: http.Server;
+    private readonly logger: Logger;
+    private readonly port: number;
     private readonly maxRetries: number = 3;
+    private httpServer: http.Server;
     private retryCount: number = 0;
 
-    constructor(port: number, logger: Logger, server: InversifyExpressServer) {
+    public constructor(
+        port: number,
+        logger: Logger,
+        server: InversifyExpressServer,
+    ) {
         this.port = port;
         this.server = server;
         this.logger = logger;
@@ -27,9 +31,9 @@ export class App {
     public async start(): Promise<void> {
         try {
             this.validateEnvironmentVariables();
-            await this.connectToDatabase();
-            this.configServer();
-            this.createHttpServer();
+            this.configureServer();
+            this.initializeDbConnection();
+            this.initializeHttpServer();
             this.startListening();
         } catch (error) {
             this.handleStartupError(error);
@@ -45,17 +49,17 @@ export class App {
         }
     }
 
-    private async connectToDatabase(): Promise<void> {
+    private async initializeDbConnection(): Promise<void> {
         try {
             await mongoose.connect(process.env.DB_URL!, mongooseOptions);
-            this.logger.logInfo(`⚡️[mongoDB] Connected to ${process.env.DB_URL}`);
+            this.logger.logInfo(`⚡️[database] Connected to ${process.env.DB_URL}`);
         } catch (error) {
             this.logger.logError("Error connecting to database", error);
             throw error;
         }
     }
 
-    private configServer(): void {
+    private configureServer(): void {
         this.server.setConfig((app) => {
             serverConfig(app);
         });
@@ -64,7 +68,7 @@ export class App {
         });
     }
 
-    private createHttpServer(): void {
+    private initializeHttpServer(): void {
         this.httpServer = http.createServer(this.server.build());
     }
 
