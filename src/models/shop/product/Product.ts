@@ -6,6 +6,7 @@ interface ProductAttributes {
 
 export interface Product extends Document {
   product_name: string;
+  seller_id: Schema.Types.ObjectId;
   price: number;
   stock: number;
   description?: string;
@@ -18,6 +19,7 @@ export interface Product extends Document {
 
 export const ProductSchema = new Schema<Product>({
   product_name: { type: String, required: true, trim: true },
+  seller_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
   price: { type: Number, required: false },
   stock: { type: Number, required: true },
   category: { type: String, required: true, trim: true },
