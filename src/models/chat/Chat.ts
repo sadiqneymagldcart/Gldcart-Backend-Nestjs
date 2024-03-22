@@ -13,6 +13,6 @@ const chatSchema = new Schema<Chat>(
     { timestamps: true },
 );
 
-chatSchema.index({ participants: 1 });
+chatSchema.index({ participants: 1, messages: 1 });
 
 export const ChatModel = mongoose.model("Chat", chatSchema) as Model<Chat>;

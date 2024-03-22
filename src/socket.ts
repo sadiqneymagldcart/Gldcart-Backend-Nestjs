@@ -33,7 +33,7 @@ export class CustomSocket {
       const userId = socket.handshake.query.userId as string;
       this.logger.logInfo("User connected", { userId });
       await this.updateUserOnlineStatus(userId, true);
-      await this.handleChatsList(socket, userId);
+      // await this.handleChatsList(socket, userId);
       await this.handleConnection(socket);
     });
   }
@@ -47,6 +47,7 @@ export class CustomSocket {
     socket.on("message", (message: Message) =>
       this.handleMessage(socket, message),
     );
+    socket.on("chats", (userId: string) => this.handleChatsList(socket, userId));
     socket.on("file", (data: any) => this.handleFiles(socket, data));
     socket.on("leave", (chatId: string) => this.handleLeave(socket, chatId));
     socket.on("disconnect", () => this.handleDisconnect(socket));
@@ -67,12 +68,12 @@ export class CustomSocket {
     try {
       this.logger.logInfo("Message received", message);
 
-      if (!message.chatId) {
-        const chat = await ChatModel.create({
-          participants: [message.senderId, message.recipientId],
-        });
-        message.chatId = chat._id;
-      }
+      // if (!message.chatId) {
+      //   const chat = await ChatModel.create({
+      //     participants: [message.senderId, message.recipientId],
+      //   });
+      //   message.chatId = chat._id;
+      // }
 
       const chat = await ChatModel.findById(message.chatId);
       if (!chat) throw new Error("Chat not found");
@@ -91,7 +92,7 @@ export class CustomSocket {
       this.logger.logInfo("Getting chats for user", { userId });
       const chats = await ChatModel.find({
         participants: userId,
-        messages: { $exists: true, $ne: [] },
+        // messages: { $exists: true, $ne: [] },
       }).populate({
         path: "participants",
         select: { name: 1, surname: 1, type: 1, is_online: 1 },
