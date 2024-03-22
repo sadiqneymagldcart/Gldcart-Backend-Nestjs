@@ -67,10 +67,19 @@ export class CustomSocket {
     try {
       this.logger.logInfo("Message received", message);
 
+      if (!message.chatId) {
+        const chat = await ChatModel.create({
+          participants: [message.senderId, message.recipientId],
+        });
+        message.chatId = chat._id;
+      }
+
       const chat = await ChatModel.findById(message.chatId);
       if (!chat) throw new Error("Chat not found");
 
       const savedMessage = await MessageModel.create(message);
+      chat.messages.push(savedMessage._id);
+      await chat.save();
       socket.to(message.chatId).emit("message", savedMessage);
     } catch (error) {
       this.handleError(socket, error);
@@ -80,7 +89,10 @@ export class CustomSocket {
   private async handleChatsList(socket: Socket, userId: string) {
     try {
       this.logger.logInfo("Getting chats for user", { userId });
-      const chats = await ChatModel.find({ participants: userId }).populate({
+      const chats = await ChatModel.find({
+        participants: userId,
+        messages: { $exists: true, $ne: [] },
+      }).populate({
         path: "participants",
         select: { name: 1, surname: 1, type: 1, is_online: 1 },
       });
