@@ -6,9 +6,12 @@ import * as cors from "cors";
 import * as hpp from "hpp";
 import * as bodyParser from "body-parser";
 import helmet from "helmet";
+import { rateLimitMiddlewareTyped } from "../middlewares/rate.limit.middleware";
 
 export function serverConfig(app: Application) {
     app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+
+    app.use(rateLimitMiddlewareTyped);
 
     app.use("/payments/webhook", bodyParser.raw({ type: "*/*" }));
 
@@ -19,6 +22,7 @@ export function serverConfig(app: Application) {
     app.use(compression());
 
     app.use(express.urlencoded({ extended: false }));
+
     app.use(express.json());
 
     app.use(cookieParser());
