@@ -26,7 +26,7 @@ export class ProductController {
     }
 
     @httpPost("/", multerMiddleware.any())
-    public async addProductHandler(
+    public async addProduct(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -41,13 +41,12 @@ export class ProductController {
             const product = await this.productService.addProduct(productData);
             response.status(201).json(product);
         } catch (error) {
-            console.log(error);
             next(error);
         }
     }
 
     @httpGet("/pagination", requireAuth)
-    public async getProductsWithPaginationHandler(
+    public async getProductsWithPagination(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
