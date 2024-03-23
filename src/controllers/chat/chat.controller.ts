@@ -25,6 +25,27 @@ export class ChatController {
         }
     }
 
+    @httpGet("/:senderId/:receiverId")
+    public async getChatForUsers(
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const sender = req.params.senderId;
+            const receiver = req.params.receiverId;
+            console.log(sender, receiver);
+            const chat = await this.chatService.checkChatForUsers([sender, receiver]);
+            if (!chat) {
+                res.status(404).json({ message: "Chat not found" });
+                return;
+            }
+            res.status(200).json(chat);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     @httpPost("/")
     public async createChat(
         req: express.Request,
@@ -34,27 +55,26 @@ export class ChatController {
         try {
             const participants = req.body.participants as string[];
             const chat = await this.chatService.createChat(participants);
-            res.json(chat);
+            res.status(201).json(chat);
         } catch (error) {
             next(error);
         }
     }
 
-    @httpGet("/messages/:chatId")
-    public async getChatMessages(
-        req: express.Request,
-        res: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const chatId = req.params.chatId;
-            const messages = await this.chatService.getChatMessages(chatId);
-            res.json(messages);
-        } catch (error) {
-            next(error);
-        }
-    }
-
+    // @httpGet("/messages/:chatId")
+    // public async getChatMessages(
+    //     req: express.Request,
+    //     res: express.Response,
+    //     next: express.NextFunction,
+    // ) {
+    //     try {
+    //         const chatId = req.params.chatId;
+    //         const messages = await this.chatService.getChatMessages(chatId);
+    //         res.json(messages);
+    //     } catch (error) {
+    //         next(error);
+    //     }
+    // }
     @httpGet("/:chatId")
     public async getChatById(
         req: express.Request,
