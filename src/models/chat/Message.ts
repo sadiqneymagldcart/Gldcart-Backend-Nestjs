@@ -1,10 +1,10 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface Message extends Document {
-    chatId: Schema.Types.ObjectId;
+    chatId: Schema.Types.ObjectId | string;
     text: string;
-    senderId: Schema.Types.ObjectId;
-    recipientId: Schema.Types.ObjectId;
+    senderId: Schema.Types.ObjectId | string;
+    recipientId: Schema.Types.ObjectId | string;
 }
 
 const messageSchema = new Schema<Message>(
@@ -18,7 +18,6 @@ const messageSchema = new Schema<Message>(
 );
 
 messageSchema.index({
-    chatId: 1,
     text: 1,
     senderId: 1,
     recipientId: 1,
@@ -27,4 +26,4 @@ messageSchema.index({
 export const MessageModel = mongoose.model(
     "Message",
     messageSchema,
-);
+) as mongoose.Model<Message>;

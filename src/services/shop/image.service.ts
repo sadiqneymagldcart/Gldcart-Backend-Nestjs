@@ -1,6 +1,5 @@
 import { inject, injectable } from "inversify";
 import { BaseService } from "../base/base.service";
-import { uploadToCloudinary } from "../../utils/cloudinary.util";
 import { Logger } from "../../utils/logger";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
@@ -20,18 +19,6 @@ export class FileService extends BaseService {
   });
   public constructor(@inject(Logger) logger: Logger) {
     super(logger);
-  }
-
-  public async uploadImagesWithCloudinary(
-    files: Express.Multer.File[],
-  ): Promise<string[]> {
-    return await Promise.all(
-      files.map(async (file) => {
-        const result = await uploadToCloudinary(file);
-        console.log(result.secure_url);
-        return result.secure_url;
-      }),
-    );
   }
 
   public async uploadImagesWithAws(

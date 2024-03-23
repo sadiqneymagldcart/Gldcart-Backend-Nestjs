@@ -4,7 +4,6 @@ import {
     httpGet,
     httpPost,
     httpPut,
-    httpDelete,
 } from "inversify-express-utils";
 import { MessageService } from "../../services/chat/message.service";
 import { inject } from "inversify";
@@ -12,8 +11,24 @@ import { inject } from "inversify";
 @controller("/message")
 export class MessageController {
     private readonly messageService: MessageService;
-    constructor(@inject(MessageService) messageService: MessageService) {
+    public constructor(@inject(MessageService) messageService: MessageService) {
         this.messageService = messageService;
+    }
+
+    @httpGet("/search")
+    public async searchMessages(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const query = request.query.query as string;
+            const userId = request.query.userId as string;
+            const messages = await this.messageService.searchMessages(query, userId);
+            response.json(messages);
+        } catch (error) {
+            next(error);
+        }
     }
 
     @httpPost("/")
@@ -63,20 +78,6 @@ export class MessageController {
         }
     }
 
-    @httpGet("/search")
-    public async searchMessages(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const query = request.query.query as string;
-            const userId = request.query.userId as string;
-            const messages = await this.messageService.searchMessages(query, userId);
-            response.json(messages);
-        } catch (error) {
-            next(error);
-        }
-    }
-
+    @httpPost("")
+    public async() { }
 }
