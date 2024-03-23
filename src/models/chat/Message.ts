@@ -1,10 +1,10 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface Message extends Document {
-    chatId: string;
+    chatId: Schema.Types.ObjectId;
     text: string;
-    senderId: string;
-    recipientId: string;
+    senderId: Schema.Types.ObjectId;
+    recipientId: Schema.Types.ObjectId;
 }
 
 const messageSchema = new Schema<Message>(
@@ -27,4 +27,4 @@ messageSchema.index({
 export const MessageModel = mongoose.model(
     "Message",
     messageSchema,
-) as Model<Message>;
+);
