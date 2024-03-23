@@ -26,7 +26,7 @@ export class ProfileController {
     ) {
         try {
             const files = request.files as Express.Multer.File[];
-            const images = await this.imageService.uploadImagesWithCloudinary(files);
+            const images = await this.imageService.uploadImagesWithAws(files);
 
             const { userId } = request.body;
 
