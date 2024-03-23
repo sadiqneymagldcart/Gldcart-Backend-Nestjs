@@ -72,7 +72,7 @@ export class CustomSocket {
       const savedMessage = await MessageModel.create(message);
       chat.messages.push(savedMessage._id);
       await chat.save();
-      socket.to(message.chatId.toString()).emit("message", savedMessage);
+      socket.to(message.chatId as string).emit("message", savedMessage);
     } catch (error) {
       this.handleError(socket, error);
     }

@@ -1,9 +1,14 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import { Message, MessageModel } from "../../models/chat/Message";
 import { Chat, ChatModel } from "../../models/chat/Chat";
+import { BaseService } from "../base/base.service";
+import { Logger } from "../../utils/logger";
 
 @injectable()
-export class MessageService {
+export class MessageService extends BaseService {
+  public constructor(@inject(Logger) logger: Logger) {
+    super(logger);
+  }
   public async createMessage(message: Message): Promise<Message> {
     let chat: Chat | null = null;
 
@@ -37,12 +42,23 @@ export class MessageService {
   }
 
   public async searchMessages(query: string, userId: string) {
-    const messages = MessageModel.find({
-      $or: [
-        { text: { $regex: `^${query}`, $options: "i" }, senderId: userId },
-        { text: { $regex: `^${query}`, $options: "i" }, recipientId: userId },
-      ],
-    });
-    return messages;
+    try {
+      const messages = await MessageModel.find({
+        $or: [
+          {
+            text: { $regex: `^${query}`, $options: "i" },
+            senderId: userId,
+          },
+          {
+            text: { $regex: `^${query}`, $options: "i" },
+            recipientId: userId,
+          },
+        ],
+      });
+      this.logger.logInfo(`Found ${messages.length} messages`);
+      return messages;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
