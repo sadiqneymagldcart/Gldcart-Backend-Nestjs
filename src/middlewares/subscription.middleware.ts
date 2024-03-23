@@ -1,7 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../exceptions/api.error";
-import { Logger } from "../utils/logger";
-import { container } from "../config/inversify.config";
 import { UserModel } from "../models/user/User";
 
 export const requireSubscription = (requiredSubscriptionType: string) => {
@@ -33,9 +31,6 @@ export const requireSubscription = (requiredSubscriptionType: string) => {
             }
             return next();
         } catch (error: any) {
-            await container
-                .get(Logger)
-                .logError("Error checking subscription:", error);
             response.status(500).json({ error: "Internal server error" });
         }
     };
