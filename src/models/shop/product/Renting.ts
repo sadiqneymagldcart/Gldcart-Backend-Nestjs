@@ -5,6 +5,7 @@ interface RentingAttributes {
 }
 
 export interface Renting extends Document {
+    title: string;
     renting_name: string;
     price: number;
     description?: string;
@@ -15,6 +16,10 @@ export interface Renting extends Document {
 }
 
 export const RentingSchema = new Schema<Renting>({
+    title: {
+        type: String,
+        required: true,
+    },
     renting_name: {
         type: String,
         required: true,
