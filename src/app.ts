@@ -32,7 +32,7 @@ export class App {
         try {
             this.validateEnvironmentVariables();
             this.configureServer();
-            this.initializeDbConnection();
+            await this.initializeDbConnection();
             this.initializeHttpServer();
             this.startListening();
         } catch (error) {

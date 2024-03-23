@@ -1,8 +1,13 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import { Chat, ChatModel } from "../../models/chat/Chat";
+import { BaseService } from "../base/base.service";
+import { Logger } from "../../utils/logger";
 
 @injectable()
-export class ChatService {
+export class ChatService extends BaseService{
+  public constructor(@inject(Logger) logger: Logger) {
+    super(logger);
+  }
   public async getChats(userId: string): Promise<Chat[]> {
     return ChatModel.find({ participants: userId }).populate({
       path: "participants",
