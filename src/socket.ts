@@ -25,10 +25,9 @@ export class CustomSocket {
       },
     });
     this.logger = logger;
-    this.setupSocketHandlers();
+    this.setupChatSocket();
   }
-
-  private async setupSocketHandlers() {
+  private async setupChatSocket() {
     this.io.of("chat").on("connection", async (socket: Socket) => {
       const userId = socket.handshake.query.userId as string;
       this.logger.logInfo("User connected", { userId });
@@ -47,9 +46,6 @@ export class CustomSocket {
     socket.on("message", (message: Message) =>
       this.handleMessage(socket, message),
     );
-    // socket.on("chats", (userId: string) =>
-    //   this.handleChatsList(socket, userId),
-    // );
     socket.on("file", (data: any) => this.handleFiles(socket, data));
     socket.on("leave", (chatId: string) => this.handleLeave(socket, chatId));
     socket.on("disconnect", () => this.handleDisconnect(socket));
