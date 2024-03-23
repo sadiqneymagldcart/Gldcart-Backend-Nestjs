@@ -11,53 +11,57 @@ export class ProductService extends BaseService {
     }
 
     public async addProduct(product: Product): Promise<Product> {
-        this.logger.logInfo("Adding product", product);
-        const newProduct = new ProductModel(product);
-        return newProduct.save();
+        const newProduct = await ProductModel.create(product);
+        this.logger.logInfo("Adding product", newProduct);
+        return newProduct;
     }
 
     public async getAllProducts(): Promise<Product[]> {
-        this.logger.logInfo("Getting all products");
-        return ProductModel.find();
+        const allProducts = ProductModel.find();
+        this.logger.logInfo("Getting all products", { allProducts });
+        return allProducts;
     }
 
     public async getAllProductsWithStock(): Promise<Product[]> {
-        this.logger.logInfo("Getting all products with stock");
-        return ProductModel.find({ stock: { $gt: 0 } });
+        const products = ProductModel.find({ stock: { $gt: 0 } });
+        this.logger.logInfo("Getting all products with stock", { products });
+        return products;
     }
 
     public async getProductsWithPagination(
         page: number,
         limit: number,
     ): Promise<Product[]> {
-        this.logger.logInfo(
-            `Getting products with pagination. Page: ${page}, Limit: ${limit}`,
-        );
-        return ProductModel.find()
+        const products = ProductModel.find()
             .skip((page - 1) * limit)
             .limit(limit);
+        this.logger.logInfo(
+            `Getting products on page ${page} with limit of ${limit}`,
+            { products },
+        );
+        return products;
     }
 
     public async getProductsCount(): Promise<number> {
-        this.logger.logInfo("Getting products count");
-        return ProductModel.countDocuments();
+        const count = ProductModel.countDocuments();
+        this.logger.logInfo("Getting products count", { count });
+        return count;
     }
 
     public async getProductByCategory(category: string): Promise<Product[]> {
-        this.logger.logInfo(`Getting products by category: ${category}`);
-        return ProductModel.find({ category: category });
+        const products = ProductModel.find({ category: category });
+        this.logger.logInfo(`Getting products by category: ${category}`, {
+            products,
+        });
+        return products;
     }
 
     public async getProductById(productId: string): Promise<Product | null> {
-        this.logger.logInfo(`Getting product with ID: ${productId}`);
-        return ProductModel.findById(productId);
+        const products = await ProductModel.findById(productId);
+        this.logger.logInfo(`Getting product with ID: ${productId}`, { products });
+        return products;
     }
-
-    public async getProductBySlug(slug: string): Promise<Product | null> {
-        this.logger.logInfo(`Getting product with slug: ${slug}`);
-        return ProductModel.findOne({ slug: slug });
-    }
-
+    
     public async getProductsCountByCategory(category: string): Promise<number> {
         this.logger.logInfo(`Getting products count by category: ${category}`);
         return ProductModel.findOne({ category: category }).count();
