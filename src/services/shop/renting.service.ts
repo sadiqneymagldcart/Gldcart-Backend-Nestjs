@@ -31,7 +31,8 @@ export class RentingService extends BaseService {
         });
     }
     public async getRentingsByCategory(category: string) {
+        const rentings = await RentingModel.find({ category });
         this.logger.logInfo(`Fetching rentings with category: ${category}`);
-        return await RentingModel.find({ category });
+        return rentings;
     }
 }
