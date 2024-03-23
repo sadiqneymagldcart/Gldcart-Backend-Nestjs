@@ -36,8 +36,7 @@ export class App {
             this.initializeHttpServer();
             this.startListening();
         } catch (error) {
-            this.logger.logError("Error starting server", error);
-            // this.handleStartupError(error);
+            this.handleStartupError(error);
         }
     }
 
@@ -80,40 +79,39 @@ export class App {
             );
         });
 
-    //     this.httpServer.on("error", (error: NodeJS.ErrnoException) => {
-    //         this.handleServerError(error);
-    //     });
-    //
-    //     process.on("SIGINT", () => this.handleShutdown("SIGINT"));
-    //     process.on("SIGTERM", () => this.handleShutdown("SIGTERM"));
-    // }
-    //
-    // private handleStartupError(error: Error): void {
-    //     this.logger.logError("Server startup error: " + error.message, error);
-    //     process.exit(1);
-    // }
-    //
-    // private handleServerError(error: NodeJS.ErrnoException): void {
-    //     if (this.retryCount < this.maxRetries) {
-    //         this.retryCount++;
-    //         this.logger.logInfo(
-    //             `Server failed to start. Retrying... (${this.retryCount}/${this.maxRetries})`,
-    //         );
-    //         setTimeout(() => this.startListening(), 1000);
-    //     } else {
-    //         this.logger.logError("Failed to start server", error);
-    //         process.exit(1);
-    //     }
-    // }
-    //
-    // private handleShutdown(signal: string): void {
-    //     this.logger.logInfo(
-    //         `Received ${signal} signal. Shutting down gracefully...`,
-    //     );
-    //     this.httpServer.close(() => {
-    //         this.logger.logInfo("Server closed");
-    //         process.exit(0);
-    //     });
-    // }
+        this.httpServer.on("error", (error: NodeJS.ErrnoException) => {
+            this.handleServerError(error);
+        });
+
+        // process.on("SIGINT", () => this.handleShutdown("SIGINT"));
+        // process.on("SIGTERM", () => this.handleShutdown("SIGTERM"));
+    }
+
+    private handleStartupError(error: Error): void {
+        this.logger.logError("Server startup error: " + error.message, error);
+        process.exit(1);
+    }
+
+    private handleServerError(error: NodeJS.ErrnoException): void {
+        if (this.retryCount < this.maxRetries) {
+            this.retryCount++;
+            this.logger.logInfo(
+                `Server failed to start. Retrying... (${this.retryCount}/${this.maxRetries})`,
+            );
+            setTimeout(() => this.startListening(), 1000);
+        } else {
+            this.logger.logError("Failed to start server", error);
+            process.exit(1);
+        }
+    }
+
+    private handleShutdown(signal: string): void {
+        this.logger.logInfo(
+            `Received ${signal} signal. Shutting down gracefully...`,
+        );
+        this.httpServer.close(() => {
+            this.logger.logInfo("Server closed");
+            process.exit(0);
+        });
     }
 }
