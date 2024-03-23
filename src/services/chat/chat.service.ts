@@ -4,7 +4,7 @@ import { BaseService } from "../base/base.service";
 import { Logger } from "../../utils/logger";
 
 @injectable()
-export class ChatService extends BaseService{
+export class ChatService extends BaseService {
   public constructor(@inject(Logger) logger: Logger) {
     super(logger);
   }
@@ -15,11 +15,19 @@ export class ChatService extends BaseService{
     });
   }
 
+  public async checkChatForUsers(users: string[]): Promise<Chat> {
+    const chat = await ChatModel.findOne({
+      participants: { $all: users },
+    });
+    return chat;
+  }
+
   public async createChat(participants: string[]): Promise<Chat> {
     const chat = await ChatModel.findOne({
       participants: { $all: participants },
     });
     if (chat) return chat;
+    this.logger.logInfo("Creating chat", { participants });
     return await ChatModel.create({ participants });
   }
 
