@@ -14,12 +14,7 @@ export class FileController {
         this.fileService = fileService;
         this.awsStorage = awsStorage;
     }
-
-    @httpGet("/cloudinary", multerMiddleware.any())
-    public async uploadFiles(files: Express.Multer.File[]): Promise<string[]> {
-        return await this.fileService.uploadImagesWithCloudinary(files);
-    }
-
+    
     @httpPost("/aws", multerMiddleware.any())
     public async uploadFilesWithAws(
         request: express.Request,
