@@ -1,4 +1,4 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface Chat extends Document {
     participants: string[];
@@ -15,4 +15,4 @@ const chatSchema = new Schema<Chat>(
 
 chatSchema.index({ participants: 1, messages: 1 });
 
-export const ChatModel = mongoose.model("Chat", chatSchema) as Model<Chat>;
+export const ChatModel = mongoose.model("Chat", chatSchema);
