@@ -54,7 +54,7 @@ export class RentingController {
         }
     }
 
-    @httpGet("/category/:category", requireAuth)
+    @httpGet("/category/:category")
     public async getRentingsByCategoryHandler(
         request: express.Request,
         response: express.Response,
