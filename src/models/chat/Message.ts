@@ -20,8 +20,8 @@ const messageSchema = new Schema<Message>(
 messageSchema.index({
     chatId: 1,
     text: 1,
-    sender: 1,
-    recipient: 1,
+    senderId: 1,
+    recipientId: 1,
 });
 
 export const MessageModel = mongoose.model(

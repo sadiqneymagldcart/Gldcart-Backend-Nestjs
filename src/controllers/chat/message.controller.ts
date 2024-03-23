@@ -23,9 +23,7 @@ export class MessageController {
         next: express.NextFunction,
     ) {
         try {
-            const message = await this.messageService.createMessage(
-                request.body,
-            );
+            const message = await this.messageService.createMessage(request.body);
             response.status(201).json(message);
         } catch (error) {
             next(error);
@@ -64,4 +62,21 @@ export class MessageController {
             next(error);
         }
     }
+
+    @httpGet("/search")
+    public async searchMessages(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const query = request.query.query as string;
+            const userId = request.query.userId as string;
+            const messages = await this.messageService.searchMessages(query, userId);
+            response.json(messages);
+        } catch (error) {
+            next(error);
+        }
+    }
+
 }
