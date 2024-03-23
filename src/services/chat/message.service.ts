@@ -35,4 +35,14 @@ export class MessageService {
   ): Promise<Message | null> {
     return MessageModel.findByIdAndUpdate(messageId, message, { new: true });
   }
+
+  public async searchMessages(query: string, userId: string) {
+    const messages = MessageModel.find({
+      $or: [
+        { text: { $regex: `^${query}`, $options: "i" }, senderId: userId },
+        { text: { $regex: `^${query}`, $options: "i" }, recipientId: userId },
+      ],
+    });
+    return messages;
+  }
 }
