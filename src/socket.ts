@@ -104,7 +104,7 @@ export class CustomSocket {
         recipientId: data.recipientId,
       };
       const savedMessage = await MessageModel.create(message);
-      socket.to(data.chatId).emit("message", savedMessage);
+      socket.broadcast.to(data.chatId).emit("message", savedMessage);
     } catch (error) {
       this.handleError(socket, error);
     }
