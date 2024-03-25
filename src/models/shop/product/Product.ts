@@ -7,7 +7,7 @@ interface ProductAttributes {
 export interface Product extends Document {
   title: string;
   product_name: string;
-  seller_id: Schema.Types.ObjectId;
+  seller_id: Schema.Types.ObjectId | string;
   price: number;
   stock: number;
   description?: string;
