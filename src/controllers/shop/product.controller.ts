@@ -136,26 +136,22 @@ export class ProductController {
             next(error);
         }
     }
-
-    @httpPost("/:productId", requireAuth)
-    public async updateProductHandler(
+    @httpGet("/search/filters")
+    public async searchProductsByFiltersHandler(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
         try {
-            const productId = request.params.productId;
-            const updatedData = request.body;
-            const product = await this.productService.updateProduct(
-                productId,
-                updatedData,
-            );
-            response.status(200).json(product);
+            const filters = request.query;
+            const products =
+                await this.productService.searchProductsByFilters(filters);
+            response.status(200).json(products);
         } catch (error) {
             next(error);
         }
     }
-
+    
     @httpDelete("/:productId", requireAuth)
     public async deleteProductHandler(
         request: express.Request,
@@ -202,56 +198,6 @@ export class ProductController {
         }
     }
 
-    @httpGet("/search/manufacturer/:manufacturer")
-    public async searchProductsByManufacturerHandler(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const manufacturer = request.params.manufacturer;
-            const products =
-                await this.productService.searchProductsByManufacturer(manufacturer);
-            response.status(200).json(products);
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    @httpGet("/search/price/:price")
-    public async searchProductsByPriceHandler(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const price = request.params.price;
-            const products = await this.productService.searchProductsByPrice(price);
-            response.status(200).json(products);
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    @httpGet("/search/price-range/:minPrice/:maxPrice")
-    public async searchProductsByPriceRangeHandler(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const minPrice = request.params.minPrice;
-            const maxPrice = request.params.maxPrice;
-            const products = await this.productService.searchProductsByPriceRange(
-                minPrice,
-                maxPrice,
-            );
-            response.status(200).json(products);
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    @httpPost("")
+    @httpGet("")
     public async() { }
 }
