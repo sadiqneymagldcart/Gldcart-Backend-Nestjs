@@ -7,7 +7,6 @@ import * as bcrypt from "bcrypt";
 import { inject, injectable } from "inversify";
 import { User, UserModel } from "../../models/user/User";
 import { Tokens } from "../../interfaces/Tokens";
-import { UserDto } from "../../dto/user.dto";
 
 @injectable()
 export class AuthService extends BaseService {
@@ -96,15 +95,20 @@ export class AuthService extends BaseService {
 
     private async formUserLoginResponse(user: User, logMessage?: string) {
         try {
-            const userDto = new UserDto(user);
+            const userObj = {
+                id: user._id,
+                type: user.type,
+                name: user.name,
+                surname: user.surname,
+                email: user.email,
+            };
 
-            const tokens: Tokens = this.tokenService.createTokens({ ...userDto });
-
-            await this.tokenService.saveToken(userDto.id, tokens.refreshToken);
+            const tokens: Tokens = this.tokenService.createTokens({ ...userObj });
+            await this.tokenService.saveToken(userObj.id, tokens.refreshToken);
             if (logMessage) {
                 this.logger.logInfo(logMessage);
             }
-            return { ...tokens, user: userDto };
+            return { ...tokens, user: userObj };
         } catch (error: any) {
             this.logger.logError(error.message, error);
             throw ApiError.InternalServerError(error.message);
