@@ -3,8 +3,11 @@ import * as express from "express";
 
 const storage = multer.memoryStorage();
 
-const fileFilter = (request: express.Request, file: Express.Multer.File, cb: any) => {
-
+const fileFilter = (
+    request: express.Request,
+    file: Express.Multer.File,
+    cb: any,
+) => {
     if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
         cb(null, true);
     } else {
@@ -17,4 +20,4 @@ const multerMiddleware = multer({
     fileFilter: fileFilter,
 });
 
-export {multerMiddleware};
+export { multerMiddleware };
