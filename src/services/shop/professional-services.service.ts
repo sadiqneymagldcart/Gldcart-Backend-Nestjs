@@ -57,7 +57,7 @@ export class ProfessionalServicesService extends BaseService {
     public async createService(
         service: ProfessionalService,
     ): Promise<ProfessionalService> {
-        this.logger.logInfo("Creating product");
+        this.logger.logInfo("Creating service");
         return ServicesModel.create(service);
     }
 
@@ -65,33 +65,33 @@ export class ProfessionalServicesService extends BaseService {
         serviceId: string,
         service: ProfessionalService,
     ): Promise<ProfessionalService> {
-        this.logger.logInfo("Updating product");
+        this.logger.logInfo("Updating service");
         return ServicesModel.findByIdAndUpdate(serviceId, service, {
             new: true,
         });
     }
 
     public async deleteService(serviceId: string) {
-        this.logger.logInfo("Deleting product");
+        this.logger.logInfo("Deleting service");
         return ServicesModel.findByIdAndDelete(serviceId);
     }
 
     public async getServiceById(serviceId: string): Promise<ProfessionalService> {
-        this.logger.logInfo("Getting product by id");
+        this.logger.logInfo("Getting service by id");
         return ServicesModel.findById(serviceId);
     }
 
     public async getServicesByUserId(
         userId: string,
     ): Promise<ProfessionalService[]> {
-        this.logger.logInfo("Getting products by user id");
+        this.logger.logInfo("Getting services by user id");
         return ServicesModel.find({ userId });
     }
 
     public async getServicesByCategory(
         category: string,
     ): Promise<ProfessionalService[]> {
-        this.logger.logInfo(`Getting products by category ${category}`);
+        this.logger.logInfo(`Getting services by category ${category}`);
         return ServicesModel.find({ category });
     }
 }

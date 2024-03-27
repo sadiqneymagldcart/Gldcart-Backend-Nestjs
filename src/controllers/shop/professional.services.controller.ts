@@ -96,6 +96,21 @@ export class ProfessionalServicesController {
         }
     }
 
+    @httpGet("/search/filters")
+    public async getServicesByFiltersHandler(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            const filters = request.query;
+            const services = await this.servicesService.getServicesByFilters(filters);
+            response.status(200).json(services);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     @httpGet("/category/:category", requireAuth)
     public async getServicesByCategoryHandler(
         request: express.Request,
