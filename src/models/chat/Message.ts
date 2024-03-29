@@ -1,18 +1,21 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { FileData } from "../../interfaces/FileData";
 
 export interface Message extends Document {
     chatId: Schema.Types.ObjectId | string;
-    text: string;
+    text?: string;
+    file?: any;
     senderId: Schema.Types.ObjectId | string;
     recipientId: Schema.Types.ObjectId | string;
 }
 
 const messageSchema = new Schema<Message>(
     {
-        chatId: { type: Schema.Types.ObjectId, ref: "Chat" },
-        text: { type: String, required: true },
-        senderId: { type: Schema.Types.ObjectId, ref: "User" },
-        recipientId: { type: Schema.Types.ObjectId, ref: "User" },
+        chatId: { type: Schema.Types.ObjectId, ref: "Chat", required: true },
+        text: { type: String },
+        file: { type: Schema.Types.Mixed },
+        senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+        recipientId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     },
     { timestamps: true },
 );
