@@ -1,11 +1,11 @@
 import * as http from "http";
 import { Server, Socket } from "socket.io";
 import { UserModel } from "./models/user/User";
-import { CustomFile } from "./interfaces/CustomFile";
 import { AwsStorage } from "./storages/aws.storage";
 import { Logger } from "./utils/logger";
 import { ChatModel } from "./models/chat/Chat";
 import { Message, MessageModel } from "./models/chat/Message";
+import { FileData } from "./interfaces/FileData";
 
 export class CustomSocket {
   private readonly logger: Logger;
@@ -34,11 +34,11 @@ export class CustomSocket {
       await this.updateUserOnlineStatus(userId, true);
       await this.handleChatsList(socket, userId);
       await this.handleConnection(socket);
-      await this.watchChatCollectionChanges(socket, userId);
+      await this.watchChatCollectionChanges(socket);
     });
   }
 
-  private async watchChatCollectionChanges(socket: Socket, userId: string) {
+  private async watchChatCollectionChanges(socket: Socket) {
     const changeStream = ChatModel.watch();
     changeStream.on("change", async (change) => {
       let chat: any;
@@ -108,27 +108,40 @@ export class CustomSocket {
     }
   }
 
-  private async handleFiles(socket: Socket, data: any) {
+  private async handleFiles(socket: Socket, data: FileData) {
     try {
-      const urls = await this.uploadFiles(data.files);
+      console.log(data);
+      const urls = await this.uploadFiles(
+        data.file,
+        data.fileName,
+        data.mimeType,
+      );
       const message = {
         chatId: data.chatId,
         senderId: data.senderId,
-        text: `${urls[0]}`,
+        file: {
+          url: urls,
+          name: data.fileName,
+        },
         recipientId: data.recipientId,
       };
       const savedMessage = await MessageModel.create(message);
-      socket.broadcast.to(data.chatId).emit("message", savedMessage);
+      socket.to(data.chatId).emit("message", savedMessage);
     } catch (error) {
       this.handleError(socket, error);
     }
   }
 
-  private async uploadFiles(files: CustomFile[]): Promise<string[]> {
-    if (!files || files.length === 0) {
+  private async uploadFiles(
+    files: ArrayBuffer,
+    originalName: string,
+    mimetype: string,
+  ): Promise<string> {
+    if (!files) {
       throw new Error("No files provided");
     }
-    return await this.awsStorage.upload(files as Express.Multer.File[]);
+    console.log(files);
+    return this.awsStorage.uploadArrayBuffer(files, originalName, mimetype);
   }
 
   private handleLeave(socket: Socket, chatId: string) {
