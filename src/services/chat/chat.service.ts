@@ -15,6 +15,10 @@ export class ChatService extends BaseService {
     });
   }
 
+  public async deleteAllChats(): Promise<void> {
+    await ChatModel.deleteMany({});
+  }
+
   public async checkChatForUsers(users: string[]): Promise<Chat> {
     const chat = await ChatModel.findOne({
       participants: { $all: users },
