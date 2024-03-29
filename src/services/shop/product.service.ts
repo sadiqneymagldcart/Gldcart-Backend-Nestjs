@@ -17,13 +17,12 @@ export class ProductService extends BaseService {
 
     public async getAllProducts(): Promise<Product[]> {
         const allProducts = ProductModel.find();
-        this.logger.logInfo("Getting all products", { allProducts });
         return allProducts;
     }
 
     public async getAllProductsWithStock(): Promise<Product[]> {
         const products = ProductModel.find({ stock: { $gt: 0 } });
-        this.logger.logInfo("Getting all products with stock", { products });
+        // this.logger.logInfo("Getting all products with stock", { products });
         return products;
     }
 
@@ -49,15 +48,12 @@ export class ProductService extends BaseService {
 
     public async getProductByCategory(category: string): Promise<Product[]> {
         const products = ProductModel.find({ category: category });
-        this.logger.logInfo(`Getting products by category: ${category}`, {
-            products,
-        });
         return products;
     }
 
     public async getProductById(productId: string): Promise<Product | null> {
         const products = await ProductModel.findById(productId);
-        this.logger.logInfo(`Getting product with ID: ${productId}`, { products });
+        // this.logger.logInfo(`Getting product with ID: ${productId}`, { products });
         return products;
     }
 
