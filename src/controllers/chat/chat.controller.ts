@@ -46,6 +46,20 @@ export class ChatController {
         }
     }
 
+    @httpGet("/delete")
+    public async deleteAllChats(
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
+    ) {
+        try {
+            await this.chatService.deleteAllChats();
+            res.status(204).send();
+        } catch (error) {
+            next(error);
+        }
+    }
+
     @httpPost("/")
     public async createChat(
         req: express.Request,

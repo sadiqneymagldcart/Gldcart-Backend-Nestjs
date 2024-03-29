@@ -34,11 +34,27 @@ export class CustomSocket {
       await this.updateUserOnlineStatus(userId, true);
       await this.handleChatsList(socket, userId);
       await this.handleConnection(socket);
+      await this.watchChatCollectionChanges(socket, userId);
+    });
+  }
+
+  private async watchChatCollectionChanges(socket: Socket, userId: string) {
+    const changeStream = ChatModel.watch();
+    changeStream.on("change", async (change) => {
+      let chat: any;
+      if (change.operationType === "insert") {
+        chat = await ChatModel.findById(change.documentKey._id).populate({
+          path: "participants",
+          select: { name: 1, surname: 1, type: 1, is_online: 1 },
+        });
+      }
+      socket.emit("newChat", chat);
     });
   }
 
   private async updateUserOnlineStatus(userId: string, status: boolean) {
-    await UserModel.updateOne({ _id: userId }, { is_online: status });
+    await UserModel.findOneAndUpdate({ _id: userId }, { is_online: status });
+    this.io.of("chat").emit("status", { userId, status });
   }
 
   private async handleConnection(socket: Socket) {
@@ -70,7 +86,6 @@ export class CustomSocket {
       if (!chat) throw new Error("Chat not found");
 
       const savedMessage = await MessageModel.create(message);
-      chat.messages.push(savedMessage._id);
       await chat.save();
       socket.to(message.chatId as string).emit("message", savedMessage);
     } catch (error) {
@@ -83,7 +98,6 @@ export class CustomSocket {
       this.logger.logInfo("Getting chats for user", { userId });
       const chats = await ChatModel.find({
         participants: userId,
-        // messages: { $exists: true, $ne: [] },
       }).populate({
         path: "participants",
         select: { name: 1, surname: 1, type: 1, is_online: 1 },
