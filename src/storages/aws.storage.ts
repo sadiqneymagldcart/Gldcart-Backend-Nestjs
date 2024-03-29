@@ -49,6 +49,41 @@ export class AwsStorage implements Storage {
             });
         });
     }
+
+    public async uploadArrayBuffer(
+        arrayBuffer: ArrayBuffer,
+        originalName: string,
+        mimetype: string,
+    ): Promise<string> {
+        const buffer = Buffer.from(arrayBuffer);
+        return this.uploadBuffer(buffer, originalName, mimetype);
+    }
+
+    public async uploadBuffer(
+        buffer: Buffer,
+        originalName: string,
+        mimetype: string,
+    ): Promise<string> {
+        const params = {
+            Bucket: this.bucketName,
+            Region: this.bucketRegion,
+            Key: this.randomFileName(originalName),
+            Body: buffer,
+            ContentType: mimetype,
+        };
+        const command = new PutObjectCommand(params);
+        await this.s3.send(command);
+        return `https://${this.bucketName}.s3.${this.bucketRegion}.amazonaws.com/${params.Key}`;
+    }
+
+    public async uploadBase64(
+        base64: string,
+        originalName: string,
+    ): Promise<string> {
+        const buffer = Buffer.from(base64, "base64");
+        return this.uploadBuffer(buffer, originalName, "image/jpeg");
+    }
+
     private randomFileName(originalName: string): string {
         return `${Date.now()}-${originalName}`;
     }
