@@ -1,5 +1,4 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { FileData } from "../../interfaces/FileData";
 
 export interface Message extends Document {
     chatId: Schema.Types.ObjectId | string;
