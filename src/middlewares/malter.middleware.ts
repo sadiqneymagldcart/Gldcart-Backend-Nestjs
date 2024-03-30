@@ -17,7 +17,7 @@ const fileFilter = (
 
 const multerMiddleware = multer({
     storage: storage,
-    fileFilter: fileFilter,
+    // fileFilter: fileFilter,
 });
 
 export { multerMiddleware };
