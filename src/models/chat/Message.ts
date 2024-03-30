@@ -3,7 +3,7 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface Message extends Document {
     chatId: Schema.Types.ObjectId | string;
     text?: string;
-    file?: any;
+    files?: any;
     senderId: Schema.Types.ObjectId | string;
     recipientId: Schema.Types.ObjectId | string;
 }
@@ -12,7 +12,7 @@ const messageSchema = new Schema<Message>(
     {
         chatId: { type: Schema.Types.ObjectId, ref: "Chat", required: true },
         text: { type: String },
-        file: { type: Schema.Types.Mixed },
+        files: { type: Schema.Types.Mixed },
         senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
         recipientId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     },
