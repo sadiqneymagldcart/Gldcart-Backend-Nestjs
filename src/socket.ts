@@ -1,25 +1,16 @@
 import * as http from "http";
 import { Server, Socket } from "socket.io";
 import { UserModel } from "./models/user/User";
-import { AwsStorage } from "./storages/aws.storage";
 import { Logger } from "./utils/logger";
 import { ChatModel } from "./models/chat/Chat";
 import { Message, MessageModel } from "./models/chat/Message";
-import { FileData } from "./interfaces/FileData";
 
 export class CustomSocket {
   private readonly logger: Logger;
-  private readonly awsStorage: AwsStorage;
   private io: Server;
 
-  public constructor(
-    awsStorage: AwsStorage,
-    logger: Logger,
-    httpServer: http.Server,
-  ) {
-    this.awsStorage = awsStorage;
+  public constructor(logger: Logger, httpServer: http.Server) {
     this.io = new Server(httpServer, {
-      connectionStateRecovery: {},
       cors: {
         origin: process.env.CLIENT_URL,
       },
@@ -31,7 +22,7 @@ export class CustomSocket {
     this.io.of("chat").on("connection", async (socket: Socket) => {
       const userId = socket.handshake.query.userId as string;
       this.logger.logInfo("User connected", { userId });
-      await this.updateUserOnlineStatus(userId, true);
+      await this.updateUserOnlineStatus(socket, userId, true);
       await this.handleChatsList(socket, userId);
       await this.handleConnection(socket);
       await this.watchChatCollectionChanges(socket);
@@ -52,9 +43,13 @@ export class CustomSocket {
     });
   }
 
-  private async updateUserOnlineStatus(userId: string, status: boolean) {
+  private async updateUserOnlineStatus(
+    socket: Socket,
+    userId: string,
+    status: boolean,
+  ) {
     await UserModel.findOneAndUpdate({ _id: userId }, { is_online: status });
-    this.io.of("chat").emit("status", { userId, status });
+    socket.broadcast.emit("status", { userId, status });
   }
 
   private async handleConnection(socket: Socket) {
@@ -62,14 +57,13 @@ export class CustomSocket {
     socket.on("message", (message: Message) =>
       this.handleMessage(socket, message),
     );
-    socket.on("file", (data: any) => this.handleFiles(socket, data));
     socket.on("leave", (chatId: string) => this.handleLeave(socket, chatId));
     socket.on("disconnect", () => this.handleDisconnect(socket));
   }
 
   private async handleJoin(socket: Socket, chatId: string) {
     try {
-      this.logger.logInfo("User joined chat", { socketId: socket.id });
+      this.logger.logInfo("User joined chat", { chat_id: chatId });
       const chat = await ChatModel.findById(chatId);
       if (!chat) throw new Error("Chat not found");
       socket.join(chatId);
@@ -108,42 +102,6 @@ export class CustomSocket {
     }
   }
 
-  private async handleFiles(socket: Socket, data: FileData) {
-    try {
-      console.log(data);
-      const urls = await this.uploadFiles(
-        data.file,
-        data.fileName,
-        data.mimeType,
-      );
-      const message = {
-        chatId: data.chatId,
-        senderId: data.senderId,
-        file: {
-          url: urls,
-          name: data.fileName,
-        },
-        recipientId: data.recipientId,
-      };
-      const savedMessage = await MessageModel.create(message);
-      socket.to(data.chatId).emit("message", savedMessage);
-    } catch (error) {
-      this.handleError(socket, error);
-    }
-  }
-
-  private async uploadFiles(
-    files: ArrayBuffer,
-    originalName: string,
-    mimetype: string,
-  ): Promise<string> {
-    if (!files) {
-      throw new Error("No files provided");
-    }
-    console.log(files);
-    return this.awsStorage.uploadArrayBuffer(files, originalName, mimetype);
-  }
-
   private handleLeave(socket: Socket, chatId: string) {
     socket.leave(chatId);
   }
@@ -151,7 +109,7 @@ export class CustomSocket {
   private async handleDisconnect(socket: Socket) {
     const userId = socket.handshake.query.userId as string;
     this.logger.logInfo("User disconnected", { userId });
-    await this.updateUserOnlineStatus(userId, false);
+    await this.updateUserOnlineStatus(socket, userId, false);
   }
 
   private handleError(socket: Socket, error: Error) {
