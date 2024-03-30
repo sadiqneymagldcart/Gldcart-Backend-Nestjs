@@ -50,40 +50,35 @@ export class AwsStorage implements Storage {
         });
     }
 
-    public async uploadArrayBuffer(
-        arrayBuffer: ArrayBuffer,
-        originalName: string,
-        mimetype: string,
-    ): Promise<string> {
-        const buffer = Buffer.from(arrayBuffer);
-        return this.uploadBuffer(buffer, originalName, mimetype);
+    public async getUrlAndOriginalNames(
+        files: Express.Multer.File[],
+    ): Promise<{ url: string; originalName: string }[]> {
+        return new Promise((resolve, reject) => {
+            const urls: { url: string; originalName: string }[] = [];
+            files.forEach(async (file) => {
+                const params = {
+                    Bucket: this.bucketName,
+                    Region: this.bucketRegion,
+                    Key: this.randomFileName(file.originalname),
+                    Body: file.buffer,
+                    ContentType: file.mimetype,
+                };
+                const command = new PutObjectCommand(params);
+                try {
+                    await this.s3.send(command);
+                    urls.push({
+                        url: `https://${this.bucketName}.s3.${this.bucketRegion}.amazonaws.com/${params.Key}`,
+                        originalName: file.originalname,
+                    });
+                    if (urls.length === files.length) {
+                        resolve(urls);
+                    }
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        });
     }
-
-    public async uploadBuffer(
-        buffer: Buffer,
-        originalName: string,
-        mimetype: string,
-    ): Promise<string> {
-        const params = {
-            Bucket: this.bucketName,
-            Region: this.bucketRegion,
-            Key: this.randomFileName(originalName),
-            Body: buffer,
-            ContentType: mimetype,
-        };
-        const command = new PutObjectCommand(params);
-        await this.s3.send(command);
-        return `https://${this.bucketName}.s3.${this.bucketRegion}.amazonaws.com/${params.Key}`;
-    }
-
-    public async uploadBase64(
-        base64: string,
-        originalName: string,
-    ): Promise<string> {
-        const buffer = Buffer.from(base64, "base64");
-        return this.uploadBuffer(buffer, originalName, "image/jpeg");
-    }
-
     private randomFileName(originalName: string): string {
         return `${Date.now()}-${originalName}`;
     }
