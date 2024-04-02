@@ -52,7 +52,7 @@ import "../controllers/stripe/payment.controller";
 //Verification
 import "../controllers/auth/verification.controller";
 import "../controllers/shop/wishlist.controller";
-import "../controllers/file.controller";
+import "../controllers/files/file.controller";
 // Chat
 import "../controllers/chat/chat.controller";
 import "../controllers/chat/message.controller";
