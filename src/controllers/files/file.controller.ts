@@ -1,8 +1,8 @@
 import * as express from "express";
 import { inject } from "inversify";
 import { controller, httpPost } from "inversify-express-utils";
-import { multerMiddleware } from "../middlewares/malter.middleware";
-import { AwsStorage } from "../storages/aws.storage";
+import { AwsStorage } from "../../storages/aws.storage";
+import { multerMiddleware } from "../../middlewares/malter.middleware";
 
 @controller("/files")
 export class FileController {
