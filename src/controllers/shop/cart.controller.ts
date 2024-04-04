@@ -5,7 +5,6 @@ import {
     controller,
     httpGet,
     httpPost,
-    httpPut,
     httpDelete,
 } from "inversify-express-utils";
 import { requireAuth } from "../../middlewares/auth.middleware";
@@ -28,23 +27,6 @@ export class CartController {
                 return response.status(400).json({ message: "userId is required" });
             const cart = await this.cartService.createCart(request.body);
             response.status(201).json(cart);
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    @httpPut("/", requireAuth)
-    public async updateCartHandler(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const cart = await this.cartService.updateCart(
-                request.body.userId,
-                request.body,
-            );
-            response.status(200).json(cart);
         } catch (error) {
             next(error);
         }
@@ -75,9 +57,7 @@ export class CartController {
         if (!request.params.userId)
             return response.status(400).json({ message: "userId is required" });
         try {
-            const cart = await this.cartService.getCartItemsWithTotalPrice(
-                request.params.userId,
-            );
+            const cart = await this.cartService.getCartItems(request.params.userId);
             response.status(200).json(cart);
         } catch (error) {
             next(error);
@@ -100,29 +80,6 @@ export class CartController {
                 request.body.item,
             );
             response.status(201).json(cart);
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    @httpPut("/update-item", requireAuth)
-    public async updateItem(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        if (!request.body.userId || !request.body.itemId || !request.body.item) {
-            response
-                .status(400)
-                .json({ message: "userId, itemId and item are required" });
-        }
-        try {
-            const cart = await this.cartService.updateCartItem(
-                request.body.userId,
-                request.body.itemId,
-                request.body.item,
-            );
-            response.status(200).json(cart);
         } catch (error) {
             next(error);
         }
