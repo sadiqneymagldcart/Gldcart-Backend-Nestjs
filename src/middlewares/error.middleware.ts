@@ -1,5 +1,5 @@
-import { ApiError } from "@exceptions/api.error";
 import * as express from "express";
+import { ApiError } from "@exceptions/api.error";
 
 function sendApiErrorResponse(error: ApiError, response: express.Response) {
     response.status(error.status).json({

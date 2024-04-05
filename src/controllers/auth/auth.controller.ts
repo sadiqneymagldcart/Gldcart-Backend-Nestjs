@@ -74,7 +74,6 @@ export class AuthController {
     next: express.NextFunction,
   ) {
     const refreshToken = request.cookies.refreshToken as string;
-    console.log("I am here");
     try {
       const userData = await this.authService.refresh(refreshToken);
       setRefreshTokenCookie(response, userData.refreshToken);
