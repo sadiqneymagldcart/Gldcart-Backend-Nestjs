@@ -1,6 +1,6 @@
 import { BaseService } from "../base/base.service";
 import { Logger } from "../../utils/logger";
-import { MailService } from "../mail/mail.service";
+import { MailService } from "../contact/mail.service";
 import { ApiError } from "../../exceptions/api.error";
 import * as bcrypt from "bcrypt";
 import { inject, injectable } from "inversify";

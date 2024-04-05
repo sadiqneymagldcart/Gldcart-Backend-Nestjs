@@ -3,7 +3,7 @@ import {
     controller,
     httpPost,
 } from "inversify-express-utils";
-import { OTPService } from "../../services/auth/otp.service";
+import { OTPService } from "../../services/verification/otp.service";
 import { inject } from "inversify";
 
 @controller("/otp")

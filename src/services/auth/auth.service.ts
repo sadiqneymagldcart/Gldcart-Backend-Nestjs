@@ -2,7 +2,7 @@ import { TokenService } from "../token/token.service";
 import { Logger } from "../../utils/logger";
 import { BaseService } from "../base/base.service";
 import { ApiError } from "../../exceptions/api.error";
-import { Token } from "../../models/user/Token";
+import { Token } from "../../models/token/Token";
 import * as bcrypt from "bcrypt";
 import { inject, injectable } from "inversify";
 import { User, UserModel } from "../../models/user/User";
