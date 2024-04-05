@@ -1,10 +1,10 @@
 import * as http from "http";
 import mongoose from "mongoose";
-import { mongooseOptions } from "./config/mongo.config";
-import { serverConfig } from "./config/server.config";
-import { errorHandlerMiddleware } from "./middlewares/error.middleware";
 import { InversifyExpressServer } from "inversify-express-utils";
-import { Logger } from "./utils/logger";
+import { Logger } from "@utils/logger";
+import { mongooseOptions } from "@config/mongo.config";
+import { errorHandlerMiddleware } from "@middlewares/error.middleware";
+import { serverConfig } from "@config/server.config";
 
 export class App {
     private readonly server: InversifyExpressServer;
@@ -35,7 +35,7 @@ export class App {
             await this.initializeDbConnection();
             this.initializeHttpServer();
             this.startListening();
-        } catch (error) {
+        } catch (error: any) {
             this.handleStartupError(error);
         }
     }
@@ -53,7 +53,7 @@ export class App {
         try {
             await mongoose.connect(process.env.DB_URL!, mongooseOptions);
             this.logger.logInfo(`⚡️[database] Connected to ${process.env.DB_URL}`);
-        } catch (error) {
+        } catch (error: any) {
             this.logger.logError("Error connecting to database", error);
             throw error;
         }
@@ -105,13 +105,13 @@ export class App {
         }
     }
 
-    private handleShutdown(signal: string): void {
-        this.logger.logInfo(
-            `Received ${signal} signal. Shutting down gracefully...`,
-        );
-        this.httpServer.close(() => {
-            this.logger.logInfo("Server closed");
-            process.exit(0);
-        });
-    }
+    // private handleShutdown(signal: string): void {
+    //     this.logger.logInfo(
+    //         `Received ${signal} signal. Shutting down gracefully...`,
+    //     );
+    //     this.httpServer.close(() => {
+    //         this.logger.logInfo("Server closed");
+    //         process.exit(0);
+    //     });
+    // }
 }

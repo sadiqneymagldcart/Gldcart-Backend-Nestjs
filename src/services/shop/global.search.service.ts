@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
-import { Logger } from "../../utils/logger";
-import { ProductModel } from "../../models/shop/product/Product";
-import { RentingModel } from "../../models/shop/product/Renting";
-import { ServicesModel } from "../../models/shop/product/ProfessionalService";
+import { Logger } from "@utils/logger";
+import { ProductModel } from "@models/shop/product/Product";
+import { RentingModel } from "@models/shop/product/Renting";
+import { ServicesModel } from "@models/shop/product/ProfessionalService";
 import { BaseService } from "../base/base.service";
 
 @injectable()

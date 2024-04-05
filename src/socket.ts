@@ -1,9 +1,9 @@
 import * as http from "http";
 import { Server, Socket } from "socket.io";
-import { UserModel } from "./models/user/User";
-import { Logger } from "./utils/logger";
-import { ChatModel } from "./models/chat/Chat";
-import { Message, MessageModel } from "./models/chat/Message";
+import { UserModel } from "@models/user/User";
+import { ChatModel } from "@models/chat/Chat";
+import { Message, MessageModel } from "@models/chat/Message";
+import { Logger } from "@utils/logger";
 
 export class CustomSocket {
   private readonly logger: Logger;
@@ -17,8 +17,9 @@ export class CustomSocket {
     });
     this.logger = logger;
     this.setupChatSocket();
+    this.setupSupportChatSocket();
   }
-  private async setupChatSocket() {
+  private setupChatSocket() {
     this.io.of("chat").on("connection", async (socket: Socket) => {
       const userId = socket.handshake.query.userId as string;
       this.logger.logInfo("User connected", { userId });
@@ -26,6 +27,15 @@ export class CustomSocket {
       await this.handleChatsList(socket, userId);
       await this.handleConnection(socket);
       await this.watchChatCollectionChanges(socket);
+    });
+  }
+
+  private setupSupportChatSocket() {
+    this.io.of("support").on("connection", async (socket: Socket) => {
+      const userId = socket.handshake.query.userId as string;
+      this.logger.logInfo("Support connected", { userId });
+      await this.updateUserOnlineStatus(socket, userId, true);
+      await this.handleConnection(socket);
     });
   }
 
@@ -64,11 +74,9 @@ export class CustomSocket {
   private async handleJoin(socket: Socket, chatId: string) {
     try {
       this.logger.logInfo("User joined chat", { chat_id: chatId });
-      const chat = await ChatModel.findById(chatId);
-      if (!chat) throw new Error("Chat not found");
       socket.join(chatId);
     } catch (error) {
-      this.handleError(socket, error);
+      this.handleError(socket, error as Error);
     }
   }
 
@@ -76,14 +84,10 @@ export class CustomSocket {
     try {
       this.logger.logInfo("Message received", message);
 
-      const chat = await ChatModel.findById(message.chatId);
-      if (!chat) throw new Error("Chat not found");
-
       const savedMessage = await MessageModel.create(message);
-      await chat.save();
       socket.to(message.chatId as string).emit("message", savedMessage);
     } catch (error) {
-      this.handleError(socket, error);
+      this.handleError(socket, error as Error);
     }
   }
 
@@ -98,7 +102,7 @@ export class CustomSocket {
       });
       socket.emit("chats", chats);
     } catch (error) {
-      this.handleError(socket, error);
+      this.handleError(socket, error as Error);
     }
   }
 

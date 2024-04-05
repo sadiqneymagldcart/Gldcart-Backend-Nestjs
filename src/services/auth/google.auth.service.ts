@@ -1,16 +1,16 @@
 import { BaseService } from "../base/base.service";
 import { TokenService } from "../token/token.service";
-import { Logger } from "../../utils/logger";
-import { ApiError } from "../../exceptions/api.error";
+import { Logger } from "@utils/logger";
+import { ApiError } from "@exceptions/api.error";
 import axios, { AxiosResponse } from "axios";
 import * as qs from "qs";
-import { Token } from "../../models/token/Token";
+import { Token } from "@models/token/Token";
 import { inject, injectable } from "inversify";
-import { User, UserModel } from "../../models/user/User";
-import { GoogleTokenResult } from "../../interfaces/GoogleTokenResult";
-import { GoogleUserInfo } from "../../interfaces/GoogleUserInfo";
-import { GoogleUserResult } from "../../interfaces/GoogleUserResult";
-import { OAuthValues } from "../../interfaces/OAuthValues";
+import { User, UserModel } from "@models/user/User";
+import { GoogleTokenResult } from "@interfaces/GoogleTokenResult";
+import { GoogleUserInfo } from "@interfaces/GoogleUserInfo";
+import { GoogleUserResult } from "@interfaces/GoogleUserResult";
+import { OAuthValues } from "@interfaces/OAuthValues";
 
 @injectable()
 export class GoogleAuthService extends BaseService {
@@ -37,7 +37,7 @@ export class GoogleAuthService extends BaseService {
         const values = this.getOAuthValues(code);
         try {
             const googleResponse = await this.postToUrl(
-                process.env.GOOGLE_TOKEN_URL,
+                process.env.GOOGLE_TOKEN_URL as string,
                 values,
             );
             return googleResponse.data;

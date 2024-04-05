@@ -1,10 +1,9 @@
 import * as express from "express";
-import { controller, httpPost, httpPut } from "inversify-express-utils";
-import { ProfileService } from "../../services/user/profile.service";
+import { controller, httpPut } from "inversify-express-utils";
+import { ProfileService } from "@services/user/profile.service";
 import { inject } from "inversify";
-import { multerMiddleware } from "../../middlewares/malter.middleware";
-import { requireAuth } from "../../middlewares/auth.middleware";
-import { FileService } from "../../services/shop/image.service";
+import { multerMiddleware } from "@middlewares/malter.middleware";
+import { FileService } from "@services/shop/image.service";
 
 @controller("/personal")
 export class ProfileController {

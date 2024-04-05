@@ -1,4 +1,4 @@
-import {ConnectOptions} from "mongoose";
+import { ConnectOptions } from "mongoose";
 
 export const mongooseOptions = {
     useNewUrlParser: true,

@@ -1,11 +1,11 @@
 import * as express from "express";
 import { inject } from "inversify";
 import { controller, httpGet, httpPost } from "inversify-express-utils";
-import { ProfessionalServicesService } from "../../services/shop/professional-services.service";
-import { FileService } from "../../services/shop/image.service";
-import { multerMiddleware } from "../../middlewares/malter.middleware";
-import { requireAuth } from "../../middlewares/auth.middleware";
-import { ProfessionalService } from "../../models/shop/product/ProfessionalService";
+import { ProfessionalServicesService } from "@services/shop/professional-services.service";
+import { FileService } from "@services/shop/image.service";
+import { multerMiddleware } from "@/middlewares/malter.middleware";
+import { requireAuth } from "@/middlewares/auth.middleware";
+import { ProfessionalService } from "@/models/shop/product/ProfessionalService";
 
 @controller("/professional-services")
 export class ProfessionalServicesController {
@@ -69,7 +69,6 @@ export class ProfessionalServicesController {
 
     @httpGet("/count", requireAuth)
     public async getServicesCountHandler(
-        request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
@@ -83,7 +82,6 @@ export class ProfessionalServicesController {
 
     @httpGet("/", requireAuth)
     public async getAllServicesHandler(
-        request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
@@ -102,7 +100,7 @@ export class ProfessionalServicesController {
         next: express.NextFunction,
     ) {
         try {
-            const filters = request.query;
+            const filters = request.query as any;
             const services = await this.servicesService.getServicesByQuery(filters);
             response.status(200).json(services);
         } catch (error) {
