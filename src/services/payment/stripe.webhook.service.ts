@@ -20,7 +20,7 @@ export class StripeWebhookService extends BaseService {
     }
 
     public async createEvent(request: any): Promise<Stripe.Event | null> {
-        const signature = request.headers["stripe-signature"] as
+        const signature = request.headers["payment-signature"] as
             | string
             | string[]
             | Buffer;
