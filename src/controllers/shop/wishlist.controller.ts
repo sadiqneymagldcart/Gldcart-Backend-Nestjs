@@ -7,9 +7,8 @@ import {
     httpPut,
     httpDelete,
 } from "inversify-express-utils";
-import { WishlistService } from "../../services/shop/wishlist.service";
-import { requireAuth } from "../../middlewares/auth.middleware";
-import { WishlistModel } from "../../models/shop/wishlist/Wishlist";
+import { WishlistService } from "@services/shop/wishlist.service";
+import { requireAuth } from "@middlewares/auth.middleware";
 
 @controller("/wishlist")
 export class WishlistController {

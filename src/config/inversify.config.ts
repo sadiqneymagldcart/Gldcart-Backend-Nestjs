@@ -1,37 +1,37 @@
 import Stripe from "stripe";
 import { Container } from "inversify";
-import { Logger } from "../utils/logger";
-import { TokenService } from "../services/token/token.service";
-import { AuthService } from "../services/auth/auth.service";
-import { GoogleAuthService } from "../services/auth/google.auth.service";
-import { MailService } from "../services/contact/mail.service";
-import { StripeService } from "../services/payment/payment.service";
+import { Logger } from "@utils/logger";
+import { TokenService } from "@services/token/token.service";
+import { AuthService } from "@services/auth/auth.service";
+import { GoogleAuthService } from "@services/auth/google.auth.service";
+import { MailService } from "@services/contact/mail.service";
+import { StripeService } from "@services/payment/payment.service";
 import { Transporter } from "nodemailer";
-import { ReviewService } from "../services/shop/review.service";
-import { ProductService } from "../services/shop/product.service";
-import { ProfessionalServicesService } from "../services/shop/professional-services.service";
-import { AddressService } from "../services/user/address.service";
-import { PasswordService } from "../services/user/reset.password.service";
-import { ProfileService } from "../services/user/profile.service";
-import { RentingService } from "../services/shop/renting.service";
-import { VerificationService } from "../services/verification/verification.service";
-import { CartService } from "../services/shop/cart.service";
-import { WishlistService } from "../services/shop/wishlist.service";
-import { OrderService } from "../services/shop/order.service";
-import { OTPService } from "../services/verification/otp.service";
-import { StripeSubscriptionService } from "../services/payment/stripe.subscription.service";
-import { StripeWebhookService } from "../services/payment/stripe.webhook.service";
+import { ReviewService } from "@services/shop/review.service";
+import { ProductService } from "@services/shop/product.service";
+import { ProfessionalServicesService } from "@services/shop/professional-services.service";
+import { AddressService } from "@services/user/address.service";
+import { PasswordService } from "@services/user/reset.password.service";
+import { ProfileService } from "@services/user/profile.service";
+import { RentingService } from "@services/shop/renting.service";
+import { VerificationService } from "@services/verification/verification.service";
+import { CartService } from "@services/shop/cart.service";
+import { WishlistService } from "@services/shop/wishlist.service";
+import { OrderService } from "@services/shop/order.service";
+import { StripeSubscriptionService } from "@services/payment/stripe.subscription.service";
+import { StripeWebhookService } from "@services/payment/stripe.webhook.service";
 import { STRIPE_SECRET_KEY, stripeConfig } from "./stripe.config";
-import { FileService } from "../services/shop/image.service";
-import { AwsStorage } from "../storages/aws.storage";
-import { SearchService } from "../services/shop/global.search.service";
-import { ChatService } from "../services/chat/chat.service";
+import { FileService } from "@services/shop/image.service";
+import { AwsStorage } from "@/storages/aws.storage";
+import { SearchService } from "@services/shop/global.search.service";
+import { ChatService } from "@services/chat/chat.service";
+import { MessageService } from "@services/chat/message.service";
 
 import { configureNodemailer } from "./nodemailer.config";
 import { loadEnvironmentVariables } from "./env.config";
 
 //Auth
-import "../controllers/auth/auth.controller";
+import "@controllers/auth/auth.controller";
 import "../controllers/auth/google.auth.controller";
 //Shop
 import "../controllers/shop/review.controller";
@@ -56,7 +56,6 @@ import "../controllers/files/file.controller";
 // Chat
 import "../controllers/chat/chat.controller";
 import "../controllers/chat/message.controller";
-import { MessageService } from "../services/chat/message.service";
 
 function bindAuthServices(container: Container) {
     container.bind(TokenService).toSelf();
@@ -66,7 +65,7 @@ function bindAuthServices(container: Container) {
 
 function bindStripeServices(container: Container) {
     container.bind(Stripe).toDynamicValue(() => {
-        return new Stripe(STRIPE_SECRET_KEY, stripeConfig);
+        return new Stripe(STRIPE_SECRET_KEY as string, stripeConfig);
     });
     container.bind(StripeService).toSelf();
     container.bind(StripeSubscriptionService).toSelf();
@@ -107,7 +106,6 @@ function bindShopServices(container: Container) {
 
 function bindVerificationService(container: Container) {
     container.bind(VerificationService).toSelf();
-    container.bind(OTPService).toSelf();
 }
 
 function bindChatServices(container: Container) {

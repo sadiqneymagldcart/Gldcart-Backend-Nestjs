@@ -1,10 +1,10 @@
 import * as jwt from "jsonwebtoken";
 import TokenModel, { Token } from "../../models/token/Token";
-import { Logger } from "../../utils/logger";
+import { Logger } from "@utils/logger";
 import { BaseService } from "../base/base.service";
 import { inject, injectable } from "inversify";
-import { TokenPayload } from "../../interfaces/TokenPayload";
-import { Tokens } from "../../interfaces/Tokens";
+import { TokenPayload } from "@interfaces/TokenPayload";
+import { Tokens } from "@interfaces/Tokens";
 
 @injectable()
 export class TokenService extends BaseService {

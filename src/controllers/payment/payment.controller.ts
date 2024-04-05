@@ -1,10 +1,10 @@
 import * as express from "express";
-import { StripeService } from "../../services/payment/payment.service";
+import { StripeService } from "@services/payment/payment.service";
 import { inject } from "inversify";
 import { controller, httpPost } from "inversify-express-utils";
-import { OrderService } from "../../services/shop/order.service";
-import { ProductService } from "../../services/shop/product.service";
-import { Logger } from "../../utils/logger";
+import { OrderService } from "@services/shop/order.service";
+import { ProductService } from "@services/shop/product.service";
+import { Logger } from "@utils/logger";
 
 @controller("/payments")
 export class PaymentController {

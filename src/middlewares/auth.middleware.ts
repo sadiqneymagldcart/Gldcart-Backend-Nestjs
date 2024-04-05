@@ -1,6 +1,6 @@
 import * as jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
-import { ApiError } from "../exceptions/api.error";
+import { ApiError } from "@exceptions/api.error";
 
 export const requireAuth = (
     req: Request,

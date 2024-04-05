@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { Storage } from "../interfaces/Storage";
+import { Storage } from "@interfaces/Storage";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 @injectable()
@@ -11,10 +11,10 @@ export class AwsStorage implements Storage {
     private readonly secretKey: string;
 
     public constructor() {
-        this.bucketName = process.env.AWS_BUCKET_NAME;
-        this.bucketRegion = process.env.AWS_REGION;
-        this.accessKey = process.env.AWS_ACCESS_KEY;
-        this.secretKey = process.env.AWS_SECRET_KEY;
+        this.bucketName = process.env.AWS_BUCKET_NAME as string;
+        this.bucketRegion = process.env.AWS_REGION as string;
+        this.accessKey = process.env.AWS_ACCESS_KEY as string;
+        this.secretKey = process.env.AWS_SECRET_KEY as string;
         this.s3 = new S3Client({
             region: this.bucketRegion,
             credentials: {

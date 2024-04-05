@@ -1,14 +1,14 @@
 import { inject, injectable } from "inversify";
 import { BaseService } from "../base/base.service";
-import { Logger } from "../../utils/logger";
+import { Logger } from "@utils/logger";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 @injectable()
 export class FileService extends BaseService {
-  private readonly bucketName = process.env.BUCKET_NAME;
-  private readonly bucketRegion = process.env.BUCKET_REGION;
-  private readonly accessKey = process.env.AWS_ACCESS;
-  private readonly secretKey = process.env.AWS_SECRET;
+  private readonly bucketName = process.env.BUCKET_NAME as string;
+  private readonly bucketRegion = process.env.BUCKET_REGION as string;
+  private readonly accessKey = process.env.AWS_ACCESS as string;
+  private readonly secretKey = process.env.AWS_SECRET as string;
 
   private readonly s3 = new S3Client({
     region: this.bucketRegion,

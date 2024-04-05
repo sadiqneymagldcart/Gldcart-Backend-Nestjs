@@ -1,7 +1,7 @@
-import { inject, injectable } from "inversify";
-import { Chat, ChatModel } from "../../models/chat/Chat";
-import { BaseService } from "../base/base.service";
-import { Logger } from "../../utils/logger";
+import {inject, injectable} from "inversify";
+import {Chat, ChatModel} from "@models/chat/Chat";
+import {BaseService} from "../base/base.service";
+import {Logger} from "@utils/logger";
 
 @injectable()
 export class ChatService extends BaseService {
@@ -19,11 +19,10 @@ export class ChatService extends BaseService {
     await ChatModel.deleteMany({});
   }
 
-  public async checkChatForUsers(users: string[]): Promise<Chat> {
-    const chat = await ChatModel.findOne({
-      participants: { $all: users },
+  public async checkChatForUsers(users: string[]): Promise<Chat | null> {
+    return ChatModel.findOne({
+      participants: {$all: users},
     });
-    return chat;
   }
 
   public async createChat(participants: string[]): Promise<Chat> {

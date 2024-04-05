@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import { inject, injectable } from "inversify";
-import { Logger } from "../../utils/logger";
+import { Logger } from "@utils/logger";
 import { MailService } from "../contact/mail.service";
-import {UserModel} from "../../models/user/User";
-import { ApiError } from "../../exceptions/api.error";
+import {UserModel} from "@models/user/User";
+import { ApiError } from "@exceptions/api.error";
 import { BaseService } from "../base/base.service";
 
 @injectable()
@@ -38,7 +38,7 @@ export class VerificationService extends BaseService {
         }
         await this.mailService.sendHtmlEmailWithAttachments(
             "User",
-            process.env.FEEDBACK_EMAIL,
+            process.env.FEEDBACK_EMAIL as string,
             "User's documents for verification",
             `<a href="http://localhost:3001/verification/verify-user/${token}">Click here to verify the user</a>`,
             attachments,

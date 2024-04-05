@@ -5,7 +5,7 @@ import {
     httpPost,
     httpPut,
 } from "inversify-express-utils";
-import { MessageService } from "../../services/chat/message.service";
+import { MessageService } from "@services/chat/message.service";
 import { inject } from "inversify";
 
 @controller("/message")
