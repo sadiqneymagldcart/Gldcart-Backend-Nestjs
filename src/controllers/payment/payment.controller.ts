@@ -1,5 +1,5 @@
 import * as express from "express";
-import { StripeService } from "../../services/stripe/payment.service";
+import { StripeService } from "../../services/payment/payment.service";
 import { inject } from "inversify";
 import { controller, httpPost } from "inversify-express-utils";
 import { OrderService } from "../../services/shop/order.service";

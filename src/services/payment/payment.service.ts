@@ -32,7 +32,7 @@ export class StripeService extends BaseService {
         }
     }
     public createEvent(request: any): Stripe.Event | null {
-        const signature = request.headers["stripe-signature"] as
+        const signature = request.headers["payment-signature"] as
             | string
             | string[]
             | Buffer;

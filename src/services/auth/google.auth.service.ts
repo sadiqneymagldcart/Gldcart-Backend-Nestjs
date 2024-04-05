@@ -4,7 +4,7 @@ import { Logger } from "../../utils/logger";
 import { ApiError } from "../../exceptions/api.error";
 import axios, { AxiosResponse } from "axios";
 import * as qs from "qs";
-import { Token } from "../../models/user/Token";
+import { Token } from "../../models/token/Token";
 import { inject, injectable } from "inversify";
 import { User, UserModel } from "../../models/user/User";
 import { GoogleTokenResult } from "../../interfaces/GoogleTokenResult";
