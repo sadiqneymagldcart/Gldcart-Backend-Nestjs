@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { OrderService } from "../shop/order.service";
 import { BaseService } from "../base/base.service";
-import { Logger } from "../../utils/logger";
+import { Logger } from "@utils/logger";
 import { inject, injectable } from "inversify";
 
 @injectable()

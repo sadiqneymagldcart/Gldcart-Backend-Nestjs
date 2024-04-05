@@ -1,12 +1,12 @@
 import * as express from "express";
 import { Application } from "express";
-import * as compression from "compression";
-import * as cookieParser from "cookie-parser";
-import * as cors from "cors";
-import * as hpp from "hpp";
-import * as bodyParser from "body-parser";
+import cors from "cors";
+import bodyParser from "body-parser";
+import hpp from "hpp";
+import cookieParser from "cookie-parser";
+import compression from "compression";
 import helmet from "helmet";
-import { rateLimitMiddlewareTyped } from "../middlewares/rate.limit.middleware";
+import { rateLimitMiddlewareTyped } from "@middlewares/rate.limit.middleware";
 
 export function serverConfig(app: Application) {
     app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));

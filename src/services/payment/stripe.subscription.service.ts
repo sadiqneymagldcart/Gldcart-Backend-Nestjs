@@ -1,4 +1,4 @@
-import {Logger} from "../../utils/logger";
+import {Logger} from "@utils/logger";
 import Stripe from "stripe";
 import {inject, injectable} from "inversify";
 import { BaseService } from "../base/base.service";

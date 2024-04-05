@@ -1,7 +1,7 @@
-import { Product, ProductModel } from "../../models/shop/product/Product";
+import { Product, ProductModel } from "@models/shop/product/Product";
 import { inject, injectable } from "inversify";
 import { BaseService } from "../base/base.service";
-import { Logger } from "../../utils/logger";
+import { Logger } from "@utils/logger";
 
 @injectable()
 export class ProductService extends BaseService {

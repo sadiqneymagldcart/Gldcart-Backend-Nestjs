@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
-import { Message, MessageModel } from "../../models/chat/Message";
-import { Chat, ChatModel } from "../../models/chat/Chat";
+import { Message, MessageModel } from "@models/chat/Message";
+import { Chat, ChatModel } from "@models/chat/Chat";
 import { BaseService } from "../base/base.service";
-import { Logger } from "../../utils/logger";
+import { Logger } from "@utils/logger";
 
 @injectable()
 export class MessageService extends BaseService {
@@ -10,7 +10,7 @@ export class MessageService extends BaseService {
     super(logger);
   }
   public async createMessage(message: Message): Promise<Message> {
-    let chat: Chat | null = null;
+    let chat: Chat | null;
 
     if (!message.chatId) {
       chat = await ChatModel.create({

@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
-import { Logger } from "../../utils/logger";
-import { Cart, CartItem, CartModel } from "../../models/shop/cart/Cart";
+import { Logger } from "@utils/logger";
+import { Cart, CartItem, CartModel } from "@models/shop/cart/Cart";
 import { BaseService } from "../base/base.service";
 
 @injectable()
@@ -16,7 +16,7 @@ export class CartService extends BaseService {
 
   public async deleteCart(userId: string) {
     this.logger.logInfo(`Deleting cart for user ${userId}`);
-    return await CartModel.findOneAndDelete({ userId });
+    return CartModel.findOneAndDelete({userId});
   }
 
   public async addItemToCart(userId: string, item: CartItem) {
@@ -45,19 +45,19 @@ export class CartService extends BaseService {
     productId: string,
     item: CartItem,
   ) {
-    return await CartModel.findOneAndUpdate(
-      { userId, "items.product": productId },
-      { $set: { "items.$": item } },
-      { new: true },
+    return CartModel.findOneAndUpdate(
+        {userId, "items.product": productId},
+        {$set: {"items.$": item}},
+        {new: true},
     );
   }
 
   public async removeItemFromCart(userId: string, productId: string) {
     this.logger.logInfo(`Removing item from cart for user ${userId}`);
-    return await CartModel.findOneAndUpdate(
-      { userId },
-      { $pull: { items: { product: productId } } },
-      { new: true },
+    return CartModel.findOneAndUpdate(
+        {userId},
+        {$pull: {items: {product: productId}}},
+        {new: true},
     ).populate("items.product");
   }
 
@@ -68,10 +68,10 @@ export class CartService extends BaseService {
     });
 
     let subtotal = 0;
-    cart.items.forEach((item) => {
+    cart?.items.forEach((item) => {
       subtotal += item.product.price * item.quantity;
     });
 
-    return { items: cart.items, subtotal: subtotal };
+    return { items: cart?.items, subtotal: subtotal };
   }
 }

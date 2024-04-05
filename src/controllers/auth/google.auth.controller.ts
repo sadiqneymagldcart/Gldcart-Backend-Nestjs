@@ -1,10 +1,10 @@
 import * as express from "express";
-import { GoogleAuthService } from "../../services/auth/google.auth.service";
-import { inject } from "inversify";
-import { controller, httpGet, httpPost } from "inversify-express-utils";
-import { GoogleUserInfo } from "../../interfaces/GoogleUserInfo";
-import { GoogleUserResult } from "../../interfaces/GoogleUserResult";
-import { setRefreshTokenCookie } from "../../utils/token.utils";
+import {GoogleAuthService} from "@services/auth/google.auth.service";
+import {inject} from "inversify";
+import {controller, httpGet, httpPost} from "inversify-express-utils";
+import {GoogleUserInfo} from "@interfaces/GoogleUserInfo";
+import {GoogleUserResult} from "@interfaces/GoogleUserResult";
+import {setRefreshTokenCookie} from "@utils/token.utils";
 
 @controller("/tokens/oauth/google")
 export class GoogleAuthController {
@@ -33,7 +33,7 @@ export class GoogleAuthController {
             const googleUser = await this.googleAuthService.getGoogleUser(
                 oAuthTokens.id_token,
                 oAuthTokens.access_token,
-            );
+            ) as GoogleUserResult;
 
             this._validateGoogleUser(googleUser, response);
 
@@ -52,8 +52,8 @@ export class GoogleAuthController {
             setRefreshTokenCookie(response, result.tokens.refreshToken);
             const redirectURL = `${process.env.CLIENT_URL}` as string;
             response.redirect(redirectURL);
-        } catch (error) {
-            this._handleOAuthError(error, response);
+        } catch (error: any) {
+            this._handleOAuthError(response, error);
         }
     }
 
@@ -71,12 +71,13 @@ export class GoogleAuthController {
         }
     }
 
-    private _handleOAuthError(error: any, response: express.Response) {
+    private _handleOAuthError(response: express.Response, error: any) {
         return response
             .status(500)
-            .json({ message: "Error processing OAuth callback." });
+            .send(`Error while processing Google OAuth: ${error}`);
     }
 
     @httpPost("")
-    public async() { }
+    public async() {
+    }
 }

@@ -1,7 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import { injectable } from "inversify";
-import { Storage } from "../interfaces/Storage";
-import { CloudinaryUploadResult } from "../interfaces/CloudinaryUploadResult";
+import { Storage } from "@interfaces/Storage";
 
 @injectable()
 export class CloudinaryStorage implements Storage {
@@ -19,11 +18,11 @@ export class CloudinaryStorage implements Storage {
                 return new Promise((resolve, reject) => {
                     const uploadStream = cloudinary.uploader.upload_stream(
                         { resource_type: "auto" },
-                        (error, result: CloudinaryUploadResult) => {
+                        (error, result) => {
                             if (error) {
                                 reject(error);
                             } else {
-                                resolve(result.secure_url);
+                                resolve(result?.secure_url);
                             }
                         },
                     );
@@ -33,6 +32,4 @@ export class CloudinaryStorage implements Storage {
             }),
         ) as Promise<string[]>;
     }
-
-
 }

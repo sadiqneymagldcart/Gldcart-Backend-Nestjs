@@ -1,6 +1,6 @@
 import * as express from "express";
 import { inject } from "inversify";
-import { OrderService } from "../../services/shop/order.service";
+import { OrderService } from "@services/shop/order.service";
 import { controller, httpGet, httpPost, httpPut } from "inversify-express-utils";
 
 @controller("/order")
