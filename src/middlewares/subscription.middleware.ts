@@ -1,10 +1,9 @@
-import { NextFunction, Request, Response } from "express";
-import { ApiError } from "../exceptions/api.error";
-import { UserModel } from "../models/user/User";
+import { NextFunction, Response } from "express";
+import { ApiError } from "@exceptions/api.error";
+import { UserModel } from "@models/user/User";
 
 export const requireSubscription = (requiredSubscriptionType: string) => {
     return async (
-        request: Request,
         response: Response,
         next: NextFunction,
     ): Promise<void> => {

@@ -2,7 +2,7 @@ import * as winston from "winston";
 import { format } from "winston";
 import winstonDailyRotateFile from "winston-daily-rotate-file";
 import { injectable } from "inversify";
-import { ILogger } from "../interfaces/Logger";
+import { ILogger } from "@interfaces/Logger";
 
 export type LogMessage = string;
 
@@ -101,7 +101,7 @@ export class Logger implements ILogger {
 
     private getCircularReplacer() {
         const seen = new WeakSet();
-        return (key, value) => {
+        return (value: any) => {
             if (typeof value === "object" && value !== null) {
                 if (seen.has(value)) {
                     return "[Circular Reference]";

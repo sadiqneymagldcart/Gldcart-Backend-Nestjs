@@ -1,12 +1,13 @@
-import { Logger } from "../../utils/logger";
+import {Logger} from "@utils/logger";
 import Stripe from "stripe";
-import { BaseService } from "../base/base.service";
-import { inject, injectable } from "inversify";
-import { CartItem } from "../../models/shop/cart/Cart";
+import {BaseService} from "../base/base.service";
+import {inject, injectable} from "inversify";
+import {CartItem} from "@models/shop/cart/Cart";
 
 @injectable()
 export class StripeService extends BaseService {
     private readonly stripe: Stripe;
+    private readonly stripeWebhookSecret: string = process.env.STRIPE_WEBHOOK_SECRET as string;
 
     public constructor(
         @inject(Logger) logger: Logger,
@@ -24,13 +25,14 @@ export class StripeService extends BaseService {
             return this.stripe.webhooks.constructEvent(
                 payload,
                 signature,
-                process.env.STRIPE_WEBHOOK_SECRET,
+                this.stripeWebhookSecret,
             );
         } catch (error: any) {
             this.logger.logError("Failed to verify webhook", error);
             throw error;
         }
     }
+
     public createEvent(request: any): Stripe.Event | null {
         const signature = request.headers["payment-signature"] as
             | string
@@ -51,7 +53,7 @@ export class StripeService extends BaseService {
 
     public async createCustomer(email: string, name: string): Promise<string> {
         try {
-            const customer = await this.createCustomerWithMetadata({ email, name });
+            const customer = await this.createCustomerWithMetadata({email, name});
             this.logger.logInfo(`Customer created: ${customer.id}`);
             return customer.id;
         } catch (error: any) {
@@ -115,7 +117,7 @@ export class StripeService extends BaseService {
     private async createCustomerWithMetadata(
         metadata: Record<string, any> = {},
     ): Promise<Stripe.Customer> {
-        return this.stripe.customers.create({ metadata });
+        return this.stripe.customers.create({metadata});
     }
 
     private async createCheckoutSession(

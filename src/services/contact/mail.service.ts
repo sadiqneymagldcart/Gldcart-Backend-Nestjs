@@ -1,6 +1,6 @@
 import { Transporter } from "nodemailer";
-import { ApiError } from "../../exceptions/api.error";
-import { Logger } from "../../utils/logger";
+import { ApiError } from "@exceptions/api.error";
+import { Logger } from "@utils/logger";
 import { inject, injectable } from "inversify";
 
 @injectable()

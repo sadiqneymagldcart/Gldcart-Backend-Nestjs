@@ -1,13 +1,13 @@
 import * as express from "express";
 import { inject } from "inversify";
-import { CartService } from "../../services/shop/cart.service";
+import { CartService } from "@services/shop/cart.service";
 import {
     controller,
     httpGet,
     httpPost,
     httpDelete,
 } from "inversify-express-utils";
-import { requireAuth } from "../../middlewares/auth.middleware";
+import { requireAuth } from "@middlewares/auth.middleware";
 
 @controller("/cart")
 export class CartController {

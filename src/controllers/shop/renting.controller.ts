@@ -1,11 +1,11 @@
 import * as express from "express";
 import { inject } from "inversify";
 import { controller, httpGet, httpPost } from "inversify-express-utils";
-import { RentingService } from "../../services/shop/renting.service";
-import { multerMiddleware } from "../../middlewares/malter.middleware";
-import { requireAuth } from "../../middlewares/auth.middleware";
-import { Renting } from "../../models/shop/product/Renting";
-import { AwsStorage } from "../../storages/aws.storage";
+import { RentingService } from "@services/shop/renting.service";
+import { multerMiddleware } from "@middlewares/malter.middleware";
+import { requireAuth } from "@middlewares/auth.middleware";
+import { Renting } from "@models/shop/product/Renting";
+import {AwsStorage} from "@storages/aws.storage";
 
 @controller("/renting")
 export class RentingController {

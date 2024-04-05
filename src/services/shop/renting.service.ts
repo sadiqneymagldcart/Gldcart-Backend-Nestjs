@@ -1,6 +1,6 @@
 import { inject } from "inversify";
-import { Renting, RentingModel } from "../../models/shop/product/Renting";
-import { Logger } from "../../utils/logger";
+import { Renting, RentingModel } from "@models/shop/product/Renting";
+import { Logger } from "@utils/logger";
 import { BaseService } from "../base/base.service";
 
 export class RentingService extends BaseService {
@@ -13,26 +13,26 @@ export class RentingService extends BaseService {
     }
     public async getRentings() {
         this.logger.logInfo("Fetching rentings");
-        return await RentingModel.find();
+        return RentingModel.find();
     }
     public async getRentingById(id: string) {
         this.logger.logInfo(`Fetching renting with id: ${id}`);
-        return await RentingModel.findById(id);
+        return RentingModel.findById(id);
     }
 
     public async deleteRenting(id: string) {
         this.logger.logInfo(`Deleting renting with id: ${id}`);
-        return await RentingModel.findByIdAndDelete(id);
+        return RentingModel.findByIdAndDelete(id);
     }
     public async updateRenting(id: string, rentingData: any) {
         this.logger.logInfo(`Updating renting with id: ${id}`);
-        return await RentingModel.findByIdAndUpdate(id, rentingData, {
+        return RentingModel.findByIdAndUpdate(id, rentingData, {
             new: true,
         });
     }
     public async getRentingsByCategory(category: string) {
         const rentings = await RentingModel.find({ category });
-        this.logger.logInfo(`Fetching rentings with category: ${category}`);
+        this.logger.logInfo(`Fetching rantings with category: ${category}`);
         return rentings;
     }
 }

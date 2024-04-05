@@ -5,12 +5,12 @@ import {
     httpGet,
     httpPost,
 } from "inversify-express-utils";
-import { ProductService } from "../../services/shop/product.service";
+import { ProductService } from "@services/shop/product.service";
 import { inject } from "inversify";
-import { requireAuth } from "../../middlewares/auth.middleware";
-import { multerMiddleware } from "../../middlewares/malter.middleware";
-import { Product } from "../../models/shop/product/Product";
-import { AwsStorage } from "../../storages/aws.storage";
+import { requireAuth } from "@middlewares/auth.middleware";
+import { multerMiddleware } from "@middlewares/malter.middleware";
+import { Product } from "@models/shop/product/Product";
+import { AwsStorage } from "@storages/aws.storage";
 
 @controller("/products")
 export class ProductController {
@@ -66,7 +66,6 @@ export class ProductController {
 
     @httpGet("/count", requireAuth)
     public async getProductCountHandler(
-        request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
@@ -80,7 +79,6 @@ export class ProductController {
 
     @httpGet("/")
     public async getAllProductsHandler(
-        request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
@@ -94,7 +92,6 @@ export class ProductController {
 
     @httpGet("/stock", requireAuth)
     public async getAllProductsWithStockHandler(
-        request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {

@@ -1,10 +1,10 @@
 import { BaseService } from "../base/base.service";
-import { ApiError } from "../../exceptions/api.error";
-import { Logger } from "../../utils/logger";
-import { IAddress } from "../../models/user/Address";
+import { ApiError } from "@exceptions/api.error";
+import { Logger } from "@utils/logger";
+import { IAddress } from "@models/user/Address";
 import { Types } from "mongoose";
 import { inject, injectable } from "inversify";
-import {User, UserModel} from "../../models/user/User";
+import {User, UserModel} from "@models/user/User";
 
 @injectable()
 export class AddressService extends BaseService {

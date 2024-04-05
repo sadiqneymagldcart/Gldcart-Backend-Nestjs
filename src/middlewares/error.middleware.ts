@@ -1,29 +1,29 @@
-import {NextFunction, Request, Response} from "express";
-import {ApiError} from "../exceptions/api.error";
+import { ApiError } from "@exceptions/api.error";
+import * as express from "express";
 
-function sendApiErrorResponse(error: ApiError, response: Response) {
+function sendApiErrorResponse(error: ApiError, response: express.Response) {
     response.status(error.status).json({
         message: error.message,
         errors: error.errors,
     });
 }
 
-function sendServerErrorResponse(error: Error, response: Response) {
+function sendServerErrorResponse(error: Error, response: express.Response) {
     response
         .status(501)
-        .json({message: `Internal Server Error: ${error.message}`});
+        .json({ message: `Internal Server Error: ${error.message}` });
 }
 
-export function errorHandlerMiddleware(
+export const errorHandlerMiddleware = (
     error: Error,
-    request: Request,
-    response: Response,
-    next: NextFunction,
-) {
+    request: express.Request,
+    response: express.Response,
+    next: express.NextFunction,
+) => {
     if (error instanceof ApiError) {
         sendApiErrorResponse(error, response);
     } else {
         sendServerErrorResponse(error, response);
     }
     next();
-}
+};
