@@ -54,14 +54,19 @@
       ]
     },
     "forceConsistentCasingInFileNames": true,
+    "listEmittedFiles": false,
+    "listFiles": false,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "noFallthroughCasesInSwitch": true,
+    "traceResolution": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "strict": true,
-    "strictPropertyInitialization": true,
-    "noImplicitReturns": true,
+    "strictPropertyInitialization": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": false,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "pretty": true
   },
   "exclude": [
@@ -70,4 +75,3 @@
   ],
   "compileOnSave": false
 }
-
