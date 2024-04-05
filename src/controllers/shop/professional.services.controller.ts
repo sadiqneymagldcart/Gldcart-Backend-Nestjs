@@ -57,7 +57,6 @@ export class ProfessionalServicesController {
     ) {
         try {
             const { page, limit } = request.body;
-            const endIndex = page * limit;
             const services = await this.servicesService.getServicesWithPagination(
                 page,
                 limit,
@@ -104,7 +103,7 @@ export class ProfessionalServicesController {
     ) {
         try {
             const filters = request.query;
-            const services = await this.servicesService.getServicesByFilters(filters);
+            const services = await this.servicesService.getServicesByQuery(filters);
             response.status(200).json(services);
         } catch (error) {
             next(error);

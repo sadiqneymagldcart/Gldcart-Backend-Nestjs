@@ -24,14 +24,12 @@ export class MessageService extends BaseService {
     }
 
     const savedMessage = await MessageModel.create(message);
-
-    chat.messages.push(savedMessage._id);
     await chat.save();
 
     return savedMessage;
   }
   public async getMessages(chatId: string): Promise<Message[]> {
-    return await MessageModel.find({ chatId }).sort({ createdAt: 1 });
+    return MessageModel.find({chatId}).sort({createdAt: 1});
   }
 
   public async updateMessage(
