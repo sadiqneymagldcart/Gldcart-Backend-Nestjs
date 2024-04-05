@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { inject, injectable } from "inversify";
 import { Logger } from "../../utils/logger";
-import { MailService } from "../mail/mail.service";
+import { MailService } from "../contact/mail.service";
 import {UserModel} from "../../models/user/User";
 import { ApiError } from "../../exceptions/api.error";
 import { BaseService } from "../base/base.service";

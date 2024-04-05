@@ -1,6 +1,6 @@
 import * as express from "express";
 import { TokenService } from "../../services/token/token.service";
-import { MailService } from "../../services/mail/mail.service";
+import { MailService } from "../../services/contact/mail.service";
 import { controller, httpPost } from "inversify-express-utils";
 import { inject } from "inversify";
 import { requireAuth } from "../../middlewares/auth.middleware";

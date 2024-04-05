@@ -1,5 +1,5 @@
 import * as express from "express";
-import { StripeSubscriptionService } from "../../services/stripe/stripe.subscription.service";
+import { StripeSubscriptionService } from "../../services/payment/stripe.subscription.service";
 import { inject, injectable } from "inversify";
 import { httpGet, httpPut } from "inversify-express-utils";
 import { requireAuth } from "../../middlewares/auth.middleware";
