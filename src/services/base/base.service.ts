@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { Logger } from "../../utils/logger";
+import { Logger } from "@utils/logger";
 
 @injectable()
 export class BaseService {

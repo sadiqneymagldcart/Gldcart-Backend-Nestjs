@@ -1,8 +1,8 @@
 import {inject} from "inversify";
 import {controller, httpDelete, httpGet, httpPost, httpPut,} from "inversify-express-utils";
-import {ReviewService} from "../../services/shop/review.service";
+import {ReviewService} from "@services/shop/review.service";
 import * as express from "express";
-import { Review } from "../../models/shop/review/Review";
+import { Review } from "@models/shop/review/Review";
 
 @controller("/review")
 export class ReviewController {

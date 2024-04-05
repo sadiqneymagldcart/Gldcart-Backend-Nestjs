@@ -1,9 +1,8 @@
 import * as express from "express";
-import { TokenService } from "../../services/token/token.service";
-import { MailService } from "../../services/contact/mail.service";
+import { TokenService } from "@services/token/token.service";
+import { MailService } from "@services/contact/mail.service";
 import { controller, httpPost } from "inversify-express-utils";
 import { inject } from "inversify";
-import { requireAuth } from "../../middlewares/auth.middleware";
 
 @controller("/contact")
 export class ContactController {
@@ -33,7 +32,7 @@ export class ContactController {
             if (recipientEmail) {
                 await this.mailService.sendHtmlEmail(
                     "GLDCart Feedback",
-                    process.env.FEEDBACK_EMAIL,
+                    process.env.FEEDBACK_EMAIL as string,
                     subject,
                     `My name is: ${name}. My email is: ${email}. ${message}`,
                 );

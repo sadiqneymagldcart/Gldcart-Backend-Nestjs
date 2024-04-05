@@ -1,9 +1,9 @@
 import { inject, injectable } from "inversify";
-import { Logger } from "../../utils/logger";
+import { Logger } from "@utils/logger";
 import {
     ProfessionalService,
     ServicesModel,
-} from "../../models/shop/product/ProfessionalService";
+} from "@models/shop/product/ProfessionalService";
 import { BaseService } from "../base/base.service";
 
 @injectable()
@@ -61,24 +61,9 @@ export class ProfessionalServicesService extends BaseService {
         return ServicesModel.create(service);
     }
 
-    public async updateService(
-        serviceId: string,
-        service: ProfessionalService,
-    ): Promise<ProfessionalService> {
-        this.logger.logInfo("Updating service");
-        return ServicesModel.findByIdAndUpdate(serviceId, service, {
-            new: true,
-        });
-    }
-
     public async deleteService(serviceId: string) {
         this.logger.logInfo("Deleting service");
         return ServicesModel.findByIdAndDelete(serviceId);
-    }
-
-    public async getServiceById(serviceId: string): Promise<ProfessionalService> {
-        this.logger.logInfo("Getting service by id");
-        return ServicesModel.findById(serviceId);
     }
 
     public async getServicesByUserId(

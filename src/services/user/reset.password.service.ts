@@ -1,10 +1,10 @@
 import { BaseService } from "../base/base.service";
-import { Logger } from "../../utils/logger";
+import { Logger } from "@utils/logger";
 import { MailService } from "../contact/mail.service";
-import { ApiError } from "../../exceptions/api.error";
+import { ApiError } from "@exceptions/api.error";
 import * as bcrypt from "bcrypt";
 import { inject, injectable } from "inversify";
-import { User, UserModel } from "../../models/user/User";
+import { User, UserModel } from "@models/user/User";
 
 @injectable()
 export class PasswordService extends BaseService {

@@ -1,13 +1,77 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "lib": ["es6", "dom"],
-        "types": ["reflect-metadata"],
-        "module": "CommonJS",
-        "moduleResolution": "node",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "outDir": "./dist",
-        "allowSyntheticDefaultImports": true
-    }
+  "compilerOptions": {
+    "allowJs": true,
+    "declaration": false,
+    "lib": [
+      "es2019",
+      "es2020",
+      "es2021",
+      "dom",
+      "es6",
+      "esnext"
+    ],
+    "types": [
+      "reflect-metadata"
+    ],
+    "module": "CommonJS",
+    "noEmit": false,
+    "outDir": "./dist",
+    "sourceMap": true,
+    "target": "es2019",
+    "baseUrl": "./",
+    "esModuleInterop": true,
+    "moduleResolution": "node10",
+    "paths": {
+      "@controllers/*": [
+        "src/controllers/*"
+      ],
+      "@services/*": [
+        "src/services/*"
+      ],
+      "@models/*": [
+        "src/models/*"
+      ],
+      "@storages/*": [
+        "src/storages/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@config/*": [
+        "src/config/*"
+      ],
+      "@middlewares/*": [
+        "src/middlewares/*"
+      ],
+      "@interfaces/*": [
+        "src/interfaces/*"
+      ],
+      "@exceptions/*": [
+        "src/exceptions/*"
+      ],
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "forceConsistentCasingInFileNames": true,
+    "listEmittedFiles": false,
+    "listFiles": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "traceResolution": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "pretty": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "compileOnSave": false
 }
