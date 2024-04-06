@@ -10,8 +10,8 @@ export class App {
     private readonly server: InversifyExpressServer;
     private readonly logger: Logger;
     private readonly port: number;
-    private readonly maxRetries: number = 3;
-    private httpServer: http.Server;
+    private httpServer!: http.Server;
+    private maxRetries: number = 3;
     private retryCount: number = 0;
 
     public constructor(
