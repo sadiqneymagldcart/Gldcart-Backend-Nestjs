@@ -62,7 +62,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strict": true,
-    "strictPropertyInitialization": false,
+    "strictPropertyInitialization": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": false,
     "noUnusedLocals": true,
