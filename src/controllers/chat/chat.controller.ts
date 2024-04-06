@@ -74,20 +74,6 @@ export class ChatController {
         }
     }
 
-    // @httpGet("/messages/:chatId")
-    // public async getChatMessages(
-    //     req: express.Request,
-    //     res: express.Response,
-    //     next: express.NextFunction,
-    // ) {
-    //     try {
-    //         const chatId = req.params.chatId;
-    //         const messages = await this.chatService.getChatMessages(chatId);
-    //         res.json(messages);
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // }
     @httpGet("/:chatId")
     public async getChatById(
         req: express.Request,
