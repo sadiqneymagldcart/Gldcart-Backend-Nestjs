@@ -82,9 +82,6 @@ export class App {
         this.httpServer.on("error", (error: NodeJS.ErrnoException) => {
             this.handleServerError(error);
         });
-
-        // process.on("SIGINT", () => this.handleShutdown("SIGINT"));
-        // process.on("SIGTERM", () => this.handleShutdown("SIGTERM"));
     }
 
     private handleStartupError(error: Error): void {
@@ -104,14 +101,4 @@ export class App {
             process.exit(1);
         }
     }
-
-    // private handleShutdown(signal: string): void {
-    //     this.logger.logInfo(
-    //         `Received ${signal} signal. Shutting down gracefully...`,
-    //     );
-    //     this.httpServer.close(() => {
-    //         this.logger.logInfo("Server closed");
-    //         process.exit(0);
-    //     });
-    // }
 }
