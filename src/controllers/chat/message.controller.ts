@@ -1,7 +1,12 @@
 import * as express from "express";
 import { MessageService } from "@services/chat/message.service";
 import { inject } from "inversify";
-import { controller, httpGet, httpPost, httpPut } from "inversify-express-utils";
+import {
+    controller,
+    httpGet,
+    httpPost,
+    httpPut,
+} from "inversify-express-utils";
 
 @controller("/message")
 export class MessageController {
