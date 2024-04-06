@@ -5,16 +5,12 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 @injectable()
 export class AwsStorage implements Storage {
     private readonly s3: S3Client;
-    private readonly bucketName: string;
-    private readonly bucketRegion: string;
-    private readonly accessKey: string;
-    private readonly secretKey: string;
+    private readonly bucketName: string = process.env.AWS_BUCKET_NAME!;
+    private readonly bucketRegion: string = process.env.AWS_REGION!;
+    private readonly accessKey: string = process.env.AWS_ACCESS_KEY!;
+    private readonly secretKey: string = process.env.AWS_SECRET_KEY!;
 
     public constructor() {
-        this.bucketName = process.env.AWS_BUCKET_NAME as string;
-        this.bucketRegion = process.env.AWS_REGION as string;
-        this.accessKey = process.env.AWS_ACCESS_KEY as string;
-        this.secretKey = process.env.AWS_SECRET_KEY as string;
         this.s3 = new S3Client({
             region: this.bucketRegion,
             credentials: {
