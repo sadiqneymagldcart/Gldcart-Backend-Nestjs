@@ -8,7 +8,6 @@ export interface Chat extends Document {
 const chatSchema = new Schema<Chat>(
     {
         participants: [{ type: Schema.Types.ObjectId, ref: "User" }],
-        // messages: [{ type: Schema.Types.ObjectId, ref: "Message" }],
     },
     { timestamps: true },
 );
