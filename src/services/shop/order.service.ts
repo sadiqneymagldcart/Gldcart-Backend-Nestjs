@@ -46,10 +46,7 @@ export class OrderService extends BaseService {
         }
     }
 
-    public async updateOrder(
-        id: string,
-        data: any,
-    ): Promise<Order | null> {
+    public async updateOrder(id: string, data: any): Promise<Order | null> {
         try {
             return OrderModel.findByIdAndUpdate(
                 id,
