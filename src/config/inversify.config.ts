@@ -1,6 +1,9 @@
 import Stripe from "stripe";
 import { Container } from "inversify";
 import { Logger } from "@utils/logger";
+import { configureNodemailer } from "./nodemailer.config";
+import { loadEnvironmentVariables } from "./env.config";
+import { STRIPE_SECRET_KEY, stripeConfig } from "./stripe.config";
 import { TokenService } from "@services/token/token.service";
 import { AuthService } from "@services/auth/auth.service";
 import { GoogleAuthService } from "@services/auth/google.auth.service";
@@ -10,9 +13,9 @@ import { Transporter } from "nodemailer";
 import { ReviewService } from "@services/shop/review.service";
 import { ProductService } from "@services/shop/product.service";
 import { ProfessionalServicesService } from "@services/shop/professional-services.service";
-import { AddressService } from "@services/user/address.service";
-import { PasswordService } from "@services/user/reset.password.service";
-import { ProfileService } from "@services/user/profile.service";
+import { AddressService } from "@services/personal/address.service";
+import { PasswordService } from "@services/personal/reset.password.service";
+import { ProfileService } from "@services/personal/profile.service";
 import { RentingService } from "@services/shop/renting.service";
 import { VerificationService } from "@services/verification/verification.service";
 import { CartService } from "@services/shop/cart.service";
@@ -20,19 +23,16 @@ import { WishlistService } from "@services/shop/wishlist.service";
 import { OrderService } from "@services/shop/order.service";
 import { StripeSubscriptionService } from "@services/payment/stripe.subscription.service";
 import { StripeWebhookService } from "@services/payment/stripe.webhook.service";
-import { STRIPE_SECRET_KEY, stripeConfig } from "./stripe.config";
 import { FileService } from "@services/shop/image.service";
 import { AwsStorage } from "@/storages/aws.storage";
 import { SearchService } from "@services/shop/global.search.service";
 import { ChatService } from "@services/chat/chat.service";
 import { MessageService } from "@services/chat/message.service";
 
-import { configureNodemailer } from "./nodemailer.config";
-import { loadEnvironmentVariables } from "./env.config";
-
 //Auth
 import "@controllers/auth/auth.controller";
 import "../controllers/auth/google.auth.controller";
+
 //Shop
 import "../controllers/shop/review.controller";
 import "../controllers/shop/product.controller";
@@ -41,18 +41,23 @@ import "../controllers/shop/renting.controller";
 import "../controllers/shop/cart.controller";
 import "../controllers/shop/global.search.controller";
 import "../controllers/shop/order.controller";
+
 //Contact
 import "../controllers/contact/contact.controller";
+
 //User info
 import "../controllers/user/address.controller";
 import "../controllers/user/profile.controller";
 import "../controllers/user/reset.password.controller";
+
 //Stripe
 import "../controllers/payment/payment.controller";
+
 //Verification
 import "../controllers/auth/verification.controller";
 import "../controllers/shop/wishlist.controller";
 import "../controllers/files/file.controller";
+
 // Chat
 import "../controllers/chat/chat.controller";
 import "../controllers/chat/message.controller";

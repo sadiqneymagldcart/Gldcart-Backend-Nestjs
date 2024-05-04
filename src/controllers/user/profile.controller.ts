@@ -1,6 +1,6 @@
 import * as express from "express";
 import { controller, httpPut } from "inversify-express-utils";
-import { ProfileService } from "@services/user/profile.service";
+import { ProfileService } from "@services/personal/profile.service";
 import { inject } from "inversify";
 import { multerMiddleware } from "@middlewares/malter.middleware";
 import { FileService } from "@services/shop/image.service";
