@@ -2,7 +2,6 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface Chat extends Document {
     participants: string[];
-    // messages: string[];
 }
 
 const chatSchema = new Schema<Chat>(
