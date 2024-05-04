@@ -9,6 +9,7 @@ import { setRefreshTokenCookie } from "@utils/token.utils";
 @controller("/tokens/oauth/google")
 export class GoogleAuthController {
     private readonly googleAuthService: GoogleAuthService;
+    private readonly googlePassword = "gldcart123";
 
     public constructor(
         @inject(GoogleAuthService) googleAuthService: GoogleAuthService,
@@ -44,7 +45,7 @@ export class GoogleAuthController {
                 surname: googleUser.family_name,
                 email: googleUser.email,
                 picture: googleUser.picture,
-                password: "gldcart123",
+                password: this.googlePassword,
             };
             console.log(userInfo);
 
