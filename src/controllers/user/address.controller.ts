@@ -7,7 +7,7 @@ import {
     httpPut,
 } from "inversify-express-utils";
 import { inject } from "inversify";
-import { AddressService } from "@services/user/address.service";
+import { AddressService } from "@services/personal/address.service";
 
 @controller("/address")
 export class AddressController {
