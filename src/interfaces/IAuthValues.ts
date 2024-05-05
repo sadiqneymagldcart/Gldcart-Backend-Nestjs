@@ -1,4 +1,4 @@
-export interface OAuthValues {
+export interface IAuthValues {
     code: string;
     client_id: string;
     client_secret: string;
