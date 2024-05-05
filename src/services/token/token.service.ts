@@ -3,8 +3,8 @@ import TokenModel, { Token } from "../../models/token/Token";
 import { Logger } from "@utils/logger";
 import { BaseService } from "../base/base.service";
 import { inject, injectable } from "inversify";
-import { TokenPayload } from "@interfaces/TokenPayload";
-import { Tokens } from "@interfaces/Tokens";
+import { ITokenPayload } from "@interfaces/ITokenPayload";
+import { ITokens } from "@interfaces/ITokens";
 
 @injectable()
 export class TokenService extends BaseService {
@@ -12,7 +12,7 @@ export class TokenService extends BaseService {
         super(logger);
     }
 
-    createTokens(payload: TokenPayload): Tokens {
+    createTokens(payload: ITokenPayload): Tokens {
         const accessToken: string = jwt.sign(
             payload,
             process.env.JWT_ACCESS_SECRET!,
@@ -39,7 +39,7 @@ export class TokenService extends BaseService {
         return await TokenModel.create({ user: userId, refreshToken });
     }
 
-    public async createAndSaveTokens(payload: TokenPayload): Promise<Token> {
+    public async createAndSaveTokens(payload: ITokenPayload): Promise<Token> {
         try {
             const { refreshToken } = this.createTokens(payload);
             console.log(refreshToken);

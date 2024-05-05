@@ -91,7 +91,8 @@ export class CustomSocket {
     }
   }
 
-  private async handleChatsList(socket: Socket, userId: string) { try {
+  private async handleChatsList(socket: Socket, userId: string) {
+    try {
       this.logger.logInfo("Getting chats for user", { userId });
       const chats = await ChatModel.find({
         participants: userId,

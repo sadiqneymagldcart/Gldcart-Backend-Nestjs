@@ -1,4 +1,4 @@
-export interface CloudinaryUploadResult {
+export interface ICloudinaryUploadResult {
     public_id: string;
     version: number;
     signature: string;

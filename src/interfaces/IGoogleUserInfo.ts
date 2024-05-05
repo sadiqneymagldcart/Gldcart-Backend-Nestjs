@@ -1,4 +1,4 @@
-export interface GoogleUserInfo {
+export interface IGoogleUserInfo {
     code: string;
     type: string;
     name: string;
