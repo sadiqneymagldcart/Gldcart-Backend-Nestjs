@@ -83,7 +83,6 @@ export class CustomSocket {
   private async handleMessage(socket: Socket, message: Message) {
     try {
       this.logger.logInfo("Message received", message);
-
       const savedMessage = await MessageModel.create(message);
       socket.to(message.chatId as string).emit("message", savedMessage);
     } catch (error) {
