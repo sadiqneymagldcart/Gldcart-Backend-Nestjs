@@ -1,9 +1,9 @@
 import { v2 as cloudinary } from "cloudinary";
 import { injectable } from "inversify";
-import { Storage } from "@interfaces/Storage";
+import { IStorage } from "@interfaces/IStorage";
 
 @injectable()
-export class CloudinaryStorage implements Storage {
+export class CloudinaryStorage implements IStorage {
     public constructor() {
         cloudinary.config({
             api_key: process.env.CLOUD_API_KEY,

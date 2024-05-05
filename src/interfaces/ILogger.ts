@@ -1,4 +1,4 @@
-import {LogContext, LogMessage} from "@utils/logger";
+import { LogContext, LogMessage } from "@utils/logger";
 
 export interface ILogger {
     logInfo(msg: LogMessage, context?: LogContext): void;
