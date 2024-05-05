@@ -7,10 +7,10 @@ import * as qs from "qs";
 import { Token } from "@models/token/Token";
 import { inject, injectable } from "inversify";
 import { User, UserModel } from "@models/user/User";
-import { GoogleTokenResult } from "@interfaces/GoogleTokenResult";
-import { GoogleUserInfo } from "@interfaces/GoogleUserInfo";
-import { GoogleUserResult } from "@interfaces/GoogleUserResult";
-import { OAuthValues } from "@interfaces/OAuthValues";
+import { IGoogleTokenResult } from "@interfaces/IGoogleTokenResult";
+import { IGoogleUserInfo } from "@interfaces/IGoogleUserInfo";
+import { IGoogleUserResult } from "@interfaces/IGoogleUserResult";
+import { IAuthValues } from "@interfaces/IAuthValues";
 
 @injectable()
 export class GoogleAuthService extends BaseService {
@@ -94,7 +94,7 @@ export class GoogleAuthService extends BaseService {
         return { tokens, user: userInfo, picture: picture };
     }
 
-    private getOAuthValues(code: string): OAuthValues {
+    private getOAuthValues(code: string): IAuthValues {
         return {
             code,
             client_id: process.env.GOOGLE_CLIENT_ID!,
@@ -114,7 +114,7 @@ export class GoogleAuthService extends BaseService {
 
     private async postToUrl(
         url: string,
-        values: OAuthValues,
+        values: IAuthValues,
     ): Promise<AxiosResponse<GoogleTokenResult>> {
         return await axios.post<GoogleTokenResult>(url, qs.stringify(values), {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },

@@ -1,4 +1,4 @@
-export interface FileData {
+export interface IFileData {
     chatId: string;
     file: ArrayBuffer;
     fileName: string;

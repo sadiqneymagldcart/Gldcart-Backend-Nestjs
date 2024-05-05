@@ -1,4 +1,4 @@
-export interface GoogleTokenResult {
+export interface IGoogleTokenResult {
     access_token: string;
     expires_in: number;
     id_token: string;
