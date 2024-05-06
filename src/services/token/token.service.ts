@@ -3,7 +3,7 @@ import TokenModel, { Token } from "../../models/token/Token";
 import { Logger } from "@utils/logger";
 import { BaseService } from "../base/base.service";
 import { inject, injectable } from "inversify";
-import { ITokenPayload } from "@/ts/interfaces/ITokenPayload";
+import { ITokenPayload } from "@interfaces/ITokenPayload";
 import {ITokens} from "@interfaces/ITokens";
 
 @injectable()
