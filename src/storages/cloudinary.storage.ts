@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import { injectable } from "inversify";
-import { IStorage } from "@/ts/interfaces/IStorage";
+import { IStorage } from "@interfaces/IStorage";
 
 @injectable()
 export class CloudinaryStorage implements IStorage {
