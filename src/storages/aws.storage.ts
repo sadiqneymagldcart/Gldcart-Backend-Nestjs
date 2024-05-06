@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { IStorage } from "@interfaces/IStorage";
+import { IStorage } from "@/ts/interfaces/IStorage";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 @injectable()

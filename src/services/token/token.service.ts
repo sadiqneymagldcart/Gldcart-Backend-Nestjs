@@ -3,8 +3,8 @@ import TokenModel, { Token } from "../../models/token/Token";
 import { Logger } from "@utils/logger";
 import { BaseService } from "../base/base.service";
 import { inject, injectable } from "inversify";
-import { ITokenPayload } from "@interfaces/ITokenPayload";
-import { ITokens } from "@interfaces/ITokens";
+import { ITokenPayload } from "@/ts/interfaces/ITokenPayload";
+import { ITokens } from "@/ts/interfaces/ITokens";
 
 @injectable()
 export class TokenService extends BaseService {
