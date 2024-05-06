@@ -46,9 +46,9 @@ import "../controllers/shop/order.controller";
 import "../controllers/contact/contact.controller";
 
 //User info
-import "../controllers/user/address.controller";
-import "../controllers/user/profile.controller";
-import "../controllers/user/reset.password.controller";
+import "@controllers/personal/address.controller";
+import "@controllers/personal/profile.controller";
+import "@controllers/personal/reset.password.controller";
 
 //Stripe
 import "../controllers/payment/payment.controller";

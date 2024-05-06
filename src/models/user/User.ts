@@ -1,6 +1,6 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 import validator from "validator";
-import { AddressSchema, IAddress } from "./Address";
+import { AddressSchema, IAddress } from "../personal/Address";
 
 export interface User extends Document {
     type: string;
