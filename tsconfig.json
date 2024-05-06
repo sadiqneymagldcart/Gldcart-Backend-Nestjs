@@ -46,6 +46,12 @@
       "@interfaces/*": [
         "src/ts/interfaces/*"
       ],
+      "@types/*": [
+        "src/ts/types/*"
+      ],
+      "@enums/*": [
+        "src/ts/enums/*"
+      ],
       "@exceptions/*": [
         "src/exceptions/*"
       ],
