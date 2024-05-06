@@ -4,7 +4,7 @@ import { Logger } from "@utils/logger";
 import { BaseService } from "../base/base.service";
 import { inject, injectable } from "inversify";
 import { ITokenPayload } from "@/ts/interfaces/ITokenPayload";
-import { ITokens } from "@/ts/interfaces/ITokens";
+import {ITokens} from "@interfaces/ITokens";
 
 @injectable()
 export class TokenService extends BaseService {
@@ -12,7 +12,7 @@ export class TokenService extends BaseService {
         super(logger);
     }
 
-    createTokens(payload: ITokenPayload): Tokens {
+    createTokens(payload: ITokenPayload): ITokens {
         const accessToken: string = jwt.sign(
             payload,
             process.env.JWT_ACCESS_SECRET!,
