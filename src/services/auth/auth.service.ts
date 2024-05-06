@@ -5,8 +5,8 @@ import { ApiError } from "@exceptions/api.error";
 import { Token } from "@models/token/Token";
 import * as bcrypt from "bcrypt";
 import { User, UserModel } from "@models/user/User";
-import { ITokens } from "@/ts/interfaces/ITokens";
 import { inject, injectable } from "inversify";
+import {ITokens} from "@interfaces/ITokens";
 
 @injectable()
 export class AuthService extends BaseService {
@@ -103,7 +103,7 @@ export class AuthService extends BaseService {
                 email: user.email,
             };
 
-            const tokens: Tokens = this.tokenService.createTokens({ ...userObj });
+            const tokens: ITokens = this.tokenService.createTokens({ ...userObj });
             await this.tokenService.saveToken(userObj.id, tokens.refreshToken);
             if (logMessage) {
                 this.logger.logInfo(logMessage);
