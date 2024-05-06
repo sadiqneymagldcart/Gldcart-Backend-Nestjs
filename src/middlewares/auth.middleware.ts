@@ -10,13 +10,13 @@ export const requireAuth = (
     const authorizationHeader = req.headers.authorization as string;
 
     if (!authorizationHeader) {
-        console.log("no access token was provided");
+        console.log("No access token was provided");
         return next(ApiError.UnauthorizedError());
     }
 
     const accessToken = authorizationHeader.split(" ")[1];
     if (!accessToken) {
-        console.log("invalid access token");
+        console.log("Invalid access token");
         return next(ApiError.UnauthorizedError());
     }
     const userData = jwt.verify(accessToken, process.env.JWT_REFRESH_SECRET!);
