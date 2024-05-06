@@ -1,7 +1,7 @@
 import { BaseService } from "../base/base.service";
 import { ApiError } from "@exceptions/api.error";
 import { Logger } from "@utils/logger";
-import { IAddress } from "@models/user/Address";
+import { IAddress } from "@models/personal/Address";
 import { Types } from "mongoose";
 import { inject, injectable } from "inversify";
 import {User, UserModel} from "@models/user/User";
