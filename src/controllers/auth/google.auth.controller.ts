@@ -2,8 +2,8 @@ import * as express from "express";
 import { GoogleAuthService } from "@services/auth/google.auth.service";
 import { inject } from "inversify";
 import { controller, httpGet, httpPost } from "inversify-express-utils";
-import { IGoogleUserInfo } from "@interfaces/IGoogleUserInfo";
-import { IGoogleUserResult } from "@interfaces/IGoogleUserResult";
+import { IGoogleUserInfo } from "@/ts/interfaces/IGoogleUserInfo";
+import { IGoogleUserResult } from "@/ts/interfaces/IGoogleUserResult";
 import { setRefreshTokenCookie } from "@utils/token.utils";
 
 @controller("/tokens/oauth/google")

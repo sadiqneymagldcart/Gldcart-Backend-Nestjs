@@ -7,10 +7,10 @@ import * as qs from "qs";
 import { Token } from "@models/token/Token";
 import { inject, injectable } from "inversify";
 import { User, UserModel } from "@models/user/User";
-import { IGoogleTokenResult } from "@interfaces/IGoogleTokenResult";
-import { IGoogleUserInfo } from "@interfaces/IGoogleUserInfo";
-import { IGoogleUserResult } from "@interfaces/IGoogleUserResult";
-import { IAuthValues } from "@interfaces/IAuthValues";
+import { IGoogleTokenResult } from "@/ts/interfaces/IGoogleTokenResult";
+import { IGoogleUserInfo } from "@/ts/interfaces/IGoogleUserInfo";
+import { IGoogleUserResult } from "@/ts/interfaces/IGoogleUserResult";
+import { IAuthValues } from "@/ts/interfaces/IAuthValues";
 
 @injectable()
 export class GoogleAuthService extends BaseService {
