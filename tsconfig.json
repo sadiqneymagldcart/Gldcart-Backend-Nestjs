@@ -44,7 +44,7 @@
         "src/middlewares/*"
       ],
       "@interfaces/*": [
-        "src/interfaces/*"
+        "src/ts/interfaces/*"
       ],
       "@exceptions/*": [
         "src/exceptions/*"
