@@ -45,27 +45,8 @@ export class ProductController {
         }
     }
 
-    @httpGet("/pagination", requireAuth)
-    public async getProductsWithPagination(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const page = parseInt(request.query.page as string);
-            const limit = parseInt(request.query.limit as string);
-            const products = await this.productService.getProductsWithPagination(
-                page,
-                limit,
-            );
-            response.status(200).json(products);
-        } catch (error) {
-            next(error);
-        }
-    }
-
     @httpGet("/count", requireAuth)
-    public async getProductCountHandler(
+    public async getProductCount(
         response: express.Response,
         next: express.NextFunction,
     ) {
@@ -78,7 +59,7 @@ export class ProductController {
     }
 
     @httpGet("/")
-    public async getAllProductsHandler(
+    public async getAllProducts(
         response: express.Response,
         next: express.NextFunction,
     ) {
@@ -89,22 +70,9 @@ export class ProductController {
             next(error);
         }
     }
-
-    @httpGet("/stock", requireAuth)
-    public async getAllProductsWithStockHandler(
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const products = await this.productService.getAllProductsWithStock();
-            response.status(200).json(products);
-        } catch (error) {
-            next(error);
-        }
-    }
-
+    
     @httpGet("/category/:category")
-    public async getProductByCategoryHandler(
+    public async getProductByCategory(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -119,7 +87,7 @@ export class ProductController {
     }
 
     @httpGet("/:productId")
-    public async getProductByIdHandler(
+    public async getProductById(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -134,7 +102,7 @@ export class ProductController {
         }
     }
     @httpGet("/search/filters")
-    public async searchProductsByFiltersHandler(
+    public async searchProductsByFilters(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -150,7 +118,7 @@ export class ProductController {
     }
     
     @httpDelete("/:productId", requireAuth)
-    public async deleteProductHandler(
+    public async deleteProduct(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -165,7 +133,7 @@ export class ProductController {
     }
 
     @httpGet("/search/category/:category")
-    public async searchProductsByCategoryHandler(
+    public async searchProductsByCategory(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -181,7 +149,7 @@ export class ProductController {
     }
 
     @httpGet("/search/:query")
-    public async searchProductsGlobalHandler(
+    public async searchProductsGlobally(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,

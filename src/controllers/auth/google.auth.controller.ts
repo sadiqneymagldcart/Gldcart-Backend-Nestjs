@@ -9,7 +9,7 @@ import {IGoogleUserInfo} from "@interfaces/IGoogleUserInfo";
 @controller("/tokens/oauth/google")
 export class GoogleAuthController {
     private readonly googleAuthService: GoogleAuthService;
-    private readonly googlePassword = "gldcart123";
+    private readonly googlePassword = process.env.GOOGLE_PASSWORD || "gldcart123";
 
     public constructor(
         @inject(GoogleAuthService) googleAuthService: GoogleAuthService,
@@ -18,7 +18,7 @@ export class GoogleAuthController {
     }
 
     @httpGet("/")
-    public async googleOauthHandler(
+    public async googleAuthWebhook(
         request: express.Request,
         response: express.Response,
     ) {
@@ -54,7 +54,7 @@ export class GoogleAuthController {
             const redirectURL = `${process.env.CLIENT_URL}` as string;
             response.redirect(redirectURL);
         } catch (error: any) {
-            this._handleOAuthError(response, error);
+            this._handleAuthError(response, error);
         }
     }
 
@@ -72,7 +72,7 @@ export class GoogleAuthController {
         }
     }
 
-    private _handleOAuthError(response: express.Response, error: any) {
+    private _handleAuthError(response: express.Response, error: any) {
         return response
             .status(500)
             .send(`Error while processing Google OAuth: ${error}`);

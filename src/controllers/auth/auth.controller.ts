@@ -13,7 +13,7 @@ export class AuthController {
   }
 
   @httpPost("signup")
-  async registrationHandler(
+  async registerUser(
     request: express.Request,
     response: express.Response,
     next: express.NextFunction,
@@ -36,7 +36,7 @@ export class AuthController {
   }
 
   @httpPost("login")
-  public async loginHandler(
+  public async loginUser(
     request: express.Request,
     response: express.Response,
     next: express.NextFunction,
@@ -52,7 +52,7 @@ export class AuthController {
   }
 
   @httpPost("logout")
-  public async logoutHandler(
+  public async logoutUser(
     request: express.Request,
     response: express.Response,
     next: express.NextFunction,
@@ -68,7 +68,7 @@ export class AuthController {
   }
 
   @httpGet("refresh")
-  public async refreshHandler(
+  public async refresh(
     request: express.Request,
     response: express.Response,
     next: express.NextFunction,

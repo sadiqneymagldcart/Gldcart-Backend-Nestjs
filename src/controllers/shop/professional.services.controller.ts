@@ -22,7 +22,7 @@ export class ProfessionalServicesController {
     }
 
     @httpPost("/", multerMiddleware.any(), requireAuth)
-    public async addServiceHandler(
+    public async addService(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -48,27 +48,9 @@ export class ProfessionalServicesController {
             next(error);
         }
     }
-
-    @httpGet("/paginate", requireAuth)
-    public async getServicesWithPaginationHandler(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const { page, limit } = request.body;
-            const services = await this.servicesService.getServicesWithPagination(
-                page,
-                limit,
-            );
-            response.status(200).json(services);
-        } catch (error) {
-            next(error);
-        }
-    }
-
+    
     @httpGet("/count", requireAuth)
-    public async getServicesCountHandler(
+    public async getServicesCount(
         response: express.Response,
         next: express.NextFunction,
     ) {
@@ -81,7 +63,7 @@ export class ProfessionalServicesController {
     }
 
     @httpGet("/", requireAuth)
-    public async getAllServicesHandler(
+    public async getAllServices(
         response: express.Response,
         next: express.NextFunction,
     ) {
@@ -94,7 +76,7 @@ export class ProfessionalServicesController {
     }
 
     @httpGet("/search/filters")
-    public async getServicesByFiltersHandler(
+    public async getServicesByFilters(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -109,7 +91,7 @@ export class ProfessionalServicesController {
     }
 
     @httpGet("/category/:category", requireAuth)
-    public async getServicesByCategoryHandler(
+    public async getServicesByCategory(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
