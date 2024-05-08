@@ -10,55 +10,39 @@ export class ProductService extends BaseService {
     }
 
     public async addProduct(product: Product): Promise<Product> {
-        const newProduct = await ProductModel.create(product);
-        this.logger.logInfo("Adding product", newProduct);
-        return newProduct;
+        return await ProductModel.create(product);
     }
 
     public async getAllProducts(): Promise<Product[]> {
-        const allProducts = ProductModel.find();
-        return allProducts;
+        return ProductModel.find();
     }
 
     public async getAllProductsWithStock(): Promise<Product[]> {
-        const products = ProductModel.find({ stock: { $gt: 0 } });
-        // this.logger.logInfo("Getting all products with stock", { products });
-        return products;
+        return ProductModel.find({ stock: { $gt: 0 } });
     }
 
     public async getProductsWithPagination(
         page: number,
         limit: number,
     ): Promise<Product[]> {
-        const products = ProductModel.find()
+        return ProductModel.find()
             .skip((page - 1) * limit)
             .limit(limit);
-        this.logger.logInfo(
-            `Getting products on page ${page} with limit of ${limit}`,
-            { products },
-        );
-        return products;
     }
 
     public async getProductsCount(): Promise<number> {
-        const count = ProductModel.countDocuments();
-        this.logger.logInfo("Getting products count", { count });
-        return count;
+        return ProductModel.countDocuments();
     }
 
     public async getProductByCategory(category: string): Promise<Product[]> {
-        const products = ProductModel.find({ category: category });
-        return products;
+        return ProductModel.find({ category: category });
     }
 
     public async getProductById(productId: string): Promise<Product | null> {
-        const products = await ProductModel.findById(productId);
-        // this.logger.logInfo(`Getting product with ID: ${productId}`, { products });
-        return products;
+        return ProductModel.findById(productId);
     }
 
     public async getProductsCountByCategory(category: string): Promise<number> {
-        this.logger.logInfo(`Getting products count by category: ${category}`);
         return ProductModel.findOne({ category: category }).count();
     }
 
@@ -66,7 +50,6 @@ export class ProductService extends BaseService {
         productId: string,
         updatedData: Partial<Product>,
     ): Promise<Product | null> {
-        this.logger.logInfo(`Updating product with ID: ${productId}`);
         return ProductModel.findByIdAndUpdate(productId, updatedData, {
             new: true,
         });
@@ -76,7 +59,6 @@ export class ProductService extends BaseService {
         productId: string,
         quantity: number,
     ): Promise<Product | null> {
-        this.logger.logInfo(`Updating product stock with ID: ${productId}`);
         return ProductModel.findByIdAndUpdate(
             productId,
             { $inc: { stock: quantity } },
@@ -85,18 +67,16 @@ export class ProductService extends BaseService {
     }
 
     public async deleteProduct(productId: string): Promise<boolean> {
-        this.logger.logInfo(`Deleting product with ID: ${productId}`);
-        const result = await ProductModel.deleteOne({ _id: productId });
-        return result.deletedCount !== 0;
+        return (
+            (await ProductModel.deleteOne({ _id: productId })).deletedCount !== 0
+        );
     }
 
     public async searchProductsByCategory(category: string): Promise<Product[]> {
-        this.logger.logInfo(`Searching products by category: ${category}`);
         return ProductModel.find({ category: category });
     }
 
     public async searchProductsGlobal(query: string): Promise<Product[]> {
-        this.logger.logInfo(`Searching products by query: ${query}`);
         return ProductModel.find({ $text: { $search: query } });
     }
 
@@ -106,9 +86,6 @@ export class ProductService extends BaseService {
         const filtersCriteria = Object.keys(filters).map((key) => {
             return { [key]: filters[key] };
         });
-        this.logger.logInfo(
-            `Searching products by filters: ${JSON.stringify(filtersCriteria)}`,
-        );
         return ProductModel.find({ $and: filtersCriteria });
     }
 }
