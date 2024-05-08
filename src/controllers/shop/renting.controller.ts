@@ -5,7 +5,7 @@ import { RentingService } from "@services/shop/renting.service";
 import { multerMiddleware } from "@middlewares/malter.middleware";
 import { requireAuth } from "@middlewares/auth.middleware";
 import { Renting } from "@models/shop/product/Renting";
-import {AwsStorage} from "@storages/aws.storage";
+import { AwsStorage } from "@storages/aws.storage";
 
 @controller("/renting")
 export class RentingController {
@@ -20,8 +20,8 @@ export class RentingController {
         this.storage = storage;
     }
 
-    @httpPost("/", multerMiddleware.any())
-    public async addRentingProductHandler(
+    @httpPost("/", requireAuth, multerMiddleware.any())
+    public async addRenting(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -41,7 +41,7 @@ export class RentingController {
     }
 
     @httpGet("/", requireAuth)
-    public async getRentingsHandler(
+    public async getRentings(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -55,7 +55,7 @@ export class RentingController {
     }
 
     @httpGet("/category/:category")
-    public async getRentingsByCategoryHandler(
+    public async getRentingsByCategory(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,

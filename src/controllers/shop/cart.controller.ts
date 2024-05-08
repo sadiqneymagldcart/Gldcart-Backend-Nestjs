@@ -17,7 +17,7 @@ export class CartController {
     }
 
     @httpPost("/", requireAuth)
-    public async createCartHandler(
+    public async createCart(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -33,7 +33,7 @@ export class CartController {
     }
 
     @httpDelete("/", requireAuth)
-    public async deleteCartHandler(
+    public async deleteCart(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
