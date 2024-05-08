@@ -16,6 +16,7 @@ export interface Product extends Document {
   subcategory: string;
   attributes: ProductAttributes;
   reviews?: string[];
+  rating?: number;
 }
 
 export const ProductSchema = new Schema<Product>({
@@ -30,6 +31,7 @@ export const ProductSchema = new Schema<Product>({
   images: [{ type: String }, { required: true }],
   attributes: { type: Schema.Types.Mixed, required: true },
   reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
+  rating: { type: Number },
 });
 
 ProductSchema.index({

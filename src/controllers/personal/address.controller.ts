@@ -18,7 +18,7 @@ export class AddressController {
     }
 
     @httpPost("/:userId")
-    public async addAddressHandler(
+    public async addAddress(
         req: express.Request,
         res: express.Response,
         next: express.NextFunction,
@@ -35,7 +35,7 @@ export class AddressController {
     }
 
     @httpPut("/:userId/:addressId")
-    public async updateAddressHandler(
+    public async updateAddress(
         req: express.Request,
         res: express.Response,
         next: express.NextFunction,
@@ -53,7 +53,7 @@ export class AddressController {
     }
 
     @httpDelete("/:userId/:addressId")
-    public async deleteAddressHandler(
+    public async deleteAddress(
         req: express.Request,
         res: express.Response,
         next: express.NextFunction,
@@ -70,7 +70,7 @@ export class AddressController {
     }
 
     @httpGet("/:userId")
-    public async getAddressesHandler(
+    public async getAddresses(
         req: express.Request,
         res: express.Response,
         next: express.NextFunction,
