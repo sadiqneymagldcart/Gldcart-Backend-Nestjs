@@ -20,7 +20,7 @@ export class WishlistController {
     }
 
     @httpGet("/:userId")
-    public async getWishlistHandler(
+    public async getWishlist(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -36,7 +36,7 @@ export class WishlistController {
     }
 
     @httpPost("/")
-    public async addItemToWishlistHandler(
+    public async addItemToWishlist(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -54,7 +54,7 @@ export class WishlistController {
     }
 
     @httpPut("/", requireAuth)
-    public async updateWishlistItemHandler(
+    public async updateWishlistItem(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
@@ -72,7 +72,7 @@ export class WishlistController {
     }
 
     @httpDelete("/remove-item")
-    public async removeItemFromWishlistHandler(
+    public async removeItemFromWishlist(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,

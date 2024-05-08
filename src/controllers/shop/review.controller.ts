@@ -28,7 +28,7 @@ export class ReviewController {
     }
 
     @httpGet("/:reviewId")
-    public async getReviewById(
+    public async getReview(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,

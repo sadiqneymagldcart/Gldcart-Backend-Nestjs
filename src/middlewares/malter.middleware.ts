@@ -3,7 +3,7 @@ import multer from "multer";
 
 const storage = multer.memoryStorage();
 
-// Allow pdf, docs, txt and images
+// Allow pdf, docs and txt and images
 const fileFilter = (
     request: express.Request,
     file: Express.Multer.File,
@@ -15,14 +15,13 @@ const fileFilter = (
         file.mimetype === "image/jpeg" ||
         file.mimetype === "application/pdf" ||
         file.mimetype ===
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
         file.mimetype === "text/plain"
     ) {
         cb(null, true);
     } else {
         cb(new Error("Invalid file type"));
     }
-
 };
 
 const multerMiddleware = multer({
