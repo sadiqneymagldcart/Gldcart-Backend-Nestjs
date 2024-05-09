@@ -74,4 +74,19 @@ export class CartService extends BaseService {
 
     return { items: cart?.items, subtotal: subtotal };
   }
+
+  public async updateItemQuantity(userId: string, item: CartItem) {
+    const existingCart = await CartModel.findOne({ userId });
+    // TODO: throw error if cart does not exist
+    if(!existingCart || !existingCart.items || !existingCart.items.length) {
+      throw new Error("Cart does not exist");
+    }
+    const existingItemIndex = existingCart.items.findIndex(
+      (cartItem: CartItem) => cartItem._id?.toString() === item._id?.toString(),
+    );
+    // TODO: throw error if existingItem does not exist
+    console.log("Updating item quantity: ---------", existingCart.items, item);
+    existingCart.items[existingItemIndex].quantity = item.quantity;
+    return await existingCart.save();
+  }
 }

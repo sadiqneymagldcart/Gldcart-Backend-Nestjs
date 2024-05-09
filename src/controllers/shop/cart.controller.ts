@@ -4,6 +4,7 @@ import { CartService } from "@services/shop/cart.service";
 import {
     controller,
     httpGet,
+    httpPut,
     httpPost,
     httpDelete,
 } from "inversify-express-utils";
