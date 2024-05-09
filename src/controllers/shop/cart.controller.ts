@@ -47,7 +47,7 @@ export class CartController {
             next(error);
         }
     }
-
+    // TODO: Add auth middleware to this route
     @httpGet("/user/:userId")
     public async getCart(
         request: express.Request,
@@ -100,6 +100,29 @@ export class CartController {
             const cart = await this.cartService.removeItemFromCart(
                 request.body.userId,
                 request.body.productId,
+            );
+            response.status(200).json(cart);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    @httpPut("/update-quantity")
+    public async updateQuantity(
+      request: express.Request,
+      response: express.Response,
+      next: express.NextFunction,
+    ) {
+        if (!request.body.userId || !request.body.item) {
+            response
+              .status(400)
+              .json({ message: "userId, item are required" });
+        }
+        try {
+            console.log(request.body);
+            const cart = await this.cartService.updateItemQuantity(
+              request.body.userId,
+              request.body.item,
             );
             response.status(200).json(cart);
         } catch (error) {

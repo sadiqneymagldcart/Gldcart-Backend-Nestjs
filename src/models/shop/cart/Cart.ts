@@ -7,6 +7,7 @@ export interface Cart extends Document {
 }
 
 export interface CartItem {
+    _id?: string;
     product: Product;
     quantity: number;
 }
