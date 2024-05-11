@@ -62,31 +62,48 @@ export class CartService extends BaseService {
   }
 
   public async getCartItems(userId: string) {
-    const cart = await CartModel.findOne({ userId }).populate({
+    const cart = await CartModel.findOne<Cart>({ userId }).populate({
       path: "items.product",
       select: "title product_name price",
     });
 
-    let subtotal = 0;
-    cart?.items.forEach((item) => {
-      subtotal += item.product.price * item.quantity;
-    });
+    if(!cart) {
+      throw new Error("Cart does not exist");
+    }
 
-    return { items: cart?.items, subtotal: subtotal };
+    const subtotal = this.getCartTotalAmount(cart);
+
+    return { items: cart?.items, subtotal };
   }
 
   public async updateItemQuantity(userId: string, item: CartItem) {
-    const existingCart = await CartModel.findOne({ userId });
-    // TODO: throw error if cart does not exist
+    const existingCart = await CartModel.findOne({ userId }).populate({
+      path: "items.product",
+      select: "title product_name price",
+    });
+
     if(!existingCart || !existingCart.items || !existingCart.items.length) {
       throw new Error("Cart does not exist");
     }
+
     const existingItemIndex = existingCart.items.findIndex(
       (cartItem: CartItem) => cartItem._id?.toString() === item._id?.toString(),
     );
     // TODO: throw error if existingItem does not exist
     console.log("Updating item quantity: ---------", existingCart.items, item);
     existingCart.items[existingItemIndex].quantity = item.quantity;
-    return await existingCart.save();
+    const cart: Cart = await existingCart.save();
+
+    return {cart, subtotal: this.getCartTotalAmount(cart)};
+  }
+
+  private getCartTotalAmount(cart: Cart): number {
+    let subtotal = 0;
+
+    cart?.items.forEach((item) => {
+      subtotal += item.product.price * item.quantity;
+    });
+
+    return subtotal;
   }
 }
