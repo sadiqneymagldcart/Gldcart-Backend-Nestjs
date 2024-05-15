@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
-import { ApiError } from "@exceptions/api.error";
 import { UserModel } from "@models/user/User";
+import {UnauthorizedException} from "@exceptions/unauthorized.exception";
 
 export const requireSubscription = (requiredSubscriptionType: string) => {
     return async (
@@ -11,7 +11,7 @@ export const requireSubscription = (requiredSubscriptionType: string) => {
             const userId = response.locals.user.userId;
 
             if (!userId) {
-                return next(ApiError.UnauthorizedError());
+                return next(new UnauthorizedException());
             }
 
             const user =
