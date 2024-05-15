@@ -1,10 +1,11 @@
 import * as express from "express";
-import { ApiError } from "@exceptions/api.error";
+import { ApiException } from "@exceptions/api.exception";
 
-function sendApiErrorResponse(error: ApiError, response: express.Response) {
+function sendApiErrorResponse(error: ApiException, response: express.Response) {
     response.status(error.status).json({
+        status: error.status,
         message: error.message,
-        errors: error.errors,
+        code: error.code,
     });
 }
 
@@ -20,7 +21,7 @@ export const errorHandlerMiddleware = (
     response: express.Response,
     next: express.NextFunction,
 ) => {
-    if (error instanceof ApiError) {
+    if (error instanceof ApiException) {
         sendApiErrorResponse(error, response);
     } else {
         sendServerErrorResponse(error, response);

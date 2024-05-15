@@ -1,12 +1,13 @@
 import { TokenService } from "../token/token.service";
 import { Logger } from "@utils/logger";
 import { BaseService } from "../base/base.service";
-import { ApiError } from "@exceptions/api.error";
 import { Token } from "@models/token/Token";
 import * as bcrypt from "bcrypt";
 import { User, UserModel } from "@models/user/User";
 import { inject, injectable } from "inversify";
 import {ITokens} from "@interfaces/ITokens";
+import {BadRequestException} from "@exceptions/bad-request.exception";
+import {InternalServerErrorException} from "@exceptions/internal-server-error.exception";
 
 @injectable()
 export class AuthService extends BaseService {
@@ -28,7 +29,8 @@ export class AuthService extends BaseService {
         password: string,
     ) {
         if (await this.doesUserExist(email)) {
-            throw ApiError.BadRequest("That contact is already registered");
+            this.logger.logError(`User already exists with email: ${email}`);
+            throw new BadRequestException("User already exists");
         }
         const hashedPassword: string = await this.hashPassword(password);
         const user: User = <User>await UserModel.create({
@@ -49,10 +51,10 @@ export class AuthService extends BaseService {
                 return this.formUserLoginResponse(user, `User logged in: ${email}`);
             }
             this.logger.logError(`Incorrect password for ${email}`);
-            throw ApiError.BadRequest("Incorrect password");
+            throw new BadRequestException("Incorrect password");
         }
         this.logger.logError(`User not found with email: ${email}`);
-        throw ApiError.BadRequest("Incorrect contact");
+        throw new BadRequestException("User not found");
     }
 
     public async logout(refreshToken: string) {
@@ -63,7 +65,7 @@ export class AuthService extends BaseService {
     public async refresh(refreshToken: string) {
         if (!refreshToken) {
             this.logger.logError("There is no refresh token");
-            throw ApiError.UnauthorizedError();
+            throw new BadRequestException("There is no refresh token");
         }
         const userData = this.tokenService.validateRefreshToken(refreshToken);
 
@@ -72,7 +74,7 @@ export class AuthService extends BaseService {
 
         if (!userData || !tokenFromDb) {
             this.logger.logError("Refresh token is invalid");
-            throw ApiError.UnauthorizedError();
+            throw new BadRequestException("Refresh token is invalid");
         }
         const user = <User>await UserModel.findById(userData.id);
 
@@ -111,7 +113,7 @@ export class AuthService extends BaseService {
             return { ...tokens, user: userObj };
         } catch (error: any) {
             this.logger.logError(error.message, error);
-            throw ApiError.InternalServerError(error.message);
+            throw new InternalServerErrorException();
         }
     }
 }
