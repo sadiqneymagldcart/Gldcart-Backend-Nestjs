@@ -2,8 +2,8 @@ import OrderModel, { Order } from "../../models/shop/order/Order";
 import Stripe from "stripe";
 import { Logger } from "@utils/logger";
 import { inject, injectable } from "inversify";
-import { ApiError } from "@/exceptions/api.error";
 import { BaseService } from "../base/base.service";
+import { BadRequestException } from "@exceptions/bad-request.exception";
 
 @injectable()
 export class OrderService extends BaseService {
@@ -19,7 +19,7 @@ export class OrderService extends BaseService {
             return await OrderModel.findByIdAndUpdate(id, { status }, { new: true });
         } catch (error: any) {
             this.logger.logError("Failed to update order status", error);
-            throw ApiError.BadRequest("Failed to update order status");
+            throw new BadRequestException("Failed to update order status");
         }
     }
 
@@ -30,7 +30,7 @@ export class OrderService extends BaseService {
             return order.save();
         } catch (error: any) {
             this.logger.logError("Failed to create order", error);
-            throw ApiError.BadRequest("Failed to create order");
+            throw new BadRequestException("Failed to create order");
         }
     }
 
@@ -42,7 +42,7 @@ export class OrderService extends BaseService {
             });
         } catch (error: any) {
             this.logger.logError("Failed to get order", error);
-            throw ApiError.BadRequest("Failed to get order");
+            throw new BadRequestException("Failed to get order");
         }
     }
 
@@ -58,7 +58,7 @@ export class OrderService extends BaseService {
             );
         } catch (error: any) {
             this.logger.logError("Failed to update order", error);
-            throw ApiError.BadRequest("Failed to update order");
+            throw new BadRequestException("Failed to update order");
         }
     }
 
@@ -70,7 +70,7 @@ export class OrderService extends BaseService {
             return order;
         } catch (error: any) {
             this.logger.logError("Failed to create order", error);
-            throw ApiError.BadRequest("Failed to create order");
+            throw new BadRequestException("Failed to create order");
         }
     }
 
@@ -87,7 +87,7 @@ export class OrderService extends BaseService {
             return order.save();
         } catch (error: any) {
             this.logger.logError("Failed to create order", error);
-            throw ApiError.BadRequest("Failed to create order");
+            throw new BadRequestException("Failed to create order");
         }
     }
 }

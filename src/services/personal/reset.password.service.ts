@@ -1,10 +1,10 @@
 import { BaseService } from "../base/base.service";
 import { Logger } from "@utils/logger";
 import { MailService } from "../contact/mail.service";
-import { ApiError } from "@exceptions/api.error";
 import * as bcrypt from "bcrypt";
 import { inject, injectable } from "inversify";
 import { User, UserModel } from "@models/user/User";
+import {BadRequestException} from "@exceptions/bad-request.exception";
 
 @injectable()
 export class PasswordService extends BaseService {
@@ -21,7 +21,7 @@ export class PasswordService extends BaseService {
     public async changePasswordWithToken(token: string, newPassword: string) {
         const user = <User>await UserModel.findOne({ passwordResetToken: token });
         if (!user) {
-            throw ApiError.BadRequest("Invalid or expired token");
+            throw new BadRequestException("Invalid token");
         }
         user.password = await this.hashPassword(newPassword);
         user.passwordResetToken = undefined;
@@ -42,10 +42,10 @@ export class PasswordService extends BaseService {
                 return;
             }
             this.logger.logError(`Incorrect old password for email: ${email}`);
-            throw ApiError.BadRequest("Incorrect old password");
+            throw new BadRequestException("Incorrect password");
         }
         this.logger.logError(`User not found with email: ${email}`);
-        throw ApiError.BadRequest("Incorrect contact");
+        throw new BadRequestException("Incorrect contact");
     }
 
     public async requestPasswordReset(email: string, token: string) {
@@ -54,7 +54,7 @@ export class PasswordService extends BaseService {
         );
         if (!user) {
             this.logger.logError(`User not found with email: ${email}`);
-            throw ApiError.BadRequest("Incorrect contact");
+            throw new BadRequestException("Incorrect contact");
         }
 
         const link = `${process.env.CLIENT_URL}/password/${token}`;

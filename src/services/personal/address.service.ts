@@ -1,10 +1,10 @@
 import { BaseService } from "../base/base.service";
-import { ApiError } from "@exceptions/api.error";
 import { Logger } from "@utils/logger";
 import { IAddress } from "@models/personal/Address";
 import { Types } from "mongoose";
 import { inject, injectable } from "inversify";
 import {User, UserModel} from "@models/user/User";
+import {BadRequestException} from "@exceptions/bad-request.exception";
 
 @injectable()
 export class AddressService extends BaseService {
@@ -15,14 +15,14 @@ export class AddressService extends BaseService {
     public async addAddress(userId: string, addressData: IAddress) {
         if (!Types.ObjectId.isValid(userId)) {
             this.logger.logError(`Invalid userId: ${userId}`);
-            throw ApiError.BadRequest("Invalid userId");
+            throw new BadRequestException("Invalid userId");
         }
 
         const user = await UserModel.findById(userId);
 
         if (!user) {
             this.logger.logError(`User ${userId} not found while adding address`);
-            throw ApiError.BadRequest("User not found");
+            throw new BadRequestException("User not found");
         }
 
         const newAddressId = new Types.ObjectId();
@@ -43,7 +43,7 @@ export class AddressService extends BaseService {
             this.logger.logError(
                 `Invalid userId: ${userId} or addressId: ${addressId}`,
             );
-            throw ApiError.BadRequest("Invalid userId or addressId");
+            throw new BadRequestException("Invalid userId or addressId");
         }
 
         const user: User | null = await UserModel.findById(userId);
@@ -52,14 +52,14 @@ export class AddressService extends BaseService {
             this.logger.logError(
                 `User ${userId} was not found while updating address for email`,
             );
-            throw ApiError.BadRequest("User was not found");
+            throw new BadRequestException("User not found");
         }
         const addressIndex = user.addresses.findIndex(
             (address) => String(address.id) === String(addressId),
         );
         if (addressIndex === -1) {
             this.logger.logError(`Address was not found for user ${userId}`);
-            throw ApiError.BadRequest("Address was not found");
+            throw new BadRequestException("Address not found");
         }
         Object.assign(user.addresses[addressIndex], addressData);
         await user.save();
@@ -69,7 +69,7 @@ export class AddressService extends BaseService {
     public async getAddresses(userId: string) {
         if (!Types.ObjectId.isValid(userId)) {
             this.logger.logError(`Invalid userId: ${userId}`);
-            throw ApiError.BadRequest("Invalid userId");
+            throw new BadRequestException("Invalid userId");
         }
 
         const user: User | null = await UserModel.findById(userId);
@@ -77,7 +77,7 @@ export class AddressService extends BaseService {
             this.logger.logError(
                 `User not found while fetching addresses for ID: ${userId}`,
             );
-            throw ApiError.BadRequest("User not found");
+            throw new BadRequestException("User not found");
         }
         return user.addresses;
     }
@@ -87,7 +87,7 @@ export class AddressService extends BaseService {
             this.logger.logError(
                 `Invalid userId: ${userId} or addressId: ${addressId}`,
             );
-            throw ApiError.BadRequest("Invalid userId or addressId");
+            throw new BadRequestException("Invalid userId or addressId");
         }
 
         const user = await UserModel.findById(userId);
@@ -95,7 +95,7 @@ export class AddressService extends BaseService {
             this.logger.logError(
                 `User ${userId} not found while deleting address for email`,
             );
-            throw ApiError.BadRequest("User not found");
+            throw new BadRequestException("User not found");
         }
 
         const addressIndex = user.addresses.findIndex(
@@ -103,7 +103,7 @@ export class AddressService extends BaseService {
         );
         if (addressIndex === -1) {
             this.logger.logError(`Address not found for user ${userId}`);
-            throw ApiError.BadRequest("Address not found");
+            throw new BadRequestException("Address not found");
         }
 
         user.addresses.splice(addressIndex, 1);

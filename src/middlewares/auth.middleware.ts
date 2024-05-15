@@ -1,6 +1,6 @@
 import * as jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
-import { ApiError } from "@exceptions/api.error";
+import {UnauthorizedException} from "@exceptions/unauthorized.exception";
 
 export const requireAuth = (
     req: Request,
@@ -11,18 +11,18 @@ export const requireAuth = (
 
     if (!authorizationHeader) {
         console.log("No access token was provided");
-        return next(ApiError.UnauthorizedError());
+        return next(new UnauthorizedException());
     }
 
     const accessToken = authorizationHeader.split(" ")[1];
     if (!accessToken) {
         console.log("Invalid access token");
-        return next(ApiError.UnauthorizedError());
+        return next(new UnauthorizedException());
     }
     const userData = jwt.verify(accessToken, process.env.JWT_REFRESH_SECRET!);
 
     if (!userData) {
-        return next(ApiError.UnauthorizedError());
+        return next(new UnauthorizedException());
     }
     res.locals.user = userData;
     next();
