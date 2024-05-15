@@ -3,8 +3,8 @@ import { inject, injectable } from "inversify";
 import { Logger } from "@utils/logger";
 import { MailService } from "../contact/mail.service";
 import {UserModel} from "@models/user/User";
-import { ApiError } from "@exceptions/api.error";
 import { BaseService } from "../base/base.service";
+import {BadRequestException} from "@exceptions/bad-request.exception";
 
 @injectable()
 export class VerificationService extends BaseService {
@@ -34,7 +34,7 @@ export class VerificationService extends BaseService {
         });
 
         if (!user) {
-            throw ApiError.BadRequest("User not found");
+            throw new BadRequestException("User not found");
         }
         await this.mailService.sendHtmlEmailWithAttachments(
             "User",
@@ -48,7 +48,7 @@ export class VerificationService extends BaseService {
     public async verifyUser(token: string) {
         const user = await UserModel.findOne({ verification_token: token });
         if (!user) {
-            throw ApiError.BadRequest("Invalid or expired token");
+            throw new BadRequestException("Invalid token");
         }
         user.confirmed = true;
         user.verification_token = undefined;

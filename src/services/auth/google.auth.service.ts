@@ -1,7 +1,7 @@
 import { BaseService } from "../base/base.service";
 import { TokenService } from "../token/token.service";
 import { Logger } from "@utils/logger";
-import { ApiError } from "@exceptions/api.error";
+import { ApiException } from "@exceptions/api.exception";
 import axios, { AxiosResponse } from "axios";
 import qs from "qs";
 import { Token } from "@models/token/Token";
@@ -109,7 +109,7 @@ export class GoogleAuthService extends BaseService {
       "Failed to fetch Google OAuth Tokens",
       error.response?.data,
     );
-    throw new ApiError(403, "Failed to fetch Google OAuth Tokens", error);
+    throw new ApiException(403, "Failed to fetch Google OAuth Tokens", error);
   }
 
   private async postToUrl(

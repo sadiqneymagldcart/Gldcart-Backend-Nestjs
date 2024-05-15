@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
 import { Logger } from "@utils/logger";
 import {UserModel} from "@models/user/User";
-import { ApiError } from "@exceptions/api.error";
 import { BaseService } from "../base/base.service";
+import {BadRequestException} from "@exceptions/bad-request.exception";
 
 @injectable()
 export class ProfileService extends BaseService {
@@ -16,7 +16,7 @@ export class ProfileService extends BaseService {
             this.logger.logError(
                 `User ${userId} not found while updating profile picture`,
             );
-            throw ApiError.BadRequest("User not found");
+            throw new BadRequestException("User not found");
         }
         user.profile_picture = imageUrl;
         await user.save();
@@ -43,7 +43,7 @@ export class ProfileService extends BaseService {
             this.logger.logError(
                 `User not found while updating details for ID: ${id}`,
             );
-            throw ApiError.BadRequest("User not found");
+            throw new BadRequestException("User not found");
         }
         await user.save();
         this.logger.logInfo(`Personal details updated for user with ID: ${id}`);

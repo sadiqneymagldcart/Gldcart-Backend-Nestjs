@@ -1,7 +1,7 @@
 import { Transporter } from "nodemailer";
-import { ApiError } from "@exceptions/api.error";
 import { Logger } from "@utils/logger";
 import { inject, injectable } from "inversify";
+import {BadRequestException} from "@exceptions/bad-request.exception";
 
 @injectable()
 export class MailService {
@@ -27,7 +27,7 @@ export class MailService {
             this.logger.logInfo(`Email was sent to ${email}`);
         } catch (error: any) {
             this.logger.logError("Failed to send email", error);
-            throw ApiError.BadRequest("Failed to send email");
+            throw new BadRequestException("Failed to send email");
         }
     }
 
@@ -47,7 +47,7 @@ export class MailService {
             this.logger.logInfo(`Email was sent to ${to}`);
         } catch (error: any) {
             this.logger.logError("Failed to send email", error);
-            throw ApiError.BadRequest("Failed to send email");
+            throw new BadRequestException("Failed to send email");
         }
     }
 
@@ -69,7 +69,7 @@ export class MailService {
             this.logger.logInfo(`Email was sent to ${to}`);
         } catch (error: any) {
             this.logger.logError("Failed to send email", error);
-            throw ApiError.BadRequest("Failed to send email");
+            throw new BadRequestException("Failed to send email");
         }
     }
 
