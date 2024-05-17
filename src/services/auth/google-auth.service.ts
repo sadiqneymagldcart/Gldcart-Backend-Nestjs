@@ -14,14 +14,14 @@ import { IGoogleUserResult } from "@interfaces/IGoogleUserResult";
 
 @injectable()
 export class GoogleAuthService extends BaseService {
-  private tokenService: TokenService;
+  private _tokenService: TokenService;
 
   public constructor(
     @inject(Logger) logger: Logger,
     tokenService: TokenService,
   ) {
     super(logger);
-    this.tokenService = tokenService;
+    this._tokenService = tokenService;
   }
 
   public async loginGoogleUser(userInfo: IGoogleUserInfo) {
@@ -89,7 +89,7 @@ export class GoogleAuthService extends BaseService {
       email: user.email,
     };
 
-    const tokens: Token = await this.tokenService.createAndSaveTokens(userInfo);
+    const tokens: Token = await this._tokenService.createAndSaveTokens(userInfo);
     this.logger.logInfo(`User logged in with Google: ${user.email}`);
     return { tokens, user: userInfo, picture: picture };
   }
