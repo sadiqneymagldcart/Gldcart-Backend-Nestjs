@@ -6,13 +6,13 @@ import { requireAuth } from "@middlewares/auth.middleware";
 
 @injectable()
 export class SubscriptionController {
-    private readonly subscriptionService: StripeSubscriptionService;
+    private readonly _subscriptionService: StripeSubscriptionService;
 
     public constructor(
         @inject(StripeSubscriptionService)
         subscriptionService: StripeSubscriptionService,
     ) {
-        this.subscriptionService = subscriptionService;
+        this._subscriptionService = subscriptionService;
     }
 
     @httpGet("/checkout/:userId/:lookup_key", requireAuth)
@@ -24,7 +24,7 @@ export class SubscriptionController {
         const { userId, lookup_key } = request.body;
         try {
             const checkoutUrl =
-                await this.subscriptionService.createSubscriptionCheckout(
+                await this._subscriptionService.createSubscriptionCheckout(
                     userId,
                     lookup_key,
                 );
@@ -43,7 +43,7 @@ export class SubscriptionController {
         const subscriptionId = request.body.subscriptionId;
         try {
             const deletedSubscription =
-                await this.subscriptionService.cancelSubscription(subscriptionId);
+                await this._subscriptionService.cancelSubscription(subscriptionId);
             response.send(deletedSubscription);
         } catch (error) {
             next(error);
