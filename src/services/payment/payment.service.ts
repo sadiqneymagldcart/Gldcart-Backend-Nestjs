@@ -1,13 +1,14 @@
-import {Logger} from "@utils/logger";
+import { Logger } from "@utils/logger";
 import Stripe from "stripe";
-import {BaseService} from "../base/base.service";
-import {inject, injectable} from "inversify";
-import {CartItem} from "@models/shop/cart/Cart";
+import { BaseService } from "../base/base.service";
+import { inject, injectable } from "inversify";
+import { CartItem } from "@models/shop/cart/Cart";
 
 @injectable()
 export class StripeService extends BaseService {
     private readonly stripe: Stripe;
-    private readonly stripeWebhookSecret: string = process.env.STRIPE_WEBHOOK_SECRET as string;
+    private readonly stripeWebhookSecret: string = process.env
+        .STRIPE_WEBHOOK_SECRET as string;
 
     public constructor(
         @inject(Logger) logger: Logger,
@@ -34,7 +35,7 @@ export class StripeService extends BaseService {
     }
 
     public createEvent(request: any): Stripe.Event | null {
-        const signature = request.headers["payment-signature"] as
+        const signature = request.headers["stripe-signature"] as
             | string
             | string[]
             | Buffer;
@@ -46,6 +47,7 @@ export class StripeService extends BaseService {
             );
             return event;
         } catch (error: any) {
+            console.log(error);
             this.logger.logError("Webhook signature verification failed", error);
             return null;
         }
@@ -53,7 +55,7 @@ export class StripeService extends BaseService {
 
     public async createCustomer(email: string, name: string): Promise<string> {
         try {
-            const customer = await this.createCustomerWithMetadata({email, name});
+            const customer = await this.createCustomerWithMetadata({ email, name });
             this.logger.logInfo(`Customer created: ${customer.id}`);
             return customer.id;
         } catch (error: any) {
@@ -117,7 +119,7 @@ export class StripeService extends BaseService {
     private async createCustomerWithMetadata(
         metadata: Record<string, any> = {},
     ): Promise<Stripe.Customer> {
-        return this.stripe.customers.create({metadata});
+        return this.stripe.customers.create({ metadata });
     }
 
     private async createCheckoutSession(
@@ -137,4 +139,4 @@ export class StripeService extends BaseService {
             cancel_url: `${process.env.CLIENT_URL}/checkout-failed`,
         });
     }
-}
+
