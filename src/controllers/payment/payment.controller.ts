@@ -1,28 +1,20 @@
 import * as express from "express";
-import { StripeService } from "@services/payment/payment.service";
+import { StripeService } from "@services/payment/stripe.service";
 import { inject } from "inversify";
 import { controller, httpPost } from "inversify-express-utils";
-import { OrderService } from "@services/shop/order.service";
-import { ProductService } from "@services/shop/product.service";
-import { Logger } from "@utils/logger";
+import { StripeWebhookService } from "@services/payment/stripe-webhook.service";
 
 @controller("/payments")
 export class PaymentController {
     private readonly stripeService: StripeService;
-    private readonly orderService: OrderService;
-    private readonly productService: ProductService;
-    private readonly logger: Logger;
+    private readonly stripeWebhookService: StripeWebhookService;
 
     public constructor(
         @inject(StripeService) paymentService: StripeService,
-        @inject(OrderService) orderService: OrderService,
-        @inject(ProductService) productService: ProductService,
-        @inject(Logger) logger: Logger,
+        @inject(StripeWebhookService) stripeWebhookService: StripeWebhookService,
     ) {
         this.stripeService = paymentService;
-        this.orderService = orderService;
-        this.productService = productService;
-        this.logger = logger;
+        this.stripeWebhookService = stripeWebhookService;
     }
 
     @httpPost("/create-customer")
@@ -81,29 +73,13 @@ export class PaymentController {
         response: express.Response,
         next: express.NextFunction,
     ): Promise<void> {
-        const event = this.stripeService.createEvent(request);
-        if (!event) {
-            response.status(400).send(`Webhook Error: Invalid event`);
-            return;
-        }
         try {
-            switch (event.type) {
-                case "charge.succeeded":
-                    const data = event.data.object;
-                    await this.orderService.updateOrderStatus(
-                        data.metadata.orderId,
-                        "paid",
-                    );
-                    this.logger.logInfo(`Order ${data.metadata.orderId} paid`);
-                    await this.productService.updateProductStock(
-                        data.metadata.productId,
-                        -data.metadata.quantity,
-                    );
-                    break;
-                default:
-                    break;
+            const event = this.stripeWebhookService.createEvent(request);
+            if (!event) {
+                response.status(400).send(`Webhook Error: Invalid event`);
+                return;
             }
-            response.json({ received: true });
+            await this.stripeWebhookService.handleEvent(event);
         } catch (error) {
             next(error);
         }
