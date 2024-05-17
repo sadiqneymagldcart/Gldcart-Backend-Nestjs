@@ -58,8 +58,9 @@ export class ProductController {
         }
     }
 
-    @httpGet("/")
+    @httpGet("/", requireAuth)
     public async getAllProducts(
+        request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
@@ -70,8 +71,8 @@ export class ProductController {
             next(error);
         }
     }
-    
-    @httpGet("/category/:category")
+
+    @httpGet("/category/:category", requireAuth)
     public async getProductByCategory(
         request: express.Request,
         response: express.Response,
@@ -86,7 +87,7 @@ export class ProductController {
         }
     }
 
-    @httpGet("/:productId")
+    @httpGet("/:productId", requireAuth)
     public async getProductById(
         request: express.Request,
         response: express.Response,
@@ -101,7 +102,7 @@ export class ProductController {
             next(error);
         }
     }
-    @httpGet("/search/filters")
+    @httpGet("/search/filters", requireAuth)
     public async searchProductsByFilters(
         request: express.Request,
         response: express.Response,
@@ -116,7 +117,7 @@ export class ProductController {
             next(error);
         }
     }
-    
+
     @httpDelete("/:productId", requireAuth)
     public async deleteProduct(
         request: express.Request,

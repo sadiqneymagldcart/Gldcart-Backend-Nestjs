@@ -6,7 +6,7 @@ import { loadEnvironmentVariables } from "./env.config";
 import { STRIPE_SECRET_KEY, stripeConfig } from "./stripe.config";
 import { TokenService } from "@services/token/token.service";
 import { AuthService } from "@services/auth/auth.service";
-import { GoogleAuthService } from "@services/auth/google.auth.service";
+import { GoogleAuthService } from "@services/auth/google-auth.service";
 import { MailService } from "@services/contact/mail.service";
 import { StripeService } from "@services/payment/payment.service";
 import { Transporter } from "nodemailer";
@@ -14,24 +14,24 @@ import { ReviewService } from "@services/shop/review.service";
 import { ProductService } from "@services/shop/product.service";
 import { ProfessionalServicesService } from "@services/shop/professional-services.service";
 import { AddressService } from "@services/personal/address.service";
-import { PasswordService } from "@services/personal/reset.password.service";
+import { PasswordService } from "@services/personal/reset-password.service";
 import { ProfileService } from "@services/personal/profile.service";
 import { RentingService } from "@services/shop/renting.service";
 import { VerificationService } from "@services/verification/verification.service";
 import { CartService } from "@services/shop/cart.service";
 import { WishlistService } from "@services/shop/wishlist.service";
 import { OrderService } from "@services/shop/order.service";
-import { StripeSubscriptionService } from "@services/payment/stripe.subscription.service";
-import { StripeWebhookService } from "@services/payment/stripe.webhook.service";
+import { StripeSubscriptionService } from "@services/payment/stripe-subscription.service";
+import { StripeWebhookService } from "@services/payment/stripe-webhook.service";
 import { FileService } from "@services/shop/image.service";
 import { AwsStorage } from "@/storages/aws.storage";
-import { SearchService } from "@services/shop/global.search.service";
+import { SearchService } from "@services/shop/global-search.service";
 import { ChatService } from "@services/chat/chat.service";
 import { MessageService } from "@services/chat/message.service";
 
 //Auth
 import "@controllers/auth/auth.controller";
-import "../controllers/auth/google.auth.controller";
+import "@controllers/auth/google-auth.controller";
 
 //Shop
 import "../controllers/shop/review.controller";
@@ -48,7 +48,7 @@ import "../controllers/contact/contact.controller";
 //User info
 import "@controllers/personal/address.controller";
 import "@controllers/personal/profile.controller";
-import "@controllers/personal/reset.password.controller";
+import "@controllers/personal/reset-password.controller";
 
 //Stripe
 import "../controllers/payment/payment.controller";

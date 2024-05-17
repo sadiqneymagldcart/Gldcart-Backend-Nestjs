@@ -1,5 +1,5 @@
 import * as express from "express";
-import { GoogleAuthService } from "@services/auth/google.auth.service";
+import { GoogleAuthService } from "@services/auth/google-auth.service";
 import { inject } from "inversify";
 import { controller, httpGet, httpPost } from "inversify-express-utils";
 import { setRefreshTokenCookie } from "@utils/token.utils";

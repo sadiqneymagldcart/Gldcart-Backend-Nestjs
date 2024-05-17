@@ -6,7 +6,7 @@ import hpp from "hpp";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 import helmet from "helmet";
-import { rateLimitMiddlewareTyped } from "@middlewares/rate.limit.middleware";
+import { rateLimitMiddlewareTyped } from "@middlewares/rate-limit.middleware";
 
 export function serverConfig(app: Application) {
     app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
