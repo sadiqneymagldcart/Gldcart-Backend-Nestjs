@@ -1,7 +1,13 @@
 import * as express from "express";
 import { inject } from "inversify";
 import { OrderService } from "@services/shop/order.service";
-import { controller, httpGet, httpPost, httpPut } from "inversify-express-utils";
+import {
+    controller,
+    httpGet,
+    httpPost,
+    httpPut,
+} from "inversify-express-utils";
+import { requireAuth } from "@middlewares/auth.middleware";
 
 @controller("/order")
 export class OrderController {
@@ -11,7 +17,7 @@ export class OrderController {
         this.orderService = orderService;
     }
 
-    @httpPost("/create-order")
+    @httpPost("/create-order", requireAuth)
     public async createOrder(
         request: express.Request,
         response: express.Response,
@@ -25,7 +31,7 @@ export class OrderController {
         }
     }
 
-    @httpGet("/:userId")
+    @httpGet("/:userId", requireAuth)
     public async getOrderByUserId(
         request: express.Request,
         response: express.Response,
@@ -40,15 +46,16 @@ export class OrderController {
         }
     }
 
-    @httpPut("/update-order/:id")
+    @httpPut("/update-order/:id", requireAuth)
     public async updateOrder(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ): Promise<void> {
+        const id = request.params.id as string;
+        const data = request.body;
+
         try {
-            const id = request.params.id as string;
-            const data = request.body;
             const order = await this.orderService.updateOrder(id, data);
             response.json(order);
         } catch (error) {
@@ -56,15 +63,15 @@ export class OrderController {
         }
     }
 
-    @httpPut("/update-order-status/:id")
+    @httpPut("/update-order-status/:id", requireAuth)
     public async updateOrderStatus(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ): Promise<void> {
+        const id = request.params.id as string;
+        const status = request.body.status;
         try {
-            const id = request.params.id as string;
-            const status = request.body.status;
             const order = await this.orderService.updateOrderStatus(id, status);
             response.json(order);
         } catch (error) {
