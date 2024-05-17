@@ -11,7 +11,7 @@ export interface Order extends Document {
 
 const orderSchema = new Schema<Order>(
     {
-        user: { type: Schema.Types.ObjectId, ref: "User" },
+        user: { type: Schema.Types.ObjectId, ref: "User", required: true },
         products: [{ type: Schema.Types.ObjectId, ref: "Product" }],
         total: { type: Number, required: true },
         billing_details: { type: Object },

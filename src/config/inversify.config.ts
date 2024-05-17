@@ -8,7 +8,7 @@ import { TokenService } from "@services/token/token.service";
 import { AuthService } from "@services/auth/auth.service";
 import { GoogleAuthService } from "@services/auth/google-auth.service";
 import { MailService } from "@services/contact/mail.service";
-import { StripeService } from "@services/payment/payment.service";
+import { StripeService } from "@services/payment/stripe.service";
 import { Transporter } from "nodemailer";
 import { ReviewService } from "@services/shop/review.service";
 import { ProductService } from "@services/shop/product.service";
