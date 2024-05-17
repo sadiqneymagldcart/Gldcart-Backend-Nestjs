@@ -6,12 +6,12 @@ import { VerificationService } from "@services/verification/verification.service
 
 @controller("/verification")
 export class VerificationController {
-    private readonly verificationService: VerificationService;
+    private readonly _verificationService: VerificationService;
 
     public constructor(
         @inject(VerificationService) verificationService: VerificationService,
     ) {
-        this.verificationService = verificationService;
+        this._verificationService = verificationService;
     }
 
     @httpPost("/send-verification-email/:userId", multerMiddleware.any())
@@ -23,7 +23,7 @@ export class VerificationController {
         try {
             const userId = request.params.userId;
             const files = request.files as Express.Multer.File[];
-            await this.verificationService.sendVerificationEmail(userId, files);
+            await this._verificationService.sendVerificationEmail(userId, files);
             response.status(200).json({ message: "Verification email sent" });
         } catch (error) {
             next(error);
@@ -38,7 +38,7 @@ export class VerificationController {
     ) {
         try {
             const token = request.params.token;
-            await this.verificationService.verifyUser(token);
+            await this._verificationService.verifyUser(token);
             response.status(200).json({ message: "User verified" });
         } catch (error) {
             next(error);
