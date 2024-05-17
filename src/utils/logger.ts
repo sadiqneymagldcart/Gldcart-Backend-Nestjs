@@ -17,11 +17,11 @@ export enum LogLevel {
 
 @injectable()
 export class Logger implements ILogger {
-    private logger: winston.Logger;
-    private readonly appName = process.env.APP_NAME || "GLD Cart";
+    private _logger: winston.Logger;
+    private readonly _appName = process.env.APP_NAME || "GLD Cart";
 
     public constructor() {
-        this.logger = this.initializeWinston();
+        this._logger = this.initializeWinston();
     }
 
     public logInfo(msg: LogMessage, context?: LogContext) {
@@ -43,7 +43,7 @@ export class Logger implements ILogger {
     }
 
     private log(msg: LogMessage, level: LogLevel, context?: LogContext) {
-        this.logger.log(level, msg, { context });
+        this._logger.log(level, msg, { context });
     }
 
     private initializeWinston() {
@@ -84,14 +84,14 @@ export class Logger implements ILogger {
 
     private getFileTransport() {
         return new winstonDailyRotateFile({
-            filename: `${this.appName}-%DATE%.log`,
+            filename: `${this._appName}-%DATE%.log`,
             zippedArchive: true,
             maxSize: "10m", 
             maxFiles: "14d", 
             format: format.combine(
                 format.timestamp(),
                 format((info) => {
-                    info.app = this.appName;
+                    info.app = this._appName;
                     return info;
                 })(),
                 format.json(),

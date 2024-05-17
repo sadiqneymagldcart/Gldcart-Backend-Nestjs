@@ -4,18 +4,18 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 @injectable()
 export class AwsStorage implements IStorage {
-    private readonly s3: S3Client;
-    private readonly bucketName: string = process.env.AWS_BUCKET_NAME!;
-    private readonly bucketRegion: string = process.env.AWS_REGION!;
-    private readonly accessKey: string = process.env.AWS_ACCESS_KEY!;
-    private readonly secretKey: string = process.env.AWS_SECRET_KEY!;
+    private readonly _s3: S3Client;
+    private readonly _bucketName: string = process.env.AWS_BUCKET_NAME!;
+    private readonly _bucketRegion: string = process.env.AWS_REGION!;
+    private readonly _accessKey: string = process.env.AWS_ACCESS_KEY!;
+    private readonly _secretKey: string = process.env.AWS_SECRET_KEY!;
 
     public constructor() {
-        this.s3 = new S3Client({
-            region: this.bucketRegion,
+        this._s3 = new S3Client({
+            region: this._bucketRegion,
             credentials: {
-                accessKeyId: this.accessKey,
-                secretAccessKey: this.secretKey,
+                accessKeyId: this._accessKey,
+                secretAccessKey: this._secretKey,
             },
         });
     }
@@ -24,17 +24,17 @@ export class AwsStorage implements IStorage {
             const urls: string[] = [];
             files.forEach(async (file) => {
                 const params = {
-                    Bucket: this.bucketName,
-                    Region: this.bucketRegion,
+                    Bucket: this._bucketName,
+                    Region: this._bucketRegion,
                     Key: this.randomFileName(file.originalname),
                     Body: file.buffer,
                     ContentType: file.mimetype,
                 };
                 const command = new PutObjectCommand(params);
                 try {
-                    await this.s3.send(command);
+                    await this._s3.send(command);
                     urls.push(
-                        `https://${this.bucketName}.s3.${this.bucketRegion}.amazonaws.com/${params.Key}`,
+                        `https://${this._bucketName}.s3.${this._bucketRegion}.amazonaws.com/${params.Key}`,
                     );
                     if (urls.length === files.length) {
                         resolve(urls);
@@ -53,17 +53,17 @@ export class AwsStorage implements IStorage {
             const urls: { url: string; originalName: string }[] = [];
             files.forEach(async (file) => {
                 const params = {
-                    Bucket: this.bucketName,
-                    Region: this.bucketRegion,
+                    Bucket: this._bucketName,
+                    Region: this._bucketRegion,
                     Key: this.randomFileName(file.originalname),
                     Body: file.buffer,
                     ContentType: file.mimetype,
                 };
                 const command = new PutObjectCommand(params);
                 try {
-                    await this.s3.send(command);
+                    await this._s3.send(command);
                     urls.push({
-                        url: `https://${this.bucketName}.s3.${this.bucketRegion}.amazonaws.com/${params.Key}`,
+                        url: `https://${this._bucketName}.s3.${this._bucketRegion}.amazonaws.com/${params.Key}`,
                         originalName: file.originalname,
                     });
                     if (urls.length === files.length) {

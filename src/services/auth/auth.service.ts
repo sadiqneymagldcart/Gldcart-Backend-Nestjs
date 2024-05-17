@@ -11,14 +11,14 @@ import {InternalServerErrorException} from "@exceptions/internal-server-error.ex
 
 @injectable()
 export class AuthService extends BaseService {
-    private readonly tokenService: TokenService;
+    private readonly _tokenService: TokenService;
 
     public constructor(
         @inject(TokenService) tokenService: TokenService,
         @inject(Logger) logger: Logger,
     ) {
         super(logger);
-        this.tokenService = tokenService;
+        this._tokenService = tokenService;
     }
 
     public async register(
@@ -59,7 +59,7 @@ export class AuthService extends BaseService {
 
     public async logout(refreshToken: string) {
         this.logger.logInfo(`User logged out`);
-        return await this.tokenService.removeToken(refreshToken);
+        return await this._tokenService.removeToken(refreshToken);
     }
 
     public async refresh(refreshToken: string) {
@@ -67,10 +67,10 @@ export class AuthService extends BaseService {
             this.logger.logError("There is no refresh token");
             throw new BadRequestException("There is no refresh token");
         }
-        const userData = this.tokenService.validateRefreshToken(refreshToken);
+        const userData = this._tokenService.validateRefreshToken(refreshToken);
 
         const tokenFromDb: Token | null =
-            await this.tokenService.findToken(refreshToken);
+            await this._tokenService.findToken(refreshToken);
 
         if (!userData || !tokenFromDb) {
             this.logger.logError("Refresh token is invalid");
@@ -105,8 +105,8 @@ export class AuthService extends BaseService {
                 email: user.email,
             };
 
-            const tokens: ITokens = this.tokenService.createTokens({ ...userObj });
-            await this.tokenService.saveToken(userObj.id, tokens.refreshToken);
+            const tokens: ITokens = this._tokenService.createTokens({ ...userObj });
+            await this._tokenService.saveToken(userObj.id, tokens.refreshToken);
             if (logMessage) {
                 this.logger.logInfo(logMessage);
             }

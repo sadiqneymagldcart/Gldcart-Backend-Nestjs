@@ -6,10 +6,10 @@ import { Review } from "@models/shop/review/Review";
 
 @controller("/review")
 export class ReviewController {
-    private readonly reviewService: ReviewService;
+    private readonly _reviewService: ReviewService;
 
     public constructor(@inject(ReviewService) reviewService: ReviewService) {
-        this.reviewService = reviewService;
+        this._reviewService = reviewService;
     }
 
     @httpGet("/:productId")
@@ -20,7 +20,7 @@ export class ReviewController {
     ) {
         try {
             const productId = request.params.productId;
-            const review = this.reviewService.getReviewsByProduct(productId);
+            const review = this._reviewService.getReviewsByProduct(productId);
             response.status(200).json(review);
         } catch (error) {
             next(error);
@@ -35,7 +35,7 @@ export class ReviewController {
     ) {
         try {
             const reviewId = request.params.reviewId;
-            const review = this.reviewService.getReviewById(reviewId);
+            const review = this._reviewService.getReviewById(reviewId);
             response.status(200).json(review);
         } catch (error) {
             next(error);
@@ -50,7 +50,7 @@ export class ReviewController {
     ) {
         try {
             const userId = request.params.userId;
-            const review = this.reviewService.getReviewsByUser(userId);
+            const review = this._reviewService.getReviewsByUser(userId);
             response.status(200).json(review);
         } catch (error) {
             next(error);
@@ -65,7 +65,7 @@ export class ReviewController {
     ) {
         try {
             const reviewData = request.body as Partial<Review>;
-            const review = this.reviewService.createReview(reviewData);
+            const review = this._reviewService.createReview(reviewData);
             response.status(201).json(review);
         } catch (error) {
             next(error);
@@ -81,7 +81,7 @@ export class ReviewController {
         try {
             const reviewId = request.params.reviewId;
             const updatedData = request.body as Partial<Review>;
-            const review = this.reviewService.updateReview(reviewId, updatedData);
+            const review = this._reviewService.updateReview(reviewId, updatedData);
             response.status(200).json(review);
         } catch (error) {
             next(error);
@@ -96,7 +96,7 @@ export class ReviewController {
     ) {
         try {
             const reviewId = request.params.reviewId;
-            const result = this.reviewService.deleteReview(reviewId);
+            const result = this._reviewService.deleteReview(reviewId);
             response.status(200).json(result);
         } catch (error) {
             next(error);
