@@ -7,12 +7,12 @@ import { requireAuth } from "@middlewares/auth.middleware";
 
 @controller("/password")
 export class PasswordController {
-    private readonly _passwordResetService: PasswordService;
+    private readonly passwordResetService: PasswordService;
 
     public constructor(
         @inject(PasswordService) passwordResetService: PasswordService,
     ) {
-        this._passwordResetService = passwordResetService;
+        this.passwordResetService = passwordResetService;
     }
 
     @httpPost("/initiate", requireAuth)
@@ -24,7 +24,7 @@ export class PasswordController {
         const email = request.body.email;
         try {
             const token: string = uuidv4();
-            await this._passwordResetService.requestPasswordReset(email, token);
+            await this.passwordResetService.requestPasswordReset(email, token);
 
             response
                 .status(200)
@@ -43,7 +43,7 @@ export class PasswordController {
         const token = request.params.token;
         const newPassword = request.body.newPassword;
         try {
-            await this._passwordResetService.changePasswordWithToken(
+            await this.passwordResetService.changePasswordWithToken(
                 token,
                 newPassword,
             );
@@ -64,7 +64,7 @@ export class PasswordController {
     ) {
         const { email, oldPassword, newPassword } = request.body;
         try {
-            await this._passwordResetService.changePasswordWithEmail(
+            await this.passwordResetService.changePasswordWithEmail(
                 email,
                 oldPassword,
                 newPassword,

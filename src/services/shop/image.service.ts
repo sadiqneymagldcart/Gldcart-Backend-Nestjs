@@ -5,16 +5,16 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 @injectable()
 export class FileService extends BaseService {
-  private readonly _bucketName = process.env.BUCKET_NAME as string;
-  private readonly _bucketRegion = process.env.BUCKET_REGION as string;
-  private readonly _accessKey = process.env.AWS_ACCESS as string;
-  private readonly _secretKey = process.env.AWS_SECRET as string;
+  private readonly bucketName = process.env.BUCKET_NAME as string;
+  private readonly bucketRegion = process.env.BUCKET_REGION as string;
+  private readonly accessKey = process.env.AWS_ACCESS as string;
+  private readonly secretKey = process.env.AWS_SECRET as string;
 
   private readonly s3 = new S3Client({
-    region: this._bucketRegion,
+    region: this.bucketRegion,
     credentials: {
-      accessKeyId: this._accessKey,
-      secretAccessKey: this._secretKey,
+      accessKeyId: this.accessKey,
+      secretAccessKey: this.secretKey,
     },
   });
   public constructor(@inject(Logger) logger: Logger) {
@@ -27,14 +27,14 @@ export class FileService extends BaseService {
     return await Promise.all(
       files.map(async (file) => {
         const params = {
-          Bucket: this._bucketName,
+          Bucket: this.bucketName,
           Key: this.randomFileName(file.originalname),
           Body: file.buffer,
           ContentType: file.mimetype,
         };
         const command = new PutObjectCommand(params);
         await this.s3.send(command);
-        return `https://${this._bucketName}.s3.${this._bucketRegion}.amazonaws.com/${params.Key}`;
+        return `https://${this.bucketName}.s3.${this.bucketRegion}.amazonaws.com/${params.Key}`;
       }),
     );
   }

@@ -7,25 +7,25 @@ import { errorHandlerMiddleware } from "@middlewares/error.middleware";
 import { serverConfig } from "@config/server.config";
 
 export class App {
-    private readonly _server: InversifyExpressServer;
-    private readonly _logger: Logger;
-    private readonly _port: number;
-    private _httpServer!: http.Server;
-    private _maxRetries: number = 3;
-    private _retryCount: number = 0;
+    private readonly server: InversifyExpressServer;
+    private readonly logger: Logger;
+    private readonly port: number;
+    private httpServer!: http.Server;
+    private maxRetries: number = 3;
+    private retryCount: number = 0;
 
     public constructor(
         port: number,
         logger: Logger,
         server: InversifyExpressServer,
     ) {
-        this._port = port;
-        this._server = server;
-        this._logger = logger;
+        this.port = port;
+        this.server = server;
+        this.logger = logger;
     }
 
     public getHttpServer(): http.Server {
-        return this._httpServer;
+        return this.httpServer;
     }
 
     public async start(): Promise<void> {
@@ -52,52 +52,52 @@ export class App {
     private async initializeDbConnection(): Promise<void> {
         try {
             await mongoose.connect(process.env.DB_URL!, mongooseOptions);
-            this._logger.logInfo(`⚡️[database] Connected to ${process.env.DB_URL}`);
+            this.logger.logInfo(`⚡️[database] Connected to ${process.env.DB_URL}`);
         } catch (error: any) {
-            this._logger.logError("Error connecting to database", error);
+            this.logger.logError("Error connecting to database", error);
             throw error;
         }
     }
 
     private configureServer(): void {
-        this._server.setConfig((app) => {
+        this.server.setConfig((app) => {
             serverConfig(app);
         });
-        this._server.setErrorConfig((app) => {
+        this.server.setErrorConfig((app) => {
             app.use(errorHandlerMiddleware);
         });
     }
 
     private initializeHttpServer(): void {
-        this._httpServer = http.createServer(this._server.build());
+        this.httpServer = http.createServer(this.server.build());
     }
 
     private startListening(): void {
-        this._httpServer.listen(this._port, () => {
-            this._logger.logInfo(
-                `⚡️[server]: Server is running on port ${this._port}`,
+        this.httpServer.listen(this.port, () => {
+            this.logger.logInfo(
+                `⚡️[server]: Server is running on port ${this.port}`,
             );
         });
 
-        this._httpServer.on("error", (error: NodeJS.ErrnoException) => {
+        this.httpServer.on("error", (error: NodeJS.ErrnoException) => {
             this.handleServerError(error);
         });
     }
 
     private handleStartupError(error: Error): void {
-        this._logger.logError("Server startup error: " + error.message, error);
+        this.logger.logError("Server startup error: " + error.message, error);
         process.exit(1);
     }
 
     private handleServerError(error: NodeJS.ErrnoException): void {
-        if (this._retryCount < this._maxRetries) {
-            this._retryCount++;
-            this._logger.logInfo(
-                `Server failed to start. Retrying... (${this._retryCount}/${this._maxRetries})`,
+        if (this.retryCount < this.maxRetries) {
+            this.retryCount++;
+            this.logger.logInfo(
+                `Server failed to start. Retrying... (${this.retryCount}/${this.maxRetries})`,
             );
             setTimeout(() => this.startListening(), 1000);
         } else {
-            this._logger.logError("Failed to start server", error);
+            this.logger.logError("Failed to start server", error);
             process.exit(1);
         }
     }
