@@ -11,10 +11,10 @@ import { requireAuth } from "@middlewares/auth.middleware";
 
 @controller("/order")
 export class OrderController {
-    private readonly _orderService: OrderService;
+    private readonly orderService: OrderService;
 
     public constructor(@inject(OrderService) orderService: OrderService) {
-        this._orderService = orderService;
+        this.orderService = orderService;
     }
 
     @httpPost("/create-order", requireAuth)
@@ -24,7 +24,7 @@ export class OrderController {
         next: express.NextFunction,
     ): Promise<void> {
         try {
-            const order = await this._orderService.createOrder(request.body);
+            const order = await this.orderService.createOrder(request.body);
             response.status(201).json(order);
         } catch (error) {
             next(error);
@@ -39,7 +39,7 @@ export class OrderController {
     ): Promise<void> {
         const id = request.query.id as string;
         try {
-            const order = await this._orderService.getOrder(id);
+            const order = await this.orderService.getOrder(id);
             response.json(order);
         } catch (error) {
             next(error);
@@ -56,7 +56,7 @@ export class OrderController {
         const data = request.body;
 
         try {
-            const order = await this._orderService.updateOrder(id, data);
+            const order = await this.orderService.updateOrder(id, data);
             response.json(order);
         } catch (error) {
             next(error);
@@ -72,7 +72,7 @@ export class OrderController {
         const id = request.params.id as string;
         const status = request.body.status;
         try {
-            const order = await this._orderService.updateOrderStatus(id, status);
+            const order = await this.orderService.updateOrderStatus(id, status);
             response.json(order);
         } catch (error) {
             next(error);

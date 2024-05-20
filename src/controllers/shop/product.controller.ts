@@ -14,15 +14,15 @@ import { AwsStorage } from "@storages/aws.storage";
 
 @controller("/products")
 export class ProductController {
-    private readonly _productService: ProductService;
-    private readonly _awsStorage: AwsStorage;
+    private readonly productService: ProductService;
+    private readonly awsStorage: AwsStorage;
 
     public constructor(
         @inject(ProductService) productService: ProductService,
         @inject(AwsStorage) awsStorage: AwsStorage,
     ) {
-        this._productService = productService;
-        this._awsStorage = awsStorage;
+        this.productService = productService;
+        this.awsStorage = awsStorage;
     }
 
     @httpPost("/", multerMiddleware.any())
@@ -33,12 +33,12 @@ export class ProductController {
     ) {
         try {
             const files = request.files as Express.Multer.File[];
-            const images = await this._awsStorage.upload(files);
+            const images = await this.awsStorage.upload(files);
             const productData: Product = {
                 ...request.body,
                 images: images,
             };
-            const product = await this._productService.addProduct(productData);
+            const product = await this.productService.addProduct(productData);
             response.status(201).json(product);
         } catch (error) {
             next(error);
@@ -51,7 +51,7 @@ export class ProductController {
         next: express.NextFunction,
     ) {
         try {
-            const count = await this._productService.getProductsCount();
+            const count = await this.productService.getProductsCount();
             response.status(200).json(count);
         } catch (error) {
             next(error);
@@ -65,7 +65,7 @@ export class ProductController {
         next: express.NextFunction,
     ) {
         try {
-            const products = await this._productService.getAllProducts();
+            const products = await this.productService.getAllProducts();
             response.status(201).json(products);
         } catch (error) {
             next(error);
@@ -80,7 +80,7 @@ export class ProductController {
     ) {
         try {
             const category = request.params.category;
-            const products = await this._productService.getProductByCategory(category);
+            const products = await this.productService.getProductByCategory(category);
             response.status(200).json(products);
         } catch (error) {
             next(error);
@@ -96,7 +96,7 @@ export class ProductController {
         try {
             const productId = request.params.productId;
             console.log(productId);
-            const product = await this._productService.getProductById(productId);
+            const product = await this.productService.getProductById(productId);
             response.status(201).json(product);
         } catch (error) {
             next(error);
@@ -111,7 +111,7 @@ export class ProductController {
         try {
             const filters = request.query;
             const products =
-                await this._productService.searchProductsByFilters(filters);
+                await this.productService.searchProductsByFilters(filters);
             response.status(200).json(products);
         } catch (error) {
             next(error);
@@ -126,7 +126,7 @@ export class ProductController {
     ) {
         try {
             const productId = request.params.productId;
-            const result = await this._productService.deleteProduct(productId);
+            const result = await this.productService.deleteProduct(productId);
             response.status(200).json(result);
         } catch (error) {
             next(error);
@@ -142,7 +142,7 @@ export class ProductController {
         try {
             const category = request.params.category;
             const products =
-                await this._productService.searchProductsByCategory(category);
+                await this.productService.searchProductsByCategory(category);
             response.status(200).json(products);
         } catch (error) {
             next(error);
@@ -157,7 +157,7 @@ export class ProductController {
     ) {
         try {
             const query = request.params.query;
-            const products = await this._productService.searchProductsGlobal(query);
+            const products = await this.productService.searchProductsGlobal(query);
             response.status(200).json(products);
         } catch (error) {
             next(error);
