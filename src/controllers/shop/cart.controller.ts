@@ -12,9 +12,9 @@ import { requireAuth } from "@middlewares/auth.middleware";
 
 @controller("/cart")
 export class CartController {
-    private readonly _cartService: CartService;
+    private readonly cartService: CartService;
     public constructor(@inject(CartService) cartService: CartService) {
-        this._cartService = cartService;
+        this.cartService = cartService;
     }
 
     @httpPost("/", requireAuth)
@@ -26,7 +26,7 @@ export class CartController {
         try {
             if (!request.body.userId)
                 return response.status(400).json({ message: "userId is required" });
-            const cart = await this._cartService.createCart(request.body);
+            const cart = await this.cartService.createCart(request.body);
             response.status(201).json(cart);
         } catch (error) {
             next(error);
@@ -42,7 +42,7 @@ export class CartController {
         try {
             if (!request.body.userId)
                 return response.status(400).json({ message: "userId is required" });
-            const cart = await this._cartService.deleteCart(request.body.userId);
+            const cart = await this.cartService.deleteCart(request.body.userId);
             response.status(200).json(cart);
         } catch (error) {
             next(error);
@@ -57,7 +57,7 @@ export class CartController {
         if (!request.params.userId)
             return response.status(400).json({ message: "userId is required" });
         try {
-            const cart = await this._cartService.getCartItems(request.params.userId);
+            const cart = await this.cartService.getCartItems(request.params.userId);
             response.status(200).json(cart);
         } catch (error) {
             next(error);
@@ -75,7 +75,7 @@ export class CartController {
                 .status(400)
                 .json({ message: "userId and item are required" });
         try {
-            const cart = await this._cartService.addItemToCart(
+            const cart = await this.cartService.addItemToCart(
                 request.body.userId,
                 request.body.item,
             );
@@ -97,7 +97,7 @@ export class CartController {
                 .json({ message: "userId and productId are required" });
         }
         try {
-            const cart = await this._cartService.removeItemFromCart(
+            const cart = await this.cartService.removeItemFromCart(
                 request.body.userId,
                 request.body.productId,
             );
@@ -118,7 +118,7 @@ export class CartController {
         }
         try {
             console.log(request.body);
-            const cart = await this._cartService.updateItemQuantity(
+            const cart = await this.cartService.updateItemQuantity(
                 request.body.userId,
                 request.body.item,
             );

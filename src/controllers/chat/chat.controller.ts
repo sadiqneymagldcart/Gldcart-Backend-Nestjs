@@ -5,9 +5,9 @@ import { ChatService } from "@services/chat/chat.service";
 
 @controller("/chat")
 export class ChatController {
-    private readonly _chatService: ChatService;
+    private readonly chatService: ChatService;
     public constructor(@inject(ChatService) chatService: ChatService) {
-        this._chatService = chatService;
+        this.chatService = chatService;
     }
 
     @httpGet("/")
@@ -18,7 +18,7 @@ export class ChatController {
     ) {
         try {
             const userId = request.query.userId as string;
-            const chats = await this._chatService.getChats(userId);
+            const chats = await this.chatService.getChats(userId);
             response.json(chats);
         } catch (error) {
             next(error);
@@ -35,7 +35,7 @@ export class ChatController {
             const sender = req.params.senderId;
             const receiver = req.params.receiverId;
             console.log(sender, receiver);
-            const chat = await this._chatService.checkChatForUsers([sender, receiver]);
+            const chat = await this.chatService.checkChatForUsers([sender, receiver]);
             if (!chat) {
                 res.status(404).json({ message: "Chat not found" });
                 return;
@@ -52,7 +52,7 @@ export class ChatController {
         next: express.NextFunction,
     ) {
         try {
-            await this._chatService.deleteAllChats();
+            await this.chatService.deleteAllChats();
             res.status(204).send();
         } catch (error) {
             next(error);
@@ -67,7 +67,7 @@ export class ChatController {
     ) {
         try {
             const participants = req.body.participants as string[];
-            const chat = await this._chatService.createChat(participants);
+            const chat = await this.chatService.createChat(participants);
             res.status(201).json(chat);
         } catch (error) {
             next(error);
@@ -82,7 +82,7 @@ export class ChatController {
     ) {
         try {
             const chatId = req.params.chatId;
-            const chat = await this._chatService.getChatById(chatId);
+            const chat = await this.chatService.getChatById(chatId);
             res.json(chat);
         } catch (error) {
             next(error);

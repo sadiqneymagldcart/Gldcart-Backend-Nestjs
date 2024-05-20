@@ -5,10 +5,10 @@ import { controller, httpGet } from "inversify-express-utils";
 
 @controller("/search")
 export class SearchController {
-    private readonly _searchService: SearchService;
+    private readonly searchService: SearchService;
 
     public constructor(@inject(SearchService) searchService: SearchService) {
-        this._searchService = searchService;
+        this.searchService = searchService;
     }
 
     @httpGet("/")
@@ -19,7 +19,7 @@ export class SearchController {
     ) {
         try {
             const query = request.query.query as string;
-            const result = await this._searchService.searchGlobally(query);
+            const result = await this.searchService.searchGlobally(query);
             response.status(200).json(result);
         } catch (error) {
             next(error);

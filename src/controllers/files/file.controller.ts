@@ -6,10 +6,10 @@ import { AwsStorage } from "@storages/aws.storage";
 
 @controller("/files")
 export class FileController {
-    private readonly _awsStorage: AwsStorage;
+    private readonly awsStorage: AwsStorage;
 
     public constructor(@inject(AwsStorage) awsStorage: AwsStorage) {
-        this._awsStorage = awsStorage;
+        this.awsStorage = awsStorage;
     }
 
     @httpPost("/aws", multerMiddleware.any())
@@ -20,7 +20,7 @@ export class FileController {
     ) {
         try {
             const data = request.files as Express.Multer.File[];
-            const files = await this._awsStorage.getUrlAndOriginalNames(data);
+            const files = await this.awsStorage.getUrlAndOriginalNames(data);
             response.status(200).json(files);
         } catch (error) {
             console.log(error);
