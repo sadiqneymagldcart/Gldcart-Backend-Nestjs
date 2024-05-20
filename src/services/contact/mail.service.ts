@@ -5,28 +5,28 @@ import {BadRequestException} from "@exceptions/bad-request.exception";
 
 @injectable()
 export class MailService {
-    private readonly _transporter: Transporter;
-    private readonly _logger: Logger;
+    private readonly transporter: Transporter;
+    private readonly logger: Logger;
 
     public constructor(
         @inject(Logger) logger: Logger,
         @inject("NodemailerTransporter") transporter: Transporter,
     ) {
-        this._logger = logger;
-        this._transporter = transporter;
+        this.logger = logger;
+        this.transporter = transporter;
     }
 
     public async sendEmail(email: string, subject: string, message: string) {
         try {
-            await this._transporter.sendMail({
+            await this.transporter.sendMail({
                 from: "GLDCart",
                 to: email,
                 subject: subject,
                 text: message,
             });
-            this._logger.logInfo(`Email was sent to ${email}`);
+            this.logger.logInfo(`Email was sent to ${email}`);
         } catch (error: any) {
-            this._logger.logError("Failed to send email", error);
+            this.logger.logError("Failed to send email", error);
             throw new BadRequestException("Failed to send email");
         }
     }
@@ -38,15 +38,15 @@ export class MailService {
         html: string,
     ) {
         try {
-            await this._transporter.sendMail({
+            await this.transporter.sendMail({
                 from: from,
                 to: to,
                 subject: subject,
                 html: html,
             });
-            this._logger.logInfo(`Email was sent to ${to}`);
+            this.logger.logInfo(`Email was sent to ${to}`);
         } catch (error: any) {
-            this._logger.logError("Failed to send email", error);
+            this.logger.logError("Failed to send email", error);
             throw new BadRequestException("Failed to send email");
         }
     }
@@ -59,16 +59,16 @@ export class MailService {
         attachments: any,
     ) {
         try {
-            await this._transporter.sendMail({
+            await this.transporter.sendMail({
                 from: from,
                 to: to,
                 subject: subject,
                 html: html,
                 attachments: attachments,
             });
-            this._logger.logInfo(`Email was sent to ${to}`);
+            this.logger.logInfo(`Email was sent to ${to}`);
         } catch (error: any) {
-            this._logger.logError("Failed to send email", error);
+            this.logger.logError("Failed to send email", error);
             throw new BadRequestException("Failed to send email");
         }
     }
@@ -95,7 +95,7 @@ export class MailService {
     // }
 
     public async sendResetPasswordMail(email: string, link: string) {
-        await this._transporter.sendMail({
+        await this.transporter.sendMail({
             from: "GLDCart",
             to: email,
             subject: "Password reset on GLDCart.com",
@@ -115,7 +115,7 @@ export class MailService {
            </html>
 `,
         });
-        this._logger.logInfo("Reset password contact was sent");
+        this.logger.logInfo("Reset password contact was sent");
     }
 
     public async sendUserVerificationMail(
@@ -131,7 +131,7 @@ export class MailService {
             content: file.buffer,
         }));
 
-        await this._transporter.sendMail({
+        await this.transporter.sendMail({
             from: "GLDCart",
             to: process.env.FEEDBACK_EMAIL,
             subject: "User Verification",
