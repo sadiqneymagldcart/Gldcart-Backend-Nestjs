@@ -10,9 +10,9 @@ import {
 
 @controller("/message")
 export class MessageController {
-    private readonly _messageService: MessageService;
+    private readonly messageService: MessageService;
     public constructor(@inject(MessageService) messageService: MessageService) {
-        this._messageService = messageService;
+        this.messageService = messageService;
     }
 
     @httpGet("/search")
@@ -24,7 +24,7 @@ export class MessageController {
         try {
             const query = request.query.query as string;
             const userId = request.query.userId as string;
-            const messages = await this._messageService.searchMessages(query, userId);
+            const messages = await this.messageService.searchMessages(query, userId);
             response.json(messages);
         } catch (error) {
             next(error);
@@ -38,7 +38,7 @@ export class MessageController {
         next: express.NextFunction,
     ) {
         try {
-            const message = await this._messageService.createMessage(request.body);
+            const message = await this.messageService.createMessage(request.body);
             response.status(201).json(message);
         } catch (error) {
             next(error);
@@ -53,7 +53,7 @@ export class MessageController {
     ) {
         try {
             const chatId = request.params.chatId;
-            const messages = await this._messageService.getMessages(chatId);
+            const messages = await this.messageService.getMessages(chatId);
             response.json(messages);
         } catch (error) {
             next(error);
@@ -68,7 +68,7 @@ export class MessageController {
     ) {
         try {
             const messageId = request.params.messageId;
-            const message = await this._messageService.updateMessage(
+            const message = await this.messageService.updateMessage(
                 messageId,
                 request.body,
             );

@@ -1,18 +1,15 @@
-import { Logger } from "@utils/logger";
+import {Logger} from "@utils/logger";
 import Stripe from "stripe";
-import { inject, injectable } from "inversify";
+import {inject, injectable} from "inversify";
 import { BaseService } from "../base/base.service";
 
 @injectable()
 export class StripeSubscriptionService extends BaseService {
-    private readonly _stripe: Stripe;
+    private readonly stripe: Stripe;
 
-    public constructor(
-        @inject(Logger) logger: Logger,
-        @inject(Stripe) stripe: Stripe,
-    ) {
+    public constructor(@inject(Logger) logger: Logger, @inject(Stripe) stripe: Stripe) {
         super(logger);
-        this._stripe = stripe;
+        this.stripe = stripe;
     }
 
     public async createSubscriptionCheckout(
@@ -20,18 +17,18 @@ export class StripeSubscriptionService extends BaseService {
         lookupKey: string,
     ): Promise<string | null> {
         try {
-            await this._stripe.customers.create({
+            await this.stripe.customers.create({
                 metadata: {
                     userId: userId,
                 },
             });
 
-            const prices = await this._stripe.prices.list({
+            const prices = await this.stripe.prices.list({
                 lookup_keys: [lookupKey],
                 expand: ["data.product"],
             });
 
-            const session = await this._stripe.checkout.sessions.create({
+            const session = await this.stripe.checkout.sessions.create({
                 billing_address_collection: "auto",
                 line_items: [
                     {
@@ -61,7 +58,7 @@ export class StripeSubscriptionService extends BaseService {
     public async cancelSubscription(subscriptionId: string): Promise<any> {
         try {
             const canceledSubscription =
-                await this._stripe.subscriptions.cancel(subscriptionId);
+                await this.stripe.subscriptions.cancel(subscriptionId);
 
             this.logger.logInfo(`Subscription cancelled: ${subscriptionId}`);
 

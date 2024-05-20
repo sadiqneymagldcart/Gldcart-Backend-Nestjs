@@ -12,11 +12,11 @@ import { requireAuth } from "@middlewares/auth.middleware";
 
 @controller("/wishlist")
 export class WishlistController {
-    private readonly _wishlistService: WishlistService;
+    private readonly wishlistService: WishlistService;
     public constructor(
         @inject(WishlistService) wishlistService: WishlistService,
     ) {
-        this._wishlistService = wishlistService;
+        this.wishlistService = wishlistService;
     }
 
     @httpGet("/:userId")
@@ -26,7 +26,7 @@ export class WishlistController {
         next: express.NextFunction,
     ) {
         try {
-            const wishlist = await this._wishlistService.getWishlistByUser(
+            const wishlist = await this.wishlistService.getWishlistByUser(
                 request.params.userId,
             );
             response.status(200).json(wishlist);
@@ -43,7 +43,7 @@ export class WishlistController {
     ) {
         console.log(request.body);
         try {
-            const wishlist = await this._wishlistService.addItemToWishlist(
+            const wishlist = await this.wishlistService.addItemToWishlist(
                 request.body.userId,
                 request.body.item,
             );
@@ -60,7 +60,7 @@ export class WishlistController {
         next: express.NextFunction,
     ) {
         try {
-            const wishlist = await this._wishlistService.updateCartItem(
+            const wishlist = await this.wishlistService.updateCartItem(
                 request.body.userId,
                 request.body.productId,
                 request.body,
@@ -78,7 +78,7 @@ export class WishlistController {
         next: express.NextFunction,
     ) {
         try {
-            const wishlist = await this._wishlistService.removeItemFromWishlist(
+            const wishlist = await this.wishlistService.removeItemFromWishlist(
                 request.body.userId,
                 request.body.productId,
             );

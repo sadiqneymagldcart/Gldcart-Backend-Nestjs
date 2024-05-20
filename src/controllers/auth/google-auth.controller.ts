@@ -8,13 +8,13 @@ import {IGoogleUserInfo} from "@interfaces/IGoogleUserInfo";
 
 @controller("/tokens/oauth/google")
 export class GoogleAuthController {
-    private readonly _googleAuthService: GoogleAuthService;
-    private readonly _googlePassword = process.env.GOOGLE_PASSWORD || "gldcart123";
+    private readonly googleAuthService: GoogleAuthService;
+    private readonly googlePassword = process.env.GOOGLE_PASSWORD || "gldcart123";
 
     public constructor(
         @inject(GoogleAuthService) googleAuthService: GoogleAuthService,
     ) {
-        this._googleAuthService = googleAuthService;
+        this.googleAuthService = googleAuthService;
     }
 
     @httpGet("/")
@@ -25,13 +25,13 @@ export class GoogleAuthController {
         try {
             const code = request.query.code as string;
             const customParameter = request.query.state as string;
-            const oAuthTokens = await this._googleAuthService.getGoogleOAuthTokens({
+            const oAuthTokens = await this.googleAuthService.getGoogleOAuthTokens({
                 code,
             });
             if (oAuthTokens == null) {
                 return;
             }
-            const googleUser = (await this._googleAuthService.getGoogleUser(
+            const googleUser = (await this.googleAuthService.getGoogleUser(
                 oAuthTokens.id_token,
                 oAuthTokens.access_token,
             )) as IGoogleUserResult;
@@ -45,11 +45,11 @@ export class GoogleAuthController {
                 surname: googleUser.family_name,
                 email: googleUser.email,
                 picture: googleUser.picture,
-                password: this._googlePassword,
+                password: this.googlePassword,
             };
             console.log(userInfo);
 
-            const result = await this._googleAuthService.loginGoogleUser(userInfo);
+            const result = await this.googleAuthService.loginGoogleUser(userInfo);
             setRefreshTokenCookie(response, result.tokens.refreshToken);
             const redirectURL = `${process.env.CLIENT_URL}` as string;
             response.redirect(redirectURL);

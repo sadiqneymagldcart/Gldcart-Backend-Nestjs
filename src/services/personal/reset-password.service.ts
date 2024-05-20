@@ -8,14 +8,14 @@ import {BadRequestException} from "@exceptions/bad-request.exception";
 
 @injectable()
 export class PasswordService extends BaseService {
-    private readonly _mailService: MailService;
+    private readonly mailService: MailService;
 
     public constructor(
         @inject(Logger) logger: Logger,
         @inject(MailService) mailService: MailService,
     ) {
         super(logger);
-        this._mailService = mailService;
+        this.mailService = mailService;
     }
 
     public async changePasswordWithToken(token: string, newPassword: string) {
@@ -77,7 +77,7 @@ export class PasswordService extends BaseService {
            </body>
            </html>`,
         };
-        await this._mailService.sendHtmlEmail(
+        await this.mailService.sendHtmlEmail(
             data.from,
             data.to,
             data.subject,

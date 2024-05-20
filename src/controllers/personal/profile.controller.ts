@@ -7,14 +7,14 @@ import { FileService } from "@services/shop/image.service";
 
 @controller("/personal")
 export class ProfileController {
-    private readonly _profileService: ProfileService;
-    private readonly _imageService: FileService;
+    private readonly profileService: ProfileService;
+    private readonly imageService: FileService;
     public constructor(
         @inject(ProfileService) profileService: ProfileService,
         @inject(FileService) imageService: FileService,
     ) {
-        this._profileService = profileService;
-        this._imageService = imageService;
+        this.profileService = profileService;
+        this.imageService = imageService;
     }
 
     @httpPut("/", multerMiddleware.any())
@@ -25,12 +25,12 @@ export class ProfileController {
     ) {
         try {
             const files = request.files as Express.Multer.File[];
-            const images = await this._imageService.uploadImagesWithAws(files);
+            const images = await this.imageService.uploadImagesWithAws(files);
 
             const { userId } = request.body;
 
             console.log(images);
-            await this._profileService.updateProfilePicture(userId, images[0]);
+            await this.profileService.updateProfilePicture(userId, images[0]);
             response
                 .status(200)
                 .json({ message: `User's profile picture was updated succesfully` });
@@ -48,7 +48,7 @@ export class ProfileController {
         try {
             const { id, email, name, surname, phone_number, address, BIO } =
                 request.body;
-            await this._profileService.updatePersonalDetails(
+            await this.profileService.updatePersonalDetails(
                 id,
                 email,
                 name,

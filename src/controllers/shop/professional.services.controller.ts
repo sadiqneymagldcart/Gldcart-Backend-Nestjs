@@ -9,16 +9,16 @@ import { ProfessionalService } from "@/models/shop/product/ProfessionalService";
 
 @controller("/professional-services")
 export class ProfessionalServicesController {
-    private readonly _fileService: FileService;
-    private readonly _servicesService: ProfessionalServicesService;
+    private readonly fileService: FileService;
+    private readonly servicesService: ProfessionalServicesService;
 
     public constructor(
         @inject(ProfessionalServicesService)
         servicesService: ProfessionalServicesService,
         @inject(FileService) fileService: FileService,
     ) {
-        this._servicesService = servicesService;
-        this._fileService = fileService;
+        this.servicesService = servicesService;
+        this.fileService = fileService;
     }
 
     @httpPost("/", multerMiddleware.any(), requireAuth)
@@ -29,7 +29,7 @@ export class ProfessionalServicesController {
     ) {
         try {
             const files = request.files as Express.Multer.File[];
-            const images = await this._fileService.uploadImagesWithAws(files);
+            const images = await this.fileService.uploadImagesWithAws(files);
 
             if (images.length === 0) {
                 return response
@@ -41,7 +41,7 @@ export class ProfessionalServicesController {
                 ...request.body,
                 images: images,
             };
-            const service = await this._servicesService.createService(serviceData);
+            const service = await this.servicesService.createService(serviceData);
             response.status(201).json(service);
         } catch (error) {
             console.log(error);
@@ -55,7 +55,7 @@ export class ProfessionalServicesController {
         next: express.NextFunction,
     ) {
         try {
-            const count = await this._servicesService.getServicesCount();
+            const count = await this.servicesService.getServicesCount();
             response.status(200).json(count);
         } catch (error) {
             next(error);
@@ -68,7 +68,7 @@ export class ProfessionalServicesController {
         next: express.NextFunction,
     ) {
         try {
-            const services = await this._servicesService.getAllServices();
+            const services = await this.servicesService.getAllServices();
             response.status(200).json(services);
         } catch (error) {
             next(error);
@@ -83,7 +83,7 @@ export class ProfessionalServicesController {
     ) {
         try {
             const filters = request.query as any;
-            const services = await this._servicesService.getServicesByQuery(filters);
+            const services = await this.servicesService.getServicesByQuery(filters);
             response.status(200).json(services);
         } catch (error) {
             next(error);
@@ -99,7 +99,7 @@ export class ProfessionalServicesController {
         try {
             const category = request.params.category;
             const services =
-                await this._servicesService.getServicesByCategory(category);
+                await this.servicesService.getServicesByCategory(category);
             response.status(200).json(services);
         } catch (error) {
             next(error);

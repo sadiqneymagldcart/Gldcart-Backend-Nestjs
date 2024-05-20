@@ -6,15 +6,15 @@ import { StripeWebhookService } from "@services/payment/stripe-webhook.service";
 
 @controller("/payments")
 export class PaymentController {
-    private readonly _stripeService: StripeService;
-    private readonly _stripeWebhookService: StripeWebhookService;
+    private readonly stripeService: StripeService;
+    private readonly stripeWebhookService: StripeWebhookService;
 
     public constructor(
-        @inject(StripeService) stripeService: StripeService,
+        @inject(StripeService) paymentService: StripeService,
         @inject(StripeWebhookService) stripeWebhookService: StripeWebhookService,
     ) {
-        this._stripeService = stripeService;
-        this._stripeWebhookService = stripeWebhookService;
+        this.stripeService = paymentService;
+        this.stripeWebhookService = stripeWebhookService;
     }
 
     @httpPost("/create-customer")
@@ -25,7 +25,7 @@ export class PaymentController {
     ): Promise<void> {
         const { email, name } = request.body;
         try {
-            const customerId = await this._stripeService.createCustomer(email, name);
+            const customerId = await this.stripeService.createCustomer(email, name);
             response.send(customerId);
         } catch (error) {
             next(error);
@@ -39,7 +39,7 @@ export class PaymentController {
         next: express.NextFunction,
     ): Promise<void> {
         try {
-            const checkoutUrl = await this._stripeService.createPaymentCheckout(
+            const checkoutUrl = await this.stripeService.createPaymentCheckout(
                 request.body,
             );
             response.json({ url: checkoutUrl });
@@ -56,7 +56,7 @@ export class PaymentController {
     ): Promise<void> {
         const { amount, currency, metadata } = request.body;
         try {
-            const intent = await this._stripeService.createIntent(
+            const intent = await this.stripeService.createIntent(
                 amount,
                 currency,
                 metadata,
@@ -74,12 +74,12 @@ export class PaymentController {
         next: express.NextFunction,
     ): Promise<void> {
         try {
-            const event = this._stripeWebhookService.createEvent(request);
+            const event = this.stripeWebhookService.createEvent(request);
             if (!event) {
                 response.status(400).send(`Webhook Error: Invalid event`);
                 return;
             }
-            await this._stripeWebhookService.handleEvent(event);
+            await this.stripeWebhookService.handleEvent(event);
         } catch (error) {
             next(error);
         }
