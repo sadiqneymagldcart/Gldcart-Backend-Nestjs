@@ -1,6 +1,5 @@
-import { StatusCodes } from "http-status-codes";
 import * as emoji from "node-emoji";
-
+import { StatusCodes } from "http-status-codes";
 import { ApiException } from "./api.exception";
 
 class InternalServerErrorException extends ApiException {
