@@ -9,7 +9,7 @@ import {IGoogleUserInfo} from "@interfaces/IGoogleUserInfo";
 @controller("/tokens/oauth/google")
 export class GoogleAuthController {
     private readonly googleAuthService: GoogleAuthService;
-    private readonly googlePassword = process.env.GOOGLE_PASSWORD || "gldcart123";
+    private readonly googlePassword = process.env.GOOGLE_PASSWORD!;
 
     public constructor(
         @inject(GoogleAuthService) googleAuthService: GoogleAuthService,
