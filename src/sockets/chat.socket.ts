@@ -5,7 +5,7 @@ import { ChatModel } from "@models/chat/Chat";
 import { Message, MessageModel } from "@models/chat/Message";
 import { Logger } from "@utils/logger";
 
-export class CustomSocket {
+export class ChatSocket {
   private readonly logger: Logger;
   private io: Server;
 
