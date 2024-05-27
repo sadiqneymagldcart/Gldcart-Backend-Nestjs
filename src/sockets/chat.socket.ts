@@ -17,7 +17,6 @@ export class ChatSocket {
     });
     this.logger = logger;
     this.setupChatSocket();
-    this.setupSupportChatSocket();
   }
   private setupChatSocket() {
     this.io.of("chat").on("connection", async (socket: Socket) => {
@@ -29,16 +28,7 @@ export class ChatSocket {
       await this.watchChatCollectionChanges(socket);
     });
   }
-
-  private setupSupportChatSocket() {
-    this.io.of("support").on("connection", async (socket: Socket) => {
-      const userId = socket.handshake.query.userId as string;
-      this.logger.logInfo("Support connected", { userId });
-      await this.updateUserOnlineStatus(socket, userId, true);
-      await this.handleConnection(socket);
-    });
-  }
-
+  
   private async watchChatCollectionChanges(socket: Socket) {
     const changeStream = ChatModel.watch();
     changeStream.on("change", async (change) => {
