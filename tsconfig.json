@@ -34,6 +34,9 @@
       "@storages/*": [
         "src/storages/*"
       ],
+      "@sockets/*": [
+        "src/sockets/*"
+      ],
       "@utils/*": [
         "src/utils/*"
       ],
