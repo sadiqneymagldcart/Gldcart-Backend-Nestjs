@@ -1,11 +1,16 @@
 import * as express from "express";
 import { setRefreshTokenCookie } from "@utils/token.utils";
 import { AuthService } from "@services/auth/auth.service";
-import { controller, httpGet, httpPost } from "inversify-express-utils";
+import {
+  Controller,
+  controller,
+  httpGet,
+  httpPost,
+} from "inversify-express-utils";
 import { inject } from "inversify";
 
 @controller("/auth")
-export class AuthController {
+export class AuthController implements Controller {
   private readonly authService: AuthService;
 
   public constructor(@inject(AuthService) authService: AuthService) {
@@ -17,7 +22,7 @@ export class AuthController {
     request: express.Request,
     response: express.Response,
     next: express.NextFunction,
-  ): Promise<void> {
+  ) {
     const { type, name, surname, email, password } = request.body;
 
     try {
@@ -29,7 +34,7 @@ export class AuthController {
         password,
       );
       setRefreshTokenCookie(response, userData.refreshToken);
-      response.status(201).json(userData);
+      return userData;
     } catch (error) {
       next(error);
     }
@@ -40,12 +45,12 @@ export class AuthController {
     request: express.Request,
     response: express.Response,
     next: express.NextFunction,
-  ): Promise<void> {
+  ) {
     const { email, password } = request.body;
     try {
       const userData = await this.authService.login(email, password);
       setRefreshTokenCookie(response, userData.refreshToken);
-      response.status(201).json(userData);
+      return userData;
     } catch (error) {
       return next(error);
     }
@@ -56,12 +61,12 @@ export class AuthController {
     request: express.Request,
     response: express.Response,
     next: express.NextFunction,
-  ): Promise<void> {
+  ) {
     const refreshToken = request.cookies.refreshToken;
     try {
       const token = await this.authService.logout(refreshToken);
       response.clearCookie("refreshToken");
-      response.json(token);
+      return token;
     } catch (error) {
       next(error);
     }
@@ -77,12 +82,9 @@ export class AuthController {
     try {
       const userData = await this.authService.refresh(refreshToken);
       setRefreshTokenCookie(response, userData.refreshToken);
-      response.status(201).json(userData);
+      return userData;
     } catch (error) {
       next(error);
     }
   }
-
-  @httpPost("")
-  public async() { }
 }

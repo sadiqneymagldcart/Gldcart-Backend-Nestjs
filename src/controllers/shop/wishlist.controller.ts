@@ -6,12 +6,13 @@ import {
     httpPost,
     httpPut,
     httpDelete,
+    Controller,
 } from "inversify-express-utils";
 import { WishlistService } from "@services/shop/wishlist.service";
 import { requireAuth } from "@middlewares/auth.middleware";
 
 @controller("/wishlist")
-export class WishlistController {
+export class WishlistController implements Controller {
     private readonly wishlistService: WishlistService;
     public constructor(
         @inject(WishlistService) wishlistService: WishlistService,

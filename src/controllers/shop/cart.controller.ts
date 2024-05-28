@@ -7,11 +7,12 @@ import {
     httpPut,
     httpPost,
     httpDelete,
+    Controller,
 } from "inversify-express-utils";
 import { requireAuth } from "@middlewares/auth.middleware";
 
 @controller("/cart")
-export class CartController {
+export class CartController implements Controller {
     private readonly cartService: CartService;
     public constructor(@inject(CartService) cartService: CartService) {
         this.cartService = cartService;

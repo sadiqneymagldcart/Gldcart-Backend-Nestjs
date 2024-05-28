@@ -1,6 +1,11 @@
 import * as express from "express";
 import { inject } from "inversify";
-import { controller, httpGet, httpPost } from "inversify-express-utils";
+import {
+    Controller,
+    controller,
+    httpGet,
+    httpPost,
+} from "inversify-express-utils";
 import { ProfessionalServicesService } from "@services/shop/professional-services.service";
 import { FileService } from "@services/shop/image.service";
 import { multerMiddleware } from "@/middlewares/malter.middleware";
@@ -8,7 +13,7 @@ import { requireAuth } from "@/middlewares/auth.middleware";
 import { ProfessionalService } from "@/models/shop/product/ProfessionalService";
 
 @controller("/professional-services")
-export class ProfessionalServicesController {
+export class ProfessionalServicesController implements Controller {
     private readonly fileService: FileService;
     private readonly servicesService: ProfessionalServicesService;
 
@@ -48,7 +53,7 @@ export class ProfessionalServicesController {
             next(error);
         }
     }
-    
+
     @httpGet("/count", requireAuth)
     public async getServicesCount(
         response: express.Response,
