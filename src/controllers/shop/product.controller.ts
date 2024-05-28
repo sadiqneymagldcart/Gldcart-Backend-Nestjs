@@ -32,15 +32,14 @@ export class ProductController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
+        const files = request.files as Express.Multer.File[];
         try {
-            const files = request.files as Express.Multer.File[];
             const images = await this.awsStorage.upload(files);
             const productData: Product = {
                 ...request.body,
                 images: images,
             };
-            const product = await this.productService.addProduct(productData);
-            response.status(201).json(product);
+            return await this.productService.addProduct(productData);
         } catch (error) {
             next(error);
         }
@@ -52,8 +51,7 @@ export class ProductController implements Controller {
         next: express.NextFunction,
     ) {
         try {
-            const count = await this.productService.getProductsCount();
-            response.status(200).json(count);
+            return await this.productService.getProductsCount();
         } catch (error) {
             next(error);
         }
@@ -66,8 +64,7 @@ export class ProductController implements Controller {
         next: express.NextFunction,
     ) {
         try {
-            const products = await this.productService.getAllProducts();
-            response.status(201).json(products);
+            return await this.productService.getAllProducts();
         } catch (error) {
             next(error);
         }
@@ -79,10 +76,9 @@ export class ProductController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
+        const category = request.params.category;
         try {
-            const category = request.params.category;
-            const products = await this.productService.getProductByCategory(category);
-            response.status(200).json(products);
+            return await this.productService.getProductByCategory(category);
         } catch (error) {
             next(error);
         }
@@ -94,11 +90,10 @@ export class ProductController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
+        const productId = request.params.productId;
         try {
-            const productId = request.params.productId;
             console.log(productId);
-            const product = await this.productService.getProductById(productId);
-            response.status(201).json(product);
+            return await this.productService.getProductById(productId);
         } catch (error) {
             next(error);
         }
@@ -109,11 +104,9 @@ export class ProductController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
+        const filters = request.query;
         try {
-            const filters = request.query;
-            const products =
-                await this.productService.searchProductsByFilters(filters);
-            response.status(200).json(products);
+            return await this.productService.searchProductsByFilters(filters);
         } catch (error) {
             next(error);
         }
@@ -125,10 +118,9 @@ export class ProductController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
+        const productId = request.params.productId;
         try {
-            const productId = request.params.productId;
-            const result = await this.productService.deleteProduct(productId);
-            response.status(200).json(result);
+            return await this.productService.deleteProduct(productId);
         } catch (error) {
             next(error);
         }
@@ -140,11 +132,9 @@ export class ProductController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
+        const category = request.params.category;
         try {
-            const category = request.params.category;
-            const products =
-                await this.productService.searchProductsByCategory(category);
-            response.status(200).json(products);
+            return await this.productService.searchProductsByCategory(category);
         } catch (error) {
             next(error);
         }
@@ -156,10 +146,9 @@ export class ProductController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
+        const query = request.params.query;
         try {
-            const query = request.params.query;
-            const products = await this.productService.searchProductsGlobal(query);
-            response.status(200).json(products);
+            return await this.productService.searchProductsGlobal(query);
         } catch (error) {
             next(error);
         }
