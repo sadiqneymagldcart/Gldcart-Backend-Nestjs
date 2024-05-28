@@ -1,10 +1,10 @@
 import * as express from "express";
-import { controller, httpGet, httpPost } from "inversify-express-utils";
+import { Controller, controller, httpGet, httpPost } from "inversify-express-utils";
 import { inject } from "inversify";
 import { ChatService } from "@services/chat/chat.service";
 
 @controller("/chat")
-export class ChatController {
+export class ChatController implements Controller {
     private readonly chatService: ChatService;
     public constructor(@inject(ChatService) chatService: ChatService) {
         this.chatService = chatService;

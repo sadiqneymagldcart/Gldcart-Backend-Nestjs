@@ -1,12 +1,12 @@
 import * as express from "express";
-import { controller, httpPut } from "inversify-express-utils";
+import { Controller, controller, httpPut } from "inversify-express-utils";
 import { ProfileService } from "@services/personal/profile.service";
 import { inject } from "inversify";
 import { multerMiddleware } from "@middlewares/malter.middleware";
 import { FileService } from "@services/shop/image.service";
 
 @controller("/personal")
-export class ProfileController {
+export class ProfileController implements Controller {
     private readonly profileService: ProfileService;
     private readonly imageService: FileService;
     public constructor(
