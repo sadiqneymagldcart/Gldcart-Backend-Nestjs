@@ -8,12 +8,12 @@ import {
 } from "inversify-express-utils";
 import { ProductService } from "@services/shop/product.service";
 import { inject } from "inversify";
-import { requireAuth } from "@middlewares/auth.middleware";
+import { authMiddleware } from "@middlewares/auth.middleware";
 import { multerMiddleware } from "@middlewares/malter.middleware";
 import { Product } from "@models/shop/product/Product";
 import { AwsStorage } from "@storages/aws.storage";
 
-@controller("/products")
+@controller("/products", authMiddleware)
 export class ProductController implements Controller {
     private readonly productService: ProductService;
     private readonly awsStorage: AwsStorage;
@@ -44,10 +44,8 @@ export class ProductController implements Controller {
         }
     }
 
-    @httpGet("/count", requireAuth)
-    public async getProductCount(
-        next: express.NextFunction,
-    ) {
+    @httpGet("/count")
+    public async getProductCount(next: express.NextFunction) {
         try {
             return await this.productService.getProductsCount();
         } catch (error) {
@@ -55,10 +53,8 @@ export class ProductController implements Controller {
         }
     }
 
-    @httpGet("/", requireAuth)
-    public async getAllProducts(
-        next: express.NextFunction,
-    ) {
+    @httpGet("/")
+    public async getAllProducts(next: express.NextFunction) {
         try {
             return await this.productService.getAllProducts();
         } catch (error) {
@@ -66,7 +62,7 @@ export class ProductController implements Controller {
         }
     }
 
-    @httpGet("/category/:category", requireAuth)
+    @httpGet("/category/:category")
     public async getProductByCategory(
         request: express.Request,
         next: express.NextFunction,
@@ -79,7 +75,7 @@ export class ProductController implements Controller {
         }
     }
 
-    @httpGet("/:productId", requireAuth)
+    @httpGet("/:productId")
     public async getProductById(
         request: express.Request,
         next: express.NextFunction,
@@ -92,7 +88,7 @@ export class ProductController implements Controller {
             next(error);
         }
     }
-    @httpGet("/search/filters", requireAuth)
+    @httpGet("/search/filters")
     public async searchProductsByFilters(
         request: express.Request,
         next: express.NextFunction,
@@ -105,7 +101,7 @@ export class ProductController implements Controller {
         }
     }
 
-    @httpDelete("/:productId", requireAuth)
+    @httpDelete("/:productId")
     public async deleteProduct(
         request: express.Request,
         next: express.NextFunction,

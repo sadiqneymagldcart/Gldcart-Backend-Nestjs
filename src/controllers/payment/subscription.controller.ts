@@ -1,10 +1,10 @@
 import * as express from "express";
 import { StripeSubscriptionService } from "@services/payment/stripe-subscription.service";
-import { inject, injectable } from "inversify";
-import { Controller, httpGet, httpPut } from "inversify-express-utils";
-import { requireAuth } from "@middlewares/auth.middleware";
+import { inject } from "inversify";
+import { Controller, controller, httpGet, httpPut } from "inversify-express-utils";
+import { authMiddleware } from "@middlewares/auth.middleware";
 
-@injectable()
+@controller("/subscription", authMiddleware)
 export class SubscriptionController implements Controller {
     private readonly subscriptionService: StripeSubscriptionService;
 
@@ -15,7 +15,7 @@ export class SubscriptionController implements Controller {
         this.subscriptionService = subscriptionService;
     }
 
-    @httpGet("/checkout/:userId/:lookup_key", requireAuth)
+    @httpGet("/checkout/:userId/:lookup_key")
     public async createSubscriptionCheckout(
         request: express.Request,
         response: express.Response,
@@ -34,7 +34,7 @@ export class SubscriptionController implements Controller {
         }
     }
 
-    @httpPut("/cancel", requireAuth)
+    @httpPut("/cancel")
     public async cancelSubscription(
         request: express.Request,
         response: express.Response,
