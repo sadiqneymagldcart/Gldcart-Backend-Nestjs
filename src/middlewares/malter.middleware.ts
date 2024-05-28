@@ -3,9 +3,8 @@ import multer from "multer";
 
 const storage = multer.memoryStorage();
 
-// Allow pdf, docs and txt and images
 const fileFilter = (
-    request: express.Request,
+    _request: express.Request,
     file: Express.Multer.File,
     cb: any,
 ) => {
