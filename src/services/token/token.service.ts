@@ -62,7 +62,7 @@ export class TokenService extends BaseService {
 
     public async validateAccessToken(accessToken: string) {
         try {
-            return jwt.verify(accessToken, process.env.JWT_REFRESH_SECRET!) as any;
+            return jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET!) as any;
         } catch (e) {
             return null;
         }
