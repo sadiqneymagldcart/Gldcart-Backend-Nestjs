@@ -4,12 +4,14 @@ import { Logger } from "@utils/logger";
 import { configureNodemailer } from "./nodemailer.config";
 import { loadEnvironmentVariables } from "./env.config";
 import { STRIPE_SECRET_KEY, stripeConfig } from "./stripe.config";
+import { Transporter } from "nodemailer";
+
+// Services
 import { TokenService } from "@services/token/token.service";
 import { AuthService } from "@services/auth/auth.service";
 import { GoogleAuthService } from "@services/auth/google-auth.service";
 import { MailService } from "@services/contact/mail.service";
 import { StripeService } from "@services/payment/stripe.service";
-import { Transporter } from "nodemailer";
 import { ReviewService } from "@services/shop/review.service";
 import { ProductService } from "@services/shop/product.service";
 import { ProfessionalServicesService } from "@services/shop/professional-services.service";
@@ -28,39 +30,29 @@ import { AwsStorage } from "@/storages/aws.storage";
 import { SearchService } from "@services/shop/global-search.service";
 import { ChatService } from "@services/chat/chat.service";
 import { MessageService } from "@services/chat/message.service";
+import { TestService } from "@services/base/test.service";
 
-//Auth
+// Controllers
 import "@controllers/auth/auth.controller";
 import "@controllers/auth/google-auth.controller";
-
-//Shop
-import "../controllers/shop/review.controller";
-import "../controllers/shop/product.controller";
-import "../controllers/shop/professional.services.controller";
-import "../controllers/shop/renting.controller";
-import "../controllers/shop/cart.controller";
-import "../controllers/shop/global.search.controller";
-import "../controllers/shop/order.controller";
-
-//Contact
-import "../controllers/contact/contact.controller";
-
-//User info
+import "@controllers/shop/review.controller";
+import "@controllers/shop/product.controller";
+import "@controllers/shop/professional.services.controller";
+import "@controllers/shop/renting.controller";
+import "@controllers/shop/cart.controller";
+import "@controllers/shop/global.search.controller";
+import "@controllers/shop/order.controller";
+import "@controllers/contact/contact.controller";
 import "@controllers/personal/address.controller";
 import "@controllers/personal/profile.controller";
 import "@controllers/personal/reset-password.controller";
-
-//Stripe
-import "../controllers/payment/payment.controller";
-
-//Verification
-import "../controllers/auth/verification.controller";
-import "../controllers/shop/wishlist.controller";
-import "../controllers/files/file.controller";
-
-// Chat
-import "../controllers/chat/chat.controller";
-import "../controllers/chat/message.controller";
+import "@controllers/payment/payment.controller";
+import "@controllers/auth/verification.controller";
+import "@controllers/shop/wishlist.controller";
+import "@controllers/files/file.controller";
+import "@controllers/chat/chat.controller";
+import "@controllers/chat/message.controller";
+import "@controllers/files/test.controller"
 
 function bindAuthServices(container: Container) {
     container.bind(TokenService).toSelf();
@@ -69,18 +61,14 @@ function bindAuthServices(container: Container) {
 }
 
 function bindStripeServices(container: Container) {
-    container.bind(Stripe).toDynamicValue(() => {
-        return new Stripe(STRIPE_SECRET_KEY as string, stripeConfig);
-    });
+    container.bind(Stripe).toDynamicValue(() => new Stripe(STRIPE_SECRET_KEY as string, stripeConfig));
     container.bind(StripeService).toSelf();
     container.bind(StripeSubscriptionService).toSelf();
     container.bind(StripeWebhookService).toSelf();
 }
 
 function bindMailServices(container: Container) {
-    container
-        .bind<Transporter>("NodemailerTransporter")
-        .toConstantValue(configureNodemailer());
+    container.bind<Transporter>("NodemailerTransporter").toConstantValue(configureNodemailer());
     container.bind(MailService).toSelf();
 }
 
@@ -109,7 +97,7 @@ function bindShopServices(container: Container) {
     container.bind(SearchService).toSelf();
 }
 
-function bindVerificationService(container: Container) {
+function bindVerificationServices(container: Container) {
     container.bind(VerificationService).toSelf();
 }
 
@@ -124,17 +112,24 @@ function initializeContainer(): Container {
     return container;
 }
 
-loadEnvironmentVariables();
-const container = initializeContainer();
+function configureContainer(container: Container) {
+    bindAuthServices(container);
+    bindStorages(container);
+    bindStripeServices(container);
+    bindMailServices(container);
+    bindContactServices(container);
+    bindUserInfoServices(container);
+    bindShopServices(container);
+    bindVerificationServices(container);
+    bindChatServices(container);
+    container.bind(TestService).toSelf();
+    
+}
 
-bindAuthServices(container);
-bindStorages(container);
-bindStripeServices(container);
-bindMailServices(container);
-bindContactServices(container);
-bindUserInfoServices(container);
-bindShopServices(container);
-bindVerificationService(container);
-bindChatServices(container);
+loadEnvironmentVariables();
+
+const container = initializeContainer();
+configureContainer(container);
 
 export { container };
+
