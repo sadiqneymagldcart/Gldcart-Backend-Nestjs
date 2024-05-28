@@ -1,5 +1,6 @@
 import * as express from "express";
 import {
+    Controller,
     controller,
     httpDelete,
     httpGet,
@@ -13,7 +14,7 @@ import { Product } from "@models/shop/product/Product";
 import { AwsStorage } from "@storages/aws.storage";
 
 @controller("/products")
-export class ProductController {
+export class ProductController implements Controller {
     private readonly productService: ProductService;
     private readonly awsStorage: AwsStorage;
 
@@ -163,7 +164,4 @@ export class ProductController {
             next(error);
         }
     }
-
-    @httpGet("")
-    public async() { }
 }

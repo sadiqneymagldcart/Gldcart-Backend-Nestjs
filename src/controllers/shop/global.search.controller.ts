@@ -1,10 +1,10 @@
 import * as express from "express";
 import { inject } from "inversify";
 import { SearchService } from "@services/shop/global-search.service";
-import { controller, httpGet } from "inversify-express-utils";
+import { Controller, controller, httpGet } from "inversify-express-utils";
 
 @controller("/search")
-export class SearchController {
+export class SearchController implements Controller {
     private readonly searchService: SearchService;
 
     public constructor(@inject(SearchService) searchService: SearchService) {

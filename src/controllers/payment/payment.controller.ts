@@ -1,11 +1,11 @@
 import * as express from "express";
 import { StripeService } from "@services/payment/stripe.service";
 import { inject } from "inversify";
-import { controller, httpPost } from "inversify-express-utils";
+import { Controller, controller, httpPost } from "inversify-express-utils";
 import { StripeWebhookService } from "@services/payment/stripe-webhook.service";
 
 @controller("/payments")
-export class PaymentController {
+export class PaymentController implements Controller {
     private readonly stripeService: StripeService;
     private readonly stripeWebhookService: StripeWebhookService;
 
@@ -84,5 +84,4 @@ export class PaymentController {
             next(error);
         }
     }
-    @httpPost("") public async() { }
 }

@@ -1,11 +1,18 @@
-import {inject} from "inversify";
-import {controller, httpDelete, httpGet, httpPost, httpPut,} from "inversify-express-utils";
-import {ReviewService} from "@services/shop/review.service";
+import { inject } from "inversify";
+import {
+    Controller,
+    controller,
+    httpDelete,
+    httpGet,
+    httpPost,
+    httpPut,
+} from "inversify-express-utils";
+import { ReviewService } from "@services/shop/review.service";
 import * as express from "express";
 import { Review } from "@models/shop/review/Review";
 
 @controller("/review")
-export class ReviewController {
+export class ReviewController implements Controller {
     private readonly reviewService: ReviewService;
 
     public constructor(@inject(ReviewService) reviewService: ReviewService) {
@@ -101,9 +108,5 @@ export class ReviewController {
         } catch (error) {
             next(error);
         }
-    }
-
-    @httpPost("")
-    public async() {
     }
 }

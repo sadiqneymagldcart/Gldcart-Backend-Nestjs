@@ -1,13 +1,13 @@
 import * as express from "express";
 import { GoogleAuthService } from "@services/auth/google-auth.service";
 import { inject } from "inversify";
-import { controller, httpGet, httpPost } from "inversify-express-utils";
+import { Controller, controller, httpGet } from "inversify-express-utils";
 import { setRefreshTokenCookie } from "@utils/token.utils";
-import {IGoogleUserResult} from "@interfaces/IGoogleUserResult";
-import {IGoogleUserInfo} from "@interfaces/IGoogleUserInfo";
+import { IGoogleUserResult } from "@interfaces/IGoogleUserResult";
+import { IGoogleUserInfo } from "@interfaces/IGoogleUserInfo";
 
 @controller("/tokens/oauth/google")
-export class GoogleAuthController {
+export class GoogleAuthController implements Controller {
     private readonly googleAuthService: GoogleAuthService;
     private readonly googlePassword = process.env.GOOGLE_PASSWORD!;
 
@@ -77,7 +77,4 @@ export class GoogleAuthController {
             .status(500)
             .send(`Error while processing Google OAuth: ${error}`);
     }
-
-    @httpPost("")
-    public async() { }
 }
