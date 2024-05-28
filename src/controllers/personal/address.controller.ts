@@ -9,8 +9,9 @@ import {
 } from "inversify-express-utils";
 import { inject } from "inversify";
 import { AddressService } from "@services/personal/address.service";
+import { authMiddleware } from "@middlewares/auth.middleware";
 
-@controller("/address")
+@controller("/address", authMiddleware)
 export class AddressController implements Controller {
     private readonly addressService: AddressService;
 

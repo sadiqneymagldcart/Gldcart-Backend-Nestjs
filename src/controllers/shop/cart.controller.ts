@@ -9,47 +9,45 @@ import {
     httpDelete,
     Controller,
 } from "inversify-express-utils";
-import { requireAuth } from "@middlewares/auth.middleware";
+import { authMiddleware } from "@middlewares/auth.middleware";
 
-@controller("/cart")
+@controller("/cart", authMiddleware)
 export class CartController implements Controller {
     private readonly cartService: CartService;
     public constructor(@inject(CartService) cartService: CartService) {
         this.cartService = cartService;
     }
 
-    @httpPost("/", requireAuth)
+    @httpPost("/")
     public async createCart(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
+        if (!request.body.userId)
+            return response.status(400).json({ message: "userId is required" });
         try {
-            if (!request.body.userId)
-                return response.status(400).json({ message: "userId is required" });
-            const cart = await this.cartService.createCart(request.body);
-            response.status(201).json(cart);
+            return await this.cartService.createCart(request.body);
         } catch (error) {
             next(error);
         }
     }
 
-    @httpDelete("/", requireAuth)
+    @httpDelete("/")
     public async deleteCart(
         request: express.Request,
         response: express.Response,
         next: express.NextFunction,
     ) {
+        if (!request.body.userId)
+            return response.status(400).json({ message: "userId is required" });
         try {
-            if (!request.body.userId)
-                return response.status(400).json({ message: "userId is required" });
-            const cart = await this.cartService.deleteCart(request.body.userId);
-            response.status(200).json(cart);
+            return await this.cartService.deleteCart(request.body.userId);
         } catch (error) {
             next(error);
         }
     }
-    @httpGet("/user/:userId", requireAuth)
+    @httpGet("/user/:userId")
     public async getCart(
         request: express.Request,
         response: express.Response,
@@ -58,14 +56,13 @@ export class CartController implements Controller {
         if (!request.params.userId)
             return response.status(400).json({ message: "userId is required" });
         try {
-            const cart = await this.cartService.getCartItems(request.params.userId);
-            response.status(200).json(cart);
+            return await this.cartService.getCartItems(request.params.userId);
         } catch (error) {
             next(error);
         }
     }
 
-    @httpPost("/add-item", requireAuth)
+    @httpPost("/add-item")
     public async addItem(
         request: express.Request,
         response: express.Response,
@@ -76,17 +73,16 @@ export class CartController implements Controller {
                 .status(400)
                 .json({ message: "userId and item are required" });
         try {
-            const cart = await this.cartService.addItemToCart(
+            return await this.cartService.addItemToCart(
                 request.body.userId,
                 request.body.item,
             );
-            response.status(201).json(cart);
         } catch (error) {
             next(error);
         }
     }
 
-    @httpDelete("/remove-item", requireAuth)
+    @httpDelete("/remove-item")
     public async removeItem(
         request: express.Request,
         response: express.Response,
@@ -98,17 +94,16 @@ export class CartController implements Controller {
                 .json({ message: "userId and productId are required" });
         }
         try {
-            const cart = await this.cartService.removeItemFromCart(
+            return await this.cartService.removeItemFromCart(
                 request.body.userId,
                 request.body.productId,
             );
-            response.status(200).json(cart);
         } catch (error) {
             next(error);
         }
     }
 
-    @httpPut("/update-quantity", requireAuth)
+    @httpPut("/update-quantity")
     public async updateQuantity(
         request: express.Request,
         response: express.Response,
@@ -119,11 +114,10 @@ export class CartController implements Controller {
         }
         try {
             console.log(request.body);
-            const cart = await this.cartService.updateItemQuantity(
+            return await this.cartService.updateItemQuantity(
                 request.body.userId,
                 request.body.item,
             );
-            response.status(200).json(cart);
         } catch (error) {
             next(error);
         }

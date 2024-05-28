@@ -9,10 +9,10 @@ import {
 import { ProfessionalServicesService } from "@services/shop/professional-services.service";
 import { FileService } from "@services/shop/image.service";
 import { multerMiddleware } from "@/middlewares/malter.middleware";
-import { requireAuth } from "@/middlewares/auth.middleware";
+import { authMiddleware } from "@/middlewares/auth.middleware";
 import { ProfessionalService } from "@/models/shop/product/ProfessionalService";
 
-@controller("/professional-services")
+@controller("/professional-services", authMiddleware)
 export class ProfessionalServicesController implements Controller {
     private readonly fileService: FileService;
     private readonly servicesService: ProfessionalServicesService;
@@ -26,7 +26,7 @@ export class ProfessionalServicesController implements Controller {
         this.fileService = fileService;
     }
 
-    @httpPost("/", multerMiddleware.any(), requireAuth)
+    @httpPost("/", multerMiddleware.any())
     public async addService(
         request: express.Request,
         response: express.Response,
@@ -46,35 +46,26 @@ export class ProfessionalServicesController implements Controller {
                 ...request.body,
                 images: images,
             };
-            const service = await this.servicesService.createService(serviceData);
-            response.status(201).json(service);
+            return await this.servicesService.createService(serviceData);
         } catch (error) {
             console.log(error);
             next(error);
         }
     }
 
-    @httpGet("/count", requireAuth)
-    public async getServicesCount(
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
+    @httpGet("/count")
+    public async getServicesCount(next: express.NextFunction) {
         try {
-            const count = await this.servicesService.getServicesCount();
-            response.status(200).json(count);
+            return await this.servicesService.getServicesCount();
         } catch (error) {
             next(error);
         }
     }
 
-    @httpGet("/", requireAuth)
-    public async getAllServices(
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
+    @httpGet("/")
+    public async getAllServices(next: express.NextFunction) {
         try {
-            const services = await this.servicesService.getAllServices();
-            response.status(200).json(services);
+            return await this.servicesService.getAllServices();
         } catch (error) {
             next(error);
         }
@@ -83,29 +74,24 @@ export class ProfessionalServicesController implements Controller {
     @httpGet("/search/filters")
     public async getServicesByFilters(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
+        const filters = request.query as any;
         try {
-            const filters = request.query as any;
-            const services = await this.servicesService.getServicesByQuery(filters);
-            response.status(200).json(services);
+            return await this.servicesService.getServicesByQuery(filters);
         } catch (error) {
             next(error);
         }
     }
 
-    @httpGet("/category/:category", requireAuth)
+    @httpGet("/category/:category")
     public async getServicesByCategory(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
+        const category = request.params.category;
         try {
-            const category = request.params.category;
-            const services =
-                await this.servicesService.getServicesByCategory(category);
-            response.status(200).json(services);
+            return await this.servicesService.getServicesByCategory(category);
         } catch (error) {
             next(error);
         }

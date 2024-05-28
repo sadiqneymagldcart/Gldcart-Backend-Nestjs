@@ -4,8 +4,9 @@ import { ProfileService } from "@services/personal/profile.service";
 import { inject } from "inversify";
 import { multerMiddleware } from "@middlewares/malter.middleware";
 import { FileService } from "@services/shop/image.service";
+import { authMiddleware } from "@middlewares/auth.middleware";
 
-@controller("/personal")
+@controller("/personal", authMiddleware)
 export class ProfileController implements Controller {
     private readonly profileService: ProfileService;
     private readonly imageService: FileService;
