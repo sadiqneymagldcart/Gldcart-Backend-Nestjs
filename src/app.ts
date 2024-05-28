@@ -24,7 +24,7 @@ export class App {
         this.logger = logger;
     }
 
-    public getHttpServer(): http.Server {
+    public getConfiguredServer(): http.Server {
         return this.httpServer;
     }
 
