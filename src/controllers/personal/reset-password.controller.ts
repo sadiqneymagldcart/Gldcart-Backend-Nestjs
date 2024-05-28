@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from "uuid";
 import { Controller, controller, httpPost } from "inversify-express-utils";
 import { inject } from "inversify";
 import { PasswordService } from "@services/personal/reset-password.service";
-import { requireAuth } from "@middlewares/auth.middleware";
 
 @controller("/password")
 export class PasswordController implements Controller {
@@ -15,7 +14,7 @@ export class PasswordController implements Controller {
         this.passwordResetService = passwordResetService;
     }
 
-    @httpPost("/initiate", requireAuth)
+    @httpPost("/initiate")
     async initiatePasswordReset(
         request: express.Request,
         response: express.Response,

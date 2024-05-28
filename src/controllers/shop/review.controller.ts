@@ -10,8 +10,9 @@ import {
 import { ReviewService } from "@services/shop/review.service";
 import * as express from "express";
 import { Review } from "@models/shop/review/Review";
+import { authMiddleware } from "@middlewares/auth.middleware";
 
-@controller("/review")
+@controller("/review", authMiddleware)
 export class ReviewController implements Controller {
     private readonly reviewService: ReviewService;
 
@@ -22,28 +23,21 @@ export class ReviewController implements Controller {
     @httpGet("/:productId")
     public async getReviewsByProduct(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
+        const productId = request.params.productId;
         try {
-            const productId = request.params.productId;
-            const review = this.reviewService.getReviewsByProduct(productId);
-            response.status(200).json(review);
+            return this.reviewService.getReviewsByProduct(productId);
         } catch (error) {
             next(error);
         }
     }
 
     @httpGet("/:reviewId")
-    public async getReview(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
+    public async getReview(request: express.Request, next: express.NextFunction) {
+        const reviewId = request.params.reviewId;
         try {
-            const reviewId = request.params.reviewId;
-            const review = this.reviewService.getReviewById(reviewId);
-            response.status(200).json(review);
+            return this.reviewService.getReviewById(reviewId);
         } catch (error) {
             next(error);
         }
@@ -52,13 +46,11 @@ export class ReviewController implements Controller {
     @httpGet("/:userId")
     public async getReviewsByUser(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
+        const userId = request.params.userId;
         try {
-            const userId = request.params.userId;
-            const review = this.reviewService.getReviewsByUser(userId);
-            response.status(200).json(review);
+            return this.reviewService.getReviewsByUser(userId);
         } catch (error) {
             next(error);
         }
@@ -67,13 +59,11 @@ export class ReviewController implements Controller {
     @httpPost("/")
     public async createReview(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
+        const reviewData = request.body as Partial<Review>;
         try {
-            const reviewData = request.body as Partial<Review>;
-            const review = this.reviewService.createReview(reviewData);
-            response.status(201).json(review);
+            return this.reviewService.createReview(reviewData);
         } catch (error) {
             next(error);
         }
@@ -82,14 +72,12 @@ export class ReviewController implements Controller {
     @httpPut("/:reviewId")
     public async updateReview(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
+        const reviewId = request.params.reviewId;
+        const updatedData = request.body as Partial<Review>;
         try {
-            const reviewId = request.params.reviewId;
-            const updatedData = request.body as Partial<Review>;
-            const review = this.reviewService.updateReview(reviewId, updatedData);
-            response.status(200).json(review);
+            return this.reviewService.updateReview(reviewId, updatedData);
         } catch (error) {
             next(error);
         }
@@ -98,13 +86,11 @@ export class ReviewController implements Controller {
     @httpDelete("/:reviewId")
     public async deleteReview(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
+        const reviewId = request.params.reviewId;
         try {
-            const reviewId = request.params.reviewId;
-            const result = this.reviewService.deleteReview(reviewId);
-            response.status(200).json(result);
+            return this.reviewService.deleteReview(reviewId);
         } catch (error) {
             next(error);
         }
