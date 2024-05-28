@@ -8,11 +8,11 @@ import {
 } from "inversify-express-utils";
 import { RentingService } from "@services/shop/renting.service";
 import { multerMiddleware } from "@middlewares/malter.middleware";
-import { requireAuth } from "@middlewares/auth.middleware";
+import { authMiddleware } from "@middlewares/auth.middleware";
 import { Renting } from "@models/shop/product/Renting";
 import { AwsStorage } from "@storages/aws.storage";
 
-@controller("/renting")
+@controller("/renting", authMiddleware)
 export class RentingController implements Controller {
     private readonly rentingService: RentingService;
     private readonly storage: AwsStorage;
@@ -25,35 +25,28 @@ export class RentingController implements Controller {
         this.storage = storage;
     }
 
-    @httpPost("/", requireAuth, multerMiddleware.any())
+    @httpPost("/", multerMiddleware.any())
     public async addRenting(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
+        const files = request.files as Express.Multer.File[];
         try {
-            const files = request.files as Express.Multer.File[];
             const images = await this.storage.upload(files);
             const rentingData: Renting = {
                 ...request.body,
                 images: images,
             };
-            const renting = await this.rentingService.addRentingProduct(rentingData);
-            response.status(201).json(renting);
+            return await this.rentingService.addRentingProduct(rentingData);
         } catch (error) {
             next(error);
         }
     }
 
-    @httpGet("/", requireAuth)
-    public async getRentings(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
+    @httpGet("/")
+    public async getRentings(next: express.NextFunction) {
         try {
-            const rentings = await this.rentingService.getRentings();
-            response.status(200).json(rentings);
+            return await this.rentingService.getRentings();
         } catch (error) {
             next(error);
         }
@@ -62,14 +55,11 @@ export class RentingController implements Controller {
     @httpGet("/category/:category")
     public async getRentingsByCategory(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
+        const category = request.params.category;
         try {
-            const category = request.params.category;
-            const rentings =
-                await this.rentingService.getRentingsByCategory(category);
-            response.status(200).json(rentings);
+            return await this.rentingService.getRentingsByCategory(category);
         } catch (error) {
             next(error);
         }
