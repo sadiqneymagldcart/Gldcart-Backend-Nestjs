@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import { Logger } from "@utils/logger";
 
 @injectable()
-export class BaseService {
+export abstract class BaseService {
     protected logger: Logger;
 
     public constructor(@inject(Logger) logger: Logger) {
