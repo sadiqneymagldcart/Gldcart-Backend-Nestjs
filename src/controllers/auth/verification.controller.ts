@@ -1,11 +1,11 @@
 import * as express from "express";
-import { controller, httpGet, httpPost } from "inversify-express-utils";
+import { Controller, controller, httpGet, httpPost } from "inversify-express-utils";
 import { inject } from "inversify";
 import { multerMiddleware } from "@middlewares/malter.middleware";
 import { VerificationService } from "@services/verification/verification.service";
 
 @controller("/verification")
-export class VerificationController {
+export class VerificationController implements Controller {
     private readonly verificationService: VerificationService;
 
     public constructor(

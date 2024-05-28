@@ -1,11 +1,11 @@
 import * as express from "express";
 import { inject } from "inversify";
-import { controller, httpPost } from "inversify-express-utils";
+import { Controller, controller, httpPost } from "inversify-express-utils";
 import { multerMiddleware } from "@middlewares/malter.middleware";
 import { AwsStorage } from "@storages/aws.storage";
 
 @controller("/files")
-export class FileController {
+export class FileController implements Controller {
     private readonly awsStorage: AwsStorage;
 
     public constructor(@inject(AwsStorage) awsStorage: AwsStorage) {

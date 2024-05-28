@@ -2,6 +2,7 @@ import * as express from "express";
 import { inject } from "inversify";
 import { OrderService } from "@services/shop/order.service";
 import {
+    Controller,
     controller,
     httpGet,
     httpPost,
@@ -10,7 +11,7 @@ import {
 import { requireAuth } from "@middlewares/auth.middleware";
 
 @controller("/order")
-export class OrderController {
+export class OrderController implements Controller {
     private readonly orderService: OrderService;
 
     public constructor(@inject(OrderService) orderService: OrderService) {

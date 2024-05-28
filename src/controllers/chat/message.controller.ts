@@ -2,6 +2,7 @@ import * as express from "express";
 import { MessageService } from "@services/chat/message.service";
 import { inject } from "inversify";
 import {
+    Controller,
     controller,
     httpGet,
     httpPost,
@@ -9,7 +10,7 @@ import {
 } from "inversify-express-utils";
 
 @controller("/message")
-export class MessageController {
+export class MessageController implements Controller {
     private readonly messageService: MessageService;
     public constructor(@inject(MessageService) messageService: MessageService) {
         this.messageService = messageService;
@@ -77,7 +78,4 @@ export class MessageController {
             next(error);
         }
     }
-
-    @httpPost("")
-    public async() { }
 }

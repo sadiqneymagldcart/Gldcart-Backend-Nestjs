@@ -1,5 +1,6 @@
 import * as express from "express";
 import {
+    Controller,
     controller,
     httpDelete,
     httpGet,
@@ -10,7 +11,7 @@ import { inject } from "inversify";
 import { AddressService } from "@services/personal/address.service";
 
 @controller("/address")
-export class AddressController {
+export class AddressController implements Controller {
     private readonly addressService: AddressService;
 
     public constructor(@inject(AddressService) addressService: AddressService) {
