@@ -17,7 +17,7 @@ function sendServerErrorResponse(error: Error, response: express.Response) {
 
 export const errorHandlerMiddleware = (
     error: Error,
-    request: express.Request,
+    _request: express.Request,
     response: express.Response,
     next: express.NextFunction,
 ) => {

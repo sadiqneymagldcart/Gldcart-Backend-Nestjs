@@ -4,6 +4,7 @@ import {UnauthorizedException} from "@exceptions/unauthorized.exception";
 
 export const requireSubscription = (requiredSubscriptionType: string) => {
     return async (
+        _request: Request,
         response: Response,
         next: NextFunction,
     ): Promise<void> => {
