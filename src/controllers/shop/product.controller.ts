@@ -29,7 +29,6 @@ export class ProductController implements Controller {
     @httpPost("/", multerMiddleware.any())
     public async addProduct(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
         const files = request.files as Express.Multer.File[];
@@ -47,7 +46,6 @@ export class ProductController implements Controller {
 
     @httpGet("/count", requireAuth)
     public async getProductCount(
-        response: express.Response,
         next: express.NextFunction,
     ) {
         try {
@@ -59,8 +57,6 @@ export class ProductController implements Controller {
 
     @httpGet("/", requireAuth)
     public async getAllProducts(
-        request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
         try {
@@ -73,7 +69,6 @@ export class ProductController implements Controller {
     @httpGet("/category/:category", requireAuth)
     public async getProductByCategory(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
         const category = request.params.category;
@@ -87,7 +82,6 @@ export class ProductController implements Controller {
     @httpGet("/:productId", requireAuth)
     public async getProductById(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
         const productId = request.params.productId;
@@ -101,7 +95,6 @@ export class ProductController implements Controller {
     @httpGet("/search/filters", requireAuth)
     public async searchProductsByFilters(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
         const filters = request.query;
@@ -115,7 +108,6 @@ export class ProductController implements Controller {
     @httpDelete("/:productId", requireAuth)
     public async deleteProduct(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
         const productId = request.params.productId;
@@ -129,7 +121,6 @@ export class ProductController implements Controller {
     @httpGet("/search/category/:category")
     public async searchProductsByCategory(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
         const category = request.params.category;
@@ -143,7 +134,6 @@ export class ProductController implements Controller {
     @httpGet("/search/:query")
     public async searchProductsGlobally(
         request: express.Request,
-        response: express.Response,
         next: express.NextFunction,
     ) {
         const query = request.params.query;
