@@ -39,10 +39,11 @@ export class CartController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
-        if (!request.body.userId)
+        const { userId } = request.body;
+        if (!userId)
             return response.status(400).json({ message: "userId is required" });
         try {
-            return await this.cartService.deleteCart(request.body.userId);
+            return await this.cartService.deleteCart(userId);
         } catch (error) {
             next(error);
         }
@@ -53,10 +54,11 @@ export class CartController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
-        if (!request.params.userId)
+        const { userId } = request.params;
+        if (!userId)
             return response.status(400).json({ message: "userId is required" });
         try {
-            return await this.cartService.getCartItems(request.params.userId);
+            return await this.cartService.getCartItems(userId);
         } catch (error) {
             next(error);
         }
@@ -68,15 +70,13 @@ export class CartController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
-        if (!request.body.userId || !request.body.item)
+        const { userId, item } = request.body;
+        if (!userId || !item)
             return response
                 .status(400)
                 .json({ message: "userId and item are required" });
         try {
-            return await this.cartService.addItemToCart(
-                request.body.userId,
-                request.body.item,
-            );
+            return await this.cartService.addItemToCart(userId, item);
         } catch (error) {
             next(error);
         }
@@ -88,16 +88,14 @@ export class CartController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
-        if (!request.body.userId || !request.body.productId) {
+        const { userId, productId } = request.body;
+        if (!userId || !productId) {
             response
                 .status(400)
                 .json({ message: "userId and productId are required" });
         }
         try {
-            return await this.cartService.removeItemFromCart(
-                request.body.userId,
-                request.body.productId,
-            );
+            return await this.cartService.removeItemFromCart(userId, productId);
         } catch (error) {
             next(error);
         }
@@ -109,15 +107,13 @@ export class CartController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
-        if (!request.body.userId || !request.body.item) {
+        const { userId, item } = request.body;
+        if (!userId || !item) {
             response.status(400).json({ message: "userId, item are required" });
         }
         try {
             console.log(request.body);
-            return await this.cartService.updateItemQuantity(
-                request.body.userId,
-                request.body.item,
-            );
+            return await this.cartService.updateItemQuantity(userId, item);
         } catch (error) {
             next(error);
         }
