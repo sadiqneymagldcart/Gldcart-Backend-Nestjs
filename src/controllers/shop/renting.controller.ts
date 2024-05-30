@@ -8,11 +8,11 @@ import {
 } from "inversify-express-utils";
 import { RentingService } from "@services/shop/renting.service";
 import { multerMiddleware } from "@middlewares/malter.middleware";
-import { authMiddleware } from "@middlewares/auth.middleware";
 import { Renting } from "@models/shop/product/Renting";
 import { AwsStorage } from "@storages/aws.storage";
+import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
 
-@controller("/renting", authMiddleware)
+@controller("/renting", AuthenticationMiddleware)
 export class RentingController implements Controller {
     private readonly rentingService: RentingService;
     private readonly storage: AwsStorage;
