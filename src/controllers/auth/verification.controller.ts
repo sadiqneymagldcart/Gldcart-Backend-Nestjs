@@ -1,5 +1,10 @@
 import * as express from "express";
-import { Controller, controller, httpGet, httpPost } from "inversify-express-utils";
+import {
+    Controller,
+    controller,
+    httpGet,
+    httpPost,
+} from "inversify-express-utils";
 import { inject } from "inversify";
 import { multerMiddleware } from "@middlewares/malter.middleware";
 import { VerificationService } from "@services/verification/verification.service";
@@ -20,9 +25,10 @@ export class VerificationController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
+        const userId = request.params.userId;
+        const files = request.files as Express.Multer.File[];
+
         try {
-            const userId = request.params.userId;
-            const files = request.files as Express.Multer.File[];
             await this.verificationService.sendVerificationEmail(userId, files);
             response.status(200).json({ message: "Verification email sent" });
         } catch (error) {
@@ -36,8 +42,8 @@ export class VerificationController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
+        const token = request.params.token;
         try {
-            const token = request.params.token;
             await this.verificationService.verifyUser(token);
             response.status(200).json({ message: "User verified" });
         } catch (error) {

@@ -4,7 +4,7 @@ import { MailService } from "../contact/mail.service";
 import * as bcrypt from "bcrypt";
 import { inject, injectable } from "inversify";
 import { User, UserModel } from "@models/user/User";
-import {BadRequestException} from "@exceptions/bad-request.exception";
+import { BadRequestException } from "@exceptions/bad-request.exception";
 
 @injectable()
 export class PasswordService extends BaseService {

@@ -1,8 +1,8 @@
-import {Logger} from "@utils/logger";
+import { Logger } from "@utils/logger";
 import Stripe from "stripe";
-import {BaseService} from "../base/base.service";
-import {inject, injectable} from "inversify";
-import {CartItem} from "@models/shop/cart/Cart";
+import { BaseService } from "../base/base.service";
+import { inject, injectable } from "inversify";
+import { CartItem } from "@models/shop/cart/Cart";
 
 @injectable()
 export class StripeService extends BaseService {
@@ -54,7 +54,7 @@ export class StripeService extends BaseService {
 
     public async createCustomer(email: string, name: string): Promise<string> {
         try {
-            const customer = await this.createCustomerWithMetadata({email, name});
+            const customer = await this.createCustomerWithMetadata({ email, name });
             this.logger.logInfo(`Customer created: ${customer.id}`);
             return customer.id;
         } catch (error: any) {
@@ -118,7 +118,7 @@ export class StripeService extends BaseService {
     private async createCustomerWithMetadata(
         metadata: Record<string, any> = {},
     ): Promise<Stripe.Customer> {
-        return this.stripe.customers.create({metadata});
+        return this.stripe.customers.create({ metadata });
     }
 
     private async createCheckoutSession(

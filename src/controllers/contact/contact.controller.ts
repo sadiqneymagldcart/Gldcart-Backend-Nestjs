@@ -26,7 +26,7 @@ export class ContactController implements Controller {
         const { name, email, subject, message, token } = request.body;
         try {
             const userData = token
-                ? await this.tokenService.validateAccessToken(token)
+                ? this.tokenService.validateAccessToken(token)
                 : null;
             const recipientEmail = email || userData?.email;
             if (recipientEmail) {
