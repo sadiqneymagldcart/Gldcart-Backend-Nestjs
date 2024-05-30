@@ -8,12 +8,12 @@ import {
 } from "inversify-express-utils";
 import { ProductService } from "@services/shop/product.service";
 import { inject } from "inversify";
-import { authMiddleware } from "@middlewares/auth.middleware";
 import { multerMiddleware } from "@middlewares/malter.middleware";
 import { Product } from "@models/shop/product/Product";
 import { AwsStorage } from "@storages/aws.storage";
+import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
 
-@controller("/products", authMiddleware)
+@controller("/products", AuthenticationMiddleware)
 export class ProductController implements Controller {
     private readonly productService: ProductService;
     private readonly awsStorage: AwsStorage;

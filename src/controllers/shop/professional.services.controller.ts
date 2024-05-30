@@ -9,10 +9,10 @@ import {
 import { ProfessionalServicesService } from "@services/shop/professional-services.service";
 import { FileService } from "@services/shop/image.service";
 import { multerMiddleware } from "@/middlewares/malter.middleware";
-import { authMiddleware } from "@/middlewares/auth.middleware";
 import { ProfessionalService } from "@/models/shop/product/ProfessionalService";
+import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
 
-@controller("/professional-services", authMiddleware)
+@controller("/professional-services", AuthenticationMiddleware)
 export class ProfessionalServicesController implements Controller {
     private readonly fileService: FileService;
     private readonly servicesService: ProfessionalServicesService;
