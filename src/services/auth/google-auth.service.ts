@@ -4,13 +4,13 @@ import { Logger } from "@utils/logger";
 import { ApiException } from "@exceptions/api.exception";
 import axios, { AxiosResponse } from "axios";
 import qs from "qs";
-import { Token } from "@models/token/Token";
 import { inject, injectable } from "inversify";
 import { User, UserModel } from "@models/user/User";
 import { IAuthValues } from "@interfaces/IAuthValues";
 import { IGoogleUserInfo } from "@interfaces/IGoogleUserInfo";
 import { IGoogleTokenResult } from "@interfaces/IGoogleTokenResult";
 import { IGoogleUserResult } from "@interfaces/IGoogleUserResult";
+import { Nullable } from "@ts/types/nullable";
 
 @injectable()
 export class GoogleAuthService extends BaseService {
@@ -33,7 +33,7 @@ export class GoogleAuthService extends BaseService {
     code,
   }: {
     code: string;
-  }): Promise<IGoogleTokenResult | undefined> {
+  }): Promise<Nullable<IGoogleTokenResult>> {
     const values = this.getOAuthValues(code);
     try {
       const googleResponse = await this.postToUrl(
@@ -49,7 +49,7 @@ export class GoogleAuthService extends BaseService {
   public async getGoogleUser(
     id_token: string,
     access_token: string,
-  ): Promise<IGoogleUserResult | undefined> {
+  ): Promise<Nullable<IGoogleUserResult>> {
     try {
       const res = await this.getGoogleUserInfo(id_token, access_token);
       return res.data;
@@ -89,9 +89,14 @@ export class GoogleAuthService extends BaseService {
       email: user.email,
     };
 
-    const tokens: Token = await this.tokenService.createAndSaveTokens(userInfo);
-    this.logger.logInfo(`User logged in with Google: ${user.email}`);
-    return { tokens, user: userInfo, picture: picture };
+    try {
+      const tokens = await this.tokenService.createAndSaveTokens(userInfo);
+      this.logger.logInfo(`User logged in with Google: ${user.email}`);
+      return { tokens, user: userInfo, picture: picture };
+    } catch (error: any) {
+      this.logger.logError("Failed to create tokens", error);
+      throw new ApiException(403, "Failed to create tokens", error);
+    }
   }
 
   private getOAuthValues(code: string): IAuthValues {
