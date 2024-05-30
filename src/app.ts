@@ -5,8 +5,9 @@ import { Logger } from "@utils/logger";
 import { mongooseOptions } from "@config/mongo.config";
 import { errorHandlerMiddleware } from "@middlewares/error.middleware";
 import { serverConfig } from "@config/server.config";
+import { ChatSocket } from "@sockets/chat.socket";
 
-export class Server {
+export class App {
     private readonly server: InversifyExpressServer;
     private readonly logger: Logger;
     private readonly port: number;
@@ -31,10 +32,11 @@ export class Server {
     public async start(): Promise<void> {
         try {
             this.validateEnvironmentVariables();
-            this.configureServer();
-            this.initializeHttpServer();
-            this.startListening();
-            await this.initializeDbConnection();
+            this.configureExpressServer();
+            this.createHttpServer();
+            this.startListeningHttpServer();
+            this.initializeDbConnection();
+            this.initializeSockets();
         } catch (error: any) {
             this.handleStartupError(error);
         }
@@ -49,17 +51,7 @@ export class Server {
         }
     }
 
-    private async initializeDbConnection(): Promise<void> {
-        try {
-            await mongoose.connect(process.env.DB_URL!, mongooseOptions);
-            this.logger.logInfo(`⚡️[database] Connected to ${process.env.DB_URL}`);
-        } catch (error: any) {
-            this.logger.logError("Error connecting to database", error);
-            throw error;
-        }
-    }
-
-    private configureServer(): void {
+    private configureExpressServer(): void {
         this.server.setConfig((app) => {
             serverConfig(app);
         });
@@ -68,11 +60,11 @@ export class Server {
         });
     }
 
-    private initializeHttpServer(): void {
+    private createHttpServer(): void {
         this.httpServer = http.createServer(this.server.build());
     }
 
-    private startListening(): void {
+    private startListeningHttpServer(): void {
         this.httpServer.listen(this.port, () => {
             this.logger.logInfo(
                 `⚡️[server]: Server is running on port ${this.port}`,
@@ -82,6 +74,20 @@ export class Server {
         this.httpServer.on("error", (error: NodeJS.ErrnoException) => {
             this.handleServerError(error);
         });
+    }
+
+    private initializeDbConnection(): void {
+        try {
+            mongoose.connect(process.env.DB_URL!, mongooseOptions);
+            this.logger.logInfo(`⚡️[database] Connected to ${process.env.DB_URL}`);
+        } catch (error: any) {
+            this.logger.logError("Error connecting to database", error);
+            throw error;
+        }
+    }
+
+    private initializeSockets(): void {
+        new ChatSocket(this.logger, this.httpServer);
     }
 
     private handleStartupError(error: Error): void {
@@ -95,7 +101,7 @@ export class Server {
             this.logger.logInfo(
                 `Server failed to start. Retrying... (${this.retryCount}/${this.maxRetries})`,
             );
-            setTimeout(() => this.startListening(), 1000);
+            setTimeout(() => this.startListeningHttpServer(), 1000);
         } else {
             this.logger.logError("Failed to start server", error);
             process.exit(1);
