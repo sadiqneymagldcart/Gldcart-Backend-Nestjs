@@ -6,7 +6,7 @@ import { mongooseOptions } from "@config/mongo.config";
 import { errorHandlerMiddleware } from "@middlewares/error.middleware";
 import { serverConfig } from "@config/server.config";
 
-export class App {
+export class Server {
     private readonly server: InversifyExpressServer;
     private readonly logger: Logger;
     private readonly port: number;
