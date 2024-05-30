@@ -4,10 +4,17 @@ import { Logger } from "@utils/logger";
 import { BaseService } from "../base/base.service";
 import { inject, injectable } from "inversify";
 import { ITokenPayload } from "@interfaces/ITokenPayload";
-import {ITokens} from "@interfaces/ITokens";
+import { ITokens } from "@interfaces/ITokens";
+import { Nullable } from "@ts/types/nullable";
 
 @injectable()
 export class TokenService extends BaseService {
+    private readonly jwtAccessSecret: string = process.env.JWT_ACCESS_SECRET!;
+    private readonly jwtRefreshSecret: string = process.env.JWT_REFRESH_SECRET!;
+
+    private readonly jwtAccessExpiration: string = "15m";
+    private readonly jwtRefreshExpiration: string = "30d";
+
     public constructor(@inject(Logger) logger: Logger) {
         super(logger);
     }
@@ -17,14 +24,14 @@ export class TokenService extends BaseService {
             payload,
             process.env.JWT_ACCESS_SECRET!,
             {
-                expiresIn: "15m",
+                expiresIn: this.jwtAccessExpiration,
             },
         );
         const refreshToken: string = jwt.sign(
             payload,
             process.env.JWT_REFRESH_SECRET!,
             {
-                expiresIn: "30d",
+                expiresIn: this.jwtRefreshExpiration,
             },
         );
         return { accessToken, refreshToken };
@@ -56,21 +63,21 @@ export class TokenService extends BaseService {
         return TokenModel.deleteOne({ refreshToken });
     }
 
-    public async findToken(refreshToken: string): Promise<Token | null> {
+    public async findToken(refreshToken: string): Promise<Nullable<Token>> {
         return TokenModel.findOne({ refreshToken });
     }
 
-    public async validateAccessToken(accessToken: string) {
+    public validateAccessToken(accessToken: string): Nullable<ITokenPayload> {
         try {
-            return jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET!) as any;
+            return <any>jwt.verify(accessToken, this.jwtAccessSecret);
         } catch (e) {
             return null;
         }
     }
 
-    public validateRefreshToken(refreshToken: string) {
+    public validateRefreshToken(refreshToken: string): Nullable<ITokenPayload> {
         try {
-            return jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as any;
+            return <any>jwt.verify(refreshToken, this.jwtRefreshSecret);
         } catch (e) {
             return null;
         }
