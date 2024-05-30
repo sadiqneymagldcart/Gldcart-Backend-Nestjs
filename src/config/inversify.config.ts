@@ -6,6 +6,10 @@ import { loadEnvironmentVariables } from "./env.config";
 import { STRIPE_SECRET_KEY, stripeConfig } from "./stripe.config";
 import { Transporter } from "nodemailer";
 
+// Middlewares
+import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
+
+
 // Services
 import { TokenService } from "@services/token/token.service";
 import { AuthService } from "@services/auth/auth.service";
@@ -58,6 +62,10 @@ function bindAuthServices(container: Container) {
     container.bind(TokenService).toSelf();
     container.bind(AuthService).toSelf();
     container.bind(GoogleAuthService).toSelf();
+}
+
+function bindMiddlewares(container: Container) {
+    container.bind(AuthenticationMiddleware).toSelf();
 }
 
 function bindStripeServices(container: Container) {
@@ -113,6 +121,7 @@ function initializeContainer(): Container {
 }
 
 function configureContainer(container: Container) {
+    bindMiddlewares(container);
     bindAuthServices(container);
     bindStorages(container);
     bindStripeServices(container);
