@@ -46,11 +46,11 @@
       "@middlewares/*": [
         "src/middlewares/*"
       ],
+      "@ts/*": [
+        "src/ts/*"
+      ],
       "@interfaces/*": [
         "src/ts/interfaces/*"
-      ],
-      "@types/*": [
-        "src/ts/types/*"
       ],
       "@enums/*": [
         "src/ts/enums/*"
