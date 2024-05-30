@@ -14,6 +14,7 @@ import { authMiddleware } from "@middlewares/auth.middleware";
 @controller("/cart", authMiddleware)
 export class CartController implements Controller {
     private readonly cartService: CartService;
+
     public constructor(@inject(CartService) cartService: CartService) {
         this.cartService = cartService;
     }
@@ -24,10 +25,13 @@ export class CartController implements Controller {
         response: express.Response,
         next: express.NextFunction,
     ) {
-        if (!request.body.userId)
+        const { userId } = request.body;
+
+        if (!userId)
             return response.status(400).json({ message: "userId is required" });
+
         try {
-            return await this.cartService.createCart(request.body);
+            return await this.cartService.createCart(userId);
         } catch (error) {
             next(error);
         }
@@ -40,8 +44,10 @@ export class CartController implements Controller {
         next: express.NextFunction,
     ) {
         const { userId } = request.body;
+
         if (!userId)
             return response.status(400).json({ message: "userId is required" });
+
         try {
             return await this.cartService.deleteCart(userId);
         } catch (error) {
@@ -55,8 +61,10 @@ export class CartController implements Controller {
         next: express.NextFunction,
     ) {
         const { userId } = request.params;
+
         if (!userId)
             return response.status(400).json({ message: "userId is required" });
+
         try {
             return await this.cartService.getCartItems(userId);
         } catch (error) {
@@ -71,10 +79,12 @@ export class CartController implements Controller {
         next: express.NextFunction,
     ) {
         const { userId, item } = request.body;
+
         if (!userId || !item)
             return response
                 .status(400)
                 .json({ message: "userId and item are required" });
+
         try {
             return await this.cartService.addItemToCart(userId, item);
         } catch (error) {
@@ -89,11 +99,12 @@ export class CartController implements Controller {
         next: express.NextFunction,
     ) {
         const { userId, productId } = request.body;
-        if (!userId || !productId) {
+
+        if (!userId || !productId)
             response
                 .status(400)
                 .json({ message: "userId and productId are required" });
-        }
+
         try {
             return await this.cartService.removeItemFromCart(userId, productId);
         } catch (error) {
@@ -108,9 +119,11 @@ export class CartController implements Controller {
         next: express.NextFunction,
     ) {
         const { userId, item } = request.body;
+
         if (!userId || !item) {
             response.status(400).json({ message: "userId, item are required" });
         }
+
         try {
             console.log(request.body);
             return await this.cartService.updateItemQuantity(userId, item);
