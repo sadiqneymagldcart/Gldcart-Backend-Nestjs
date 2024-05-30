@@ -1,7 +1,6 @@
 import { TokenService } from "../token/token.service";
 import { Logger } from "@utils/logger";
 import { BaseService } from "../base/base.service";
-import { Token } from "@models/token/Token";
 import * as bcrypt from "bcrypt";
 import { User, UserModel } from "@models/user/User";
 import { inject, injectable } from "inversify";
@@ -68,8 +67,9 @@ export class AuthService extends BaseService {
             throw new BadRequestException("There is no refresh token");
         }
         const userData = this.tokenService.validateRefreshToken(refreshToken);
+        console.log(userData);
 
-        const tokenFromDb: Token | null =
+        const tokenFromDb =
             await this.tokenService.findToken(refreshToken);
 
         if (!userData || !tokenFromDb) {
