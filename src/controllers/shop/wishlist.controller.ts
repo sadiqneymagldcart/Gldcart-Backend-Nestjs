@@ -9,11 +9,12 @@ import {
     Controller,
 } from "inversify-express-utils";
 import { WishlistService } from "@services/shop/wishlist.service";
-import { authMiddleware } from "@middlewares/auth.middleware";
+import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
 
-@controller("/wishlist", authMiddleware)
+@controller("/wishlist", AuthenticationMiddleware)
 export class WishlistController implements Controller {
     private readonly wishlistService: WishlistService;
+
     public constructor(
         @inject(WishlistService) wishlistService: WishlistService,
     ) {

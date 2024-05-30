@@ -9,9 +9,9 @@ import {
     httpDelete,
     Controller,
 } from "inversify-express-utils";
-import { authMiddleware } from "@middlewares/auth.middleware";
+import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
 
-@controller("/cart", authMiddleware)
+@controller("/cart", AuthenticationMiddleware)
 export class CartController implements Controller {
     private readonly cartService: CartService;
 
