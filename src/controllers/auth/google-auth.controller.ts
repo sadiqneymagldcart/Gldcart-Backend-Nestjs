@@ -36,7 +36,7 @@ export class GoogleAuthController implements Controller {
                 oAuthTokens.access_token,
             )) as IGoogleUserResult;
 
-            this._validateGoogleUser(googleUser, response);
+            this.validateGoogleUser(googleUser, response);
 
             const userInfo: IGoogleUserInfo = {
                 code: code,
@@ -50,15 +50,18 @@ export class GoogleAuthController implements Controller {
             console.log(userInfo);
 
             const result = await this.googleAuthService.loginGoogleUser(userInfo);
+
+            if (!result.tokens) return response.status(401).send("Unauthorized");
+
             setRefreshTokenCookie(response, result.tokens.refreshToken);
             const redirectURL = `${process.env.CLIENT_URL}` as string;
             response.redirect(redirectURL);
         } catch (error: any) {
-            this._handleAuthError(response, error);
+            this.handleAuthError(response, error);
         }
     }
 
-    private _validateGoogleUser(
+    private validateGoogleUser(
         googleUser: IGoogleUserResult | undefined,
         response: express.Response,
     ) {
@@ -72,7 +75,7 @@ export class GoogleAuthController implements Controller {
         }
     }
 
-    private _handleAuthError(response: express.Response, error: any) {
+    private handleAuthError(response: express.Response, error: any) {
         return response
             .status(500)
             .send(`Error while processing Google OAuth: ${error}`);
