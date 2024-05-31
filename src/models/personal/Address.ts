@@ -1,15 +1,5 @@
-import { Schema, Types } from "mongoose";
-
-export interface IAddress {
-    id?: Types.ObjectId;
-    recipients_name: string;
-    street_address: string;
-    city: string;
-    state?: string;
-    country: string;
-    ZIP_code: string;
-    phone_number: string;
-}
+import { IAddress } from "@ts/interfaces/IAddress";
+import { Schema } from "mongoose";
 
 export const AddressSchema = new Schema<IAddress>({
     recipients_name: {

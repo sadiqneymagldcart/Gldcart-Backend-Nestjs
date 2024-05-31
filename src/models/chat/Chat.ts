@@ -1,10 +1,7 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import {IChat} from "@interfaces/IChat";
 
-export interface Chat extends Document {
-    participants: string[];
-}
-
-const chatSchema = new Schema<Chat>(
+const chatSchema = new Schema<IChat>(
     {
         participants: [{ type: Schema.Types.ObjectId, ref: "User" }],
     },
