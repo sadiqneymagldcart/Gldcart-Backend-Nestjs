@@ -9,7 +9,7 @@ import {
     httpDelete,
     Controller,
 } from "inversify-express-utils";
-import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
+import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/cart", AuthenticationMiddleware)
 export class CartController implements Controller {

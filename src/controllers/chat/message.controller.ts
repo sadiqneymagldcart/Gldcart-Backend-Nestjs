@@ -8,8 +8,9 @@ import {
     httpPost,
     httpPut,
 } from "inversify-express-utils";
+import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
-@controller("/message")
+@controller("/message", AuthenticationMiddleware)
 export class MessageController implements Controller {
     private readonly messageService: MessageService;
     public constructor(@inject(MessageService) messageService: MessageService) {

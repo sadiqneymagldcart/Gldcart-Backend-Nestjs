@@ -2,7 +2,7 @@ import * as express from "express";
 import { inject } from "inversify";
 import { SearchService } from "@services/shop/global-search.service";
 import { Controller, controller, httpGet } from "inversify-express-utils";
-import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
+import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/search", AuthenticationMiddleware)
 export class SearchController implements Controller {

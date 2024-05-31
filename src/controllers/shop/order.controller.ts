@@ -8,7 +8,7 @@ import {
     httpPost,
     httpPut,
 } from "inversify-express-utils";
-import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
+import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/order", AuthenticationMiddleware)
 export class OrderController implements Controller {
