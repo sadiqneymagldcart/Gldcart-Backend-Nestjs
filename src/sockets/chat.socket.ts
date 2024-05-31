@@ -1,9 +1,9 @@
 import * as http from "http";
+import { container } from "@config/inversify.config";
 import { BaseSocket } from "./base.socket";
 import { Socket } from "socket.io";
 import { Logger } from "@utils/logger";
 import { ChatConfig } from "@config/socket.config";
-import { container } from "@config/inversify.config";
 import { ChatService } from "@services/chat/chat.service";
 import { MessageService } from "@services/chat/message.service";
 import { IMessage } from "@ts/interfaces/IMessage";
@@ -32,11 +32,20 @@ class ChatSocket extends BaseSocket {
         const userId = socket.handshake.query.userId as string;
         this.logger.logInfo("User connected", { userId });
         await this.updateUserOnlineStatus(socket, userId, true);
-        await this.handleChatsList(socket, userId);
         await this.handleCommonEvents(socket);
+        await this.handleChatsList(socket, userId);
         await this.handleChatMessage(socket);
         await this.watchNewChatEvent(socket);
       });
+  }
+
+  private async handleChatsList(socket: Socket, userId: string) {
+    try {
+      const chats = await this.chatService.getChats(userId);
+      socket.emit(this.chatsEvent, chats);
+    } catch (error: any) {
+      this.handleError(socket, error);
+    }
   }
 
   private async handleChatMessage(socket: Socket) {
@@ -55,15 +64,6 @@ class ChatSocket extends BaseSocket {
     await this.chatService.watchChatCollectionChanges((chat) => {
       socket.emit(this.newChatEvent, chat);
     });
-  }
-
-  private async handleChatsList(socket: Socket, userId: string) {
-    try {
-      const chats = await this.chatService.getChats(userId);
-      socket.emit(this.chatsEvent, chats);
-    } catch (error: any) {
-      this.handleError(socket, error);
-    }
   }
 }
 export { ChatSocket };
