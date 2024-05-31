@@ -20,18 +20,11 @@ export class AuthenticationMiddleware extends BaseMiddleware {
     ): void {
         const authorizationHeader = request.headers.authorization as string;
 
-        if (!authorizationHeader) {
-            console.error("No access token was provided");
+        if (!authorizationHeader || !authorizationHeader.startsWith("Bearer")) {
             return next(new UnauthorizedException());
         }
 
-        const parts = authorizationHeader.split(" ");
-        if (parts.length !== 2 || parts[0] !== "Bearer") {
-            console.error("Invalid authorization header format");
-            return next(new UnauthorizedException());
-        }
-
-        const accessToken = parts[1];
+        const accessToken = this.getAccessTokenFromHeader(authorizationHeader);
 
         const userData = this.tokenService.validateAccessToken(accessToken);
 
@@ -40,5 +33,11 @@ export class AuthenticationMiddleware extends BaseMiddleware {
         }
         response.locals.user = userData;
         next();
+    }
+
+    private getAccessTokenFromHeader(
+        authorizationHeader: string,
+    ): string {
+        return (authorizationHeader.split(" "))[1];
     }
 }
