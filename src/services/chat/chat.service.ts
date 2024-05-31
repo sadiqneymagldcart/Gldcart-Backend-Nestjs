@@ -1,10 +1,11 @@
-import {inject, injectable} from "inversify";
-import {Chat, ChatModel} from "@models/chat/Chat";
-import {BaseService} from "../base/base.service";
-import {Logger} from "@utils/logger";
+import { inject, injectable } from "inversify";
+import { Chat, ChatModel } from "@models/chat/Chat";
+import { BaseService } from "../base/base.service";
+import { Logger } from "@utils/logger";
 
 @injectable()
 export class ChatService extends BaseService {
+
   public constructor(@inject(Logger) logger: Logger) {
     super(logger);
   }
@@ -21,7 +22,7 @@ export class ChatService extends BaseService {
 
   public async checkChatForUsers(users: string[]): Promise<Chat | null> {
     return ChatModel.findOne({
-      participants: {$all: users},
+      participants: { $all: users },
     });
   }
 
