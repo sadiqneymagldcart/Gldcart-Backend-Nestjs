@@ -1,14 +1,7 @@
-import mongoose, { Document, Schema } from "mongoose";
+import { IMessage } from "@ts/interfaces/IMessage";
+import mongoose, { Schema } from "mongoose";
 
-export interface Message extends Document {
-    chatId: Schema.Types.ObjectId | string;
-    text?: string;
-    files?: any;
-    senderId: Schema.Types.ObjectId | string;
-    recipientId: Schema.Types.ObjectId | string;
-}
-
-const messageSchema = new Schema<Message>(
+const messageSchema = new Schema<IMessage>(
     {
         chatId: { type: Schema.Types.ObjectId, ref: "Chat", required: true },
         text: { type: String },
@@ -28,4 +21,4 @@ messageSchema.index({
 export const MessageModel = mongoose.model(
     "Message",
     messageSchema,
-) as mongoose.Model<Message>;
+) as mongoose.Model<IMessage>;
