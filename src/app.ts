@@ -29,7 +29,7 @@ export class App {
         return this.httpServer;
     }
 
-    public async start(): Promise<void> {
+    public start(): void {
         try {
             this.validateEnvironmentVariables();
             this.configureExpressServer();
