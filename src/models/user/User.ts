@@ -1,30 +1,9 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import mongoose, { Model, Schema } from "mongoose";
 import validator from "validator";
-import { AddressSchema, IAddress } from "../personal/Address";
+import { AddressSchema } from "../personal/Address";
+import { IUser } from "@ts/interfaces/IUser";
 
-export interface User extends Document {
-    type: string;
-    name: string;
-    surname: string;
-    email: string;
-    addresses: IAddress[];
-    profile_picture: string;
-    password: string;
-    wishlist: string[];
-    passwordResetToken?: string;
-    activeSubscription: string | null;
-    BIO?: string;
-    phone_number?: string;
-    status?: string;
-    address?: string;
-    document_images?: string[];
-    verification_token?: string;
-    confirmed?: boolean;
-    verified?: boolean;
-    is_online?: boolean;
-}
-
-const userSchema = new Schema<User>({
+const userSchema = new Schema<IUser>({
     type: {
         type: String,
         required: [true, "Client's type is undefined"],
@@ -111,4 +90,4 @@ const userSchema = new Schema<User>({
     },
 });
 
-export const UserModel = mongoose.model("User", userSchema) as Model<User>;
+export const UserModel = mongoose.model("User", userSchema) as Model<IUser>;
