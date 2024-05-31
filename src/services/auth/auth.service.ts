@@ -2,22 +2,26 @@ import { TokenService } from "../token/token.service";
 import { Logger } from "@utils/logger";
 import { BaseService } from "../base/base.service";
 import * as bcrypt from "bcrypt";
-import { User, UserModel } from "@models/user/User";
 import { inject, injectable } from "inversify";
-import {ITokens} from "@interfaces/ITokens";
-import {BadRequestException} from "@exceptions/bad-request.exception";
-import {InternalServerErrorException} from "@exceptions/internal-server-error.exception";
+import { ITokens } from "@interfaces/ITokens";
+import { BadRequestException } from "@exceptions/bad-request.exception";
+import { InternalServerErrorException } from "@exceptions/internal-server-error.exception";
+import { UserService } from "@services/user/user.service";
+import { IUser } from "@ts/interfaces/IUser";
 
 @injectable()
 export class AuthService extends BaseService {
     private readonly tokenService: TokenService;
+    private readonly userService: UserService;
 
     public constructor(
         @inject(TokenService) tokenService: TokenService,
         @inject(Logger) logger: Logger,
+        @inject(UserService) userService: UserService,
     ) {
         super(logger);
         this.tokenService = tokenService;
+        this.userService = userService;
     }
 
     public async register(
@@ -32,7 +36,8 @@ export class AuthService extends BaseService {
             throw new BadRequestException("User already exists");
         }
         const hashedPassword: string = await this.hashPassword(password);
-        const user: User = <User>await UserModel.create({
+
+        const user = await this.userService.addUser({
             type,
             name,
             surname,
@@ -43,7 +48,8 @@ export class AuthService extends BaseService {
     }
 
     public async login(email: string, password: string) {
-        const user: User = <User>await UserModel.findOne({ email });
+        const user = await this.userService.getUserByEmail(email);
+
         if (user) {
             const auth = await bcrypt.compare(password, user.password);
             if (auth) {
@@ -68,20 +74,23 @@ export class AuthService extends BaseService {
         }
         const userData = this.tokenService.validateRefreshToken(refreshToken);
 
-        const tokenFromDb =
-            await this.tokenService.findToken(refreshToken);
+        const tokenFromDb = await this.tokenService.findToken(refreshToken);
 
         if (!userData || !tokenFromDb) {
             this.logger.logError("Refresh token is invalid");
             throw new BadRequestException("Refresh token is invalid");
         }
-        const user = <User>await UserModel.findById(userData.id);
+        const user = await this.userService.getUserById(userData.id);
+        if (!user) {
+            this.logger.logError("User not found");
+            throw new BadRequestException("User not found");
+        }
 
         return this.formUserLoginResponse(user);
     }
 
     private async doesUserExist(email: string) {
-        const existingUser = await UserModel.findOne({ email });
+        const existingUser = await this.userService.getUserByEmail(email);
         return Boolean(existingUser);
     }
 
@@ -94,7 +103,7 @@ export class AuthService extends BaseService {
         }
     }
 
-    private async formUserLoginResponse(user: User, logMessage?: string) {
+    private async formUserLoginResponse(user: IUser, logMessage?: string) {
         try {
             const userObj = {
                 id: user._id,

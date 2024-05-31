@@ -3,23 +3,28 @@ import { Logger } from "@utils/logger";
 import { MailService } from "../contact/mail.service";
 import * as bcrypt from "bcrypt";
 import { inject, injectable } from "inversify";
-import { User, UserModel } from "@models/user/User";
+import { UserModel } from "@models/user/User";
 import { BadRequestException } from "@exceptions/bad-request.exception";
+import { IUser } from "@ts/interfaces/IUser";
+import { UserService } from "@services/user/user.service";
 
 @injectable()
 export class PasswordService extends BaseService {
     private readonly mailService: MailService;
+    private readonly userService: UserService;
 
     public constructor(
         @inject(Logger) logger: Logger,
         @inject(MailService) mailService: MailService,
+        @inject(UserService) userService: UserService,
     ) {
         super(logger);
         this.mailService = mailService;
+        this.userService = userService;
     }
 
     public async changePasswordWithToken(token: string, newPassword: string) {
-        const user = <User>await UserModel.findOne({ passwordResetToken: token });
+        const user = await this.userService.getUserByToken(token);
         if (!user) {
             throw new BadRequestException("Invalid token");
         }
@@ -33,7 +38,7 @@ export class PasswordService extends BaseService {
         oldPassword: string,
         newPassword: string,
     ) {
-        const user = <User>await UserModel.findOne({ email });
+        const user = <IUser>await UserModel.findOne({ email });
         if (user) {
             const auth: boolean = await bcrypt.compare(oldPassword, user.password);
             if (auth) {
@@ -49,7 +54,7 @@ export class PasswordService extends BaseService {
     }
 
     public async requestPasswordReset(email: string, token: string) {
-        const user = <User>(
+        const user = <IUser>(
             await UserModel.findOneAndUpdate({ email }, { passwordResetToken: token })
         );
         if (!user) {
