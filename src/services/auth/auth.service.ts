@@ -67,7 +67,6 @@ export class AuthService extends BaseService {
             throw new BadRequestException("There is no refresh token");
         }
         const userData = this.tokenService.validateRefreshToken(refreshToken);
-        console.log(userData);
 
         const tokenFromDb =
             await this.tokenService.findToken(refreshToken);

@@ -49,7 +49,6 @@ export class TokenService extends BaseService {
     public async createAndSaveTokens(payload: ITokenPayload): Promise<Token> {
         try {
             const { refreshToken } = this.createTokens(payload);
-            console.log(refreshToken);
             return this.saveToken(payload.id, refreshToken);
         } catch (error) {
             this.logger.logError(`${error}`);
