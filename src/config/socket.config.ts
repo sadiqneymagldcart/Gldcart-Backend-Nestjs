@@ -6,10 +6,9 @@ const SocketConfig = Object.freeze({
     ALLOWED_CREDENTIALS: true,
     EVENTS: {
         JOIN_ROOM: "join",
-        MESSAGE: "message",
         LEAVE_ROOM: "leave",
         DISCONNECT: "disconnect",
-    } 
+    },
 });
 
 const ServerOptions = {
@@ -19,11 +18,12 @@ const ServerOptions = {
         methods: SocketConfig.ALLOWED_METHODS,
         credentials: SocketConfig.ALLOWED_CREDENTIALS,
     },
-}
+};
 
 const ChatConfig = Object.freeze({
     NAMESPACE: "chat",
     EVENTS: {
+        MESSAGE: "message",
         CONNECTION: "connection",
         NEW_CHAT: "newChat",
         CHATS: "chats",
