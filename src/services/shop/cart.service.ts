@@ -16,7 +16,7 @@ export class CartService extends BaseService {
 
   public async deleteCart(userId: string) {
     this.logger.logInfo(`Deleting cart for user ${userId}`);
-    return CartModel.findOneAndDelete({userId});
+    return CartModel.findOneAndDelete({ userId });
   }
 
   public async addItemToCart(userId: string, item: CartItem) {
@@ -46,18 +46,18 @@ export class CartService extends BaseService {
     item: CartItem,
   ) {
     return CartModel.findOneAndUpdate(
-        {userId, "items.product": productId},
-        {$set: {"items.$": item}},
-        {new: true},
+      { userId, "items.product": productId },
+      { $set: { "items.$": item } },
+      { new: true },
     );
   }
 
   public async removeItemFromCart(userId: string, productId: string) {
     this.logger.logInfo(`Removing item from cart for user ${userId}`);
     return CartModel.findOneAndUpdate(
-        {userId},
-        {$pull: {items: {product: productId}}},
-        {new: true},
+      { userId },
+      { $pull: { items: { product: productId } } },
+      { new: true },
     ).populate("items.product");
   }
 
@@ -67,7 +67,7 @@ export class CartService extends BaseService {
       select: "title product_name price",
     });
 
-    if(!cart) {
+    if (!cart) {
       throw new Error("Cart does not exist");
     }
 
@@ -82,7 +82,7 @@ export class CartService extends BaseService {
       select: "title product_name price",
     });
 
-    if(!existingCart || !existingCart.items || !existingCart.items.length) {
+    if (!existingCart || !existingCart.items || !existingCart.items.length) {
       throw new Error("Cart does not exist");
     }
 
@@ -94,7 +94,7 @@ export class CartService extends BaseService {
     existingCart.items[existingItemIndex].quantity = item.quantity;
     const cart: Cart = await existingCart.save();
 
-    return {cart, subtotal: this.getCartTotalAmount(cart)};
+    return { cart, subtotal: this.getCartTotalAmount(cart) };
   }
 
   private getCartTotalAmount(cart: Cart): number {
