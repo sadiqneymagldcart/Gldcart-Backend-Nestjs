@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
 import { Logger } from "@utils/logger";
-import {UserModel} from "@models/user/User";
+import { UserModel } from "@models/user/User";
 import { BaseService } from "../base/base.service";
-import {BadRequestException} from "@exceptions/bad-request.exception";
+import { BadRequestException } from "@exceptions/bad-request.exception";
 
 @injectable()
 export class ProfileService extends BaseService {
