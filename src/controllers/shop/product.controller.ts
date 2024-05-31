@@ -82,7 +82,6 @@ export class ProductController implements Controller {
     ) {
         const productId = request.params.productId;
         try {
-            console.log(productId);
             return await this.productService.getProductById(productId);
         } catch (error) {
             next(error);
