@@ -1,15 +1,22 @@
 import { BaseService } from "../base/base.service";
 import { Logger } from "@utils/logger";
-import { IAddress } from "@models/personal/Address";
 import { Types } from "mongoose";
 import { inject, injectable } from "inversify";
-import {User, UserModel} from "@models/user/User";
-import {BadRequestException} from "@exceptions/bad-request.exception";
+import { UserModel } from "@models/user/User";
+import { BadRequestException } from "@exceptions/bad-request.exception";
+import { UserService } from "@services/user/user.service";
+import { IAddress } from "@ts/interfaces/IAddress";
 
 @injectable()
 export class AddressService extends BaseService {
-    public constructor(@inject(Logger) logger: Logger) {
+    private readonly userService: UserService;
+
+    public constructor(
+        @inject(Logger) logger: Logger,
+        @inject(UserService) userService: UserService,
+    ) {
         super(logger);
+        this.userService = userService;
     }
 
     public async addAddress(userId: string, addressData: IAddress) {
@@ -18,7 +25,7 @@ export class AddressService extends BaseService {
             throw new BadRequestException("Invalid userId");
         }
 
-        const user = await UserModel.findById(userId);
+        const user = await this.userService.getUserById(userId);
 
         if (!user) {
             this.logger.logError(`User ${userId} not found while adding address`);
@@ -46,7 +53,7 @@ export class AddressService extends BaseService {
             throw new BadRequestException("Invalid userId or addressId");
         }
 
-        const user: User | null = await UserModel.findById(userId);
+        const user = await this.userService.getUserById(userId); 
 
         if (!user) {
             this.logger.logError(
@@ -55,7 +62,7 @@ export class AddressService extends BaseService {
             throw new BadRequestException("User not found");
         }
         const addressIndex = user.addresses.findIndex(
-            (address) => String(address.id) === String(addressId),
+            (address: IAddress) => address._id?.toString() === addressId,
         );
         if (addressIndex === -1) {
             this.logger.logError(`Address was not found for user ${userId}`);
@@ -72,7 +79,7 @@ export class AddressService extends BaseService {
             throw new BadRequestException("Invalid userId");
         }
 
-        const user: User | null = await UserModel.findById(userId);
+        const user = await this.userService.getUserById(userId);
         if (!user) {
             this.logger.logError(
                 `User not found while fetching addresses for ID: ${userId}`,
@@ -99,7 +106,7 @@ export class AddressService extends BaseService {
         }
 
         const addressIndex = user.addresses.findIndex(
-            (address) => String(address.id) === String(addressId),
+            (address: IAddress) => address._id?.toString() === addressId,
         );
         if (addressIndex === -1) {
             this.logger.logError(`Address not found for user ${userId}`);
