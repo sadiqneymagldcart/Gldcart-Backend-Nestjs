@@ -47,7 +47,6 @@ export class GoogleAuthController implements Controller {
                 picture: googleUser.picture,
                 password: this.googlePassword,
             };
-            console.log(userInfo);
 
             const result = await this.googleAuthService.loginGoogleUser(userInfo);
 
