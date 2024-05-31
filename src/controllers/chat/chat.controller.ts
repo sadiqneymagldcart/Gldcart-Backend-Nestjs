@@ -2,8 +2,9 @@ import * as express from "express";
 import { Controller, controller, httpGet, httpPost } from "inversify-express-utils";
 import { inject } from "inversify";
 import { ChatService } from "@services/chat/chat.service";
+import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
-@controller("/chat")
+@controller("/chat", AuthenticationMiddleware)
 export class ChatController implements Controller {
     private readonly chatService: ChatService;
     public constructor(@inject(ChatService) chatService: ChatService) {

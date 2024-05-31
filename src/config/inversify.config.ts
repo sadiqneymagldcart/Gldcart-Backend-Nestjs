@@ -7,8 +7,7 @@ import { STRIPE_SECRET_KEY, stripeConfig } from "./stripe.config";
 import { Transporter } from "nodemailer";
 
 // Middlewares
-import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
-
+import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 // Services
 import { TokenService } from "@services/token/token.service";
@@ -56,7 +55,7 @@ import "@controllers/shop/wishlist.controller";
 import "@controllers/files/file.controller";
 import "@controllers/chat/chat.controller";
 import "@controllers/chat/message.controller";
-import "@controllers/files/test.controller"
+import "@controllers/files/test.controller";
 
 function bindAuthServices(container: Container) {
     container.bind(TokenService).toSelf();
@@ -69,14 +68,20 @@ function bindMiddlewares(container: Container) {
 }
 
 function bindStripeServices(container: Container) {
-    container.bind(Stripe).toDynamicValue(() => new Stripe(STRIPE_SECRET_KEY as string, stripeConfig));
+    container
+        .bind(Stripe)
+        .toDynamicValue(
+            () => new Stripe(STRIPE_SECRET_KEY as string, stripeConfig),
+        );
     container.bind(StripeService).toSelf();
     container.bind(StripeSubscriptionService).toSelf();
     container.bind(StripeWebhookService).toSelf();
 }
 
 function bindMailServices(container: Container) {
-    container.bind<Transporter>("NodemailerTransporter").toConstantValue(configureNodemailer());
+    container
+        .bind<Transporter>("NodemailerTransporter")
+        .toConstantValue(configureNodemailer());
     container.bind(MailService).toSelf();
 }
 
@@ -132,7 +137,6 @@ function configureContainer(container: Container) {
     bindVerificationServices(container);
     bindChatServices(container);
     container.bind(TestService).toSelf();
-    
 }
 
 loadEnvironmentVariables();
@@ -141,4 +145,3 @@ const container = initializeContainer();
 configureContainer(container);
 
 export { container };
-
