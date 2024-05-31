@@ -1,5 +1,10 @@
 import * as express from "express";
-import { Controller, controller, httpGet, httpPost } from "inversify-express-utils";
+import {
+    Controller,
+    controller,
+    httpGet,
+    httpPost,
+} from "inversify-express-utils";
 import { inject } from "inversify";
 import { ChatService } from "@services/chat/chat.service";
 import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
@@ -7,20 +12,16 @@ import { AuthenticationMiddleware } from "@middlewares/authentication.middleware
 @controller("/chat", AuthenticationMiddleware)
 export class ChatController implements Controller {
     private readonly chatService: ChatService;
+
     public constructor(@inject(ChatService) chatService: ChatService) {
         this.chatService = chatService;
     }
 
     @httpGet("/")
-    public async getChats(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
+    public async getChats(request: express.Request, next: express.NextFunction) {
+        const userId = request.query.userId as string;
         try {
-            const userId = request.query.userId as string;
-            const chats = await this.chatService.getChats(userId);
-            response.json(chats);
+            return await this.chatService.getChats(userId);
         } catch (error) {
             next(error);
         }
@@ -28,20 +29,19 @@ export class ChatController implements Controller {
 
     @httpGet("/:senderId/:receiverId")
     public async getChatForUsers(
-        req: express.Request,
-        res: express.Response,
+        request: express.Request,
+        response: express.Response,
         next: express.NextFunction,
     ) {
+        const sender = request.params.senderId;
+        const receiver = request.params.receiverId;
         try {
-            const sender = req.params.senderId;
-            const receiver = req.params.receiverId;
-            console.log(sender, receiver);
             const chat = await this.chatService.checkChatForUsers([sender, receiver]);
             if (!chat) {
-                res.status(404).json({ message: "Chat not found" });
+                response.status(404).json({ message: "Chat not found" });
                 return;
             }
-            res.status(200).json(chat);
+            return chat;
         } catch (error) {
             next(error);
         }
@@ -49,12 +49,12 @@ export class ChatController implements Controller {
 
     @httpGet("/delete")
     public async deleteAllChats(
-        res: express.Response,
+        response: express.Response,
         next: express.NextFunction,
     ) {
         try {
             await this.chatService.deleteAllChats();
-            res.status(204).send();
+            response.status(204).send();
         } catch (error) {
             next(error);
         }
@@ -62,14 +62,12 @@ export class ChatController implements Controller {
 
     @httpPost("/")
     public async createChat(
-        req: express.Request,
-        res: express.Response,
+        request: express.Request,
         next: express.NextFunction,
     ) {
+        const participants = request.body.participants as string[];
         try {
-            const participants = req.body.participants as string[];
-            const chat = await this.chatService.createChat(participants);
-            res.status(201).json(chat);
+            return await this.chatService.createChat(participants);
         } catch (error) {
             next(error);
         }
@@ -77,14 +75,12 @@ export class ChatController implements Controller {
 
     @httpGet("/:chatId")
     public async getChatById(
-        req: express.Request,
-        res: express.Response,
+        request: express.Request,
         next: express.NextFunction,
     ) {
+        const chatId = request.params.chatId;
         try {
-            const chatId = req.params.chatId;
-            const chat = await this.chatService.getChatById(chatId);
-            res.json(chat);
+            return await this.chatService.getChatById(chatId);
         } catch (error) {
             next(error);
         }
