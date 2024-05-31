@@ -10,7 +10,7 @@ import {
 import { ReviewService } from "@services/shop/review.service";
 import * as express from "express";
 import { Review } from "@models/shop/review/Review";
-import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
+import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/review", AuthenticationMiddleware)
 export class ReviewController implements Controller {

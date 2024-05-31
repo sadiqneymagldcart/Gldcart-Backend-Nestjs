@@ -2,7 +2,7 @@ import * as express from "express";
 import { StripeSubscriptionService } from "@services/payment/stripe-subscription.service";
 import { inject } from "inversify";
 import { Controller, controller, httpGet, httpPut } from "inversify-express-utils";
-import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
+import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/subscription", AuthenticationMiddleware)
 export class SubscriptionController implements Controller {

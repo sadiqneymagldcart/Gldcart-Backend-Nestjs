@@ -11,7 +11,7 @@ import { inject } from "inversify";
 import { multerMiddleware } from "@middlewares/malter.middleware";
 import { Product } from "@models/shop/product/Product";
 import { AwsStorage } from "@storages/aws.storage";
-import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
+import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/products", AuthenticationMiddleware)
 export class ProductController implements Controller {
