@@ -1,13 +1,11 @@
 import * as http from "http";
 import { Server, Socket } from "socket.io";
 import { Logger } from "@utils/logger";
-import { Message, MessageModel } from "@models/chat/Message";
 import { UserModel } from "@models/user/User";
 import { ServerOptions, SocketConfig } from "@config/socket.config";
 
 abstract class BaseSocket {
   private readonly joinEvent: string = SocketConfig.EVENTS.JOIN_ROOM;
-  private readonly messageEvent: string = SocketConfig.EVENTS.MESSAGE;
   private readonly leaveEvent: string = SocketConfig.EVENTS.LEAVE_ROOM;
   private readonly disconnectEvent: string = SocketConfig.EVENTS.DISCONNECT;
 
@@ -21,12 +19,9 @@ abstract class BaseSocket {
 
   protected abstract setupSocket(): void;
 
-  protected async handleEvents(socket: Socket) {
+  protected async handleCommonEvents(socket: Socket) {
     socket.on(this.joinEvent, (chatId: string) =>
       this.handleJoin(socket, chatId),
-    );
-    socket.on(this.messageEvent, (message: Message) =>
-      this.handleMessage(socket, message),
     );
     socket.on(this.leaveEvent, (chatId: string) =>
       this.handleLeave(socket, chatId),
@@ -48,16 +43,6 @@ abstract class BaseSocket {
     try {
       this.logger.logInfo("User joined chat", { chat_id: chatId });
       socket.join(chatId);
-    } catch (error) {
-      this.handleError(socket, error as Error);
-    }
-  }
-
-  protected async handleMessage(socket: Socket, message: Message) {
-    try {
-      this.logger.logInfo("Message received", message);
-      const savedMessage = await MessageModel.create(message);
-      socket.to(message.chatId as string).emit("message", savedMessage);
     } catch (error) {
       this.handleError(socket, error as Error);
     }
