@@ -10,7 +10,7 @@ import { RentingService } from "@services/shop/renting.service";
 import { multerMiddleware } from "@middlewares/malter.middleware";
 import { Renting } from "@models/shop/product/Renting";
 import { AwsStorage } from "@storages/aws.storage";
-import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
+import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/renting", AuthenticationMiddleware)
 export class RentingController implements Controller {

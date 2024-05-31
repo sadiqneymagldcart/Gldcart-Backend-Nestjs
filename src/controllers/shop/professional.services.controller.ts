@@ -10,7 +10,7 @@ import { ProfessionalServicesService } from "@services/shop/professional-service
 import { FileService } from "@services/shop/image.service";
 import { multerMiddleware } from "@/middlewares/malter.middleware";
 import { ProfessionalService } from "@/models/shop/product/ProfessionalService";
-import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
+import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/professional-services", AuthenticationMiddleware)
 export class ProfessionalServicesController implements Controller {

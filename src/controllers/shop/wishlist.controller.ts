@@ -9,7 +9,7 @@ import {
     Controller,
 } from "inversify-express-utils";
 import { WishlistService } from "@services/shop/wishlist.service";
-import { AuthenticationMiddleware } from "@middlewares/auth.middleware";
+import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/wishlist", AuthenticationMiddleware)
 export class WishlistController implements Controller {
