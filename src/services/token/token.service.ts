@@ -19,7 +19,7 @@ export class TokenService extends BaseService {
         super(logger);
     }
 
-    createTokens(payload: ITokenPayload): ITokens {
+    public createTokens(payload: ITokenPayload): ITokens {
         const accessToken: string = jwt.sign(
             payload,
             process.env.JWT_ACCESS_SECRET!,
@@ -68,18 +68,10 @@ export class TokenService extends BaseService {
     }
 
     public validateAccessToken(accessToken: string): Nullable<ITokenPayload> {
-        try {
-            return <any>jwt.verify(accessToken, this.jwtAccessSecret);
-        } catch (e) {
-            return null;
-        }
+        return <any>jwt.verify(accessToken, this.jwtAccessSecret);
     }
 
     public validateRefreshToken(refreshToken: string): Nullable<ITokenPayload> {
-        try {
-            return <any>jwt.verify(refreshToken, this.jwtRefreshSecret);
-        } catch (e) {
-            return null;
-        }
+        return <any>jwt.verify(refreshToken, this.jwtRefreshSecret);
     }
 }
