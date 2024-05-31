@@ -34,6 +34,7 @@ import { SearchService } from "@services/shop/global-search.service";
 import { ChatService } from "@services/chat/chat.service";
 import { MessageService } from "@services/chat/message.service";
 import { TestService } from "@services/base/test.service";
+import { UserService } from "@services/user/user.service";
 
 // Controllers
 import "@controllers/auth/auth.controller";
@@ -56,6 +57,10 @@ import "@controllers/files/file.controller";
 import "@controllers/chat/chat.controller";
 import "@controllers/chat/message.controller";
 import "@controllers/files/test.controller";
+
+function bindUserServices(container: Container) {
+    container.bind(UserService).toSelf();
+}
 
 function bindAuthServices(container: Container) {
     container.bind(TokenService).toSelf();
@@ -127,6 +132,7 @@ function initializeContainer(): Container {
 
 function configureContainer(container: Container) {
     bindMiddlewares(container);
+    bindUserServices(container);
     bindAuthServices(container);
     bindStorages(container);
     bindStripeServices(container);
