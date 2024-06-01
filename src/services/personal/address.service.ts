@@ -2,7 +2,6 @@ import { BaseService } from "../base/base.service";
 import { Logger } from "@utils/logger";
 import { Types } from "mongoose";
 import { inject, injectable } from "inversify";
-import { UserModel } from "@models/user/User";
 import { BadRequestException } from "@exceptions/bad-request.exception";
 import { UserService } from "@services/user/user.service";
 import { IAddress } from "@models/personal/Address";
@@ -53,7 +52,7 @@ export class AddressService extends BaseService {
             throw new BadRequestException("Invalid userId or addressId");
         }
 
-        const user = await this.userService.getUserById(userId); 
+        const user = await this.userService.getUserById(userId);
 
         if (!user) {
             this.logger.logError(
@@ -97,7 +96,7 @@ export class AddressService extends BaseService {
             throw new BadRequestException("Invalid userId or addressId");
         }
 
-        const user = await UserModel.findById(userId);
+        const user = await this.userService.getUserById(userId);
         if (!user) {
             this.logger.logError(
                 `User ${userId} not found while deleting address for email`,

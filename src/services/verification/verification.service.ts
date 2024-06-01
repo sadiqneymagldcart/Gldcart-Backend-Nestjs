@@ -2,20 +2,23 @@ import { v4 as uuidv4 } from "uuid";
 import { inject, injectable } from "inversify";
 import { Logger } from "@utils/logger";
 import { MailService } from "../contact/mail.service";
-import {UserModel} from "@models/user/User";
 import { BaseService } from "../base/base.service";
-import {BadRequestException} from "@exceptions/bad-request.exception";
+import { BadRequestException } from "@exceptions/bad-request.exception";
+import { UserService } from "@services/user/user.service";
 
 @injectable()
 export class VerificationService extends BaseService {
     private readonly mailService: MailService;
+    private readonly userService: UserService;
 
     public constructor(
         @inject(Logger) logger: Logger,
         @inject(MailService) mailService: MailService,
+        @inject(UserService) userService: UserService,
     ) {
         super(logger);
         this.mailService = mailService;
+        this.userService = userService;
     }
 
     public async sendVerificationEmail(
@@ -29,7 +32,7 @@ export class VerificationService extends BaseService {
             content: file.buffer,
         }));
 
-        const user = await UserModel.findByIdAndUpdate(userId, {
+        const user = await this.userService.getUserByIdAndUpdate(userId, {
             verification_token: token,
         });
 
@@ -46,10 +49,12 @@ export class VerificationService extends BaseService {
     }
 
     public async verifyUser(token: string) {
-        const user = await UserModel.findOne({ verification_token: token });
-        if (!user) {
-            throw new BadRequestException("Invalid token");
-        }
+        const user = await this.userService.getUserByData({
+            verification_token: token,
+        });
+
+        if (!user) throw new BadRequestException("Invalid token");
+
         user.confirmed = true;
         user.verification_token = undefined;
         await user.save();
