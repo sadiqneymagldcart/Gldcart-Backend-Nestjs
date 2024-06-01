@@ -5,7 +5,7 @@ At the moment, all missed packets are stored in memory. Use Redis Streams or Mon
 
 3. [ ] Set up OTP verification via third-party service.
 
-4. [ ] The UserModel must be used only in the UserService 
+4. [x] The UserModel must be used only in the UserService 
 
 5. [ ] Sockets have to be injectable => set up http server elsewhere (inversify.config)
 
