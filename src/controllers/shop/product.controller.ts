@@ -9,7 +9,7 @@ import {
 import { ProductService } from "@services/shop/product.service";
 import { inject } from "inversify";
 import { multerMiddleware } from "@middlewares/malter.middleware";
-import { Product } from "@models/shop/product/Product";
+import { IProduct } from "@models/shop/product/Product";
 import { AwsStorage } from "@storages/aws.storage";
 import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
@@ -34,7 +34,7 @@ export class ProductController implements Controller {
         const files = request.files as Express.Multer.File[];
         try {
             const images = await this.awsStorage.upload(files);
-            const productData: Product = {
+            const productData: IProduct = {
                 ...request.body,
                 images: images,
             };

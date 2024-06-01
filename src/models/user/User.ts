@@ -1,7 +1,28 @@
-import mongoose, { Model, Schema } from "mongoose";
+import mongoose, { Model, Schema, Document } from "mongoose";
 import validator from "validator";
-import { AddressSchema } from "../personal/Address";
-import { IUser } from "@ts/interfaces/IUser";
+import { AddressSchema, IAddress } from "../personal/Address";
+
+interface IUser extends Document {
+    type: string;
+    name: string;
+    surname: string;
+    email: string;
+    addresses: IAddress[];
+    profile_picture: string;
+    password: string;
+    wishlist: string[];
+    passwordResetToken?: string;
+    activeSubscription: string | null;
+    BIO?: string;
+    phone_number?: string;
+    status?: string;
+    address?: string;
+    document_images?: string[];
+    verification_token?: string;
+    confirmed?: boolean;
+    verified?: boolean;
+    is_online?: boolean;
+}
 
 const userSchema = new Schema<IUser>({
     type: {
@@ -90,4 +111,6 @@ const userSchema = new Schema<IUser>({
     },
 });
 
-export const UserModel = mongoose.model("User", userSchema) as Model<IUser>;
+const UserModel = mongoose.model("User", userSchema) as Model<IUser>;
+
+export { IUser, UserModel };

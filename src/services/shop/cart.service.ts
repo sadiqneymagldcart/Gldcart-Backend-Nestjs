@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { Logger } from "@utils/logger";
-import { Cart, CartItem, CartModel } from "@models/shop/cart/Cart";
+import { ICart, ICartItem, CartModel } from "@models/shop/cart/Cart";
 import { BaseService } from "../base/base.service";
 
 @injectable()
@@ -9,7 +9,7 @@ export class CartService extends BaseService {
     super(logger);
   }
 
-  public async createCart(cart: Cart) {
+  public async createCart(cart: ICart) {
     this.logger.logInfo(`Creating cart for user ${cart.userId}`);
     return await CartModel.create(cart);
   }
@@ -19,7 +19,7 @@ export class CartService extends BaseService {
     return CartModel.findOneAndDelete({ userId });
   }
 
-  public async addItemToCart(userId: string, item: CartItem) {
+  public async addItemToCart(userId: string, item: ICartItem) {
     console.log("Adding item to cart", userId, item);
     const existingCart = await CartModel.findOne({ userId });
 
@@ -43,7 +43,7 @@ export class CartService extends BaseService {
   public async updateCartItem(
     userId: string,
     productId: string,
-    item: CartItem,
+    item: ICartItem,
   ) {
     return CartModel.findOneAndUpdate(
       { userId, "items.product": productId },
@@ -62,7 +62,7 @@ export class CartService extends BaseService {
   }
 
   public async getCartItems(userId: string) {
-    const cart = await CartModel.findOne<Cart>({ userId }).populate({
+    const cart = await CartModel.findOne<ICart>({ userId }).populate({
       path: "items.product",
       select: "title product_name price",
     });
@@ -76,7 +76,7 @@ export class CartService extends BaseService {
     return { items: cart?.items, subtotal };
   }
 
-  public async updateItemQuantity(userId: string, item: CartItem) {
+  public async updateItemQuantity(userId: string, item: ICartItem) {
     const existingCart = await CartModel.findOne({ userId }).populate({
       path: "items.product",
       select: "title product_name price",
@@ -87,17 +87,18 @@ export class CartService extends BaseService {
     }
 
     const existingItemIndex = existingCart.items.findIndex(
-      (cartItem: CartItem) => cartItem._id?.toString() === item._id?.toString(),
+      (cartItem: ICartItem) =>
+        cartItem._id?.toString() === item._id?.toString(),
     );
     // TODO: throw error if existingItem does not exist
     console.log("Updating item quantity: ---------", existingCart.items, item);
     existingCart.items[existingItemIndex].quantity = item.quantity;
-    const cart: Cart = await existingCart.save();
+    const cart: ICart = await existingCart.save();
 
     return { cart, subtotal: this.getCartTotalAmount(cart) };
   }
 
-  private getCartTotalAmount(cart: Cart): number {
+  private getCartTotalAmount(cart: ICart): number {
     let subtotal = 0;
 
     cart?.items.forEach((item) => {

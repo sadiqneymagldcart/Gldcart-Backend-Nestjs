@@ -8,7 +8,7 @@ import {
 } from "inversify-express-utils";
 import { RentingService } from "@services/shop/renting.service";
 import { multerMiddleware } from "@middlewares/malter.middleware";
-import { Renting } from "@models/shop/product/Renting";
+import { IRenting } from "@models/shop/product/Renting";
 import { AwsStorage } from "@storages/aws.storage";
 import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
@@ -33,7 +33,7 @@ export class RentingController implements Controller {
         const files = request.files as Express.Multer.File[];
         try {
             const images = await this.storage.upload(files);
-            const rentingData: Renting = {
+            const rentingData: IRenting = {
                 ...request.body,
                 images: images,
             };

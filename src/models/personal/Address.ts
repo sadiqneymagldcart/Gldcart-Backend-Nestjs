@@ -1,7 +1,17 @@
-import { IAddress } from "@ts/interfaces/IAddress";
 import { Schema } from "mongoose";
 
-export const AddressSchema = new Schema<IAddress>({
+interface IAddress {
+    _id: string;
+    recipients_name: string;
+    street_address: string;
+    city: string;
+    state?: string;
+    country: string;
+    ZIP_code: string;
+    phone_number: string;
+}
+
+const AddressSchema = new Schema<IAddress>({
     recipients_name: {
         type: String,
         required: true,
@@ -30,3 +40,5 @@ export const AddressSchema = new Schema<IAddress>({
         required: true,
     },
 });
+
+export { IAddress, AddressSchema };

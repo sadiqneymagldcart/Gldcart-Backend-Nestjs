@@ -1,5 +1,5 @@
 import { inject } from "inversify";
-import { Renting, RentingModel } from "@models/shop/product/Renting";
+import { IRenting, RentingModel } from "@models/shop/product/Renting";
 import { Logger } from "@utils/logger";
 import { BaseService } from "../base/base.service";
 
@@ -7,7 +7,7 @@ export class RentingService extends BaseService {
     public constructor(@inject(Logger) logger: Logger) {
         super(logger);
     }
-    public async addRentingProduct(rentingData: Renting) {
+    public async addRentingProduct(rentingData: IRenting) {
         this.logger.logInfo("Adding renting", rentingData);
         return await RentingModel.create(rentingData);
     }

@@ -6,7 +6,7 @@ import { Logger } from "@utils/logger";
 import { ChatConfig } from "@config/socket.config";
 import { ChatService } from "@services/chat/chat.service";
 import { MessageService } from "@services/chat/message.service";
-import { IMessage } from "@ts/interfaces/IMessage";
+import { IMessage } from "@models/chat/Message";
 
 class ChatSocket extends BaseSocket {
   private readonly chatService: ChatService;
