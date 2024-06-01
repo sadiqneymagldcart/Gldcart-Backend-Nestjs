@@ -37,6 +37,24 @@ class UserService extends BaseService {
                 return UserModel.findOneAndUpdate({ email }, updatedData);
         }
 
+        public async getUserByIdAndPopulate(
+                userId: string,
+                data: string,
+        ): Promise<IUser | null> {
+                return UserModel.findById(userId).populate(data);
+        }
+
+        public async getUserByIdAndUpdate(
+                userId: string,
+                updatedData: Partial<IUser>,
+        ): Promise<IUser | null> {
+                return UserModel.findByIdAndUpdate(userId, updatedData);
+        }
+
+        public async getUserByData(data: Partial<IUser>): Promise<IUser | null> {
+                return await UserModel.findOne({ data });
+        }
+
         public async updateUser(
                 userId: string,
                 updatedData: Partial<IUser>,
