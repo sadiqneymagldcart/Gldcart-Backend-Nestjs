@@ -9,6 +9,7 @@ At the moment, all missed packets are stored in memory. Use Redis Streams or Mon
 
 5. [ ] The UserModel must be used only in the UserService 
 
+6. [ ] Sockets have to be injectable => set up http server elsewhere (inversify.config)
 
 
 
