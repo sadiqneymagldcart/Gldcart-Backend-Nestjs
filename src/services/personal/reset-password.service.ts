@@ -3,9 +3,7 @@ import { Logger } from "@utils/logger";
 import { MailService } from "../contact/mail.service";
 import * as bcrypt from "bcrypt";
 import { inject, injectable } from "inversify";
-import { UserModel } from "@models/user/User";
 import { BadRequestException } from "@exceptions/bad-request.exception";
-import { IUser } from "@ts/interfaces/IUser";
 import { UserService } from "@services/user/user.service";
 
 @injectable()
@@ -38,7 +36,7 @@ export class PasswordService extends BaseService {
         oldPassword: string,
         newPassword: string,
     ) {
-        const user = <IUser>await UserModel.findOne({ email });
+        const user = await this.userService.getUserByEmail(email);
         if (user) {
             const auth: boolean = await bcrypt.compare(oldPassword, user.password);
             if (auth) {
@@ -54,9 +52,10 @@ export class PasswordService extends BaseService {
     }
 
     public async requestPasswordReset(email: string, token: string) {
-        const user = <IUser>(
-            await UserModel.findOneAndUpdate({ email }, { passwordResetToken: token })
-        );
+        const user = await this.userService.getUserByEmailAndUpdate(email, {
+            passwordResetToken: token,
+        });
+
         if (!user) {
             this.logger.logError(`User not found with email: ${email}`);
             throw new BadRequestException("Incorrect contact");

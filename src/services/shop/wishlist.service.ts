@@ -1,9 +1,6 @@
 import { inject, injectable } from "inversify";
 import { Logger } from "@utils/logger";
-import {
-    WishlistItem,
-    WishlistModel,
-} from "@models/shop/wishlist/Wishlist";
+import { IWishlistItem, WishlistModel } from "@models/shop/wishlist/Wishlist";
 import { BaseService } from "../base/base.service";
 
 @injectable()
@@ -13,13 +10,13 @@ export class WishlistService extends BaseService {
     }
 
     public async getWishlistByUser(userId: string) {
-        return WishlistModel.findOne({userId}).populate({
+        return WishlistModel.findOne({ userId }).populate({
             path: "items.product",
-            select: {product_name: 1, images: 1, price: 1},
+            select: { product_name: 1, images: 1, price: 1 },
         });
     }
 
-    public async addItemToWishlist(userId: string, item: WishlistItem) {
+    public async addItemToWishlist(userId: string, item: IWishlistItem) {
         const existingCart = await WishlistModel.findOne({ userId });
         if (!existingCart) {
             return await WishlistModel.create({ userId, items: [item] });
@@ -36,13 +33,13 @@ export class WishlistService extends BaseService {
     public async updateCartItem(
         userId: string,
         productId: string,
-        item: WishlistItem,
+        item: IWishlistItem,
     ) {
         this.logger.logInfo(`Updating item in wishlist for user ${userId}`);
         return WishlistModel.findOneAndUpdate(
-            {userId, "items.product": productId},
-            {$set: {"items.$": item}},
-            {new: true},
+            { userId, "items.product": productId },
+            { $set: { "items.$": item } },
+            { new: true },
         );
     }
 
@@ -51,12 +48,12 @@ export class WishlistService extends BaseService {
             `Removing item from wishlist for user ${userId} with product id ${productId}`,
         );
         return WishlistModel.findOneAndUpdate(
-            {userId},
-            {$pull: {items: {product: productId}}},
-            {new: true},
+            { userId },
+            { $pull: { items: { product: productId } } },
+            { new: true },
         ).populate({
             path: "items.product",
-            select: {product_name: 1, images: 1, price: 1},
+            select: { product_name: 1, images: 1, price: 1 },
         });
     }
 }

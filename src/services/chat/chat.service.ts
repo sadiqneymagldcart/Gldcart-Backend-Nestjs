@@ -2,8 +2,7 @@ import { inject, injectable } from "inversify";
 import { BaseService } from "../base/base.service";
 import { Logger } from "@utils/logger";
 import { Nullable } from "@ts/types/nullable";
-import { ChatModel } from "@models/chat/Chat";
-import { IChat } from "@ts/interfaces/IChat";
+import { ChatModel, IChat } from "@models/chat/Chat";
 
 @injectable()
 export class ChatService extends BaseService {
