@@ -7,7 +7,7 @@ import { ITokens } from "@interfaces/ITokens";
 import { BadRequestException } from "@exceptions/bad-request.exception";
 import { InternalServerErrorException } from "@exceptions/internal-server-error.exception";
 import { UserService } from "@services/user/user.service";
-import { IUser } from "@ts/interfaces/IUser";
+import { IUser } from "@models/user/User";
 
 @injectable()
 export class AuthService extends BaseService {

@@ -2,7 +2,7 @@ import { Logger } from "@utils/logger";
 import Stripe from "stripe";
 import { BaseService } from "../base/base.service";
 import { inject, injectable } from "inversify";
-import { CartItem } from "@models/shop/cart/Cart";
+import { ICartItem } from "@models/shop/cart/Cart";
 
 @injectable()
 export class StripeService extends BaseService {
@@ -65,7 +65,7 @@ export class StripeService extends BaseService {
 
     public async createPaymentCheckout(paymentData: {
         userId: string;
-        cartItems: CartItem[];
+        cartItems: ICartItem[];
     }): Promise<string | null> {
         try {
             const customer = await this.createCustomerWithMetadata({

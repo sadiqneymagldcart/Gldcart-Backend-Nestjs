@@ -1,4 +1,4 @@
-import { Product, ProductModel } from "@models/shop/product/Product";
+import { IProduct, ProductModel } from "@models/shop/product/Product";
 import { inject, injectable } from "inversify";
 import { BaseService } from "../base/base.service";
 import { Logger } from "@utils/logger";
@@ -9,22 +9,22 @@ export class ProductService extends BaseService {
         super(logger);
     }
 
-    public async addProduct(product: Product): Promise<Product> {
+    public async addProduct(product: IProduct): Promise<IProduct> {
         return await ProductModel.create(product);
     }
 
-    public async getAllProducts(): Promise<Product[]> {
+    public async getAllProducts(): Promise<IProduct[]> {
         return ProductModel.find();
     }
 
-    public async getAllProductsWithStock(): Promise<Product[]> {
+    public async getAllProductsWithStock(): Promise<IProduct[]> {
         return ProductModel.find({ stock: { $gt: 0 } });
     }
 
     public async getProductsWithPagination(
         page: number,
         limit: number,
-    ): Promise<Product[]> {
+    ): Promise<IProduct[]> {
         return ProductModel.find()
             .skip((page - 1) * limit)
             .limit(limit);
@@ -34,11 +34,11 @@ export class ProductService extends BaseService {
         return ProductModel.countDocuments();
     }
 
-    public async getProductByCategory(category: string): Promise<Product[]> {
+    public async getProductByCategory(category: string): Promise<IProduct[]> {
         return ProductModel.find({ category: category });
     }
 
-    public async getProductById(productId: string): Promise<Product | null> {
+    public async getProductById(productId: string): Promise<IProduct | null> {
         return ProductModel.findById(productId);
     }
 
@@ -48,8 +48,8 @@ export class ProductService extends BaseService {
 
     public async updateProduct(
         productId: string,
-        updatedData: Partial<Product>,
-    ): Promise<Product | null> {
+        updatedData: Partial<IProduct>,
+    ): Promise<IProduct | null> {
         return ProductModel.findByIdAndUpdate(productId, updatedData, {
             new: true,
         });
@@ -58,7 +58,7 @@ export class ProductService extends BaseService {
     public async updateProductStock(
         productId: string,
         quantity: number,
-    ): Promise<Product | null> {
+    ): Promise<IProduct | null> {
         return ProductModel.findByIdAndUpdate(
             productId,
             { $inc: { stock: quantity } },
@@ -72,17 +72,17 @@ export class ProductService extends BaseService {
         );
     }
 
-    public async searchProductsByCategory(category: string): Promise<Product[]> {
+    public async searchProductsByCategory(category: string): Promise<IProduct[]> {
         return ProductModel.find({ category: category });
     }
 
-    public async searchProductsGlobal(query: string): Promise<Product[]> {
+    public async searchProductsGlobal(query: string): Promise<IProduct[]> {
         return ProductModel.find({ $text: { $search: query } });
     }
 
     public async searchProductsByFilters(
         filters: Record<string, any>,
-    ): Promise<Product[]> {
+    ): Promise<IProduct[]> {
         const filtersCriteria = Object.keys(filters).map((key) => {
             return { [key]: filters[key] };
         });

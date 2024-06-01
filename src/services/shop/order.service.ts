@@ -1,4 +1,4 @@
-import OrderModel, { Order } from "@models/shop/order/Order";
+import { Order, OrderModel } from "@models/shop/order/Order";
 import { Logger } from "@utils/logger";
 import { inject, injectable } from "inversify";
 import { BaseService } from "../base/base.service";
