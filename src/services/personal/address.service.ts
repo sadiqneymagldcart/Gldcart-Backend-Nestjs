@@ -5,7 +5,7 @@ import { inject, injectable } from "inversify";
 import { UserModel } from "@models/user/User";
 import { BadRequestException } from "@exceptions/bad-request.exception";
 import { UserService } from "@services/user/user.service";
-import { IAddress } from "@ts/interfaces/IAddress";
+import { IAddress } from "@models/personal/Address";
 
 @injectable()
 export class AddressService extends BaseService {

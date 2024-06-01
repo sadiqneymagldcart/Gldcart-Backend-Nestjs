@@ -1,13 +1,16 @@
-import {Logger} from "@utils/logger";
+import { Logger } from "@utils/logger";
 import Stripe from "stripe";
-import {inject, injectable} from "inversify";
+import { inject, injectable } from "inversify";
 import { BaseService } from "../base/base.service";
 
 @injectable()
 export class StripeSubscriptionService extends BaseService {
     private readonly stripe: Stripe;
 
-    public constructor(@inject(Logger) logger: Logger, @inject(Stripe) stripe: Stripe) {
+    public constructor(
+        @inject(Logger) logger: Logger,
+        @inject(Stripe) stripe: Stripe,
+    ) {
         super(logger);
         this.stripe = stripe;
     }

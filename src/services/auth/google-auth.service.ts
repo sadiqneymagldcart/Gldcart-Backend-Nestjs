@@ -11,7 +11,7 @@ import { IGoogleTokenResult } from "@interfaces/IGoogleTokenResult";
 import { IGoogleUserResult } from "@interfaces/IGoogleUserResult";
 import { Nullable } from "@ts/types/nullable";
 import { UserService } from "@services/user/user.service";
-import { IUser } from "@ts/interfaces/IUser";
+import { IUser } from "@models/user/User";
 
 @injectable()
 export class GoogleAuthService extends BaseService {

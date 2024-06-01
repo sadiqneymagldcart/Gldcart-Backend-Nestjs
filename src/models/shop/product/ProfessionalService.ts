@@ -1,19 +1,19 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-interface ServiceAttributes {
+interface IServiceAttributes {
     [key: string]: string;
 }
 
-export interface ProfessionalService extends Document {
+interface IProfessionalService extends Document {
     service_name: string;
     description?: string;
     images: string[];
     category: string;
     subcategory: string;
-    attributes: ServiceAttributes;
+    attributes: IServiceAttributes;
 }
 
-export const ProfessionalServiceSchema = new Schema<ProfessionalService>({
+const ProfessionalServiceSchema = new Schema<IProfessionalService>({
     service_name: {
         type: String,
         required: true,
@@ -46,7 +46,9 @@ ProfessionalServiceSchema.index({
     attributes: "text",
 });
 
-export const ServicesModel = mongoose.model<ProfessionalService>(
+const ServicesModel = mongoose.model<IProfessionalService>(
     "ProfessionalService",
     ProfessionalServiceSchema,
 );
+
+export { IProfessionalService, ServicesModel };

@@ -4,7 +4,7 @@ interface ProductAttributes {
   [key: string]: string;
 }
 
-export interface Product extends Document {
+interface IProduct extends Document {
   title: string;
   product_name: string;
   seller_id: Schema.Types.ObjectId | string;
@@ -19,7 +19,7 @@ export interface Product extends Document {
   rating?: number;
 }
 
-export const ProductSchema = new Schema<Product>({
+const ProductSchema = new Schema<IProduct>({
   title: { type: String, required: true, trim: true },
   product_name: { type: String, required: true, trim: true },
   seller_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
@@ -42,7 +42,9 @@ ProductSchema.index({
   attributes: "text",
 });
 
-export const ProductModel = mongoose.model(
+const ProductModel = mongoose.model(
   "Product",
   ProductSchema,
-) as Model<Product>;
+) as Model<IProduct>;
+
+export { IProduct, ProductModel };

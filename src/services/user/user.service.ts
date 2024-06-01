@@ -1,6 +1,5 @@
-import { UserModel } from "@models/user/User";
+import { IUser, UserModel } from "@models/user/User";
 import { BaseService } from "@services/base/base.service";
-import { IUser } from "@ts/interfaces/IUser";
 import { Nullable } from "@ts/types/nullable";
 import { Logger } from "@utils/logger";
 import { inject, injectable } from "inversify";
@@ -29,6 +28,13 @@ class UserService extends BaseService {
 
         public async getUserByEmail(email: string): Promise<IUser | null> {
                 return UserModel.findOne({ email: email });
+        }
+
+        public async getUserByEmailAndUpdate(
+                email: string,
+                updatedData: Partial<IUser>,
+        ): Promise<IUser | null> {
+                return UserModel.findOneAndUpdate({ email }, updatedData);
         }
 
         public async updateUser(

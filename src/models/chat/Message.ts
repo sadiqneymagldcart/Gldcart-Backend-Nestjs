@@ -1,5 +1,12 @@
-import { IMessage } from "@ts/interfaces/IMessage";
 import mongoose, { Schema } from "mongoose";
+
+interface IMessage extends Document {
+    chatId: Schema.Types.ObjectId | string;
+    text?: string;
+    files?: any;
+    senderId: Schema.Types.ObjectId | string;
+    recipientId: Schema.Types.ObjectId | string;
+}
 
 const messageSchema = new Schema<IMessage>(
     {
@@ -18,7 +25,9 @@ messageSchema.index({
     recipientId: 1,
 });
 
-export const MessageModel = mongoose.model(
+const MessageModel = mongoose.model(
     "Message",
     messageSchema,
 ) as mongoose.Model<IMessage>;
+
+export { IMessage, MessageModel };

@@ -9,7 +9,7 @@ import {
 } from "inversify-express-utils";
 import { ReviewService } from "@services/shop/review.service";
 import * as express from "express";
-import { Review } from "@models/shop/review/Review";
+import { IReview } from "@models/shop/review/Review";
 import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/review", AuthenticationMiddleware)
@@ -61,7 +61,7 @@ export class ReviewController implements Controller {
         request: express.Request,
         next: express.NextFunction,
     ) {
-        const reviewData = request.body as Partial<Review>;
+        const reviewData = request.body as Partial<IReview>;
         try {
             return this.reviewService.createReview(reviewData);
         } catch (error) {
@@ -75,7 +75,7 @@ export class ReviewController implements Controller {
         next: express.NextFunction,
     ) {
         const reviewId = request.params.reviewId;
-        const updatedData = request.body as Partial<Review>;
+        const updatedData = request.body as Partial<IReview>;
         try {
             return this.reviewService.updateReview(reviewId, updatedData);
         } catch (error) {

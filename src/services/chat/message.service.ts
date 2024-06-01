@@ -1,8 +1,7 @@
 import { inject, injectable } from "inversify";
-import { MessageModel } from "@models/chat/Message";
+import { IMessage, MessageModel } from "@models/chat/Message";
 import { BaseService } from "../base/base.service";
 import { Logger } from "@utils/logger";
-import { IMessage } from "@ts/interfaces/IMessage";
 import { Nullable } from "@ts/types/nullable";
 
 @injectable()

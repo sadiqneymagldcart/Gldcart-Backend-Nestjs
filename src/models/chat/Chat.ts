@@ -1,5 +1,8 @@
 import mongoose, { Schema } from "mongoose";
-import {IChat} from "@interfaces/IChat";
+
+interface IChat extends Document {
+    participants: string[];
+}
 
 const chatSchema = new Schema<IChat>(
     {
@@ -10,4 +13,6 @@ const chatSchema = new Schema<IChat>(
 
 chatSchema.index({ participants: 1 });
 
-export const ChatModel = mongoose.model("Chat", chatSchema);
+const ChatModel = mongoose.model("Chat", chatSchema);
+
+export { IChat, ChatModel };

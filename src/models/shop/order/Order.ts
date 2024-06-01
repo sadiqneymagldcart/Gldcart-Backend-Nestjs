@@ -1,6 +1,6 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
-export interface Order extends Document {
+interface Order extends Document {
     user: mongoose.Types.ObjectId;
     products: string[];
     total: number;
@@ -27,4 +27,4 @@ const orderSchema = new Schema<Order>(
 
 const OrderModel = mongoose.model("Order", orderSchema) as Model<Order>;
 
-export default OrderModel;
+export { Order, OrderModel };
