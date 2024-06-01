@@ -7,26 +7,23 @@ import { errorHandlerMiddleware } from "@middlewares/error.middleware";
 import { serverConfig } from "@config/server.config";
 import { ChatSocket } from "@sockets/chat.socket";
 
-export class App {
-    private readonly server: InversifyExpressServer;
+class App {
+    private readonly express: InversifyExpressServer;
     private readonly logger: Logger;
     private readonly port: number;
-    private httpServer!: http.Server;
     private maxRetries: number = 3;
     private retryCount: number = 0;
 
-    public constructor(
-        port: number,
-        logger: Logger,
-        server: InversifyExpressServer,
-    ) {
-        this.port = port;
-        this.server = server;
-        this.logger = logger;
-    }
+    private httpServer!: http.Server;
 
-    public getConfiguredServer(): http.Server {
-        return this.httpServer;
+    public constructor(
+        server: InversifyExpressServer,
+        logger: Logger,
+        port: number,
+    ) {
+        this.express = server;
+        this.logger = logger;
+        this.port = port;
     }
 
     public start(): void {
@@ -52,16 +49,16 @@ export class App {
     }
 
     private configureExpressServer(): void {
-        this.server.setConfig((app) => {
+        this.express.setConfig((app) => {
             serverConfig(app);
         });
-        this.server.setErrorConfig((app) => {
+        this.express.setErrorConfig((app) => {
             app.use(errorHandlerMiddleware);
         });
     }
 
     private createHttpServer(): void {
-        this.httpServer = http.createServer(this.server.build());
+        this.httpServer = http.createServer(this.express.build());
     }
 
     private startListeningHttpServer(): void {
@@ -108,3 +105,5 @@ export class App {
         }
     }
 }
+
+export { App };
