@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { Logger } from "@utils/logger";
 import {
-    ProfessionalService,
+    IProfessionalService,
     ServicesModel,
 } from "@models/shop/product/ProfessionalService";
 import { BaseService } from "../base/base.service";
@@ -15,7 +15,7 @@ export class ProfessionalServicesService extends BaseService {
     public async getServicesWithPagination(
         page: number,
         limit: number,
-    ): Promise<ProfessionalService[]> {
+    ): Promise<IProfessionalService[]> {
         this.logger.logInfo(
             `Getting products with pagination. Page: ${page}, Limit: ${limit}`,
         );
@@ -26,7 +26,7 @@ export class ProfessionalServicesService extends BaseService {
 
     public async getServicesByQuery(
         query: string,
-    ): Promise<ProfessionalService[]> {
+    ): Promise<IProfessionalService[]> {
         this.logger.logInfo(`Getting products by query: ${query}`);
         return ServicesModel.find({ $text: { $search: query } });
     }
@@ -35,7 +35,7 @@ export class ProfessionalServicesService extends BaseService {
         category: string,
         page: number,
         limit: number,
-    ): Promise<ProfessionalService[]> {
+    ): Promise<IProfessionalService[]> {
         this.logger.logInfo(
             `Getting products by category with pagination. Category: ${category}, Page: ${page}, Limit: ${limit}`,
         );
@@ -49,14 +49,14 @@ export class ProfessionalServicesService extends BaseService {
         return ServicesModel.countDocuments();
     }
 
-    public async getAllServices(): Promise<ProfessionalService[]> {
+    public async getAllServices(): Promise<IProfessionalService[]> {
         this.logger.logInfo("Getting products");
         return ServicesModel.find();
     }
 
     public async createService(
-        service: ProfessionalService,
-    ): Promise<ProfessionalService> {
+        service: IProfessionalService,
+    ): Promise<IProfessionalService> {
         this.logger.logInfo("Creating service");
         return ServicesModel.create(service);
     }
@@ -68,14 +68,14 @@ export class ProfessionalServicesService extends BaseService {
 
     public async getServicesByUserId(
         userId: string,
-    ): Promise<ProfessionalService[]> {
+    ): Promise<IProfessionalService[]> {
         this.logger.logInfo("Getting services by user id");
         return ServicesModel.find({ userId });
     }
 
     public async getServicesByCategory(
         category: string,
-    ): Promise<ProfessionalService[]> {
+    ): Promise<IProfessionalService[]> {
         this.logger.logInfo(`Getting services by category ${category}`);
         return ServicesModel.find({ category });
     }

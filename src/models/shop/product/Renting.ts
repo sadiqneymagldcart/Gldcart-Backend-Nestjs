@@ -1,10 +1,10 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-interface RentingAttributes {
+interface IRentingAttributes {
     [key: string]: string;
 }
 
-export interface Renting extends Document {
+interface IRenting extends Document {
     title: string;
     renting_name: string;
     price: number;
@@ -12,10 +12,10 @@ export interface Renting extends Document {
     images?: string[];
     category: string;
     subcategory: string;
-    attributes: RentingAttributes;
+    attributes: IRentingAttributes;
 }
 
-export const RentingSchema = new Schema<Renting>({
+const RentingSchema = new Schema<IRenting>({
     title: {
         type: String,
         required: true,
@@ -56,4 +56,6 @@ RentingSchema.index({
     attributes: "text",
 });
 
-export const RentingModel = mongoose.model<Renting>("Renting", RentingSchema);
+const RentingModel = mongoose.model<IRenting>("Renting", RentingSchema);
+
+export { IRenting, RentingModel };

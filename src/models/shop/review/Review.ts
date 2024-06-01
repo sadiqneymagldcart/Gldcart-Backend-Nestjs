@@ -1,13 +1,13 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface Review extends Document {
+interface IReview extends Document {
     user: Schema.Types.ObjectId;
     product: Schema.Types.ObjectId;
     rating: number;
     review: string;
 }
 
-const ReviewSchema = new Schema<Review>({
+const ReviewSchema = new Schema<IReview>({
     user: {
         type: Schema.Types.ObjectId,
         ref: "User",
@@ -28,4 +28,6 @@ const ReviewSchema = new Schema<Review>({
     },
 });
 
-export const ReviewModel = mongoose.model<Review>("Review", ReviewSchema);
+const ReviewModel = mongoose.model<IReview>("Review", ReviewSchema);
+
+export { IReview, ReviewModel };
