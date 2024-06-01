@@ -1,17 +1,23 @@
 import { inject, injectable } from "inversify";
 import { Logger } from "@utils/logger";
-import { UserModel } from "@models/user/User";
 import { BaseService } from "../base/base.service";
 import { BadRequestException } from "@exceptions/bad-request.exception";
+import { UserService } from "@services/user/user.service";
 
 @injectable()
 export class ProfileService extends BaseService {
-    public constructor(@inject(Logger) logger: Logger) {
+    private readonly userService: UserService;
+
+    public constructor(
+        @inject(Logger) logger: Logger,
+        @inject(UserService) userService: UserService,
+    ) {
         super(logger);
+        this.userService = userService;
     }
 
     public async updateProfilePicture(userId: string, imageUrl: string) {
-        const user = await UserModel.findById(userId);
+        const user = await this.userService.getUserById(userId);
         if (!user) {
             this.logger.logError(
                 `User ${userId} not found while updating profile picture`,
@@ -23,15 +29,15 @@ export class ProfileService extends BaseService {
     }
 
     public async updatePersonalDetails(
-        id: string | null,
-        email: string | null,
-        name: string | null,
-        surname: string | null,
-        phone_number: string | null,
-        address: string | null,
-        BIO: string | null,
+        id: string,
+        email: string | undefined,
+        name: string | undefined,
+        surname: string | undefined,
+        phone_number: string | undefined,
+        address: string | undefined,
+        BIO: string | undefined,
     ) {
-        const user = await UserModel.findByIdAndUpdate(id, {
+        const user = await this.userService.getUserByIdAndUpdate(id, {
             name: name,
             surname: surname,
             email: email,
