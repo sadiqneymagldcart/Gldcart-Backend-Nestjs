@@ -8,6 +8,7 @@ import { Transporter } from "nodemailer";
 
 // Middlewares
 import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
+import { SubscriptionMiddlware } from "@middlewares/subscription.middleware";
 
 // Services
 import { TokenService } from "@services/token/token.service";
@@ -70,6 +71,7 @@ function bindAuthServices(container: Container) {
 
 function bindMiddlewares(container: Container) {
     container.bind(AuthenticationMiddleware).toSelf();
+    container.bind(SubscriptionMiddlware).toSelf();
 }
 
 function bindStripeServices(container: Container) {
