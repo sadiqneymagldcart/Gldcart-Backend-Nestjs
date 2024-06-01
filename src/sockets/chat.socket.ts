@@ -12,11 +12,11 @@ class ChatSocket extends BaseSocket {
   private readonly chatService: ChatService;
   private readonly messageService: MessageService;
 
-  private readonly messageEvent: string = ChatConfig.EVENTS.MESSAGE;
   private readonly namespace: string = ChatConfig.NAMESPACE;
   private readonly connectionEvent: string = ChatConfig.EVENTS.CONNECTION;
+  private readonly chatsListEvent: string = ChatConfig.EVENTS.CHATS;
+  private readonly messageEvent: string = ChatConfig.EVENTS.MESSAGE;
   private readonly newChatEvent: string = ChatConfig.EVENTS.NEW_CHAT;
-  private readonly chatsEvent: string = ChatConfig.EVENTS.CHATS;
 
   public constructor(logger: Logger, httpServer: http.Server) {
     super(logger, httpServer);
@@ -42,7 +42,7 @@ class ChatSocket extends BaseSocket {
   private async handleChatsList(socket: Socket, userId: string) {
     try {
       const chats = await this.chatService.getChats(userId);
-      socket.emit(this.chatsEvent, chats);
+      socket.emit(this.chatsListEvent, chats);
     } catch (error: any) {
       this.handleError(socket, error);
     }
@@ -53,7 +53,9 @@ class ChatSocket extends BaseSocket {
       try {
         this.logger.logInfo("Message received", message);
         const savedMessage = this.messageService.createMessage(message);
-        socket.to(message.chatId as string).emit(this.messageEvent, savedMessage);
+        socket
+          .to(message.chatId as string)
+          .emit(this.messageEvent, savedMessage);
       } catch (error) {
         this.handleError(socket, error as Error);
       }
