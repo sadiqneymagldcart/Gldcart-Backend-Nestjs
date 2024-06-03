@@ -6,7 +6,6 @@ import { ChatConfig } from "@config/socket.config";
 import { ChatService } from "@services/chat/chat.service";
 import { MessageService } from "@services/chat/message.service";
 import { IMessage } from "@models/chat/Message";
-import { container } from "@ioc/container";
 import { inject, injectable } from "inversify";
 
 @injectable()
@@ -23,10 +22,12 @@ class ChatSocket extends BaseSocket {
   public constructor(
     @inject(Logger) logger: Logger,
     @inject(http.Server) httpServer: http.Server,
+    @inject(ChatService) chatService: ChatService,
+    @inject(MessageService) messageService: MessageService,
   ) {
     super(logger, httpServer);
-    this.chatService = container.get(ChatService);
-    this.messageService = container.get(MessageService);
+    this.chatService = chatService;
+    this.messageService = messageService;
     this.setupSocket();
   }
 
