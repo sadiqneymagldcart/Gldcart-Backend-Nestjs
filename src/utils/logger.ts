@@ -1,8 +1,8 @@
 import * as winston from "winston";
 import { format } from "winston";
 import winstonDailyRotateFile from "winston-daily-rotate-file";
-import { injectable } from "inversify";
 import { ILogger } from "@interfaces/ILogger";
+import { injectable } from "inversify";
 
 export type LogMessage = string;
 
