@@ -2,7 +2,6 @@ import * as http from "http";
 import mongoose from "mongoose";
 import { Logger } from "@utils/logger";
 import { mongooseOptions } from "@config/mongo.config";
-import { ChatSocket } from "@sockets/chat.socket";
 
 class App {
     private readonly httpServer: http.Server;
@@ -22,7 +21,6 @@ class App {
             this.validateEnvironmentVariables();
             this.startListening();
             this.initializeDbConnection();
-            this.initializeSockets();
         } catch (error: any) {
             this.handleStartupError(error);
         }
@@ -59,10 +57,6 @@ class App {
         }
     }
 
-    private initializeSockets(): void {
-        new ChatSocket(this.logger, this.httpServer);
-    }
-
     private handleStartupError(error: Error): void {
         this.logger.logError("Server startup error: " + error.message, error);
         process.exit(1);
@@ -79,7 +73,7 @@ class App {
             this.logger.logError("Failed to start server", error);
             process.exit(1);
         }
-    }
+    
 }
 
 export { App };
