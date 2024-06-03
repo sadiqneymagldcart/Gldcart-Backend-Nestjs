@@ -1,5 +1,4 @@
 import * as http from "http";
-import { container } from "@config/inversify.config";
 import { BaseSocket } from "./base.socket";
 import { Socket } from "socket.io";
 import { Logger } from "@utils/logger";
@@ -7,6 +6,7 @@ import { ChatConfig } from "@config/socket.config";
 import { ChatService } from "@services/chat/chat.service";
 import { MessageService } from "@services/chat/message.service";
 import { IMessage } from "@models/chat/Message";
+import { container } from "@ioc/container";
 
 class ChatSocket extends BaseSocket {
   private readonly chatService: ChatService;
