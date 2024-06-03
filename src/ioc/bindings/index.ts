@@ -17,7 +17,6 @@ import { bindExpressServer } from "./express-server.binding";
 function bindAllDependencies(container: Container) {
     bindLogger(container);
     bindMiddlewares(container);
-    bindExpressServer(container);
     bindSockets(container);
     bindUserServices(container);
     bindAuthServices(container);
@@ -29,6 +28,7 @@ function bindAllDependencies(container: Container) {
     bindShopServices(container);
     bindVerificationServices(container);
     bindChatServices(container);
+    bindExpressServer(container);
 }
 
 export { bindAllDependencies };
