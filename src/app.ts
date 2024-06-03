@@ -1,37 +1,26 @@
 import * as http from "http";
 import mongoose from "mongoose";
-import { InversifyExpressServer } from "inversify-express-utils";
 import { Logger } from "@utils/logger";
 import { mongooseOptions } from "@config/mongo.config";
-import { errorHandlerMiddleware } from "@middlewares/error.middleware";
-import { serverConfig } from "@config/server.config";
 import { ChatSocket } from "@sockets/chat.socket";
 
 class App {
-    private readonly express: InversifyExpressServer;
+    private readonly httpServer: http.Server;
     private readonly logger: Logger;
     private readonly port: number;
     private maxRetries: number = 3;
     private retryCount: number = 0;
 
-    private httpServer!: http.Server;
-
-    public constructor(
-        server: InversifyExpressServer,
-        logger: Logger,
-        port: number,
-    ) {
-        this.express = server;
+    public constructor(httpServer: http.Server, logger: Logger, port: number) {
         this.logger = logger;
         this.port = port;
+        this.httpServer = httpServer;
     }
 
     public start(): void {
         try {
             this.validateEnvironmentVariables();
-            this.configureExpressServer();
-            this.createHttpServer();
-            this.startListeningHttpServer();
+            this.startListening();
             this.initializeDbConnection();
             this.initializeSockets();
         } catch (error: any) {
@@ -48,20 +37,7 @@ class App {
         }
     }
 
-    private configureExpressServer(): void {
-        this.express.setConfig((app) => {
-            serverConfig(app);
-        });
-        this.express.setErrorConfig((app) => {
-            app.use(errorHandlerMiddleware);
-        });
-    }
-
-    private createHttpServer(): void {
-        this.httpServer = http.createServer(this.express.build());
-    }
-
-    private startListeningHttpServer(): void {
+    private startListening(): void {
         this.httpServer.listen(this.port, () => {
             this.logger.logInfo(
                 `⚡️[server]: Server is running on port ${this.port}`,
@@ -98,7 +74,7 @@ class App {
             this.logger.logInfo(
                 `Server failed to start. Retrying... (${this.retryCount}/${this.maxRetries})`,
             );
-            setTimeout(() => this.startListeningHttpServer(), 1000);
+            setTimeout(() => this.startListening(), 1000);
         } else {
             this.logger.logError("Failed to start server", error);
             process.exit(1);

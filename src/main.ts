@@ -1,14 +1,13 @@
 import "reflect-metadata";
-import { App } from "./app";
-import { InversifyExpressServer } from "inversify-express-utils";
+import * as http from "http";
+import { container } from "@ioc/container";
 import { Logger } from "@utils/logger";
-import { container } from "@config/inversify.config";
-
+import { App } from "./app";
 
 const logger = container.get<Logger>(Logger);
 
-const express = new InversifyExpressServer(container);
+const server = container.get<http.Server>(http.Server);
 
-const app = new App(express, logger, 3001);
+const app = new App(server, logger, 3001);
 
-app.start()
+app.start();
