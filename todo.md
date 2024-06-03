@@ -7,7 +7,7 @@ At the moment, all missed packets are stored in memory. Use Redis Streams or Mon
 
 4. [x] The UserModel must be used only in the UserService 
 
-5. [ ] Sockets have to be injectable => set up http server elsewhere (inversify.config)
+5. [x] Sockets have to be injectable => set up http server elsewhere (inversify.config)
 
 6. [ ] Handle user disconnect. Online status is not being updated properly.
 
