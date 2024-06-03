@@ -1,3 +1,4 @@
+import * as http from "http";
 import { serverConfig } from "@config/server.config";
 import { errorHandlerMiddleware } from "@middlewares/error.middleware";
 import { Container } from "inversify";
@@ -10,9 +11,13 @@ function bindExpressServer(container: Container) {
         })
         .setErrorConfig((app) => {
             app.use(errorHandlerMiddleware);
-        });
+        })
+        .build();
 
-    container.bind(InversifyExpressServer).toConstantValue(express);
+    const httpServer = http.createServer(express);
+    console.log("Express server created", { httpServer });
+
+    container.bind<http.Server>(http.Server).toConstantValue(httpServer);
 }
 
 export { bindExpressServer };
