@@ -4,7 +4,9 @@ import { Logger } from "@utils/logger";
 import { ServerOptions, SocketConfig } from "@config/socket.config";
 import { UserService } from "@services/user/user.service";
 import { container } from "@ioc/container";
+import { injectable } from "inversify";
 
+@injectable()
 abstract class BaseSocket {
   private readonly joinEvent: string = SocketConfig.EVENTS.JOIN_ROOM;
   private readonly leaveEvent: string = SocketConfig.EVENTS.LEAVE_ROOM;
@@ -14,7 +16,7 @@ abstract class BaseSocket {
   protected readonly logger: Logger;
   protected io: Server;
 
-  protected constructor(logger: Logger, httpServer: http.Server) {
+  constructor(logger: Logger, httpServer: http.Server) {
     this.logger = logger;
     this.io = new Server(httpServer, ServerOptions);
     this.userService = container.get(UserService);
