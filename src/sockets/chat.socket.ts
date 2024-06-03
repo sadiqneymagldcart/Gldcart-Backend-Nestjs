@@ -7,7 +7,9 @@ import { ChatService } from "@services/chat/chat.service";
 import { MessageService } from "@services/chat/message.service";
 import { IMessage } from "@models/chat/Message";
 import { container } from "@ioc/container";
+import { inject, injectable } from "inversify";
 
+@injectable()
 class ChatSocket extends BaseSocket {
   private readonly chatService: ChatService;
   private readonly messageService: MessageService;
@@ -18,7 +20,10 @@ class ChatSocket extends BaseSocket {
   private readonly messageEvent: string = ChatConfig.EVENTS.MESSAGE;
   private readonly newChatEvent: string = ChatConfig.EVENTS.NEW_CHAT;
 
-  public constructor(logger: Logger, httpServer: http.Server) {
+  public constructor(
+    @inject(Logger) logger: Logger,
+    @inject(http.Server) httpServer: http.Server,
+  ) {
     super(logger, httpServer);
     this.chatService = container.get(ChatService);
     this.messageService = container.get(MessageService);
