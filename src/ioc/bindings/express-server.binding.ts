@@ -15,7 +15,6 @@ function bindExpressServer(container: Container) {
         .build();
 
     const httpServer = http.createServer(express);
-    console.log("Express server created", { httpServer });
 
     container.bind<http.Server>(http.Server).toConstantValue(httpServer);
 }
