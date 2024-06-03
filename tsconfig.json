@@ -46,6 +46,12 @@
       "@middlewares/*": [
         "src/middlewares/*"
       ],
+      "@ioc/*": [
+        "src/ioc/*"
+      ],
+      "@bindings/*": [
+        "src/ioc/bindings/*"
+      ],
       "@ts/*": [
         "src/ts/*"
       ],
