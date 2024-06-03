@@ -3,7 +3,7 @@ import { Server, Socket } from "socket.io";
 import { Logger } from "@utils/logger";
 import { ServerOptions, SocketConfig } from "@config/socket.config";
 import { UserService } from "@services/user/user.service";
-import { container } from "@config/inversify.config";
+import { container } from "@ioc/container";
 
 abstract class BaseSocket {
   private readonly joinEvent: string = SocketConfig.EVENTS.JOIN_ROOM;
