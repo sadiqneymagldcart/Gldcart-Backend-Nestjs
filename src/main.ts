@@ -13,4 +13,4 @@ const app = new App(server, logger, 3001);
 
 app.start();
 
-startSockets(container);
+startSockets(container, logger);

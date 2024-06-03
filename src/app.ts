@@ -73,7 +73,7 @@ class App {
             this.logger.logError("Failed to start server", error);
             process.exit(1);
         }
-    
+    }
 }
 
 export { App };
