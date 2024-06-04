@@ -8,7 +8,7 @@ import compression from "compression";
 import helmet from "helmet";
 import { rateLimitMiddlewareTyped } from "@middlewares/rate-limit.middleware";
 
-export function serverConfig(app: Application) {
+export function baseServerMiddleware(app: Application) {
     app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 
     app.use(rateLimitMiddlewareTyped);

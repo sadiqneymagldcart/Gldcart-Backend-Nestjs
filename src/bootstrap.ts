@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { container } from "@ioc/container";
 import { Logger } from "@utils/logger";
 import { HttpServer } from "@infrastructure/server";
-import { MongooseConnector } from "@infrastructure/db.connector";
+import { MongooseConnector } from "@infrastructure/mongoose.connector";
 import { startSockets } from "./sockets";
 
 function bootstrap() {
