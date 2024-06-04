@@ -2,6 +2,7 @@ import { inject, injectable } from "inversify";
 import { Logger } from "@utils/logger";
 import { ICart, ICartItem, CartModel } from "@models/shop/cart/Cart";
 import { BaseService } from "../base/base.service";
+import { BadRequestException } from "@exceptions/bad-request.exception";
 
 @injectable()
 export class CartService extends BaseService {
@@ -68,7 +69,7 @@ export class CartService extends BaseService {
     });
 
     if (!cart) {
-      throw new Error("Cart does not exist");
+      throw new BadRequestException("Cart does not exist");
     }
 
     const subtotal = this.getCartTotalAmount(cart);
@@ -83,7 +84,7 @@ export class CartService extends BaseService {
     });
 
     if (!existingCart || !existingCart.items || !existingCart.items.length) {
-      throw new Error("Cart does not exist");
+      throw new BadRequestException("Cart does not exist");
     }
 
     const existingItemIndex = existingCart.items.findIndex(
@@ -91,6 +92,9 @@ export class CartService extends BaseService {
         cartItem._id?.toString() === item._id?.toString(),
     );
     // TODO: throw error if existingItem does not exist
+    if (existingItemIndex === -1) {
+      throw new BadRequestException("Item does not exist in cart");
+    }
     console.log("Updating item quantity: ---------", existingCart.items, item);
     existingCart.items[existingItemIndex].quantity = item.quantity;
     const cart: ICart = await existingCart.save();
