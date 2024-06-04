@@ -35,9 +35,7 @@ export class AuthenticationMiddleware extends BaseMiddleware {
         next();
     }
 
-    private getAccessTokenFromHeader(
-        authorizationHeader: string,
-    ): string {
-        return (authorizationHeader.split(" "))[1];
+    private getAccessTokenFromHeader(authorizationHeader: string): string {
+        return authorizationHeader.split(" ")[1];
     }
 }
