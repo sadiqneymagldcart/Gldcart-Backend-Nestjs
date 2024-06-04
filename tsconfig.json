@@ -37,6 +37,9 @@
       "@sockets/*": [
         "src/sockets/*"
       ],
+      "@infrastructure/*": [
+        "src/infrastructure/*"
+      ],
       "@utils/*": [
         "src/utils/*"
       ],
