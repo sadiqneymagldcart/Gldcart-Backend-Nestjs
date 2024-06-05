@@ -11,7 +11,7 @@ function bootstrap() {
     const mongooseConnector = container.get<MongooseConnector>(MongooseConnector);
 
     try {
-        mongooseConnector.initializeDbConnection();
+        mongooseConnector.connect();
         expressServer.start();
         startSockets(container, logger);
     } catch (error: any) {
