@@ -12,8 +12,8 @@ import { bindVerificationServices } from "./verification-services.binding";
 import { bindChatServices } from "./chat-services.binding";
 import { bindSockets } from "./sockets.binding";
 import { bindLogger } from "./loggers.bindings";
-import { bindExpressServer } from "./express-server.binding";
-import { bindHttpServer } from "./server.binding";
+import { bindExpressServer } from "./configured-server.binding";
+import { bindHttpServer } from "./express-server.binding";
 import { bindMongooseConnector } from "./mongoose-connector.binding";
 
 function bindAllDependencies(container: Container) {
