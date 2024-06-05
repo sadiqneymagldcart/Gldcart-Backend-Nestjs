@@ -4,7 +4,7 @@ import "reflect-metadata";
 import { Logger } from "@utils/logger";
 
 @injectable()
-class HttpServer {
+class ExpressServer {
     private readonly server: http.Server;
     private readonly logger: Logger;
     private readonly port: number = 3001;
@@ -45,4 +45,4 @@ class HttpServer {
     }
 }
 
-export { HttpServer };
+export { ExpressServer };
