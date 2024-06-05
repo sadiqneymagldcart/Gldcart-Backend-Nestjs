@@ -22,6 +22,9 @@
     "esModuleInterop": true,
     "moduleResolution": "node10",
     "paths": {
+      "@src/*": [
+        "src/*"
+      ],
       "@controllers/*": [
         "src/controllers/*"
       ],
