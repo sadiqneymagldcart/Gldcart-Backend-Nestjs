@@ -35,14 +35,18 @@ class ChatSocket extends BaseSocket {
     this.io
       .of(this.namespace)
       .on(this.connectionEvent, async (socket: Socket) => {
-        const userId = socket.handshake.query.userId as string;
-        this.logger.logInfo("User connected", { userId });
-        await this.updateUserOnlineStatus(socket, userId, true);
-        await this.handleCommonEvents(socket);
-        await this.handleChatsList(socket, userId);
-        await this.handleChatMessage(socket);
-        await this.watchNewChatEvent(socket);
+        await this.handleConnection(socket);
       });
+  }
+
+  private async handleConnection(socket: Socket) {
+    const userId = socket.handshake.query.userId as string;
+    this.logger.logInfo("User connected", { userId });
+    await this.updateUserOnlineStatus(socket, userId, true);
+    await this.handleCommonEvents(socket);
+    await this.handleChatsList(socket, userId);
+    await this.handleChatMessage(socket);
+    await this.watchNewChatEvent(socket);
   }
 
   private async handleChatsList(socket: Socket, userId: string) {
