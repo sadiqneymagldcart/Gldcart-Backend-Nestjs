@@ -11,5 +11,7 @@ At the moment, all missed packets are stored in memory. Use Redis Streams or Mon
 
 6. [ ] Handle user disconnect. Online status is not being updated properly.
 
+7. [ ] Create config for server, mongoose. Place all process.env inside config folder
+
 
 
