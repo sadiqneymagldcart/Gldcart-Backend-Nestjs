@@ -15,7 +15,7 @@ class MongooseConnector {
         this.logger = logger;
     }
 
-    public initializeDbConnection(): void {
+    public connect(): void {
         try {
             mongoose.connect(this.url, mongooseOptions);
             this.logger.logInfo(`⚡️[database] Connected to ${process.env.DB_URL}`);
