@@ -2,6 +2,7 @@ import { IProduct, ProductModel } from "@models/shop/product/Product";
 import { inject, injectable } from "inversify";
 import { BaseService } from "../base/base.service";
 import { Logger } from "@utils/logger";
+import { Nullable } from "@src/ts/types/nullable";
 
 @injectable()
 export class ProductService extends BaseService {
@@ -38,7 +39,7 @@ export class ProductService extends BaseService {
         return ProductModel.find({ category: category });
     }
 
-    public async getProductById(productId: string): Promise<IProduct | null> {
+    public async getProductById(productId: string): Promise<Nullable<IProduct>> {
         return ProductModel.findById(productId);
     }
 
@@ -49,7 +50,7 @@ export class ProductService extends BaseService {
     public async updateProduct(
         productId: string,
         updatedData: Partial<IProduct>,
-    ): Promise<IProduct | null> {
+    ): Promise<Nullable<IProduct>> {
         return ProductModel.findByIdAndUpdate(productId, updatedData, {
             new: true,
         });
@@ -58,7 +59,7 @@ export class ProductService extends BaseService {
     public async updateProductStock(
         productId: string,
         quantity: number,
-    ): Promise<IProduct | null> {
+    ): Promise<Nullable<IProduct>> {
         return ProductModel.findByIdAndUpdate(
             productId,
             { $inc: { stock: quantity } },
