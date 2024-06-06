@@ -1,6 +1,6 @@
 import { inject } from "inversify";
 import {
-    Controller,
+    BaseHttpController,
     controller,
     httpDelete,
     httpGet,
@@ -13,86 +13,55 @@ import { IReview } from "@models/shop/review/Review";
 import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/review", AuthenticationMiddleware)
-export class ReviewController implements Controller {
+export class ReviewController extends BaseHttpController {
     private readonly reviewService: ReviewService;
 
     public constructor(@inject(ReviewService) reviewService: ReviewService) {
+        super();
         this.reviewService = reviewService;
     }
 
-    @httpGet("/:productId")
-    public async getReviewsByProduct(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
+    @httpGet("/product/:productId")
+    public async getReviewsByProduct(request: express.Request) {
         const productId = request.params.productId;
-        try {
-            return this.reviewService.getReviewsByProduct(productId);
-        } catch (error) {
-            next(error);
-        }
+        const reviews = await this.reviewService.getReviewsByProduct(productId);
+        return this.json(reviews);
     }
 
     @httpGet("/:reviewId")
-    public async getReview(request: express.Request, next: express.NextFunction) {
+    public async getReview(request: express.Request) {
         const reviewId = request.params.reviewId;
-        try {
-            return this.reviewService.getReviewById(reviewId);
-        } catch (error) {
-            next(error);
-        }
+        const review = await this.reviewService.getReviewById(reviewId);
+        return this.json(review);
     }
 
-    @httpGet("/:userId")
-    public async getReviewsByUser(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
+    @httpGet("/user/:userId")
+    public async getReviewsByUser(request: express.Request) {
         const userId = request.params.userId;
-        try {
-            return this.reviewService.getReviewsByUser(userId);
-        } catch (error) {
-            next(error);
-        }
+        const reviews = await this.reviewService.getReviewsByUser(userId);
+        return this.json(reviews);
     }
 
     @httpPost("/")
-    public async createReview(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
+    public async createReview(request: express.Request) {
         const reviewData = request.body as Partial<IReview>;
-        try {
-            return this.reviewService.createReview(reviewData);
-        } catch (error) {
-            next(error);
-        }
+        const review = await this.reviewService.createReview(reviewData);
+        return this.json(review);
     }
 
     @httpPut("/:reviewId")
-    public async updateReview(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
+    public async updateReview(request: express.Request) {
         const reviewId = request.params.reviewId;
         const updatedData = request.body as Partial<IReview>;
-        try {
-            return this.reviewService.updateReview(reviewId, updatedData);
-        } catch (error) {
-            next(error);
-        }
+        const updatedReview = await this.reviewService.updateReview(reviewId, updatedData);
+        return this.json(updatedReview);
     }
 
     @httpDelete("/:reviewId")
-    public async deleteReview(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
+    public async deleteReview(request: express.Request) {
         const reviewId = request.params.reviewId;
-        try {
-            return this.reviewService.deleteReview(reviewId);
-        } catch (error) {
-            next(error);
-        }
+        const result = await this.reviewService.deleteReview(reviewId);
+        return this.json(result);
     }
 }
+

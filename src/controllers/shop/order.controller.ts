@@ -2,7 +2,7 @@ import * as express from "express";
 import { inject } from "inversify";
 import { OrderService } from "@services/shop/order.service";
 import {
-    Controller,
+    BaseHttpController,
     controller,
     httpGet,
     httpPost,
@@ -11,63 +11,40 @@ import {
 import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/order", AuthenticationMiddleware)
-export class OrderController implements Controller {
+export class OrderController extends BaseHttpController {
     private readonly orderService: OrderService;
 
     public constructor(@inject(OrderService) orderService: OrderService) {
+        super();
         this.orderService = orderService;
     }
 
     @httpPost("/create-order")
-    public async createOrder(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
-        try {
-            return await this.orderService.createOrder(request.body);
-        } catch (error) {
-            next(error);
-        }
+    public async createOrder(request: express.Request) {
+        const order = await this.orderService.createOrder(request.body);
+        return this.json(order);
     }
 
     @httpGet("/:userId")
-    public async getOrderByUserId(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
+    public async getOrderByUserId(request: express.Request) {
         const id = request.query.id as string;
-        try {
-            return await this.orderService.getOrder(id);
-        } catch (error) {
-            next(error);
-        }
+        const order = await this.orderService.getOrder(id);
+        return this.json(order);
     }
 
     @httpPut("/update-order/:id")
-    public async updateOrder(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
+    public async updateOrder(request: express.Request) {
         const id = request.params.id as string;
         const data = request.body;
-        try {
-            return await this.orderService.updateOrder(id, data);
-        } catch (error) {
-            next(error);
-        }
+        const updatedOrder = await this.orderService.updateOrder(id, data);
+        return this.json(updatedOrder);
     }
 
     @httpPut("/update-order-status/:id")
-    public async updateOrderStatus(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
+    public async updateOrderStatus(request: express.Request) {
         const id = request.params.id as string;
         const status = request.body.status;
-        try {
-            return await this.orderService.updateOrderStatus(id, status);
-        } catch (error) {
-            next(error);
-        }
+        const updatedStatus = await this.orderService.updateOrderStatus(id, status);
+        return this.json(updatedStatus);
     }
 }

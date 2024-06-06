@@ -1,6 +1,6 @@
 import * as express from "express";
 import {
-    Controller,
+    BaseHttpController,
     controller,
     httpDelete,
     httpGet,
@@ -12,78 +12,56 @@ import { AddressService } from "@services/personal/address.service";
 import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/address", AuthenticationMiddleware)
-export class AddressController implements Controller {
+export class AddressController extends BaseHttpController {
     private readonly addressService: AddressService;
 
     public constructor(@inject(AddressService) addressService: AddressService) {
+        super();
         this.addressService = addressService;
     }
 
     @httpPost("/:userId")
     public async addAddress(
-        req: express.Request,
-        res: express.Response,
-        next: express.NextFunction,
-    ) {
-        const userId = req.params.userId;
-        const addressData = req.body;
+        request: express.Request,
+    ): Promise<void> {
+        const userId = request.params.userId;
+        const addressData = request.body;
 
-        try {
-            await this.addressService.addAddress(userId, addressData);
-            res.status(200).json({ message: "Address was added successfully." });
-        } catch (error) {
-            next(error);
-        }
+        await this.addressService.addAddress(userId, addressData);
+        this.ok({ message: "Address was added successfully." });
     }
 
     @httpPut("/:userId/:addressId")
     public async updateAddress(
-        req: express.Request,
-        res: express.Response,
-        next: express.NextFunction,
-    ) {
-        const userId = req.params.userId;
-        const addressId = req.params.addressId;
-        const addressData = req.body;
+        request: express.Request,
+    ): Promise<void> {
+        const userId = request.params.userId;
+        const addressId = request.params.addressId;
+        const addressData = request.body;
 
-        try {
-            await this.addressService.updateAddress(userId, addressId, addressData);
-            res.status(200).json({ message: "Address was updated successfully" });
-        } catch (error) {
-            next(error);
-        }
+        await this.addressService.updateAddress(userId, addressId, addressData);
+        this.ok({ message: "Address was updated successfully" });
     }
 
     @httpDelete("/:userId/:addressId")
     public async deleteAddress(
-        req: express.Request,
-        res: express.Response,
-        next: express.NextFunction,
-    ) {
-        const userId = req.params.userId;
-        const addressId = req.params.addressId;
+        request: express.Request,
+    ): Promise<void> {
+        const userId = request.params.userId;
+        const addressId = request.params.addressId;
 
-        try {
-            await this.addressService.deleteAddress(userId, addressId);
-            res.status(200).json({ message: "Address was deleted successfully" });
-        } catch (error) {
-            next(error);
-        }
+        await this.addressService.deleteAddress(userId, addressId);
+        this.ok({ message: "Address was deleted successfully" });
     }
 
     @httpGet("/:userId")
     public async getAddresses(
-        req: express.Request,
-        res: express.Response,
-        next: express.NextFunction,
-    ) {
-        const userId = req.params.userId;
+        request: express.Request,
+    ): Promise<void> {
+        const userId = request.params.userId;
 
-        try {
-            const addresses = await this.addressService.getAddresses(userId);
-            res.status(200).json(addresses);
-        } catch (error) {
-            next(error);
-        }
+        const addresses = await this.addressService.getAddresses(userId);
+        this.ok(addresses);
     }
 }
+
