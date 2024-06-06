@@ -3,8 +3,6 @@ import {
     httpGet,
     controller,
     request,
-    response,
-    next,
     Controller,
     httpPost,
     BaseHttpController,
@@ -24,8 +22,6 @@ export class TestController extends BaseHttpController implements Controller {
     @httpGet("/")
     public async index(
         @request() req: express.Request,
-        @response() res: express.Response,
-        @next() next: express.NextFunction,
     ): Promise<string> {
         const id = req.query.id as string;
         return this.testService.test(id);
@@ -34,8 +30,6 @@ export class TestController extends BaseHttpController implements Controller {
     @httpPost("/")
     public async createId(
         @request() req: express.Request,
-        @response() res: express.Response,
-        @next() next: express.NextFunction,
     ): Promise<string> {
         const id = req.query.id as string;
         return this.testService.test(id);

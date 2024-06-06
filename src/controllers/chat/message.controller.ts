@@ -2,7 +2,7 @@ import * as express from "express";
 import { MessageService } from "@services/chat/message.service";
 import { inject } from "inversify";
 import {
-    Controller,
+    BaseHttpController,
     controller,
     httpGet,
     httpPost,
@@ -11,72 +11,42 @@ import {
 import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/message", AuthenticationMiddleware)
-export class MessageController implements Controller {
+export class MessageController extends BaseHttpController {
     private readonly messageService: MessageService;
+
     public constructor(@inject(MessageService) messageService: MessageService) {
+        super();
         this.messageService = messageService;
     }
 
     @httpGet("/search")
-    public async searchMessages(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const query = request.query.query as string;
-            const userId = request.query.userId as string;
-            const messages = await this.messageService.searchMessages(query, userId);
-            response.json(messages);
-        } catch (error) {
-            next(error);
-        }
+    public async searchMessages(request: express.Request) {
+        const query = request.query.query as string;
+        const userId = request.query.userId as string;
+        const messages = await this.messageService.searchMessages(query, userId);
+        return this.json(messages);
     }
 
     @httpPost("/")
-    public async createMessage(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const message = await this.messageService.createMessage(request.body);
-            response.status(201).json(message);
-        } catch (error) {
-            next(error);
-        }
+    public async createMessage(request: express.Request) {
+        const message = await this.messageService.createMessage(request.body);
+        return this.json(message, 201);
     }
 
     @httpGet("/:chatId")
-    public async getMessages(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const chatId = request.params.chatId;
-            const messages = await this.messageService.getMessages(chatId);
-            response.json(messages);
-        } catch (error) {
-            next(error);
-        }
+    public async getMessages(request: express.Request) {
+        const chatId = request.params.chatId;
+        const messages = await this.messageService.getMessages(chatId);
+        return this.json(messages);
     }
 
     @httpPut("/:messageId")
-    public async updateMessage(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const messageId = request.params.messageId;
-            const message = await this.messageService.updateMessage(
-                messageId,
-                request.body,
-            );
-            response.json(message);
-        } catch (error) {
-            next(error);
-        }
+    public async updateMessage(request: express.Request) {
+        const messageId = request.params.messageId;
+        const message = await this.messageService.updateMessage(
+            messageId,
+            request.body,
+        );
+        return this.json(message);
     }
 }
