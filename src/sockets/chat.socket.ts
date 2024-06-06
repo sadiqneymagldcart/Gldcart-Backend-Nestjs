@@ -7,11 +7,13 @@ import { ChatService } from "@services/chat/chat.service";
 import { MessageService } from "@services/chat/message.service";
 import { IMessage } from "@models/chat/Message";
 import { inject, injectable } from "inversify";
+import { UserService } from "@services/user/user.service";
 
 @injectable()
 class ChatSocket extends BaseSocket {
   private readonly chatService: ChatService;
   private readonly messageService: MessageService;
+  private readonly userService: UserService;
 
   private readonly namespace: string = ChatConfig.NAMESPACE;
   private readonly connectionEvent: string = ChatConfig.EVENTS.CONNECTION;
@@ -24,10 +26,12 @@ class ChatSocket extends BaseSocket {
     @inject(http.Server) httpServer: http.Server,
     @inject(ChatService) chatService: ChatService,
     @inject(MessageService) messageService: MessageService,
+    @inject(UserService) userService: UserService,
   ) {
     super(logger, httpServer);
     this.chatService = chatService;
     this.messageService = messageService;
+    this.userService = userService;
     this.setupSocket();
   }
 
@@ -49,6 +53,16 @@ class ChatSocket extends BaseSocket {
     await this.watchNewChatEvent(socket);
   }
 
+  private async updateUserOnlineStatus(
+    socket: Socket,
+    userId: string,
+    status: boolean,
+  ) {
+    await this.userService.updateUser(userId, { is_online: status });
+    console.log("User status updated", { userId, status });
+    socket.broadcast.emit("status", { userId, status });
+  }
+
   private async handleChatsList(socket: Socket, userId: string) {
     try {
       const chats = await this.chatService.getChats(userId);
@@ -59,13 +73,11 @@ class ChatSocket extends BaseSocket {
   }
 
   private async handleChatMessage(socket: Socket) {
-    socket.on(this.messageEvent, (message: IMessage) => {
+    socket.on(this.messageEvent, async (message: IMessage) => {
       try {
         this.logger.logInfo("Message received", message);
-        const savedMessage = this.messageService.createMessage(message);
-        socket
-          .to(message.chatId as string)
-          .emit(this.messageEvent, savedMessage);
+        const savedMessage = await this.messageService.createMessage(message);
+        socket.to(<string>message.chatId).emit(this.messageEvent, savedMessage);
       } catch (error) {
         this.handleError(socket, error as Error);
       }
@@ -76,6 +88,12 @@ class ChatSocket extends BaseSocket {
     await this.chatService.watchChatCollectionChanges((chat) => {
       socket.emit(this.newChatEvent, chat);
     });
+  }
+
+  protected async handleDisconnect(socket: Socket) {
+    const userId = socket.handshake.query.userId as string;
+    this.logger.logInfo("User disconnected", { userId });
+    await this.updateUserOnlineStatus(socket, userId, false);
   }
 }
 export { ChatSocket };
