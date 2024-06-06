@@ -3,6 +3,7 @@ import { BaseService } from "../base/base.service";
 import { Logger } from "@utils/logger";
 import { Nullable } from "@ts/types/nullable";
 import { ChatModel, IChat } from "@models/chat/Chat";
+import { NotFoundException } from "@exceptions/not-found.exception";
 
 @injectable()
 export class ChatService extends BaseService {
@@ -11,11 +12,11 @@ export class ChatService extends BaseService {
   }
 
   public async getChats(userId: string): Promise<IChat[]> {
-    return await ChatModel.find({
-      participants: userId,
+    return ChatModel.find({
+        participants: userId,
     }).populate({
-      path: "participants",
-      select: { name: 1, surname: 1, type: 1, is_online: 1 },
+        path: "participants",
+        select: {name: 1, surname: 1, type: 1, is_online: 1},
     });
   }
 
@@ -24,9 +25,13 @@ export class ChatService extends BaseService {
   }
 
   public async checkChatForUsers(users: string[]): Promise<Nullable<IChat>> {
-    return ChatModel.findOne({
+    const chat = await ChatModel.findOne({
       participants: { $all: users },
     });
+    if (!chat) {
+      throw new NotFoundException("Chat not found");
+    }
+    return chat;
   }
 
   public async createChat(participants: string[]): Promise<IChat> {
