@@ -2,7 +2,7 @@ import * as express from "express";
 import { setRefreshTokenCookie } from "@utils/token.utils";
 import { AuthService } from "@services/auth/auth.service";
 import {
-  Controller,
+  BaseHttpController,
   controller,
   httpGet,
   httpPost,
@@ -10,81 +10,53 @@ import {
 import { inject } from "inversify";
 
 @controller("/auth")
-export class AuthController implements Controller {
+export class AuthController extends BaseHttpController {
   private readonly authService: AuthService;
 
   public constructor(@inject(AuthService) authService: AuthService) {
+    super();
     this.authService = authService;
   }
 
   @httpPost("/signup")
-  async registerUser(
-    request: express.Request,
-    response: express.Response,
-    next: express.NextFunction,
-  ) {
+  async registerUser(request: express.Request, response: express.Response) {
     const { type, name, surname, email, password } = request.body;
 
-    try {
-      const userData = await this.authService.register(
-        type,
-        name,
-        surname,
-        email,
-        password,
-      );
-      setRefreshTokenCookie(response, userData.refreshToken);
-      return userData;
-    } catch (error) {
-      next(error);
-    }
+    const user = await this.authService.register(
+      type,
+      name,
+      surname,
+      email,
+      password,
+    );
+    setRefreshTokenCookie(response, user.refreshToken);
+    return this.json(user);
   }
 
   @httpPost("/login")
-  public async loginUser(
-    request: express.Request,
-    response: express.Response,
-    next: express.NextFunction,
-  ) {
+  public async loginUser(request: express.Request, response: express.Response) {
     const { email, password } = request.body;
-    try {
-      const userData = await this.authService.login(email, password);
-      setRefreshTokenCookie(response, userData.refreshToken);
-      return userData;
-    } catch (error) {
-      return next(error);
-    }
+    const user = await this.authService.login(email, password);
+    setRefreshTokenCookie(response, user.refreshToken);
+    return this.json(user);
   }
 
   @httpPost("/logout")
   public async logoutUser(
     request: express.Request,
     response: express.Response,
-    next: express.NextFunction,
   ) {
     const refreshToken = request.cookies.refreshToken;
-    try {
-      const token = await this.authService.logout(refreshToken);
-      response.clearCookie("refreshToken");
-      return token;
-    } catch (error) {
-      next(error);
-    }
+    const token = await this.authService.logout(refreshToken);
+    response.clearCookie("refreshToken");
+    return this.json(token);
   }
 
   @httpGet("/refresh")
-  public async refresh(
-    request: express.Request,
-    response: express.Response,
-    next: express.NextFunction,
-  ) {
+  public async refresh(request: express.Request, response: express.Response) {
     const refreshToken = request.cookies.refreshToken as string;
-    try {
-      const userData = await this.authService.refresh(refreshToken);
-      setRefreshTokenCookie(response, userData.refreshToken);
-      return userData;
-    } catch (error) {
-      next(error);
-    }
+    const user = await this.authService.refresh(refreshToken);
+    setRefreshTokenCookie(response, user.refreshToken);
+    return this.json(user);
   }
 }
