@@ -1,7 +1,7 @@
 import * as express from "express";
 import { inject } from "inversify";
 import {
-    Controller,
+    BaseHttpController,
     controller,
     httpGet,
     httpPost,
@@ -13,7 +13,7 @@ import { IProfessionalService } from "@models/shop/product/ProfessionalService";
 import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/professional-services", AuthenticationMiddleware)
-export class ProfessionalServicesController implements Controller {
+export class ProfessionalServicesController extends BaseHttpController {
     private readonly fileService: FileService;
     private readonly servicesService: ProfessionalServicesService;
 
@@ -22,78 +22,56 @@ export class ProfessionalServicesController implements Controller {
         servicesService: ProfessionalServicesService,
         @inject(FileService) fileService: FileService,
     ) {
+        super();
         this.servicesService = servicesService;
         this.fileService = fileService;
     }
 
     @httpPost("/", multerMiddleware.any())
-    public async addService(
-        request: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) {
-        try {
-            const files = request.files as Express.Multer.File[];
-            const images = await this.fileService.uploadImagesWithAws(files);
+    public async addService(request: express.Request) {
+        const files = request.files as Express.Multer.File[];
+        const images = await this.fileService.uploadImagesWithAws(files);
 
-            if (images.length === 0) {
-                return response
-                    .status(400)
-                    .json({ message: "At least one image is required." });
-            }
-
-            const serviceData: IProfessionalService = {
-                ...request.body,
-                images: images,
-            };
-            return await this.servicesService.createService(serviceData);
-        } catch (error) {
-            console.log(error);
-            next(error);
+        if (images.length === 0) {
+            return this.badRequest("At least one image is required.");
         }
+
+        const serviceData: IProfessionalService = {
+            ...request.body,
+            images: images,
+        };
+
+        const createdService =
+            await this.servicesService.createService(serviceData);
+        return this.created(
+            `/professional-services/${createdService.id}`,
+            createdService,
+        );
     }
 
     @httpGet("/count")
-    public async getServicesCount(next: express.NextFunction) {
-        try {
-            return await this.servicesService.getServicesCount();
-        } catch (error) {
-            next(error);
-        }
+    public async getServicesCount() {
+        const count = await this.servicesService.getServicesCount();
+        return this.ok(count);
     }
 
     @httpGet("/")
-    public async getAllServices(next: express.NextFunction) {
-        try {
-            return await this.servicesService.getAllServices();
-        } catch (error) {
-            next(error);
-        }
+    public async getAllServices() {
+        const services = await this.servicesService.getAllServices();
+        return this.ok(services);
     }
 
     @httpGet("/search/filters")
-    public async getServicesByFilters(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
+    public async getServicesByFilters(request: express.Request) {
         const filters = request.query as any;
-        try {
-            return await this.servicesService.getServicesByQuery(filters);
-        } catch (error) {
-            next(error);
-        }
+        const services = await this.servicesService.getServicesByQuery(filters);
+        return this.ok(services);
     }
 
     @httpGet("/category/:category")
-    public async getServicesByCategory(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
+    public async getServicesByCategory(request: express.Request) {
         const category = request.params.category;
-        try {
-            return await this.servicesService.getServicesByCategory(category);
-        } catch (error) {
-            next(error);
-        }
+        const services = await this.servicesService.getServicesByCategory(category);
+        return this.ok(services);
     }
 }

@@ -6,73 +6,57 @@ import {
     httpPost,
     httpPut,
     httpDelete,
-    Controller,
+    BaseHttpController,
 } from "inversify-express-utils";
 import { WishlistService } from "@services/shop/wishlist.service";
 import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/wishlist", AuthenticationMiddleware)
-export class WishlistController implements Controller {
+export class WishlistController extends BaseHttpController {
     private readonly wishlistService: WishlistService;
 
     public constructor(
         @inject(WishlistService) wishlistService: WishlistService,
     ) {
+        super();
         this.wishlistService = wishlistService;
     }
 
     @httpGet("/:userId")
-    public async getWishlist(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
+    public async getWishlist(request: express.Request) {
         const { userId } = request.params;
-        try {
-            return await this.wishlistService.getWishlistByUser(userId);
-        } catch (error) {
-            next(error);
-        }
+        const wishlist = await this.wishlistService.getWishlistByUser(userId);
+        return this.json(wishlist);
     }
 
     @httpPost("/")
-    public async addItemToWishlist(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
+    public async addItemToWishlist(request: express.Request) {
         const { userId, item } = request.body;
-        try {
-            return await this.wishlistService.addItemToWishlist(userId, item);
-        } catch (error: any) {
-            next(error);
-        }
+        const updatedWishlist = await this.wishlistService.addItemToWishlist(
+            userId,
+            item,
+        );
+        return this.json(updatedWishlist);
     }
 
     @httpPut("/")
-    public async updateWishlistItem(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
+    public async updateWishlistItem(request: express.Request) {
         const { userId, productId, item } = request.body;
-        try {
-            return await this.wishlistService.updateCartItem(userId, productId, item);
-        } catch (error) {
-            next(error);
-        }
+        const updatedWishlist = await this.wishlistService.updateCartItem(
+            userId,
+            productId,
+            item,
+        );
+        return this.json(updatedWishlist);
     }
 
     @httpDelete("/remove-item")
-    public async removeItemFromWishlist(
-        request: express.Request,
-        next: express.NextFunction,
-    ) {
+    public async removeItemFromWishlist(request: express.Request) {
         const { userId, productId } = request.body;
-        try {
-            return await this.wishlistService.removeItemFromWishlist(
-                userId,
-                productId,
-            );
-        } catch (error) {
-            next(error);
-        }
+        const updatedWishlist = await this.wishlistService.removeItemFromWishlist(
+            userId,
+            productId,
+        );
+        return this.json(updatedWishlist);
     }
 }
