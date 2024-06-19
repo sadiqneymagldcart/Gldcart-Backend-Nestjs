@@ -14,10 +14,6 @@ class UserService extends BaseService {
                 return await UserModel.create(user);
         }
 
-        public async getAllUsers(): Promise<IUser[]> {
-                return UserModel.find();
-        }
-
         public async getUserById(userId: string): Promise<Nullable<IUser>> {
                 return UserModel.findById(userId);
         }
@@ -52,7 +48,7 @@ class UserService extends BaseService {
         }
 
         public async getUserByData(data: Partial<IUser>): Promise<IUser | null> {
-                return await UserModel.findOne({ data });
+                return UserModel.findOne({ data });
         }
 
         public async updateUser(
@@ -62,10 +58,6 @@ class UserService extends BaseService {
                 return UserModel.findByIdAndUpdate(userId, updatedData, {
                         new: true,
                 });
-        }
-
-        public async deleteUser(userId: string): Promise<IUser | null> {
-                return UserModel.findByIdAndDelete(userId);
         }
 }
 export { UserService };
