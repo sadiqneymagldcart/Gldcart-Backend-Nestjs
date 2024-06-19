@@ -1,6 +1,6 @@
 const SocketConfig = Object.freeze({
-    PORT: 3000,
-    ORIGIN: "http://localhost:5173",
+    PORT: 3001,
+    ORIGIN: process.env.CLIENT_URL!,
     ALLOWED_HEADERS: "Origin, X-Requested-With, Content-Type, Accept",
     ALLOWED_METHODS: "GET, POST",
     ALLOWED_CREDENTIALS: true,
@@ -18,12 +18,12 @@ const ServerOptions = {
         methods: SocketConfig.ALLOWED_METHODS,
         credentials: SocketConfig.ALLOWED_CREDENTIALS,
     },
-    connectionStateRecovery: {
-        // the backup duration of the sessions and the packets
-        maxDisconnectionDuration: 2 * 60 * 1000,
-        // whether to skip middlewares upon successful recovery
-        skipMiddlewares: true,
-    },
+    // connectionStateRecovery: {
+    //     // the backup duration of the sessions and the packets
+    //     maxDisconnectionDuration: 2 * 60 * 1000,
+    //     // whether to skip middlewares upon successful recovery
+    //     skipMiddlewares: true,
+    // },
 };
 
 const ChatConfig = Object.freeze({

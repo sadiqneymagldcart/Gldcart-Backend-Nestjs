@@ -21,6 +21,12 @@
     "baseUrl": "./",
     "esModuleInterop": true,
     "moduleResolution": "node10",
+    "incremental": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
     "paths": {
       "@src/*": [
         "src/*"
@@ -74,7 +80,6 @@
         "src/*"
       ]
     },
-    "forceConsistentCasingInFileNames": true,
     "listEmittedFiles": false,
     "listFiles": false,
     "resolveJsonModule": true,
@@ -84,7 +89,6 @@
     "emitDecoratorMetadata": true,
     "strict": true,
     "strictPropertyInitialization": true,
-    "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": false,
     "noUnusedLocals": true,
     "noUnusedParameters": false,
@@ -93,6 +97,5 @@
   "exclude": [
     "node_modules",
     "dist"
-  ],
-  "compileOnSave": false
+  ]
 }
