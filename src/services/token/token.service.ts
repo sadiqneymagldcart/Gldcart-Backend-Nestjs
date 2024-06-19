@@ -1,44 +1,37 @@
 import * as jwt from "jsonwebtoken";
 import TokenModel, { Token } from "../../models/token/Token";
 import { Logger } from "@utils/logger";
-import { BaseService } from "../base/base.service";
 import { inject, injectable } from "inversify";
-import { ITokenPayload } from "@interfaces/ITokenPayload";
-import { ITokens } from "@interfaces/ITokens";
 import { Nullable } from "@ts/types/nullable";
+import { LoginRequestDto } from "@src/dto/login.request.dto";
 
 @injectable()
-export class TokenService extends BaseService {
+export class TokenService {
     private readonly jwtAccessSecret: string = process.env.JWT_ACCESS_SECRET!;
     private readonly jwtRefreshSecret: string = process.env.JWT_REFRESH_SECRET!;
 
     private readonly jwtAccessExpiration: string = "15m";
     private readonly jwtRefreshExpiration: string = "30d";
 
-    public constructor(@inject(Logger) logger: Logger) {
-        super(logger);
+    public constructor(@inject(Logger) private readonly logger: Logger) { }
+
+    public async createAccessToken(payload: LoginRequestDto): Promise<string> {
+        return jwt.sign(payload, this.jwtAccessSecret, {
+            expiresIn: this.jwtAccessExpiration,
+        });
     }
 
-    public createTokens(payload: ITokenPayload): ITokens {
-        const accessToken: string = jwt.sign(
-            payload,
-            process.env.JWT_ACCESS_SECRET!,
-            {
-                expiresIn: this.jwtAccessExpiration,
-            },
-        );
-        const refreshToken: string = jwt.sign(
-            payload,
-            process.env.JWT_REFRESH_SECRET!,
-            {
-                expiresIn: this.jwtRefreshExpiration,
-            },
-        );
-        return { accessToken, refreshToken };
+    public async createRefreshToken(payload: LoginRequestDto): Promise<string> {
+        return jwt.sign(payload, this.jwtRefreshSecret, {
+            expiresIn: this.jwtRefreshExpiration,
+        });
     }
 
-    public async saveToken(userId: string, refreshToken: string): Promise<Token> {
-        const tokenData = <Token>await TokenModel.findOne({ user: userId });
+    public async saveRefreshToken(
+        userId: string,
+        refreshToken: string,
+    ): Promise<Token> {
+        const tokenData = await TokenModel.findOne({ user: userId });
         if (tokenData) {
             tokenData.refreshToken = refreshToken;
             return tokenData.save();
@@ -46,10 +39,10 @@ export class TokenService extends BaseService {
         return await TokenModel.create({ user: userId, refreshToken });
     }
 
-    public async createAndSaveTokens(payload: ITokenPayload): Promise<Token> {
+    public async createAndSaveTokens(payload: LoginRequestDto): Promise<Token> {
         try {
-            const { refreshToken } = this.createTokens(payload);
-            return this.saveToken(payload.id, refreshToken);
+            const refreshToken = await this.createRefreshToken(payload);
+            return this.saveRefreshToken(payload.id, refreshToken);
         } catch (error) {
             this.logger.logError(`${error}`);
             throw error;
@@ -62,15 +55,24 @@ export class TokenService extends BaseService {
         return TokenModel.deleteOne({ refreshToken });
     }
 
-    public async findToken(refreshToken: string): Promise<Nullable<Token>> {
-        return TokenModel.findOne({ refreshToken });
+    private async findToken(refreshToken: string): Promise<string> {
+        const token = await TokenModel.findOne({ refreshToken });
+
+        if (!token) {
+            throw new Error("Token not found");
+        }
+
+        return token.refreshToken;
     }
 
-    public validateAccessToken(accessToken: string): Nullable<ITokenPayload> {
-        return <any>jwt.verify(accessToken, this.jwtAccessSecret);
+    public validateAccessToken(accessToken: string): Nullable<LoginRequestDto> {
+        return <LoginRequestDto>jwt.verify(accessToken, this.jwtAccessSecret);
     }
 
-    public validateRefreshToken(refreshToken: string): Nullable<ITokenPayload> {
-        return <any>jwt.verify(refreshToken, this.jwtRefreshSecret);
+    public async validateRefreshToken(
+        refreshToken: string,
+    ): Promise<LoginRequestDto> {
+        const tokenFromDb = await this.findToken(refreshToken);
+        return <LoginRequestDto>jwt.verify(tokenFromDb, this.jwtRefreshSecret);
     }
 }
