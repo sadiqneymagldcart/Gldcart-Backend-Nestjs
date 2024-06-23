@@ -1,21 +1,20 @@
+import { AuthCredentialsDto } from '@auth/dto/auth.credentials.dto';
 import { AuthResponseDto } from '@auth/dto/auth.response.dto';
-import { LoginCredentialsDto } from '@auth/dto/login-credentials.dto';
-import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';
 
 export interface IAuthService {
   /**
    * Authenticates a user with the provided credentials.
-   * @param credentials - An instance of `LoginCredentialsDto` containing the user's authentication details (e.g., email and password).
+   * @param credentials - An instance of `AuthCredentialsDto` containing the user's authentication details (e.g., username and password).
    * @returns A promise that resolves to an instance of `AuthResponseDto`, containing authentication details such as access token and refresh token.
    */
-  login(credentials: LoginCredentialsDto): Promise<AuthResponseDto>;
+  login(credentials: AuthCredentialsDto): Promise<AuthResponseDto>;
 
   /**
    * Registers a new user with the provided credentials.
-   * @param credentials - An instance of `RegisterCredentialsDto` containing the user's registration details (e.g., email and password).
+   * @param credentials - An instance of `AuthCredentialsDto` containing the user's registration details (e.g., username and password).
    * @returns A promise that resolves to an instance of `AuthResponseDto`, containing authentication details such as access token and refresh token.
    */
-  register(credentials: RegisterCredentialsDto): Promise<AuthResponseDto>;
+  register(credentials: AuthCredentialsDto): Promise<AuthResponseDto>;
 
   /**
    * Refreshes the authentication tokens using the provided refresh token.

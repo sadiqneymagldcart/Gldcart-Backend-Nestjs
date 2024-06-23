@@ -1,33 +1,69 @@
+import { Injectable } from '@nestjs/common';
 import { Pagination } from '@shared/decorators/pagination.decorator';
-import { FilterQuery, Model, Document } from 'mongoose';
+import { In, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
 
-const CASE_INSENSITIVE_OPTION = 'i';
+@Injectable()
+export class SearchService<T extends ObjectLiteral> {
+  private readonly repository: Repository<T>;
 
-export class SearchService<T extends Document> {
-        public constructor(private readonly model: Model<T>) { }
+  public constructor(repository: Repository<T>) {
+    this.repository = repository;
+  }
 
-        public async searchWithPaginationAndFilters(
-                { limit, offset }: Pagination,
-                filters: Record<string, any> = {},
-        ): Promise<T[]> {
-                return await this.model.find(filters).skip(offset).limit(limit).lean();
-        }
+  public async searchWithPaginationAndText(
+    { limit, offset }: Pagination,
+    searchFields: Extract<keyof T, string>[],
+    search: string,
+  ): Promise<[T[], number]> {
+    const queryBuilder = this.repository.createQueryBuilder('alias');
+    this.applySearchConditions(queryBuilder, searchFields, search);
 
-        public async searchWithPaginationAndText(
-                { limit, offset }: Pagination,
-                searchFields: (keyof T)[],
-                text: string,
-        ): Promise<T[]> {
-                if (searchFields.length === 0) {
-                        throw new Error('searchFields cannot be empty');
-                }
+    queryBuilder.skip(offset).take(limit);
 
-                const searchQuery = {
-                        $or: searchFields.map((field) => ({
-                                [field]: { $regex: text, $options: CASE_INSENSITIVE_OPTION },
-                        })),
-                } as FilterQuery<T>;
+    return await queryBuilder.getManyAndCount();
+  }
 
-                return await this.model.find(searchQuery).skip(offset).limit(limit).lean();
-        }
+  public async searchWithPaginationAndFilters(
+    { limit, offset }: Pagination,
+    filters: ObjectLiteral,
+  ): Promise<[T[], number]> {
+    const queryBuilder = this.createQueryBuilderWithWhere(filters);
+
+    queryBuilder.skip(offset).take(limit);
+
+    return await queryBuilder.getManyAndCount();
+  }
+
+  private applySearchConditions(
+    queryBuilder: SelectQueryBuilder<T>,
+    searchFields: Extract<keyof T, string>[],
+    search: string,
+  ): void {
+    const likeConditions = searchFields.map(
+      (field) => `LOWER(${field}) LIKE LOWER(:search)`,
+    );
+    const searchCondition = likeConditions.join(' OR ');
+
+    queryBuilder.andWhere(`(${searchCondition})`, { search: `%${search}%` });
+  }
+
+  private createQueryBuilderWithWhere(
+    filters: ObjectLiteral,
+  ): SelectQueryBuilder<T> {
+    const where = this.buildWhereClause(filters);
+    return this.repository.createQueryBuilder('alias').where(where);
+  }
+
+  private buildWhereClause(filters: ObjectLiteral): ObjectLiteral {
+    const where: ObjectLiteral = {};
+
+    for (const key in filters) {
+      if (filters.hasOwnProperty(key)) {
+        where[key] = Array.isArray(filters[key])
+          ? In(filters[key])
+          : filters[key];
+      }
+    }
+    return where;
+  }
 }

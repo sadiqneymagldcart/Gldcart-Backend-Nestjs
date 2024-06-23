@@ -1,17 +1,7 @@
 import { Response } from 'express';
 
-export function setRefreshTokenCookie(response: Response, token: string): void {
-  const refreshTokenName = process.env.REFRESH_TOKEN_NAME;
-
-  if (!refreshTokenName) {
-    throw new Error(
-      'REFRESH_TOKEN_NAME is not set in the environment variables.',
-    );
-  }
-
-  response.cookie(refreshTokenName, token, {
-    httpOnly: true, // cookie is not accessible via JavaScript
-    secure: process.env.NODE_ENV === 'production', // secure cookie in production
-    sameSite: 'strict', // helps against CSRF attacks
-  });
+export function setRefreshTokenCookie(response: Response, token: string) {
+        response.cookie(process.env.REFRESH_TOKEN_NAME!, token, {
+                httpOnly: true,
+        });
 }

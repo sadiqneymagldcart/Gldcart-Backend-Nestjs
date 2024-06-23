@@ -9,23 +9,10 @@ export class AuthResponseDto {
 
   refreshToken: string;
 
-  @ApiProperty({
-    example: {
-      _id: '66829081894baf6d7bca705b',
-      name: 'John',
-      surname: 'Doe',
-      email: 'example@example.com',
-      role: 'Buyer',
-      profile_picture: 'https://example.com/image.jpg',
-    },
-  })
+  @ApiProperty({ example: { _id: 1, email: 'example@example.com' } })
   @Expose()
   user: {
     _id: string;
-    name: string;
-    surname?: string;
     email: string;
-    role?: string;
-    profile_picture?: string;
   };
 }

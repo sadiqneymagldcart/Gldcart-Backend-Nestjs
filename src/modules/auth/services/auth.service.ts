@@ -6,40 +6,43 @@ import {
 } from '@nestjs/common';
 import { TokenService } from '@token/services/token.service';
 import { UserService } from '@user/services/user.service';
-import { LoginCredentialsDto } from '@auth/dto/login-credentials.dto';
-import { AuthResponseDto } from '@auth/dto/auth.response.dto';
-import { CreateTokenDto } from '@token/dto/create-tokens.dto';
-import { IAuthService } from '@auth/interfaces/auth.service.interface';
-import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';
-import { plainToInstance } from 'class-transformer';
+import { AuthCredentialsDto } from '@auth/dto/auth.credentials.dto';
+import { CreateTokenDto } from '@token/dto/create.tokens.dto';
 import * as bcrypt from 'bcrypt';
+import { AuthResponseDto } from '@auth/dto/auth.response.dto';
+import { IAuthService } from '@auth/interfaces/auth.service.interface';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AuthService implements IAuthService {
+  private readonly userService: UserService;
+  private readonly tokenService: TokenService;
   private readonly logger: Logger = new Logger(AuthService.name);
 
-  public constructor(
-    private readonly userService: UserService,
-    private readonly tokenService: TokenService,
-  ) {}
+  public constructor(userService: UserService, tokenService: TokenService) {
+    this.userService = userService;
+    this.tokenService = tokenService;
+  }
 
   public async login(
-    credentials: LoginCredentialsDto,
+    credentials: AuthCredentialsDto,
   ): Promise<AuthResponseDto> {
     const user = await this._validateUser(credentials);
     return this._generateAuthResponse(user);
   }
 
   public async register(
-    credentials: RegisterCredentialsDto,
+    credentials: AuthCredentialsDto,
   ): Promise<AuthResponseDto> {
-    const existingUser = await this.userService.findByEmail(credentials.email);
+    const existingUser = await this.userService.findUserByEmail(
+      credentials.email,
+    );
     if (existingUser) {
       throw new BadRequestException('User already exists');
     }
 
     const hashedPassword = await bcrypt.hash(credentials.password, 10);
-    const user = await this.userService.create({
+    const user = await this.userService.createAndSaveUser({
       ...credentials,
       password: hashedPassword,
     });
@@ -48,9 +51,7 @@ export class AuthService implements IAuthService {
       excludeExtraneousValues: true,
     });
 
-    this.logger.debug(
-      `User without password: ${JSON.stringify(userWithoutPassword)}`,
-    );
+    this.logger.log(`User created: ${JSON.stringify(userWithoutPassword)}`);
 
     return this._generateAuthResponse(userWithoutPassword);
   }
@@ -62,6 +63,10 @@ export class AuthService implements IAuthService {
 
     const userPayload = await this.tokenService.verifyRefreshToken(token);
 
+    if (!userPayload) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
     return this._generateAuthResponse(userPayload);
   }
 
@@ -70,23 +75,17 @@ export class AuthService implements IAuthService {
   }
 
   private async _generateAuthResponse(
-    tokenPayload: CreateTokenDto,
+    user: CreateTokenDto,
   ): Promise<AuthResponseDto> {
-    const [refreshToken, accessToken] = await Promise.all([
-      this.tokenService.generateRefreshToken(tokenPayload),
-      this.tokenService.generateAccessToken(tokenPayload),
-    ]);
-    return {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-      user: tokenPayload,
-    };
+    const accessToken = await this.tokenService.generateAccessToken(user);
+    const refreshToken = await this.tokenService.generateRefreshToken(user);
+    return { accessToken, refreshToken, user };
   }
 
   private async _validateUser(
-    credentials: LoginCredentialsDto,
+    credentials: AuthCredentialsDto,
   ): Promise<CreateTokenDto> {
-    const user = await this.userService.findByEmail(credentials.email);
+    const user = await this.userService.findUserByEmail(credentials.email);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Transform } from 'class-transformer';
-import { IsEmail } from 'class-validator';
+import { IsEmail, IsOptional, IsArray } from 'class-validator';
 import {
   ApiHideProperty,
   ApiProperty,
@@ -13,10 +13,10 @@ export type UserDocument = User & Document;
 
 @Schema({ timestamps: true })
 export class User {
-  @ApiProperty({ description: 'The unique identifier of the user' })
   @Transform(({ value }) => value.toString())
   _id: string;
 
+  @Transform(({ value }) => value.toLowerCase())
   @ApiProperty({
     description: 'The role of the user',
     enum: UserRole,
@@ -25,7 +25,6 @@ export class User {
   @Prop({
     required: [true, 'role field is required'],
     enum: UserRole,
-    index: true,
   })
   role: UserRole;
 
@@ -45,6 +44,7 @@ export class User {
   })
   @Prop()
   @Transform(({ value }) => value?.trim())
+  @IsOptional()
   surname?: string;
 
   @ApiProperty({
@@ -55,7 +55,6 @@ export class User {
     required: [true, 'email field is required'],
     unique: true,
     validate: [IsEmail, 'Invalid email format'],
-    index: true,
   })
   email: string;
 
@@ -72,7 +71,8 @@ export class User {
     example: 'http://example.com/profile.jpg',
   })
   @Prop()
-  picture?: string;
+  @IsOptional()
+  profile_picture?: string;
 
   @ApiProperty({
     description: 'The password of the user',
@@ -91,10 +91,12 @@ export class User {
     type: [String],
   })
   @Prop({ type: [String] })
+  @IsArray()
   wishlist: string[];
 
   @ApiHideProperty()
   @Prop()
+  @IsOptional()
   password_token?: string;
 
   @ApiPropertyOptional({
@@ -107,6 +109,7 @@ export class User {
     ref: 'Subscription',
     default: null,
   })
+  @IsOptional()
   active_subscription?: Types.ObjectId;
 
   @ApiPropertyOptional({
@@ -114,6 +117,7 @@ export class User {
     example: 'Software developer with 10 years of experience.',
   })
   @Prop()
+  @IsOptional()
   bio?: string;
 
   @ApiPropertyOptional({
@@ -121,6 +125,7 @@ export class User {
     example: '+1234567890',
   })
   @Prop()
+  @IsOptional()
   phone_number?: string;
 
   @ApiPropertyOptional({
@@ -128,6 +133,7 @@ export class User {
     example: 'active',
   })
   @Prop()
+  @IsOptional()
   status?: string;
 
   @ApiProperty({
@@ -135,10 +141,12 @@ export class User {
     type: [String],
   })
   @Prop({ type: [String] })
+  @IsArray()
   document_images: string[];
 
   @ApiHideProperty()
   @Prop()
+  @IsOptional()
   verification_token?: string;
 
   @ApiProperty({
@@ -161,10 +169,9 @@ export class User {
   })
   @Prop({ default: false })
   is_online: boolean;
-
-  @ApiPropertyOptional({ description: 'The stripe customer ID of the user' })
-  @Prop()
-  stripeCustomerId?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.index({ email: 1 });
+UserSchema.index({ role: 1 });
