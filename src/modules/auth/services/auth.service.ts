@@ -8,10 +8,10 @@ import { TokenService } from '@token/services/token.service';
 import { UserService } from '@user/services/user.service';
 import { AuthCredentialsDto } from '@auth/dto/auth.credentials.dto';
 import { CreateTokenDto } from '@token/dto/create.tokens.dto';
-import * as bcrypt from 'bcrypt';
 import { AuthResponseDto } from '@auth/dto/auth.response.dto';
 import { IAuthService } from '@auth/interfaces/auth.service.interface';
 import { plainToInstance } from 'class-transformer';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService implements IAuthService {
