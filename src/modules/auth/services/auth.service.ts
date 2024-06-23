@@ -51,7 +51,9 @@ export class AuthService implements IAuthService {
       excludeExtraneousValues: true,
     });
 
-    this.logger.log(`User created: ${JSON.stringify(userWithoutPassword)}`);
+    this.logger.log(
+      `User without password: ${JSON.stringify(userWithoutPassword)}`,
+    );
 
     return this._generateAuthResponse(userWithoutPassword);
   }
@@ -62,10 +64,6 @@ export class AuthService implements IAuthService {
     }
 
     const userPayload = await this.tokenService.verifyRefreshToken(token);
-
-    if (!userPayload) {
-      throw new UnauthorizedException('Invalid token');
-    }
 
     return this._generateAuthResponse(userPayload);
   }
