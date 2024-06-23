@@ -1,60 +1,33 @@
+import { Category } from '@category/schemas/category.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
-import { Document, SchemaTypes } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export type OfferingDocument = Offering & Document;
 
 @Schema({ timestamps: true })
-export class Offering {
-  @ApiProperty({ description: 'The unique identifier of the offering' })
-  @Transform(({ value }) => value.toString())
-  _id: string;
+export class Offering extends Document {
+    @Prop({ required: true })
+    name: string;
 
-  @ApiProperty({
-    description: 'The name of the offering',
-    example: 'Sample Offering',
-  })
-  @Prop({ required: true, index: true })
-  name: string;
+    @Prop()
+    description?: string;
 
-  @ApiProperty({
-    description: 'A brief description of the offering',
-    example: 'This is a sample offering',
-  })
-  @Prop()
-  description?: string;
+    @Prop({ required: true, type: [String] })
+    images: string[];
 
-  @ApiProperty({
-    description: 'Array of image URLs associated with the offering',
-    example: [
-      'https://example.com/image1.jpg',
-      'https://example.com/image2.jpg',
-    ],
-  })
-  @Prop({ required: true, type: [String] })
-  images: string[];
+    @Prop({ required: true })
+    category: Category;
 
-  @ApiProperty({ description: 'The category of the offering' })
-  @Prop({ required: true, index: true })
-  category: string;
+    @Prop({ required: true })
+    subcategory: string;
 
-  @ApiProperty({
-    description: 'The subcategory of the offering',
-    example: 'Subcategory1',
-  })
-  @Prop({ required: true, index: true })
-  subcategory: string;
-
-  @ApiProperty({
-    description: 'Attributes of the offering',
-    example: [
-      { key: 'color', value: 'red' },
-      { key: 'size', value: 'M' },
-    ],
-  })
-  @Prop({ required: true, type: SchemaTypes.Mixed, index: true })
-  attributes: { key: string; value: string }[];
+    @Prop({ required: true, type: mongoose.SchemaTypes.Mixed })
+    attributes: { key: string; value: string }[];
 }
 
 export const OfferingSchema = SchemaFactory.createForClass(Offering);
+
+OfferingSchema.index({ name: 'text' });
+OfferingSchema.index({ category: 'text' });
+OfferingSchema.index({ subcategory: 'text' });
+OfferingSchema.index({ 'attributes.value': 'text' });

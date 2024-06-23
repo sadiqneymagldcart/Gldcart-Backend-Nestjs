@@ -1,62 +1,60 @@
+version: '3'
+
 services:
   api:
     build:
       dockerfile: Dockerfile
       context: .
-      target: production
-    restart: unless-stopped
+      target: development
     env_file:
-      - .production.env
+      - .development.env
     volumes:
       - .:/usr/src/app
-    networks:
-      - app-network
-
-  webserver:
-    image: nginx:mainline-alpine
-    container_name: webserver
-    restart: unless-stopped
+    command: npm run start:dev
     ports:
-      - '80:80'
-      - '443:443'
-    volumes:
-      - web-root:/var/www/html
-      - ./nginx-conf:/etc/nginx/conf.d
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - dhparam:/etc/ssl/certs
-    depends_on:
-      - api
+      - '3001:3001'
     networks:
       - app-network
-
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - web-root:/var/www/html
     depends_on:
-      - webserver
-    command: certonly --webroot --webroot-path=/var/www/html --email qasse-user@api.qasse.co --agree-tos --no-eff-email --force-renewal -d api.qasse.co -d www.api.qasse.co
+      - mongo
 
-volumes:
-  certbot-etc:
-  certbot-var:
-  web-root:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/qasse-user/qasse_backend/views/
-      o: bind
-  dhparam:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/qasse-user/qasse_backend/dhparam/
-      o: bind
+  mongodb:
+    image: mongo
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+    ports:
+      - '27017:27017'
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - 8081:8081
+    networks:
+      - app-network
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
+      ME_CONFIG_MONGODB_SERVER: mongo
+    depends_on:
+      - mongo
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local

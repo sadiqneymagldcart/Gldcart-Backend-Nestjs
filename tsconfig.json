@@ -1,101 +1,62 @@
 {
   "compilerOptions": {
-    "allowJs": true,
-    "declaration": false,
-    "lib": [
-      "es2019",
-      "es2020",
-      "es2021",
-      "dom",
-      "es6",
-      "esnext"
-    ],
-    "types": [
-      "reflect-metadata"
-    ],
-    "module": "CommonJS",
-    "noEmit": false,
-    "outDir": "./dist",
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
     "sourceMap": true,
-    "target": "es2019",
+    "outDir": "./dist",
     "baseUrl": "./",
-    "esModuleInterop": true,
-    "moduleResolution": "node10",
     "incremental": true,
-    "strictNullChecks": false,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@src/*": [
-        "src/*"
+      "@auth/*": [
+        "src/modules/auth/*"
       ],
-      "@controllers/*": [
-        "src/controllers/*"
+      "@token/*": [
+        "src/modules/token/*"
       ],
-      "@services/*": [
-        "src/services/*"
+      "@user/*": [
+        "src/modules/user/*"
       ],
-      "@models/*": [
-        "src/models/*"
+      "@product/*": [
+        "src/modules/product/*"
       ],
-      "@storages/*": [
-        "src/storages/*"
+      "@review/*": [
+        "src/modules/review/*"
       ],
-      "@sockets/*": [
-        "src/sockets/*"
+      "@category/*": [
+        "src/modules/category/*"
       ],
-      "@infrastructure/*": [
-        "src/infrastructure/*"
+      "@search/*": [
+        "src/modules/search/*"
       ],
-      "@utils/*": [
-        "src/utils/*"
+      "@email/*": [
+        "src/modules/email/*"
+      ],
+      "@offerring/*": [
+        "src/modules/offerring/*"
+      ],
+      "@shared/*": [
+        "src/shared/*"
       ],
       "@config/*": [
         "src/config/*"
       ],
-      "@middlewares/*": [
-        "src/middlewares/*"
+      "@common/*": [
+        "src/common/*"
       ],
-      "@ioc/*": [
-        "src/ioc/*"
-      ],
-      "@bindings/*": [
-        "src/ioc/bindings/*"
-      ],
-      "@ts/*": [
-        "src/ts/*"
-      ],
-      "@interfaces/*": [
-        "src/ts/interfaces/*"
-      ],
-      "@enums/*": [
-        "src/ts/enums/*"
-      ],
-      "@exceptions/*": [
-        "src/exceptions/*"
-      ],
-      "@/*": [
-        "src/*"
+      "@utils/*": [
+        "src/utils/*"
       ]
-    },
-    "listEmittedFiles": false,
-    "listFiles": false,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "traceResolution": false,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "strict": true,
-    "strictPropertyInitialization": true,
-    "noImplicitReturns": false,
-    "noUnusedLocals": true,
-    "noUnusedParameters": false,
-    "pretty": true
-  },
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+    }
+  }
 }
