@@ -82,7 +82,6 @@ export class AuthController {
   @Get('/refresh')
   public async refresh(@Req() request: Request): Promise<AuthResponseDto> {
     const refreshToken = request.cookies.refreshToken;
-
     return await this.authService.refresh(refreshToken);
   }
 }
