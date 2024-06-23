@@ -7,21 +7,20 @@ import {
   Body,
   Req,
   Res,
-  Logger,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { AuthCredentialsDto } from '@auth/dto/auth.credentials.dto';
 import { AuthService } from '@auth/services/auth.service';
-import { setRefreshTokenCookie } from '@common/utils/auth.response.util';
 import { AuthResponseDto } from '@auth/dto/auth.response.dto';
-import { plainToInstance } from 'class-transformer';
+import { AuthInterceptor } from '@shared/interceptors/auth.interceptor';
 
 @ApiTags('Auth')
 @Controller('/auth')
+@UseInterceptors(new AuthInterceptor())
 export class AuthController {
   private readonly authService: AuthService;
-  private readonly logger: Logger = new Logger(AuthController.name);
 
   public constructor(authService: AuthService) {
     this.authService = authService;
@@ -38,15 +37,8 @@ export class AuthController {
   })
   public async login(
     @Body() credentials: AuthCredentialsDto,
-    @Res({ passthrough: true }) response: Response,
   ): Promise<AuthResponseDto> {
-    this.logger.log(`REST request to login: ${JSON.stringify(credentials)}`);
-
-    const data = await this.authService.login(credentials);
-
-    setRefreshTokenCookie(response, data.refreshToken);
-
-    return plainToInstance(AuthResponseDto, data);
+    return await this.authService.login(credentials);
   }
 
   @HttpCode(HttpStatus.CREATED)
@@ -60,17 +52,8 @@ export class AuthController {
   })
   public async register(
     @Body() credentials: AuthCredentialsDto,
-    @Res({ passthrough: true }) response: Response,
   ): Promise<AuthResponseDto> {
-    this.logger.log(`REST request to register: ${JSON.stringify(credentials)}`);
-
-    const data = await this.authService.register(credentials);
-
-    console.log('data', data);
-
-    setRefreshTokenCookie(response, data.refreshToken);
-
-    return plainToInstance(AuthResponseDto, data);
+    return await this.authService.register(credentials);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -80,8 +63,6 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
-    this.logger.log('REST request to logout');
-
     const refreshToken = request.cookies.refreshToken;
 
     await this.authService.logout(refreshToken);
@@ -99,18 +80,9 @@ export class AuthController {
   })
   @HttpCode(HttpStatus.OK)
   @Get('/refresh')
-  public async refresh(
-    @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
-  ): Promise<AuthResponseDto> {
-    this.logger.log('REST request to refresh token');
-
+  public async refresh(@Req() request: Request): Promise<AuthResponseDto> {
     const refreshToken = request.cookies.refreshToken;
 
-    const data = await this.authService.refresh(refreshToken);
-
-    setRefreshTokenCookie(response, data.refreshToken);
-
-    return plainToInstance(AuthResponseDto, data);
+    return await this.authService.refresh(refreshToken);
   }
 }
