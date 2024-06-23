@@ -107,7 +107,7 @@ export class TokenService implements ITokenService {
   private async _findRefreshToken(
     token: string,
   ): Promise<Nullable<RefreshToken>> {
-    return this.tokenModel.findOne({ where: { refreshToken: token } });
+    return this.tokenModel.findOne({ refreshToken: token }).exec();
   }
 
   private async _saveOrUpdateRefreshToken(
