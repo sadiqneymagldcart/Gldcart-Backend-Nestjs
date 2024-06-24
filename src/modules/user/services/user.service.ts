@@ -16,8 +16,9 @@ export class UserService {
 
   public async createAndSaveUser(createUserDto: CreateUserDto): Promise<User> {
     const user = new this.userModel(createUserDto);
-    this.logger.log(`Creating user: ${JSON.stringify(user)}`);
-    return user.save();
+    const savedUser = await user.save();
+    this.logger.log(`User created: ${JSON.stringify(savedUser)}`);
+    return savedUser;
   }
 
   public async getAll(): Promise<User[]> {
@@ -29,8 +30,10 @@ export class UserService {
   }
 
   public async findUserByEmail(email: string): Promise<Nullable<User>> {
-    return this.userModel.findOne({
-      email,
-    });
+    return this.userModel
+      .findOne({
+        email,
+      })
+      .exec();
   }
 }
