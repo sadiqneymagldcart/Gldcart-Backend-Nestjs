@@ -15,9 +15,9 @@ export class TokenService implements ITokenService {
   private readonly jwtRefreshOptions: JwtSignOptions;
   private readonly jwtAccessVerifyOptions: JwtVerifyOptions;
   private readonly jwtRefreshVerifyOptions: JwtVerifyOptions;
+  private readonly logger: Logger = new Logger(TokenService.name);
 
   public constructor(
-    private readonly logger: Logger,
     private readonly jwtService: JwtService,
     @InjectModel(RefreshToken.name)
     private readonly tokenModel: Model<RefreshToken>,
@@ -40,21 +40,15 @@ export class TokenService implements ITokenService {
   }
 
   public async generateAccessToken(payload: CreateTokenDto): Promise<string> {
-    this.logger.debug(
-      `Generating access token for user with id: ${payload._id}`,
-    );
     return this.jwtService.sign({ ...payload }, this.jwtAccessOptions);
   }
 
   public async generateRefreshToken(payload: CreateTokenDto): Promise<string> {
-    this.logger.debug(
-      `Generating refresh token for user with id: ${payload._id}`,
-    );
     const refreshToken = this.jwtService.sign(
       { ...payload },
       this.jwtRefreshOptions,
     );
-    this.logger.debug(`Generated refresh token: ${refreshToken}`);
+    this.logger.debug(`Generated refresh token`);
     return await this._saveOrUpdateRefreshToken(payload._id, refreshToken);
   }
 
@@ -121,20 +115,20 @@ export class TokenService implements ITokenService {
   ): Promise<string> {
     let existingToken = await this.tokenModel.findOne({ user: { id: userId } });
 
-    this.logger.debug(`Existing token: ${JSON.stringify(existingToken)}`);
+    this.logger.debug('User has existing refresh token');
 
     if (existingToken) {
       existingToken.refresh_token = token;
-      this.logger.debug(`Updating refresh token for user with id: ${userId}`);
+      this.logger.debug(`Updating refresh token for user with id`);
     } else {
-      this.logger.debug(`Creating refresh token for user with id: ${userId}`);
+      this.logger.debug(`Creating refresh token for user with id`);
       existingToken = new this.tokenModel({
         user: { id: userId },
         refresh_token: token,
       });
-      this.logger.debug(`Saved refresh token for user with id: ${userId}`);
     }
     await existingToken.save();
+    this.logger.debug('Refresh token for user saved');
     return existingToken.refresh_token;
   }
 }
