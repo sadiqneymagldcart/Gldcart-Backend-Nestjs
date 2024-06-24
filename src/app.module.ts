@@ -9,6 +9,7 @@ import token from '@config/token';
 import mongoDB from '@config/mongoDB';
 import { OfferingModule } from './modules/offering/offering.module';
 import { CartModule } from './modules/cart/cart.module';
+import { ReviewModule } from '@review/review.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CartModule } from './modules/cart/cart.module';
     TokenModule,
     OfferingModule,
     CartModule,
+    ReviewModule
   ],
   controllers: [AppController],
 })
