@@ -21,6 +21,13 @@ export class UserService {
     return savedUser;
   }
 
+  public async updateOrCreateUser(user: CreateUserDto): Promise<User> {
+    return this.userModel.findOneAndUpdate({ email: user.email }, user, {
+      upsert: true,
+      new: true,
+    });
+  }
+
   public async getAll(): Promise<User[]> {
     return this.userModel.find();
   }
