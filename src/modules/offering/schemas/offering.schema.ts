@@ -1,11 +1,15 @@
 import { Category } from '@category/schemas/category.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
+import { Transform } from 'class-transformer';
+import mongoose, { Document, ObjectId } from 'mongoose';
 
 export type OfferingDocument = Offering & Document;
 
 @Schema({ timestamps: true })
-export class Offering extends Document {
+export class Offering {
+    @Transform(({ value }) => value.toString())
+    _id: ObjectId;
+
     @Prop({ required: true })
     name: string;
 
