@@ -30,7 +30,7 @@ export class GoogleAuthController {
     name: 'state',
     required: true,
     description:
-      'State parameter to maintain state between the request and callback',
+      'State parameter to maintain state between the request and callback. Used to store user role.',
   })
   @ApiResponse({ status: 302, description: 'Redirect to client URL' })
   @ApiResponse({ status: 400, description: 'Invalid OAuth tokens' })
