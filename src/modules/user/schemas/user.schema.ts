@@ -7,16 +7,15 @@ import {
   ApiPropertyOptional,
 } from '@nestjs/swagger';
 import { UserRole } from '@user/enums/roles.enum';
-import { Document, Types } from 'mongoose';
+import { Document, ObjectId, Types } from 'mongoose';
 
 export type UserDocument = User & Document;
 
 @Schema({ timestamps: true })
 export class User {
   @Transform(({ value }) => value.toString())
-  _id: string;
+  _id: ObjectId;
 
-  @Transform(({ value }) => value.toLowerCase())
   @ApiProperty({
     description: 'The role of the user',
     enum: UserRole,
