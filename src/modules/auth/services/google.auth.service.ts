@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TokenService } from '@token/services/token.service';
 import { UserService } from '@user/services/user.service';
-import { CreateUserDto } from '@user/dto/create.user.dto';
+import { CreateUserDto } from '@user/dto/create-user.dto';
 import { AuthResponseDto } from '@auth/dto/auth.response.dto';
 import { CreateTokenDto } from '@token/dto/create.tokens.dto';
 import { GoogleTokenDto } from '@auth/dto/google.token.dto';
@@ -50,7 +50,7 @@ export class GoogleAuthService {
   ): Promise<AuthResponseDto> {
     const userDto = plainToInstance(
       CreateTokenDto,
-      await this.userService.updateOrCreateUser(createUserDto),
+      await this.userService.updateOrCreate(createUserDto),
       {
         excludeExtraneousValues: true,
       },
