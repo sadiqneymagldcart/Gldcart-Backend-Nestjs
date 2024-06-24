@@ -7,11 +7,11 @@ export class CreateUserDto {
   @ApiProperty({ example: 'Doe', description: 'User surname' })
   surname?: string;
 
-  @ApiProperty({ example: 'buyer', description: 'User role' })
+  @ApiProperty({ example: 'Buyer', description: 'User role' })
   role: string;
 
   @ApiProperty({ example: 'https://example.com/image.jpg', description: 'User profile picture' })
-  profile_picture?: string;
+  picture?: string;
 
   @ApiProperty({ example: 'example@example.com', description: 'User email' })
   email: string;
