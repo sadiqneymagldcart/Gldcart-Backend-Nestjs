@@ -1,182 +1,119 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Nullable } from '@shared/types/common';
+import { ConfigService } from '@nestjs/config';
 import { TokenService } from '@token/services/token.service';
-import { User } from '@user/schemas/user.schema';
 import { UserService } from '@user/services/user.service';
-import axios from 'axios';
-import * as qs from 'qs';
-
-interface IGoogleUserInfo {
-  role: string;
-  name: string;
-  surname: string;
-  email: string;
-  picture: string;
-  password: string;
-}
-
-interface IGoogleTokenResult {
-  access_token: string;
-  expires_in: number;
-  id_token: string;
-  refresh_token: string;
-  scope: string;
-  token_type: string;
-}
-
-interface IGoogleUserResult {
-  id: string;
-  email: string;
-  verified_email: boolean;
-  name: string;
-  given_name: string;
-  family_name: string;
-  picture: string;
-  locale: string;
-}
-
-interface IAuthValues {
-  code: string;
-  client_id: string;
-  client_secret: string;
-  redirect_uri: string;
-  grant_type: string;
-}
+import { CreateUserDto } from '@user/dto/create.user.dto';
+import { AuthResponseDto } from '@auth/dto/auth.response.dto';
+import { CreateTokenDto } from '@token/dto/create.tokens.dto';
+import { GoogleTokenDto } from '@auth/dto/google.token.dto';
+import { GoogleUserDto } from '@auth/dto/google.user.dto';
+import { Nullable } from '@shared/types/common';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { stringify } from 'qs';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class GoogleAuthService {
-  private readonly tokenService: TokenService;
-  private readonly userService: UserService;
+  private readonly googleClientId: string;
+  private readonly googleClientSecret: string;
+  private readonly googleRedirectUri: string;
+  private readonly googleTokenUrl: string;
+  private readonly googleGrantType: string;
+  private readonly axiosInstance: AxiosInstance;
 
-  private readonly logger: Logger = new Logger(GoogleAuthService.name);
+  private readonly logger: Logger;
 
-  public constructor(userService: UserService, tokenService: TokenService) {
-    this.tokenService = tokenService;
-    this.userService = userService;
+  public constructor(
+    private readonly userService: UserService,
+    private readonly tokenService: TokenService,
+    private readonly configService: ConfigService,
+  ) {
+    this.googleClientId = this.configService.get<string>('GOOGLE_CLIENT_ID')!;
+    this.googleClientSecret = this.configService.get<string>(
+      'GOOGLE_CLIENT_SECRET',
+    )!;
+    this.googleRedirectUri = this.configService.get<string>(
+      'GOOGLE_REDIRECT_URI',
+    )!;
+    this.googleTokenUrl = this.configService.get<string>('GOOGLE_TOKEN_URL')!;
+    this.googleGrantType = this.configService.get<string>('GOOGLE_GRANT_TYPE')!;
+    this.logger = new Logger(GoogleAuthService.name);
+    this.axiosInstance = axios.create({
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
   }
 
-  public async loginGoogleUser(userInfo: IGoogleUserInfo) {
-    const user = await this.updateOrCreateGoogleUser(userInfo);
-    return this.authenticateWithGoogle(user, userInfo.picture);
+  public async loginGoogleUser(
+    createUserDto: CreateUserDto,
+  ): Promise<AuthResponseDto> {
+    const userDto = plainToInstance(
+      CreateTokenDto,
+      await this.userService.updateOrCreateUser(createUserDto),
+      {
+        excludeExtraneousValues: true,
+      },
+    );
+    return this._authorizeWithGoogle(userDto);
   }
 
-  public async getGoogleOAuthTokens({
-    code,
-  }: {
-    code: string;
-  }): Promise<Nullable<IGoogleTokenResult>> {
+  public async getGoogleOAuthTokens(
+    code: string,
+  ): Promise<Nullable<GoogleTokenDto>> {
     this.logger.debug(`Fetching Google OAuth Tokens with code: ${code}`);
-    const values = this.getOAuthValues(code);
-    this.logger.debug(`OAuth Values: ${JSON.stringify(values)}`);
-    try {
-      const googleResponse = await this.postToUrl(
-        process.env.GOOGLE_TOKEN_URL as string,
-        values,
-      );
-      return googleResponse.data;
-    } catch (error: any) {
-      console.log(error);
-      await this.handleTokenError(error);
-    }
+
+    const googleResponse = await this._postToUrl<GoogleTokenDto>(
+      this.googleTokenUrl,
+      this._getOAuthValues(code),
+    );
+    return googleResponse.data;
   }
 
   public async getGoogleUser(
     id_token: string,
     access_token: string,
-  ): Promise<Nullable<IGoogleUserResult>> {
-    try {
-      const response = await this.getGoogleUserInfo(id_token, access_token);
-      return response.data;
-    } catch (error: any) {
-      await this.handleUserInfoError(error);
-    }
+  ): Promise<Nullable<GoogleUserDto>> {
+    const response = await this._getGoogleUserInfo(id_token, access_token);
+    return response.data;
   }
 
-  private async updateOrCreateGoogleUser(
-    googleUserData: IGoogleUserInfo,
-  ): Promise<User> {
-    let existingUser = await this.userService.findUserByEmail(
-      googleUserData.email,
-    );
-
-    if (!existingUser)
-      existingUser = await this.userService.createAndSaveUser({
-        role: googleUserData.role,
-        name: googleUserData.name,
-        surname: googleUserData.surname,
-        email: googleUserData.email,
-        profile_picture: googleUserData.picture,
-        password: googleUserData.password,
-      });
-
-    return existingUser;
-  }
-
-  private async authenticateWithGoogle(user: any, picture: string) {
-    const userInfo = {
-      _id: user._id,
-      role: user.type,
-      name: user.name,
-      surname: user.surname,
-      email: user.email,
-      profile_picture: picture,
+  private async _authorizeWithGoogle(
+    tokenPayload: CreateTokenDto,
+  ): Promise<AuthResponseDto> {
+    const [refreshToken, accessToken] = await Promise.all([
+      this.tokenService.generateRefreshToken(tokenPayload),
+      this.tokenService.generateAccessToken(tokenPayload),
+    ]);
+    return {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      user: tokenPayload,
     };
-
-    try {
-      const refreshToken =
-        await this.tokenService.generateRefreshToken(userInfo);
-      const accessToken = await this.tokenService.generateAccessToken(userInfo);
-
-      this.logger.debug(`User logged in with Google: ${user.email}`);
-
-      return {
-        tokens: {
-          accessToken,
-          refreshToken,
-        },
-        user: userInfo,
-      };
-    } catch (error: any) {
-      this.logger.error('Failed to create tokens', error);
-      throw new Error('Failed to create tokens');
-    }
   }
 
-  private getOAuthValues(code: string): IAuthValues {
+  private _getOAuthValues(code: string) {
     return {
       code,
-      client_id: process.env.GOOGLE_CLIENT_ID!,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET!,
-      redirect_uri: process.env.GOOGLE_REDIRECT_URI!,
-      grant_type: 'authorization_code',
+      client_id: this.googleClientId,
+      client_secret: this.googleClientSecret,
+      redirect_uri: this.googleRedirectUri,
+      grant_type: this.googleGrantType,
     };
   }
 
-  private async handleTokenError(error: any): Promise<void> {
-    this.logger.error(
-      'Failed to fetch Google OAuth Tokens',
-      error.response?.data,
-    );
-    throw new Error(error.response?.data);
+  private async _postToUrl<T>(
+    url: string,
+    values: any,
+  ): Promise<AxiosResponse<T>> {
+    return this.axiosInstance.post<T>(url, stringify(values));
   }
-
-  private async postToUrl(url: string, values: IAuthValues) {
-    return await axios.post<IGoogleTokenResult>(url, qs.stringify(values), {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
-  }
-
-  private async getGoogleUserInfo(id_token: string, access_token: string) {
-    return await axios.get<IGoogleUserResult>(
+  private async _getGoogleUserInfo(id_token: string, access_token: string) {
+    return axios.get<GoogleUserDto>(
       `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
       {
         headers: { Authorization: `Bearer ${id_token}` },
       },
     );
-  }
-
-  private async handleUserInfoError(error: any) {
-    this.logger.error('Failed to fetch Google User', error.message);
-    throw new Error(error.message);
   }
 }
