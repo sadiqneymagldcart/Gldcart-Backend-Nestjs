@@ -71,7 +71,7 @@ export class User {
   })
   @Prop()
   @IsOptional()
-  profile_picture?: string;
+  picture?: string;
 
   @ApiProperty({
     description: 'The password of the user',
