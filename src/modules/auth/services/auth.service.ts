@@ -63,8 +63,6 @@ export class AuthService implements IAuthService {
       throw new UnauthorizedException('Token not provided');
     }
 
-    this.logger.debug(`Refreshing token: ${token}`);
-
     const userPayload = await this.tokenService.verifyRefreshToken(token);
 
     return this._generateAuthResponse(userPayload);
@@ -75,11 +73,18 @@ export class AuthService implements IAuthService {
   }
 
   private async _generateAuthResponse(
-    user: CreateTokenDto,
+    tokenPayload: CreateTokenDto,
   ): Promise<AuthResponseDto> {
-    const accessToken = await this.tokenService.generateAccessToken(user);
-    const refreshToken = await this.tokenService.generateRefreshToken(user);
-    return { accessToken: accessToken, refreshToken: refreshToken, user };
+    const [refreshToken, accessToken] = await Promise.all([
+      this.tokenService.generateRefreshToken(tokenPayload),
+      this.tokenService.generateAccessToken(tokenPayload),
+    ]);
+
+    return {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      user: tokenPayload,
+    };
   }
 
   private async _validateUser(
