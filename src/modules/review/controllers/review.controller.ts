@@ -3,5 +3,5 @@ import { ReviewService } from '../services/review.service';
 
 @Controller('review')
 export class ReviewController {
-  constructor(private readonly reviewService: ReviewService) {}
+  public constructor(private readonly reviewService: ReviewService) {}
 }
