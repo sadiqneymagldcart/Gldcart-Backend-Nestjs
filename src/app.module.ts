@@ -7,6 +7,8 @@ import { AppController } from './app.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import token from '@config/token';
 import mongoDB from '@config/mongoDB';
+import { OfferingModule } from './modules/offering/offering.module';
+import { CartModule } from './modules/cart/cart.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import mongoDB from '@config/mongoDB';
     UserModule,
     AuthModule,
     TokenModule,
+    OfferingModule,
+    CartModule,
   ],
   controllers: [AppController],
 })
