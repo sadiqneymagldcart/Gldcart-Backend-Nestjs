@@ -12,10 +12,7 @@ function setupGlobalPrefix(app: INestApplication) {
 
 function enableCors(app: INestApplication) {
   app.enableCors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
+    origin: 'http://localhost:5173',
     credentials: true,
   });
 }
