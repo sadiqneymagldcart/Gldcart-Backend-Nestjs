@@ -21,7 +21,7 @@ export class RefreshToken extends Document {
   })
   @Prop({ type: String, required: true })
   @IsNotEmpty()
-  refreshToken: string;
+  refresh_token: string;
 }
 
 export const RerfreshTokenSchema = SchemaFactory.createForClass(RefreshToken);
