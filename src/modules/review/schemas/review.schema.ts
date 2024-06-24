@@ -1,25 +1,33 @@
-import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {Document, Types} from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Transform } from 'class-transformer';
+import mongoose, { Document, ObjectId } from 'mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 
 export type ReviewDocument = Review & Document;
 
-@Schema({timestamps: true})
+@Schema({ timestamps: true })
 export class Review {
-    @Prop({type: Types.ObjectId, ref: 'Offering', required: true})
-    offering: Types.ObjectId;
+    @ApiProperty({ description: 'The unique identifier of the review' })
+    @Transform(({ value }) => value.toString())
+    _id: ObjectId;
 
-    @Prop({required: true})
-    user: string;
+    @ApiProperty({ description: 'User ID who created the review' })
+    @Transform(({ value }) => value.toString())
+    @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+    userId: ObjectId;
 
-    @Prop({required: true})
+    @ApiProperty({ description: 'Product ID that the review is for' })
+    @Transform(({ value }) => value.toString())
+    @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+    productId: ObjectId;
+
+    @ApiProperty({ description: 'Rating given by the user' })
+    @Prop({ required: true })
     rating: number;
 
-    @Prop({required: true})
+    @ApiProperty({ description: 'Text content of the review' })
+    @Prop({ required: true })
     comment: string;
 }
 
 export const ReviewSchema = SchemaFactory.createForClass(Review);
-
-// Adding indexes
-ReviewSchema.index({offering: 1});
-ReviewSchema.index({user: 1});
