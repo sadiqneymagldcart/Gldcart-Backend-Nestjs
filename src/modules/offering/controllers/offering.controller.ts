@@ -6,6 +6,7 @@ import {
   Put,
   Param,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { OfferingService } from '../services/offering.service';
@@ -13,6 +14,7 @@ import { Offering } from '../schemas/offering.schema';
 import { SerializeWith } from '@shared/decorators/serialize.decorator';
 import { CreateOfferingDto } from '../dto/create-offering.dto';
 import { UpdateOfferingDto } from '../dto/update-offering.dto';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('Proffesional Services')
 @Controller('offerings')
@@ -35,6 +37,7 @@ export class OfferingController {
   @ApiOperation({ summary: 'Get all offerings' })
   @ApiResponse({ status: 200, description: 'Return all offerings.' })
   @Get()
+  @UseInterceptors(CacheInterceptor)
   public async findAll(): Promise<Offering[]> {
     return this.offeringService.findAll();
   }
@@ -46,6 +49,7 @@ export class OfferingController {
   })
   @ApiResponse({ status: 404, description: 'Offering not found.' })
   @Get(':id')
+  @UseInterceptors(CacheInterceptor)
   public async findById(@Param('id') id: string): Promise<Offering> {
     return this.offeringService.findById(id);
   }
