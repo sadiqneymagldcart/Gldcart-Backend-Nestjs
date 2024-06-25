@@ -13,15 +13,11 @@ import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class MongooseClassSerializerInterceptor extends ClassSerializerInterceptor {
-        protected readonly reflector: Reflector;
-        protected readonly defaultOptions: ClassSerializerInterceptorOptions = {};
         public constructor(
-                reflector: Reflector,
-                defaultOptions: ClassSerializerInterceptorOptions = {},
+                protected readonly reflector: Reflector,
+                protected readonly defaultOptions: ClassSerializerInterceptorOptions = {},
         ) {
                 super(reflector, defaultOptions);
-                this.reflector = reflector;
-                this.defaultOptions = defaultOptions;
         }
 
         private _changePlainObjectToInstance(
