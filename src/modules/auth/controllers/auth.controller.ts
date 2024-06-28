@@ -18,7 +18,7 @@ import { AuthInterceptor } from '@shared/interceptors/auth.interceptor';
 
 @ApiTags('Auth')
 @Controller('/auth')
-@UseInterceptors(new AuthInterceptor())
+@UseInterceptors(AuthInterceptor)
 export class AuthController {
   private readonly authService: AuthService;
 
