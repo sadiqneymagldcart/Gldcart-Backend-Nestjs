@@ -13,9 +13,9 @@ import {
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SerializeWith } from '@shared/decorators/serialize.decorator';
 import { Cart } from '../schemas/cart.schema';
-import { CartService } from '../services/cart.service';
-import { CreateCartDto } from '../dto/create-cart.dto';
-import { UpdateCartDto } from '../dto/update-cart.dto';
+import { CartService } from '@cart/services/cart.service';
+import { CreateCartDto } from '@cart/dto/create-cart.dto';
+import { UpdateCartDto } from '@cart/dto/update-cart.dto';
 
 @ApiTags('Carts')
 @Controller('/carts')
