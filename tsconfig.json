@@ -42,8 +42,11 @@
       "@email/*": [
         "src/modules/email/*"
       ],
-      "@offerring/*": [
-        "src/modules/offerring/*"
+      "@offering/*": [
+        "src/modules/offering/*"
+      ],
+      "@cart/*": [
+        "src/modules/cart/*"
       ],
       "@shared/*": [
         "src/shared/*"

@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import {
   Controller,
   Get,
@@ -9,12 +10,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { OfferingService } from '../services/offering.service';
-import { Offering } from '../schemas/offering.schema';
+import { CreateOfferingDto } from '@offering/dto/create-offering.dto';
+import { UpdateOfferingDto } from '@offering/dto/update-offering.dto';
+import { Offering } from '@offering/schemas/offering.schema';
+import { OfferingService } from '@offering/services/offering.service';
 import { SerializeWith } from '@shared/decorators/serialize.decorator';
-import { CreateOfferingDto } from '../dto/create-offering.dto';
-import { UpdateOfferingDto } from '../dto/update-offering.dto';
-import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('Proffesional Services')
 @Controller('offerings')
