@@ -1,25 +1,25 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
-import mongoose, { Document, ObjectId } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import mongoose from 'mongoose';
 
-export type ReviewDocument = Review & Document;
+export type ReviewDocument = Review & mongoose.Document;
 
 @Schema({ timestamps: true })
 export class Review {
   @ApiProperty({ description: 'The unique identifier of the review' })
   @Transform(({ value }) => value.toString())
-  _id: ObjectId;
+  _id: mongoose.Schema.Types.ObjectId;
 
   @ApiProperty({ description: 'User ID who created the review' })
   @Transform(({ value }) => value.toString())
   @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
-  userId: ObjectId;
+  userId: mongoose.Schema.Types.ObjectId;
 
   @ApiProperty({ description: 'Product ID that the review is for' })
   @Transform(({ value }) => value.toString())
   @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
-  productId: ObjectId;
+  productId: mongoose.Schema.Types.ObjectId;
 
   @ApiProperty({ description: 'Rating given by the user' })
   @Prop({ required: true })
