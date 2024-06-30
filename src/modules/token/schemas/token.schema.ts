@@ -3,14 +3,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@user/schemas/user.schema';
 import { Transform } from 'class-transformer';
 import { IsNotEmpty } from 'class-validator';
-import { Types, Document, ObjectId } from 'mongoose';
+import { Types, Document } from 'mongoose';
 
 export type RefreshTokenDocument = RefreshToken & Document;
 
 @Schema({ timestamps: true })
 export class RefreshToken {
   @Transform(({ value }) => value.toString())
-  _id: ObjectId;
+  _id: Types.ObjectId;
 
   @ApiProperty({
     description: 'The user ID associated with the token',

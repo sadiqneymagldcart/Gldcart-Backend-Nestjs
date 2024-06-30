@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document, ObjectId } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { Subcategory } from './subcategory.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
@@ -13,7 +13,7 @@ export class Category {
     description: 'The unique identifier of the category',
   })
   @Transform(({ value }) => value.toString())
-  _id: ObjectId;
+  _id: Types.ObjectId;
 
   @ApiProperty({
     type: String,
@@ -27,7 +27,7 @@ export class Category {
     type: [String],
     description: 'The subcategories linked to this category',
   })
-  @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Subcategory' }])
+  @Prop([{ type: Types.ObjectId, ref: 'Subcategory' }])
   @Type(() => Subcategory)
   subcategories: Subcategory[];
 }
