@@ -8,18 +8,24 @@ import {
 import { Type } from 'class-transformer';
 
 class CartItemDto {
-  @ApiProperty({ description: 'ID of the product' })
+  @ApiProperty({
+    description: 'ID of the product',
+    example: '668177b0ac6c1a132e160a6b',
+  })
   @IsNotEmpty()
   @IsMongoId()
   productId: string;
 
-  @ApiProperty({ description: 'Quantity of the product' })
+  @ApiProperty({ description: 'Quantity of the product', example: 1 })
   @IsNotEmpty()
   quantity: number;
 }
 
 export class CreateCartDto {
-  @ApiProperty({ description: 'User ID associated with the cart' })
+  @ApiProperty({
+    description: 'User ID associated with the cart',
+    example: '66792047d6650afd5905252e',
+  })
   @IsNotEmpty()
   @IsMongoId()
   userId: string;
