@@ -12,7 +12,7 @@ import {
 import { AuthenticationMiddleware } from "@middlewares/authentication.middleware";
 
 @controller("/cart", AuthenticationMiddleware)
-class CartController extends BaseHttpController {
+export class CartController extends BaseHttpController {
     private readonly cartService: CartService;
 
     public constructor(@inject(CartService) cartService: CartService) {
@@ -83,5 +83,3 @@ class CartController extends BaseHttpController {
         return this.json(updatedItem);
     }
 }
-
-export { CartController };
