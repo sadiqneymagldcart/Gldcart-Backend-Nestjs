@@ -3,5 +3,5 @@ import { AddressService } from './address.service';
 
 @Controller('address')
 export class AddressController {
-  constructor(private readonly addressService: AddressService) {}
+  public constructor(private readonly addressService: AddressService) {}
 }
