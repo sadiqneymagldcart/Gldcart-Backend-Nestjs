@@ -2,9 +2,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, Min } from 'class-validator';
-import mongoose from 'mongoose';
+import { Document, Types } from 'mongoose';
 
-export type CartDocument = Cart & mongoose.Document;
+export type CartDocument = Cart & Document;
 
 class CartItem {
   @ApiProperty({
@@ -12,8 +12,8 @@ class CartItem {
     example: '668177b0ac6c1a132e160a6b',
   })
   @Transform(({ value }) => value.toString())
-  @Prop({ required: true, type: mongoose.Types.ObjectId })
-  productId: mongoose.Types.ObjectId;
+  @Prop({ required: true, type: Types.ObjectId })
+  productId: Types.ObjectId;
 
   @ApiProperty({ description: 'Quantity of the product', example: 1 })
   @Prop({ required: true, type: Number })
@@ -29,7 +29,7 @@ export class Cart {
     example: '668177b0ac6c1a132e160a6b',
   })
   @Transform(({ value }) => value.toString())
-  _id: mongoose.Types.ObjectId;
+  _id: Types.ObjectId;
 
   @ApiProperty({
     description: 'User ID associated with the cart',
@@ -37,12 +37,12 @@ export class Cart {
   })
   @Prop({
     required: true,
-    type: mongoose.Types.ObjectId,
+    type: Types.ObjectId,
     ref: 'User',
     index: true,
   })
   @Transform(({ value }) => value.toString())
-  userId: mongoose.Types.ObjectId;
+  userId: Types.ObjectId;
 
   @ApiProperty({ description: 'Items in the cart', type: [CartItem] })
   @Prop({ required: true, type: [CartItem] })

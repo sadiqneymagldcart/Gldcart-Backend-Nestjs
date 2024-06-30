@@ -1,15 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import mongoose from 'mongoose';
+import { Document, SchemaTypes, Types } from 'mongoose';
 
-export type OfferingDocument = Offering & mongoose.Document;
+export type OfferingDocument = Offering & Document;
 
 @Schema({ timestamps: true })
 export class Offering {
   @ApiProperty({ description: 'The unique identifier of the offering' })
   @Transform(({ value }) => value.toString())
-  _id: mongoose.Types.ObjectId;
+  _id: Types.ObjectId;
 
   @ApiProperty({
     description: 'The name of the offering',
@@ -53,7 +53,7 @@ export class Offering {
       { key: 'size', value: 'M' },
     ],
   })
-  @Prop({ required: true, type: mongoose.SchemaTypes.Mixed, index: true })
+  @Prop({ required: true, type: SchemaTypes.Mixed, index: true })
   attributes: { key: string; value: string }[];
 }
 
