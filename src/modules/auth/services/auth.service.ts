@@ -11,8 +11,8 @@ import { CreateTokenDto } from '@token/dto/create.tokens.dto';
 import { AuthResponseDto } from '@auth/dto/auth.response.dto';
 import { IAuthService } from '@auth/interfaces/auth.service.interface';
 import { plainToInstance } from 'class-transformer';
-import * as bcrypt from 'bcrypt';
 import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -27,6 +27,8 @@ export class AuthService implements IAuthService {
     credentials: LoginCredentialsDto,
   ): Promise<AuthResponseDto> {
     const user = await this._validateUser(credentials);
+    // this.logger.debug(`User is: ${JSON.stringify(user)}`);
+    console.log(user);
     return this._generateAuthResponse(user);
   }
 
@@ -76,6 +78,7 @@ export class AuthService implements IAuthService {
       this.tokenService.generateRefreshToken(tokenPayload),
       this.tokenService.generateAccessToken(tokenPayload),
     ]);
+    console.log(tokenPayload);
 
     return {
       accessToken: accessToken,

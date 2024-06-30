@@ -1,13 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@user/schemas/user.schema';
+import { Transform } from 'class-transformer';
 import { IsNotEmpty } from 'class-validator';
-import { Types, Document } from 'mongoose';
+import { Types, Document, ObjectId } from 'mongoose';
 
 export type RefreshTokenDocument = RefreshToken & Document;
 
 @Schema({ timestamps: true })
-export class RefreshToken extends Document {
+export class RefreshToken {
+  @Transform(({ value }) => value.toString())
+  _id: ObjectId;
+
   @ApiProperty({
     description: 'The user ID associated with the token',
     type: String,
