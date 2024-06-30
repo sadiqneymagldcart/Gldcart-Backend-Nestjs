@@ -12,7 +12,7 @@ function setupGlobalPrefix(app: INestApplication) {
 
 function enableCors(app: INestApplication) {
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: '*',
     credentials: true,
   });
 }
