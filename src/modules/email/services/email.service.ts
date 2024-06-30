@@ -6,7 +6,7 @@ import * as path from 'path';
 
 @Injectable()
 export class EmailService implements IEmailService {
-  public constructor(private readonly mailerService: MailerService) { }
+  public constructor(private readonly mailerService: MailerService) {}
 
   public async sendContactFormEmail(emailData: ContactEmailDto): Promise<void> {
     const templatePath = path.join(__dirname, '../templates/contact.hbs');

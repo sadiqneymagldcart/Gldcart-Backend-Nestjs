@@ -9,7 +9,7 @@ import { UpdateOfferingDto } from '../dto/update-offering.dto';
 export class OfferingService {
   public constructor(
     @InjectModel(Offering.name) private offeringModel: Model<OfferingDocument>,
-  ) { }
+  ) {}
 
   public async create(createOfferingDto: CreateOfferingDto): Promise<Offering> {
     const createdOffering = new this.offeringModel(createOfferingDto);

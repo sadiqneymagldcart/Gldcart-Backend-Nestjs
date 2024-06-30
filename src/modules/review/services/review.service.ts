@@ -9,7 +9,7 @@ import { Model } from 'mongoose';
 export class ReviewService {
   public constructor(
     @InjectModel(Review.name) private reviewModel: Model<ReviewDocument>,
-  ) { }
+  ) {}
 
   public async create(createReviewDto: CreateReviewDto): Promise<Review> {
     const createdReview = new this.reviewModel(createReviewDto);

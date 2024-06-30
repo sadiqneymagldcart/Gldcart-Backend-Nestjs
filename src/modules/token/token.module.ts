@@ -5,12 +5,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { RefreshToken, RerfreshTokenSchema } from './schemas/token.schema';
 
 @Module({
-        imports: [
-                MongooseModule.forFeature([
-                        { name: RefreshToken.name, schema: RerfreshTokenSchema },
-                ]),
-        ],
-        providers: [TokenService, Logger, JwtService],
-        exports: [TokenService],
+  imports: [
+    MongooseModule.forFeature([
+      { name: RefreshToken.name, schema: RerfreshTokenSchema },
+    ]),
+  ],
+  providers: [TokenService, Logger, JwtService],
+  exports: [TokenService],
 })
-export class TokenModule { }
+export class TokenModule {}

@@ -1,4 +1,4 @@
-import { ContactEmailDto } from "@email/dto/contact.email.dto";
+import { ContactEmailDto } from '@email/dto/contact.email.dto';
 
 export interface IEmailService {
   /**

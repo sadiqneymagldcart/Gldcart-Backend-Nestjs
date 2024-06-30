@@ -17,7 +17,7 @@ import { Response } from 'express';
 export class GoogleAuthController {
   private readonly logger = new Logger(GoogleAuthController.name);
 
-  public constructor(private readonly googleAuthService: GoogleAuthService) { }
+  public constructor(private readonly googleAuthService: GoogleAuthService) {}
 
   @Get('/tokens/oauth/google')
   @ApiOperation({ summary: 'Google OAuth Callback' })

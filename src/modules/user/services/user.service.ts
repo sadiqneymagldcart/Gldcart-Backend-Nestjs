@@ -10,7 +10,7 @@ import { Model } from 'mongoose';
 export class UserService {
   public constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-  ) { }
+  ) {}
 
   public async create(createUserDto: CreateUserDto): Promise<User> {
     const user = new this.userModel(createUserDto);
