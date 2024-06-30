@@ -6,8 +6,8 @@ import { ConfigService } from '@nestjs/config';
 import { ITokenService } from '@token/interfaces/token.service.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { RefreshToken } from '@token/schemas/token.schema';
-import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class TokenService implements ITokenService {
@@ -24,18 +24,18 @@ export class TokenService implements ITokenService {
     private readonly configService: ConfigService,
   ) {
     this.jwtAccessOptions = {
-      secret: this.configService.get<string>('token.accessSecret'),
-      expiresIn: this.configService.get<string>('token.accessExpirationTime'),
+      secret: this.configService.get<string>('ACCESS_SECRET'),
+      expiresIn: this.configService.get<string>('ACCESS_EXPIRATION_TIME'),
     };
     this.jwtRefreshOptions = {
-      secret: this.configService.get<string>('token.refreshSecret'),
-      expiresIn: this.configService.get<string>('token.refreshExpirationTime'),
+      secret: this.configService.get<string>('REFRESH_SECRET'),
+      expiresIn: this.configService.get<string>('REFRESH_EXPIRATION_TIME'),
     };
     this.jwtAccessVerifyOptions = {
-      secret: this.configService.get<string>('token.accessSecret'),
+      secret: this.configService.get<string>('ACCESS_SECRET'),
     };
     this.jwtRefreshVerifyOptions = {
-      secret: this.configService.get<string>('token.refreshSecret'),
+      secret: this.configService.get<string>('REFRESH_SECRET'),
     };
   }
 
