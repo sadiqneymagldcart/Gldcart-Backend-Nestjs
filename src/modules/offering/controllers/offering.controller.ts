@@ -9,7 +9,7 @@ import {
   Delete,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { CreateOfferingDto } from '@offering/dto/create-offering.dto';
 import { UpdateOfferingDto } from '@offering/dto/update-offering.dto';
 import { Offering } from '@offering/schemas/offering.schema';
