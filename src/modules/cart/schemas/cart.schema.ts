@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, Min } from 'class-validator';
 import { Document, Types } from 'mongoose';
 
 export type CartDocument = Cart & Document;
@@ -13,12 +12,10 @@ class CartItem {
   })
   @Transform(({ value }) => value.toString())
   @Prop({ required: true, type: Types.ObjectId })
-  productId: Types.ObjectId;
+  offeringId: Types.ObjectId;
 
   @ApiProperty({ description: 'Quantity of the product', example: 1 })
   @Prop({ required: true, type: Number })
-  @IsInt()
-  @Min(1)
   quantity: number;
 }
 
