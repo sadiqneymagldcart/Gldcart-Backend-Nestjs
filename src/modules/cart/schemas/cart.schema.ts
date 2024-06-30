@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
+// import { NotFoundException } from '@nestjs/common';
 
 export type CartDocument = Cart & Document;
 
@@ -12,7 +13,13 @@ class CartItem {
   })
   @Transform(({ value }) => value.toString())
   @Prop({ required: true, type: Types.ObjectId })
-  offeringId: Types.ObjectId;
+  itemId: Types.ObjectId;
+
+  @ApiProperty({
+    description: 'Type of the item (e.g., product, service, rental)',
+  })
+  @Prop({ required: true })
+  itemType: string;
 
   @ApiProperty({ description: 'Quantity of the product', example: 1 })
   @Prop({ required: true, type: Number })
@@ -47,3 +54,25 @@ export class Cart {
 }
 
 export const CartSchema = SchemaFactory.createForClass(Cart);
+
+// CartSchema.pre<CartDocument>('save', async function(next) {
+//   const user = await this.model('User').findById(this.userId);
+//   if (!user) {
+//     const err = new NotFoundException('User not found');
+//     return next(err);
+//   }
+//   next();
+// });
+//
+// CartSchema.pre<CartDocument>('save', async function(next) {
+//   for (const item of this.items) {
+//     const offering = await this.model('Offering').findById(item.offeringId);
+//     if (!offering) {
+//       const err = new NotFoundException(
+//         `Product not found: ${item.offeringId}`,
+//       );
+//       return next(err);
+//     }
+//   }
+//   next();
+// });
