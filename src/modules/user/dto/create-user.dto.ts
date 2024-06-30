@@ -10,7 +10,10 @@ export class CreateUserDto {
   @ApiProperty({ example: 'Buyer', description: 'User role' })
   role: string;
 
-  @ApiProperty({ example: 'https://example.com/image.jpg', description: 'User profile picture' })
+  @ApiProperty({
+    example: 'https://example.com/image.jpg',
+    description: 'User profile picture',
+  })
   picture?: string;
 
   @ApiProperty({ example: 'example@example.com', description: 'User email' })

@@ -20,11 +20,7 @@ import { AuthInterceptor } from '@shared/interceptors/auth.interceptor';
 @Controller('/auth')
 @UseInterceptors(AuthInterceptor)
 export class AuthController {
-  private readonly authService: AuthService;
-
-  public constructor(authService: AuthService) {
-    this.authService = authService;
-  }
+  public constructor(private readonly authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('/login')
