@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'John', description: 'User name' })
@@ -8,6 +9,7 @@ export class CreateUserDto {
   surname?: string;
 
   @ApiProperty({ example: 'Buyer', description: 'User role' })
+  @Transform(({ value }) => value.toLowerCase())
   role: string;
 
   @ApiProperty({
