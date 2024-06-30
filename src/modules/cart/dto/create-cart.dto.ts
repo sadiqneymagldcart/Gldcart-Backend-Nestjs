@@ -4,6 +4,8 @@ import {
   IsArray,
   ValidateNested,
   IsMongoId,
+  IsInt,
+  Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -14,10 +16,12 @@ class CartItemDto {
   })
   @IsNotEmpty()
   @IsMongoId()
-  productId: string;
+  offeringId: string;
 
   @ApiProperty({ description: 'Quantity of the product', example: 1 })
   @IsNotEmpty()
+  @IsInt()
+  @Min(1)
   quantity: number;
 }
 
