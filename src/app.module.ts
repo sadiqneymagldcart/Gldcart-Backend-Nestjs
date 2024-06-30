@@ -9,7 +9,6 @@ import { OfferingModule } from './modules/offering/offering.module';
 import { CartModule } from './modules/cart/cart.module';
 import { ReviewModule } from '@review/review.module';
 import { EmailModule } from '@email/email.module';
-import token from '@config/token';
 import mongoDB from '@config/mongoDB';
 
 @Module({
@@ -18,7 +17,6 @@ import mongoDB from '@config/mongoDB';
       isGlobal: true,
       cache: true,
       envFilePath: `.${process.env.NODE_ENV}.env`,
-      load: [token],
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
