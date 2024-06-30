@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Transform } from 'class-transformer';
-import { IsEmail, IsOptional, IsArray } from 'class-validator';
+import { IsEmail } from 'class-validator';
 import {
   ApiHideProperty,
   ApiProperty,
@@ -45,7 +45,6 @@ export class User {
   })
   @Prop()
   @Transform(({ value }) => value?.trim())
-  @IsOptional()
   surname?: string;
 
   @ApiProperty({
@@ -73,7 +72,6 @@ export class User {
     example: 'http://example.com/profile.jpg',
   })
   @Prop()
-  @IsOptional()
   picture?: string;
 
   @ApiProperty({
@@ -93,12 +91,10 @@ export class User {
     type: [String],
   })
   @Prop({ type: [String] })
-  @IsArray()
   wishlist: string[];
 
   @ApiHideProperty()
   @Prop()
-  @IsOptional()
   password_token?: string;
 
   @ApiPropertyOptional({
@@ -111,7 +107,6 @@ export class User {
     ref: 'Subscription',
     default: null,
   })
-  @IsOptional()
   active_subscription?: Types.ObjectId;
 
   @ApiPropertyOptional({
@@ -119,7 +114,6 @@ export class User {
     example: 'Software developer with 10 years of experience.',
   })
   @Prop()
-  @IsOptional()
   bio?: string;
 
   @ApiPropertyOptional({
@@ -127,7 +121,6 @@ export class User {
     example: '+1234567890',
   })
   @Prop()
-  @IsOptional()
   phone_number?: string;
 
   @ApiPropertyOptional({
@@ -135,7 +128,6 @@ export class User {
     example: 'active',
   })
   @Prop()
-  @IsOptional()
   status?: string;
 
   @ApiProperty({
@@ -143,12 +135,10 @@ export class User {
     type: [String],
   })
   @Prop({ type: [String] })
-  @IsArray()
   document_images: string[];
 
   @ApiHideProperty()
   @Prop()
-  @IsOptional()
   verification_token?: string;
 
   @ApiProperty({

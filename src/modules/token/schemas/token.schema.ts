@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@user/schemas/user.schema';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty } from 'class-validator';
 import { Types, Document } from 'mongoose';
 
 export type RefreshTokenDocument = RefreshToken & Document;
@@ -24,7 +23,6 @@ export class RefreshToken {
     type: String,
   })
   @Prop({ type: String, required: true })
-  @IsNotEmpty()
   refresh_token: string;
 }
 
