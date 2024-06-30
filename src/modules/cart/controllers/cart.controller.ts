@@ -23,7 +23,7 @@ import { UpdateCartDto } from '@cart/dto/update-cart.dto';
 export class CartController {
   private readonly logger: Logger = new Logger(CartController.name);
 
-  public constructor(private readonly cartService: CartService) { }
+  public constructor(private readonly cartService: CartService) {}
 
   @ApiOperation({ summary: 'Get all carts' })
   @ApiResponse({ status: 200, description: 'Carts found', type: [Cart] })

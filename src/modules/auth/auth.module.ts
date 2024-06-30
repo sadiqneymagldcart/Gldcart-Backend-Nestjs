@@ -11,4 +11,4 @@ import { GoogleAuthService } from './services/google.auth.service';
   controllers: [AuthController, GoogleAuthController],
   providers: [AuthService, GoogleAuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

@@ -11,4 +11,4 @@ import { ReviewService } from '@review/services/review.service';
   controllers: [ReviewController],
   providers: [ReviewService],
 })
-export class ReviewModule { }
+export class ReviewModule {}
