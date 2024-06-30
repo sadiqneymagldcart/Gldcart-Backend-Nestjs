@@ -4,7 +4,7 @@ import { TokenService } from '@token/services/token.service';
 import { UserService } from '@user/services/user.service';
 import { CreateUserDto } from '@user/dto/create-user.dto';
 import { AuthResponseDto } from '@auth/dto/auth.response.dto';
-import { CreateTokenDto } from '@token/dto/create.tokens.dto';
+import { CreateTokenDto } from '@token/dto/create-tokens.dto';
 import { GoogleTokenDto } from '@auth/dto/google.token.dto';
 import { GoogleUserDto } from '@auth/dto/google.user.dto';
 import { Nullable } from '@shared/types/common';
