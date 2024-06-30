@@ -7,7 +7,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Category } from '@category/schemas/category.schema';
 
 class Attribute {
   @ApiProperty({ example: 'color' })
@@ -22,13 +21,14 @@ class Attribute {
 }
 
 export class CreateOfferingDto {
-  @ApiProperty({ description: 'The name of the offering' })
+  @ApiProperty({ description: 'The name of the offering', example: 'Sample Offering'})
   @IsNotEmpty()
   @IsString()
   name: string;
 
   @ApiProperty({
     description: 'A brief description of the offering',
+    example: 'This is a sample offering',
     required: false,
   })
   @IsOptional()
@@ -37,6 +37,10 @@ export class CreateOfferingDto {
 
   @ApiProperty({
     description: 'Array of image URLs associated with the offering',
+    example: [
+      'https://example.com/image1.jpg',
+      'https://example.com/image2.jpg',
+    ],
   })
   @IsNotEmpty()
   @IsArray()
@@ -45,19 +49,21 @@ export class CreateOfferingDto {
 
   @ApiProperty({
     description: 'The category of the offering',
-    type: () => Category,
+    example: 'Category1',
   })
   @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => Category)
-  category: Category;
+  @IsString()
+  category: string;
 
-  @ApiProperty({ description: 'The subcategory of the offering' })
+  @ApiProperty({
+    description: 'The subcategory of the offering',
+    example: 'Subcategory1',
+  })
   @IsNotEmpty()
   @IsString()
   subcategory: string;
 
-  @ApiProperty({ description: 'Attributes of the offering' })
+  @ApiProperty({ description: 'Attributes of the offering', type: [Attribute]})
   @IsNotEmpty()
   @IsArray()
   @ValidateNested({ each: true })
