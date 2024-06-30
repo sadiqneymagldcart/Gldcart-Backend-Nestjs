@@ -16,7 +16,13 @@ class CartItemDto {
   })
   @IsNotEmpty()
   @IsMongoId()
-  offeringId: string;
+  itemId: string;
+
+  @ApiProperty({
+    description: 'Type of the item (e.g., product, service, rental)',
+  })
+  @IsNotEmpty()
+  itemType: string;
 
   @ApiProperty({ description: 'Quantity of the product', example: 1 })
   @IsNotEmpty()
