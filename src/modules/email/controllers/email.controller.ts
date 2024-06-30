@@ -20,13 +20,9 @@ import {
 @ApiTags('Emails')
 @Controller('/emails')
 export class EmailController {
-  private readonly emailService: EmailService;
-  private readonly logger: Logger;
+  private readonly logger = new Logger(EmailController.name);
 
-  public constructor(emailService: EmailService) {
-    this.emailService = emailService;
-    this.logger = new Logger(EmailController.name);
-  }
+  public constructor(private readonly emailService: EmailService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('/contact-us')

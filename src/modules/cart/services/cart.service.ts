@@ -9,7 +9,7 @@ import { UpdateCartDto } from '../dto/update-cart.dto';
 export class CartService {
   public constructor(
     @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
-  ) { }
+  ) {}
 
   public async create(createCartDto: CreateCartDto): Promise<Cart> {
     const createdCart = new this.cartModel(createCartDto);

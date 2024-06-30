@@ -16,4 +16,4 @@ import { TokenModule } from '@token/token.module';
   controllers: [UserController],
   exports: [UserService],
 })
-export class UserModule { }
+export class UserModule {}
