@@ -53,6 +53,19 @@ export class AuthController {
     return await this.authService.register(credentials);
   }
 
+  @ApiOperation({ summary: 'Refresh token' })
+  @ApiResponse({
+    status: 200,
+    description: 'Token refreshed.',
+    type: AuthResponseDto,
+  })
+  @HttpCode(HttpStatus.OK)
+  @Get('/refresh')
+  public async refresh(@Req() request: Request): Promise<AuthResponseDto> {
+    const refreshToken = request.cookies.refreshToken;
+    return await this.authService.refresh(refreshToken);
+  }
+
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Logout' })
   @Post('/logout')
@@ -67,18 +80,5 @@ export class AuthController {
     response.clearCookie('refreshToken');
 
     return { message: 'Logout successful' };
-  }
-
-  @ApiOperation({ summary: 'Refresh token' })
-  @ApiResponse({
-    status: 200,
-    description: 'Token refreshed.',
-    type: AuthResponseDto,
-  })
-  @HttpCode(HttpStatus.OK)
-  @Get('/refresh')
-  public async refresh(@Req() request: Request): Promise<AuthResponseDto> {
-    const refreshToken = request.cookies.refreshToken;
-    return await this.authService.refresh(refreshToken);
   }
 }
