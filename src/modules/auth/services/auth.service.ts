@@ -27,8 +27,6 @@ export class AuthService implements IAuthService {
     credentials: LoginCredentialsDto,
   ): Promise<AuthResponseDto> {
     const user = await this._validateUser(credentials);
-    // this.logger.debug(`User is: ${JSON.stringify(user)}`);
-    console.log(user);
     return this._generateAuthResponse(user);
   }
 
@@ -78,8 +76,6 @@ export class AuthService implements IAuthService {
       this.tokenService.generateRefreshToken(tokenPayload),
       this.tokenService.generateAccessToken(tokenPayload),
     ]);
-    console.log(tokenPayload);
-
     return {
       accessToken: accessToken,
       refreshToken: refreshToken,
