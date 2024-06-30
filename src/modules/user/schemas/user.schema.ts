@@ -7,7 +7,7 @@ import {
   ApiPropertyOptional,
 } from '@nestjs/swagger';
 import { UserRole } from '@user/enums/roles.enum';
-import { Document, ObjectId, Types } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type UserDocument = User & Document;
 
@@ -15,7 +15,7 @@ export type UserDocument = User & Document;
 export class User {
   @ApiProperty({ description: 'The unique identifier of the user' })
   @Transform(({ value }) => value.toString())
-  _id: ObjectId;
+  _id: Types.ObjectId;
 
   @ApiProperty({
     description: 'The role of the user',
