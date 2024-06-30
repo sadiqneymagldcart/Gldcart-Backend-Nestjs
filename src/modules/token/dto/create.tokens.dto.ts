@@ -10,7 +10,7 @@ export class CreateTokenDto {
   })
   @IsNotEmpty({ message: 'ID is required' })
   @Expose()
-  @Transform(({ value }) => value.toString())
+  @Transform((value) => value.obj._id.toString())
   _id: string;
 
   @ApiProperty({
