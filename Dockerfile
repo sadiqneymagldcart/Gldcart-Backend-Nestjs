@@ -4,8 +4,6 @@
 
 FROM node:20 As development
 
-# RUN apt-get update && apt-get install -y openssl
-
 # Create app directory
 WORKDIR /usr/src/app
 
@@ -66,4 +64,3 @@ ENV NODE_ENV production
 
 # Start the server using the production build
 CMD [ "node", "dist/main.js" ]
-
