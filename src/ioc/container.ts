@@ -23,7 +23,7 @@ import "@controllers/files/file.controller";
 import "@controllers/chat/chat.controller";
 import "@controllers/chat/message.controller";
 
-function configureContainer(): Container {
+export function getConfiguredContainer(): Container {
     loadEnvironmentVariables();
 
     const container = new Container();
@@ -33,6 +33,4 @@ function configureContainer(): Container {
     return container;
 }
 
-const container = configureContainer();
 
-export { container };
