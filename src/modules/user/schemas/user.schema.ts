@@ -25,6 +25,7 @@ export class User {
   @Prop({
     required: [true, 'role field is required'],
     enum: UserRole,
+    index: true,
   })
   role: UserRole;
 
@@ -55,6 +56,7 @@ export class User {
     required: [true, 'email field is required'],
     unique: true,
     validate: [IsEmail, 'Invalid email format'],
+    index: true,
   })
   email: string;
 
@@ -172,6 +174,3 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
-
-UserSchema.index({ email: 1 });
-UserSchema.index({ role: 1 });
