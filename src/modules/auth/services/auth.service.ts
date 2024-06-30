@@ -6,33 +6,32 @@ import {
 } from '@nestjs/common';
 import { TokenService } from '@token/services/token.service';
 import { UserService } from '@user/services/user.service';
-import { AuthCredentialsDto } from '@auth/dto/auth.credentials.dto';
+import { LoginCredentialsDto } from '@auth/dto/login-credentials.dto';
 import { CreateTokenDto } from '@token/dto/create.tokens.dto';
 import { AuthResponseDto } from '@auth/dto/auth.response.dto';
 import { IAuthService } from '@auth/interfaces/auth.service.interface';
 import { plainToInstance } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
+import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';
 
 @Injectable()
 export class AuthService implements IAuthService {
-  private readonly userService: UserService;
-  private readonly tokenService: TokenService;
   private readonly logger: Logger = new Logger(AuthService.name);
 
-  public constructor(userService: UserService, tokenService: TokenService) {
-    this.userService = userService;
-    this.tokenService = tokenService;
-  }
+  public constructor(
+    private readonly userService: UserService,
+    private readonly tokenService: TokenService,
+  ) { }
 
   public async login(
-    credentials: AuthCredentialsDto,
+    credentials: LoginCredentialsDto,
   ): Promise<AuthResponseDto> {
     const user = await this._validateUser(credentials);
     return this._generateAuthResponse(user);
   }
 
   public async register(
-    credentials: AuthCredentialsDto,
+    credentials: RegisterCredentialsDto,
   ): Promise<AuthResponseDto> {
     const existingUser = await this.userService.findByEmail(credentials.email);
     if (existingUser) {
@@ -49,7 +48,7 @@ export class AuthService implements IAuthService {
       excludeExtraneousValues: true,
     });
 
-    this.logger.log(
+    this.logger.debug(
       `User without password: ${JSON.stringify(userWithoutPassword)}`,
     );
 
@@ -86,7 +85,7 @@ export class AuthService implements IAuthService {
   }
 
   private async _validateUser(
-    credentials: AuthCredentialsDto,
+    credentials: LoginCredentialsDto,
   ): Promise<CreateTokenDto> {
     const user = await this.userService.findByEmail(credentials.email);
     if (!user) {

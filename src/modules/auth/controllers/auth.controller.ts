@@ -11,28 +11,29 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { AuthCredentialsDto } from '@auth/dto/auth.credentials.dto';
 import { AuthService } from '@auth/services/auth.service';
 import { AuthResponseDto } from '@auth/dto/auth.response.dto';
 import { AuthInterceptor } from '@shared/interceptors/auth.interceptor';
+import { LoginCredentialsDto } from '@auth/dto/login-credentials.dto';
+import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';
 
 @ApiTags('Auth')
 @Controller('/auth')
 @UseInterceptors(AuthInterceptor)
 export class AuthController {
-  public constructor(private readonly authService: AuthService) {}
+  public constructor(private readonly authService: AuthService) { }
 
   @HttpCode(HttpStatus.OK)
   @Post('/login')
   @ApiOperation({ summary: 'Login' })
-  @ApiBody({ type: AuthCredentialsDto, description: 'Login credentials' })
+  @ApiBody({ type: LoginCredentialsDto, description: 'Login credentials' })
   @ApiResponse({
     status: 200,
     description: 'Login successful.',
     type: AuthResponseDto,
   })
   public async login(
-    @Body() credentials: AuthCredentialsDto,
+    @Body() credentials: LoginCredentialsDto,
   ): Promise<AuthResponseDto> {
     return await this.authService.login(credentials);
   }
@@ -40,14 +41,14 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   @Post('/register')
   @ApiOperation({ summary: 'Register' })
-  @ApiBody({ type: AuthCredentialsDto, description: 'Registration data' })
+  @ApiBody({ type: RegisterCredentialsDto, description: 'Registration data' })
   @ApiResponse({
     status: 201,
     description: 'Registration successful.',
     type: AuthResponseDto,
   })
   public async register(
-    @Body() credentials: AuthCredentialsDto,
+    @Body() credentials: RegisterCredentialsDto,
   ): Promise<AuthResponseDto> {
     return await this.authService.register(credentials);
   }
