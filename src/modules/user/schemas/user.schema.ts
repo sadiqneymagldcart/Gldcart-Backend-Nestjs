@@ -13,6 +13,7 @@ export type UserDocument = User & Document;
 
 @Schema({ timestamps: true })
 export class User {
+  @ApiProperty({ description: 'The unique identifier of the user' })
   @Transform(({ value }) => value.toString())
   _id: ObjectId;
 
