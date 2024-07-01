@@ -9,6 +9,8 @@ import { OfferingModule } from './modules/offering/offering.module';
 import { CartModule } from './modules/cart/cart.module';
 import { ReviewModule } from '@review/review.module';
 import { EmailModule } from '@email/email.module';
+import { ProductModule } from '@product/product.module';
+import { RentingModule } from '@renting/renting.module';
 import mongoDB from '@config/mongoDB';
 
 @Module({
@@ -27,6 +29,8 @@ import mongoDB from '@config/mongoDB';
     AuthModule,
     TokenModule,
     OfferingModule,
+    ProductModule,
+    RentingModule,
     CartModule,
     ReviewModule,
     EmailModule,
