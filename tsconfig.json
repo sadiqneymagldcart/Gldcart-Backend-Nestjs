@@ -51,6 +51,10 @@
       "@cart/*": [
         "src/modules/cart/*"
       ],
+      "@item/*": [
+        "src/modules/item/*"
+      ],
+
       "@shared/*": [
         "src/shared/*"
       ],
