@@ -1,11 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { RentingService } from '../services/renting.service';
 import { CreateRentingDto } from '../dto/create-renting.dto';
 import { UpdateRentingDto } from '../dto/update-renting.dto';
+import { SerializeWith } from '@shared/decorators/serialize.decorator';
+import { Renting } from '@renting/schemas/renting.schema';
 
 @Controller('renting')
+@SerializeWith(Renting)
 export class RentingController {
-  constructor(private readonly rentingService: RentingService) {}
+  constructor(private readonly rentingService: RentingService) { }
 
   @Post()
   create(@Body() createRentingDto: CreateRentingDto) {
