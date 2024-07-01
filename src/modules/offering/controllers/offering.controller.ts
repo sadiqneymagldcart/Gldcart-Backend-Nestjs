@@ -23,6 +23,7 @@ export class OfferingController {
   public constructor(private readonly offeringService: OfferingService) {}
 
   @ApiOperation({ summary: 'Create an offering' })
+  @ApiBody({ type: CreateOfferingDto })
   @ApiResponse({
     status: 201,
     description: 'The offering has been successfully created.',
