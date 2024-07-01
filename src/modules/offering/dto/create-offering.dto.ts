@@ -21,7 +21,10 @@ class Attribute {
 }
 
 export class CreateOfferingDto {
-  @ApiProperty({ description: 'The name of the offering', example: 'Sample Offering'})
+  @ApiProperty({
+    description: 'The name of the offering',
+    example: 'Sample Offering',
+  })
   @IsNotEmpty()
   @IsString()
   name: string;
@@ -63,7 +66,7 @@ export class CreateOfferingDto {
   @IsString()
   subcategory: string;
 
-  @ApiProperty({ description: 'Attributes of the offering', type: [Attribute]})
+  @ApiProperty({ description: 'Attributes of the offering', type: [Attribute] })
   @IsNotEmpty()
   @IsArray()
   @ValidateNested({ each: true })

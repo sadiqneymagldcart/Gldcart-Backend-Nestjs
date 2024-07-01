@@ -21,7 +21,7 @@ import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';
 @Controller('/auth')
 @UseInterceptors(AuthInterceptor)
 export class AuthController {
-  public constructor(private readonly authService: AuthService) { }
+  public constructor(private readonly authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('/login')
