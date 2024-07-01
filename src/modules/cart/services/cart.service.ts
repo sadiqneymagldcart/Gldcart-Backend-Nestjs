@@ -3,9 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Cart, CartDocument, CartItem } from '@cart/schemas/cart.schema';
 import { CartItemDto } from '@cart/dto/cart-item.dto';
+import { ICartService } from '@cart/iterfaces/cart.service.interface';
 
 @Injectable()
-export class CartService {
+export class CartService implements ICartService {
   private readonly logger = new Logger(CartService.name);
 
   public constructor(
