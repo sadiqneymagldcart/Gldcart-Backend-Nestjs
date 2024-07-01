@@ -45,6 +45,9 @@
       "@offering/*": [
         "src/modules/offering/*"
       ],
+      "@renting/*": [
+        "src/modules/renting/*"
+      ],
       "@cart/*": [
         "src/modules/cart/*"
       ],
