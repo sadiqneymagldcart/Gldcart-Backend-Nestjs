@@ -2,11 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateProductDto } from '@product/dto/create-product.dto';
 import { UpdateProductDto } from '@product/dto/update-product.dto';
+import { IProductService } from '@product/interfaces/product.service.interface';
 import { Product, ProductDocument } from '@product/schemas/product.schema';
 import { Model } from 'mongoose';
 
 @Injectable()
-export class ProductService {
+export class ProductService implements IProductService {
   public constructor(
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
