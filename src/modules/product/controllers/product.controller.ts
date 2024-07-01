@@ -20,44 +20,44 @@ import { SerializeWith } from '@shared/decorators/serialize.decorator';
 @Controller('products')
 @SerializeWith(Product)
 export class ProductController {
-  public constructor(private readonly offeringService: ProductService) {}
+  public constructor(private readonly productService: ProductService) { }
 
-  @ApiOperation({ summary: 'Create an offering' })
+  @ApiOperation({ summary: 'Create a product' })
   @ApiResponse({
     status: 201,
-    description: 'The offering has been successfully created.',
+    description: 'The product has been successfully created.',
   })
   @Post()
   public async create(
     @Body() createProductDto: CreateProductDto,
   ): Promise<Product> {
-    return this.offeringService.create(createProductDto);
+    return this.productService.create(createProductDto);
   }
 
-  @ApiOperation({ summary: 'Get all offerings' })
-  @ApiResponse({ status: 200, description: 'Return all offerings.' })
+  @ApiOperation({ summary: 'Get all products' })
+  @ApiResponse({ status: 200, description: 'Return all products.' })
   @Get()
   @UseInterceptors(CacheInterceptor)
   public async findAll(): Promise<Product[]> {
-    return this.offeringService.findAll();
+    return this.productService.findAll();
   }
 
-  @ApiOperation({ summary: 'Get an offering by ID' })
+  @ApiOperation({ summary: 'Get a product by ID' })
   @ApiResponse({
     status: 200,
-    description: 'Return the offering with the given ID.',
+    description: 'Return the product with the given ID.',
   })
   @ApiResponse({ status: 404, description: 'Product not found.' })
   @Get(':id')
   @UseInterceptors(CacheInterceptor)
   public async findById(@Param('id') id: string): Promise<Product> {
-    return this.offeringService.findById(id);
+    return this.productService.findById(id);
   }
 
-  @ApiOperation({ summary: 'Update an offering by ID' })
+  @ApiOperation({ summary: 'Update a product by ID' })
   @ApiResponse({
     status: 200,
-    description: 'The offering has been successfully updated.',
+    description: 'The product has been successfully updated.',
   })
   @ApiResponse({ status: 404, description: 'Product not found.' })
   @Put(':id')
@@ -65,17 +65,17 @@ export class ProductController {
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
   ): Promise<Product> {
-    return this.offeringService.update(id, updateProductDto);
+    return this.productService.update(id, updateProductDto);
   }
 
-  @ApiOperation({ summary: 'Delete an offering by ID' })
+  @ApiOperation({ summary: 'Delete a product by ID' })
   @ApiResponse({
     status: 204,
-    description: 'The offering has been successfully deleted.',
+    description: 'The product has been successfully deleted.',
   })
   @ApiResponse({ status: 404, description: 'Product not found.' })
   @Delete(':id')
   public async remove(@Param('id') id: string): Promise<void> {
-    return this.offeringService.remove(id);
+    return this.productService.remove(id);
   }
 }
