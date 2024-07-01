@@ -7,7 +7,7 @@ import {
   IsInt,
   Min,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 class CartItemDto {
   @ApiProperty({
@@ -20,8 +20,10 @@ class CartItemDto {
 
   @ApiProperty({
     description: 'Type of the item (e.g., product, service, rental)',
+    example: 'offering',
   })
   @IsNotEmpty()
+  @Transform(({ value }) => value.toLowerCase())
   itemType: string;
 
   @ApiProperty({ description: 'Quantity of the product', example: 1 })
