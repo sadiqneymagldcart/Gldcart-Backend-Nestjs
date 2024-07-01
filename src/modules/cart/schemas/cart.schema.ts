@@ -7,7 +7,6 @@ import { NotFoundException } from '@nestjs/common';
 
 export type CartDocument = Cart & Document;
 
-@Schema()
 class CartItem {
   @ApiProperty({
     description: 'ID of the product',
@@ -35,8 +34,6 @@ class CartItem {
   quantity: number;
 }
 
-const CartItemSchema = SchemaFactory.createForClass(CartItem);
-
 @Schema({ timestamps: true })
 export class Cart {
   @ApiProperty({
@@ -60,7 +57,7 @@ export class Cart {
   userId: Types.ObjectId;
 
   @ApiProperty({ description: 'Items in the cart', type: [CartItem] })
-  @Prop({ required: true, type: [CartItemSchema] })
+  @Prop({ required: true, type: [CartItem] })
   items: CartItem[];
 }
 
