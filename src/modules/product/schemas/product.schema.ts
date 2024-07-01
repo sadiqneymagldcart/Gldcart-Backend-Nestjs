@@ -9,7 +9,7 @@ export type ProductDocument = Product & Document;
 export class Product {
   @ApiProperty({ description: 'The unique identifier of the product' })
   @Transform(({ value }) => value.toString())
-  _id: string;
+  _id: Types.ObjectId;
 
   @ApiProperty({
     description: 'The unique identifier of the seller',
