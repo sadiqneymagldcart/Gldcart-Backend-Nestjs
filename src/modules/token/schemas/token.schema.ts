@@ -9,7 +9,7 @@ export type RefreshTokenDocument = RefreshToken & Document;
 @Schema({ timestamps: true })
 export class RefreshToken {
   @Transform(({ value }) => value.toString())
-  _id: Types.ObjectId;
+  _id: string;
 
   @ApiProperty({
     description: 'The user ID associated with the token',
