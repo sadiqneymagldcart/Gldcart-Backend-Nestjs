@@ -13,4 +13,4 @@ import { CacheModule } from '@nestjs/cache-manager';
   controllers: [RentingController],
   providers: [RentingService],
 })
-export class RentingModule { }
+export class RentingModule {}

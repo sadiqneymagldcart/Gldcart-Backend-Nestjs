@@ -20,7 +20,7 @@ import { SerializeWith } from '@shared/decorators/serialize.decorator';
 @Controller('products')
 @SerializeWith(Product)
 export class ProductController {
-  public constructor(private readonly offeringService: ProductService) { }
+  public constructor(private readonly offeringService: ProductService) {}
 
   @ApiOperation({ summary: 'Create an offering' })
   @ApiResponse({
