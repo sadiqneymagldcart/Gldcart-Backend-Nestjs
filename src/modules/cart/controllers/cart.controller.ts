@@ -1,79 +1,76 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
-  HttpCode,
-  HttpStatus,
-  Logger,
+  NotFoundException,
   Param,
   Post,
   Put,
-  Delete,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { SerializeWith } from '@shared/decorators/serialize.decorator';
-import { Cart } from '../schemas/cart.schema';
+import {
+  ApiBadRequestResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { CartItemDto } from '@cart/dto/cart-item.dto';
+import { Cart } from '@cart/schemas/cart.schema';
 import { CartService } from '@cart/services/cart.service';
-import { CreateCartDto } from '@cart/dto/create-cart.dto';
-import { UpdateCartDto } from '@cart/dto/update-cart.dto';
 
-@ApiTags('Carts')
-@Controller('/carts')
-@SerializeWith(Cart)
+@ApiTags('cart')
+@Controller('cart')
 export class CartController {
-  private readonly logger: Logger = new Logger(CartController.name);
+  public constructor(private readonly cartService: CartService) { }
 
-  public constructor(private readonly cartService: CartService) {}
-
-  @ApiOperation({ summary: 'Get all carts' })
-  @ApiResponse({ status: 200, description: 'Carts found', type: [Cart] })
-  @HttpCode(HttpStatus.OK)
   @Get()
-  public async findAll(): Promise<Cart[]> {
-    this.logger.log('REST request to get all carts');
-    return await this.cartService.findAll();
+  @ApiOperation({ summary: 'Get all carts' })
+  @ApiOkResponse({ description: 'The list of all carts', type: [Cart] })
+  async findAll(): Promise<Cart[]> {
+    return this.cartService.findAll();
   }
 
-  @ApiOperation({ summary: 'Get cart by id' })
-  @ApiResponse({ status: 200, description: 'Cart found', type: Cart })
-  @HttpCode(HttpStatus.OK)
-  @Get('/:id')
-  public async findOne(@Param('id') id: string): Promise<Cart> {
-    this.logger.log(`REST request to get a cart: ${id}`);
-    return this.cartService.findOne(id);
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a cart by id' })
+  @ApiOkResponse({ description: 'The cart with the matching id', type: Cart })
+  @ApiNotFoundResponse({ description: 'No cart found with this id' })
+  async findOne(@Param('id') id: string): Promise<Cart> {
+    const cart = await this.cartService.findOne(id);
+    if (!cart) {
+      throw new NotFoundException(`Cart with ID ${id} not found`);
+    }
+    return cart;
   }
 
-  @ApiOperation({ summary: 'Create a cart' })
-  @ApiBody({ type: CreateCartDto })
-  @ApiResponse({ status: 201, description: 'Cart created', type: Cart })
-  @HttpCode(HttpStatus.CREATED)
-  @Post()
-  public async create(@Body() createCartDto: CreateCartDto): Promise<Cart> {
-    this.logger.log(
-      `REST request to create a cart: ${JSON.stringify(createCartDto)}`,
-    );
-    return this.cartService.create(createCartDto);
-  }
-
-  @ApiOperation({ summary: 'Update a cart by id' })
-  @ApiBody({ type: UpdateCartDto })
-  @ApiResponse({ status: 200, description: 'Cart updated', type: Cart })
-  @HttpCode(HttpStatus.OK)
-  @Put('/:id')
-  public async update(
-    @Param('id') id: string,
-    @Body() updateCartDto: UpdateCartDto,
+  @Post(':userId')
+  @ApiOperation({ summary: 'Add an item to a cart' })
+  @ApiOkResponse({ description: 'The updated cart', type: Cart })
+  @ApiBadRequestResponse({ description: 'Invalid item data' })
+  async addItem(
+    @Param('userId') userId: string,
+    @Body() newItem: CartItemDto,
   ): Promise<Cart> {
-    this.logger.log(`REST request to update a cart: ${id}`);
-    return this.cartService.update(id, updateCartDto);
+    return this.cartService.addItem(userId, newItem);
   }
 
-  @ApiOperation({ summary: 'Delete a cart by id' })
-  @ApiResponse({ status: 204, description: 'Cart deleted' })
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete('/:id')
-  public async remove(@Param('id') id: string): Promise<void> {
-    this.logger.log(`REST request to delete a cart: ${id}`);
+  @Put(':id')
+  @ApiOperation({ summary: 'Update an item in a cart' })
+  @ApiOkResponse({ description: 'The updated cart', type: Cart })
+  @ApiBadRequestResponse({ description: 'Invalid item data' })
+  @ApiNotFoundResponse({ description: 'No cart found with this id' })
+  async updateItem(
+    @Param('id') id: string,
+    @Body() updateItem: CartItemDto,
+  ): Promise<Cart> {
+    return this.cartService.updateItem(id, updateItem);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Remove a cart' })
+  @ApiOkResponse({ description: 'The cart has been removed' })
+  @ApiNotFoundResponse({ description: 'No cart found with this id' })
+  async remove(@Param('id') id: string): Promise<void> {
     return this.cartService.remove(id);
   }
 }

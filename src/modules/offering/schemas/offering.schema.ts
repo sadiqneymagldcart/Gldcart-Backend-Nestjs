@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { Document, SchemaTypes, Types } from 'mongoose';
+import { Document, SchemaTypes } from 'mongoose';
 
 export type OfferingDocument = Offering & Document;
 
@@ -9,7 +9,7 @@ export type OfferingDocument = Offering & Document;
 export class Offering {
   @ApiProperty({ description: 'The unique identifier of the offering' })
   @Transform(({ value }) => value.toString())
-  _id: Types.ObjectId;
+  _id: string;
 
   @ApiProperty({
     description: 'The name of the offering',
