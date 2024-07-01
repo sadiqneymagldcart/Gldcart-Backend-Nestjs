@@ -19,7 +19,7 @@ class CartItemDto {
   itemId: string;
 
   @ApiProperty({
-    description: 'Type of the item (e.g., product, service, rental)',
+    description: 'Type of the item (e.g., product, service, renting)',
     example: 'offering',
   })
   @IsNotEmpty()

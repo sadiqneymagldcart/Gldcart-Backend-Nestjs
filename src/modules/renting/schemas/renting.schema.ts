@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { Document, SchemaTypes } from 'mongoose';
+import { Document, SchemaTypes, Types } from 'mongoose';
 
 export type RentingDocument = Renting & Document;
 
@@ -9,7 +9,7 @@ export type RentingDocument = Renting & Document;
 export class Renting {
   @ApiProperty({ description: 'The unique identifier of the offering' })
   @Transform(({ value }) => value.toString())
-  _id: string;
+  _id: Types.ObjectId;
 
   @ApiProperty({
     description: 'The name of the offering',
@@ -24,13 +24,6 @@ export class Renting {
   })
   @Prop()
   description?: string;
-
-  @ApiProperty({
-    description: 'The price of the offering',
-    example: 100,
-  })
-  @Prop({ required: true, type: Number, index: true })
-  price: number;
 
   @ApiProperty({
     description: 'Array of image URLs associated with the offering',
