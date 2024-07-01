@@ -26,6 +26,13 @@ export class Renting {
   description?: string;
 
   @ApiProperty({
+    description: 'The price of the offering',
+    example: 100,
+  })
+  @Prop({ required: true, type: Number, index: true })
+  price: number;
+
+  @ApiProperty({
     description: 'Array of image URLs associated with the offering',
     example: [
       'https://example.com/image1.jpg',
