@@ -6,4 +6,7 @@
 
 4. [ ] Use pm2 in order to create multiple instances?
 
-5. [ ] Validate user and product existence in a cart.
+5. [x] Validate user and item existence in a cart.
+
+6. [ ] Implement generic pagination.
+
