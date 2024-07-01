@@ -19,7 +19,7 @@ import { CartItemDto } from '@cart/dto/cart-item.dto';
 import { Cart } from '@cart/schemas/cart.schema';
 import { CartService } from '@cart/services/cart.service';
 
-@ApiTags('cart')
+@ApiTags('Carts')
 @Controller('cart')
 export class CartController {
   public constructor(private readonly cartService: CartService) { }
@@ -27,7 +27,7 @@ export class CartController {
   @Get()
   @ApiOperation({ summary: 'Get all carts' })
   @ApiOkResponse({ description: 'The list of all carts', type: [Cart] })
-  async findAll(): Promise<Cart[]> {
+  public async findAll(): Promise<Cart[]> {
     return this.cartService.findAll();
   }
 
@@ -35,7 +35,7 @@ export class CartController {
   @ApiOperation({ summary: 'Get a cart by id' })
   @ApiOkResponse({ description: 'The cart with the matching id', type: Cart })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
-  async findOne(@Param('id') id: string): Promise<Cart> {
+  public async findOne(@Param('id') id: string): Promise<Cart> {
     const cart = await this.cartService.findOne(id);
     if (!cart) {
       throw new NotFoundException(`Cart with ID ${id} not found`);
@@ -47,7 +47,7 @@ export class CartController {
   @ApiOperation({ summary: 'Add an item to a cart' })
   @ApiOkResponse({ description: 'The updated cart', type: Cart })
   @ApiBadRequestResponse({ description: 'Invalid item data' })
-  async addItem(
+  public async addItem(
     @Param('userId') userId: string,
     @Body() newItem: CartItemDto,
   ): Promise<Cart> {
@@ -59,7 +59,7 @@ export class CartController {
   @ApiOkResponse({ description: 'The updated cart', type: Cart })
   @ApiBadRequestResponse({ description: 'Invalid item data' })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
-  async updateItem(
+  public async updateItem(
     @Param('id') id: string,
     @Body() updateItem: CartItemDto,
   ): Promise<Cart> {
@@ -70,7 +70,7 @@ export class CartController {
   @ApiOperation({ summary: 'Remove a cart' })
   @ApiOkResponse({ description: 'The cart has been removed' })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
-  async remove(@Param('id') id: string): Promise<void> {
+  public async remove(@Param('id') id: string): Promise<void> {
     return this.cartService.remove(id);
   }
 }
