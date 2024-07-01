@@ -62,15 +62,20 @@ export class CartService {
     return await cart.save();
   }
 
-  public async removeItem(id: string, removeItem: CartItemDto): Promise<Cart> {
+  public async removeItem(id: string, itemId: string): Promise<Cart> {
     this.logger.log(`Removing item from cart with id ${id}`);
     const existingCart = await this._checkCartExists(id);
 
-    existingCart.items = existingCart.items.filter(
-      (item: CartItem) =>
-        item.itemId !== removeItem.itemId ||
-        item.itemType !== removeItem.itemType,
+    const itemIndex = existingCart.items.findIndex(
+      (item: CartItem) => item.itemId === itemId,
     );
+
+    if (itemIndex === -1) {
+      this.logger.error(`Item with ID ${itemId} not found in cart`);
+      throw new NotFoundException(`Item with ID ${itemId} not found in cart`);
+    }
+
+    existingCart.items.splice(itemIndex, 1);
 
     this.logger.debug(
       `Removed item from cart: ${JSON.stringify(existingCart)}`,
