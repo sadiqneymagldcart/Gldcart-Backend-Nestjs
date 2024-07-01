@@ -1,15 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Cart, CartDocument } from '../schemas/cart.schema';
-import { CreateCartDto } from '../dto/create-cart.dto';
-import { UpdateCartDto } from '../dto/update-cart.dto';
+import { Cart, CartDocument } from '@cart/schemas/cart.schema';
+import { CreateCartDto } from '@cart/dto/create-cart.dto';
+import { UpdateCartDto } from '@cart/dto/update-cart.dto';
 
 @Injectable()
 export class CartService {
   public constructor(
     @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
-  ) {}
+  ) { }
 
   public async create(createCartDto: CreateCartDto): Promise<Cart> {
     const createdCart = new this.cartModel(createCartDto);
