@@ -7,13 +7,16 @@ import { NotFoundException } from '@nestjs/common';
 
 export type CartDocument = Cart & Document;
 
+@Schema({
+  _id: false,
+})
 export class CartItem {
   @ApiProperty({
     description: 'ID of the product',
     example: '668177b0ac6c1a132e160a6b',
   })
-  @Transform(({ value }) => value.toString())
   @Prop({ required: true, type: Types.ObjectId })
+  @Transform(({ value }) => value.toString())
   itemId: string;
 
   @ApiProperty({
@@ -27,12 +30,14 @@ export class CartItem {
     index: true,
     type: String,
   })
-  type: string;
+  itemType: string;
 
   @ApiProperty({ description: 'Quantity of the product', example: 1 })
   @Prop({ required: true, type: Number })
   quantity: number;
 }
+
+export const CartItemSchema = SchemaFactory.createForClass(CartItem);
 
 @Schema({ timestamps: true })
 export class Cart {
@@ -57,7 +62,7 @@ export class Cart {
   userId: string;
 
   @ApiProperty({ description: 'Items in the cart', type: [CartItem] })
-  @Prop({ required: true, type: [CartItem] })
+  @Prop({ required: true, type: [CartItemSchema] })
   items: CartItem[];
 }
 
@@ -75,21 +80,21 @@ async function validateItems(
   models: Record<ItemTypes, any>,
 ) {
   for (const item of items) {
-    const model = models[item.type];
+    const model = models[item.itemType];
     if (!model) {
-      throw new NotFoundException(`Item type ${item.type} is invalid`);
+      throw new NotFoundException(`Item type ${item.itemType} is invalid`);
     }
 
     const itemExists = await model.exists({ _id: item.itemId });
     if (!itemExists) {
       throw new NotFoundException(
-        `Item with ID ${item.itemId} of type ${item.type} not found`,
+        `Item with ID ${item.itemId} of type ${item.itemType} not found`,
       );
     }
   }
 }
 
-CartSchema.pre<CartDocument>('save', async function (next) {
+CartSchema.pre<CartDocument>('save', async function(next) {
   const userModel = this.model('User');
   const models = {
     [ItemTypes.PRODUCT]: this.model('Product'),
