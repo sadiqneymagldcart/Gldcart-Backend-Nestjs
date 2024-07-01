@@ -7,14 +7,14 @@ import { NotFoundException } from '@nestjs/common';
 
 export type CartDocument = Cart & Document;
 
-class CartItem {
+export class CartItem {
   @ApiProperty({
     description: 'ID of the product',
     example: '668177b0ac6c1a132e160a6b',
   })
   @Transform(({ value }) => value.toString())
   @Prop({ required: true, type: Types.ObjectId })
-  itemId: Types.ObjectId;
+  itemId: string;
 
   @ApiProperty({
     description: 'Type of the item (e.g., product, offering, renting)',
@@ -27,7 +27,7 @@ class CartItem {
     index: true,
     type: String,
   })
-  itemType: ItemTypes;
+  type: string;
 
   @ApiProperty({ description: 'Quantity of the product', example: 1 })
   @Prop({ required: true, type: Number })
@@ -41,7 +41,7 @@ export class Cart {
     example: '668177b0ac6c1a132e160a6b',
   })
   @Transform(({ value }) => value.toString())
-  _id: Types.ObjectId;
+  _id: string;
 
   @ApiProperty({
     description: 'User ID associated with the cart',
@@ -54,7 +54,7 @@ export class Cart {
     index: true,
   })
   @Transform(({ value }) => value.toString())
-  userId: Types.ObjectId;
+  userId: string;
 
   @ApiProperty({ description: 'Items in the cart', type: [CartItem] })
   @Prop({ required: true, type: [CartItem] })
@@ -63,7 +63,7 @@ export class Cart {
 
 export const CartSchema = SchemaFactory.createForClass(Cart);
 
-async function validateUser(userId: Types.ObjectId, userModel: any) {
+async function validateUser(userId: string, userModel: any) {
   const userExists = await userModel.exists({ _id: userId });
   if (!userExists) {
     throw new NotFoundException(`User with ID ${userId} not found`);
@@ -75,21 +75,21 @@ async function validateItems(
   models: Record<ItemTypes, any>,
 ) {
   for (const item of items) {
-    const model = models[item.itemType];
+    const model = models[item.type];
     if (!model) {
-      throw new NotFoundException(`Item type ${item.itemType} is invalid`);
+      throw new NotFoundException(`Item type ${item.type} is invalid`);
     }
 
     const itemExists = await model.exists({ _id: item.itemId });
     if (!itemExists) {
       throw new NotFoundException(
-        `Item with ID ${item.itemId} of type ${item.itemType} not found`,
+        `Item with ID ${item.itemId} of type ${item.type} not found`,
       );
     }
   }
 }
 
-CartSchema.pre<CartDocument>('save', async function(next) {
+CartSchema.pre<CartDocument>('save', async function (next) {
   const userModel = this.model('User');
   const models = {
     [ItemTypes.PRODUCT]: this.model('Product'),
