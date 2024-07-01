@@ -1,81 +1,34 @@
-import { CacheInterceptor } from '@nestjs/cache-manager';
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Put,
-  UseInterceptors,
-} from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { CreateProductDto } from '@product/dto/create-product.dto';
-import { UpdateProductDto } from '@product/dto/update-product.dto';
-import { Product } from '@product/schemas/product.schema';
-import { ProductService } from '@product/services/product.service';
-import { SerializeWith } from '@shared/decorators/serialize.decorator';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { ProductService } from '../services/product.service';
+import { CreateProductDto } from '../dto/create-product.dto';
+import { UpdateProductDto } from '../dto/update-product.dto';
 
-@ApiTags('Products')
-@Controller('products')
-@SerializeWith(Product)
+@Controller('product')
 export class ProductController {
-  public constructor(private readonly productService: ProductService) { }
+  constructor(private readonly productService: ProductService) {}
 
-  @ApiOperation({ summary: 'Create a product' })
-  @ApiResponse({
-    status: 201,
-    description: 'The product has been successfully created.',
-  })
   @Post()
-  public async create(
-    @Body() createProductDto: CreateProductDto,
-  ): Promise<Product> {
+  create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
 
-  @ApiOperation({ summary: 'Get all products' })
-  @ApiResponse({ status: 200, description: 'Return all products.' })
   @Get()
-  @UseInterceptors(CacheInterceptor)
-  public async findAll(): Promise<Product[]> {
+  findAll() {
     return this.productService.findAll();
   }
 
-  @ApiOperation({ summary: 'Get a product by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'Return the product with the given ID.',
-  })
-  @ApiResponse({ status: 404, description: 'Product not found.' })
   @Get(':id')
-  @UseInterceptors(CacheInterceptor)
-  public async findById(@Param('id') id: string): Promise<Product> {
-    return this.productService.findById(id);
+  findOne(@Param('id') id: string) {
+    return this.productService.findOne(+id);
   }
 
-  @ApiOperation({ summary: 'Update a product by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'The product has been successfully updated.',
-  })
-  @ApiResponse({ status: 404, description: 'Product not found.' })
-  @Put(':id')
-  public async update(
-    @Param('id') id: string,
-    @Body() updateProductDto: UpdateProductDto,
-  ): Promise<Product> {
-    return this.productService.update(id, updateProductDto);
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+    return this.productService.update(+id, updateProductDto);
   }
 
-  @ApiOperation({ summary: 'Delete a product by ID' })
-  @ApiResponse({
-    status: 204,
-    description: 'The product has been successfully deleted.',
-  })
-  @ApiResponse({ status: 404, description: 'Product not found.' })
   @Delete(':id')
-  public async remove(@Param('id') id: string): Promise<void> {
-    return this.productService.remove(id);
+  remove(@Param('id') id: string) {
+    return this.productService.remove(+id);
   }
 }
