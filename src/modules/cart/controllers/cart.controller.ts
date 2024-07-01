@@ -26,7 +26,7 @@ import { SerializeWith } from '@shared/decorators/serialize.decorator';
 export class CartController {
   public constructor(private readonly cartService: CartService) { }
 
-  @Get(':userId')
+  @Get('/user/:userId')
   @ApiOperation({ summary: 'Get a cart for user' })
   @ApiOkResponse({ description: 'The cart for user', type: Cart })
   public async findAllItemsByUserId(
@@ -40,11 +40,7 @@ export class CartController {
   @ApiOkResponse({ description: 'The cart with the matching id', type: Cart })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
   public async findOne(@Param('id') id: string): Promise<Cart> {
-    const cart = await this.cartService.findOne(id);
-    if (!cart) {
-      throw new NotFoundException(`Cart with ID ${id} not found`);
-    }
-    return cart;
+    return await this.cartService.findOne(id);
   }
 
   @Post(':userId')
