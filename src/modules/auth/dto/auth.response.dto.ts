@@ -11,7 +11,7 @@ export class AuthResponseDto {
 
   @ApiProperty({
     example: {
-      _id: 1,
+      _id: '66829081894baf6d7bca705b',
       name: 'John',
       surname: 'Doe',
       email: 'example@example.com',
