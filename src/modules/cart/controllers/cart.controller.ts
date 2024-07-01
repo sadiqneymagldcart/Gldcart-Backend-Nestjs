@@ -70,6 +70,17 @@ export class CartController {
     return this.cartService.updateItem(id, updateItem);
   }
 
+  @Delete(':id/item/:itemId')
+  @ApiOperation({ summary: 'Remove an item from a cart' })
+  @ApiOkResponse({ description: 'The updated cart after removal', type: Cart })
+  @ApiNotFoundResponse({ description: 'No cart found with this id' })
+  public async removeItem(
+    @Param('id') id: string,
+    @Param('itemId') itemId: string,
+  ): Promise<Cart> {
+    return this.cartService.removeItem(id, itemId);
+  }
+
   @Delete(':id')
   @ApiOperation({ summary: 'Remove a cart' })
   @ApiOkResponse({ description: 'The cart has been removed' })
