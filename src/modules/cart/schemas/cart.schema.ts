@@ -2,10 +2,12 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
-// import { NotFoundException } from '@nestjs/common';
+import { ItemTypes } from '@cart/enums/item-types.enum';
+import { NotFoundException } from '@nestjs/common';
 
 export type CartDocument = Cart & Document;
 
+@Schema()
 class CartItem {
   @ApiProperty({
     description: 'ID of the product',
@@ -16,15 +18,24 @@ class CartItem {
   itemId: Types.ObjectId;
 
   @ApiProperty({
-    description: 'Type of the item (e.g., product, service, rental)',
+    description: 'Type of the item (e.g., product, offering, renting)',
+    enum: ['product', 'offering', 'renting'],
+    example: 'offering',
   })
-  @Prop({ required: true })
-  itemType: string;
+  @Prop({
+    required: true,
+    enum: ItemTypes,
+    index: true,
+    type: String,
+  })
+  itemType: ItemTypes;
 
   @ApiProperty({ description: 'Quantity of the product', example: 1 })
   @Prop({ required: true, type: Number })
   quantity: number;
 }
+
+const CartItemSchema = SchemaFactory.createForClass(CartItem);
 
 @Schema({ timestamps: true })
 export class Cart {
@@ -49,30 +60,51 @@ export class Cart {
   userId: Types.ObjectId;
 
   @ApiProperty({ description: 'Items in the cart', type: [CartItem] })
-  @Prop({ required: true, type: [CartItem] })
+  @Prop({ required: true, type: [CartItemSchema] })
   items: CartItem[];
 }
 
 export const CartSchema = SchemaFactory.createForClass(Cart);
 
-// CartSchema.pre<CartDocument>('save', async function(next) {
-//   const user = await this.model('User').findById(this.userId);
-//   if (!user) {
-//     const err = new NotFoundException('User not found');
-//     return next(err);
-//   }
-//   next();
-// });
-//
-// CartSchema.pre<CartDocument>('save', async function(next) {
-//   for (const item of this.items) {
-//     const offering = await this.model('Offering').findById(item.offeringId);
-//     if (!offering) {
-//       const err = new NotFoundException(
-//         `Product not found: ${item.offeringId}`,
-//       );
-//       return next(err);
-//     }
-//   }
-//   next();
-// });
+async function validateUser(userId: Types.ObjectId, userModel: any) {
+  const userExists = await userModel.exists({ _id: userId });
+  if (!userExists) {
+    throw new NotFoundException(`User with ID ${userId} not found`);
+  }
+}
+
+async function validateItems(
+  items: CartItem[],
+  models: Record<ItemTypes, any>,
+) {
+  for (const item of items) {
+    const model = models[item.itemType];
+    if (!model) {
+      throw new NotFoundException(`Item type ${item.itemType} is invalid`);
+    }
+
+    const itemExists = await model.exists({ _id: item.itemId });
+    if (!itemExists) {
+      throw new NotFoundException(
+        `Item with ID ${item.itemId} of type ${item.itemType} not found`,
+      );
+    }
+  }
+}
+
+CartSchema.pre<CartDocument>('save', async function(next) {
+  const userModel = this.model('User');
+  const models = {
+    [ItemTypes.PRODUCT]: this.model('Product'),
+    [ItemTypes.OFFERING]: this.model('Offering'),
+    [ItemTypes.RENTING]: this.model('Renting'),
+  };
+
+  try {
+    await validateUser(this.userId, userModel);
+    await validateItems(this.items, models);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
