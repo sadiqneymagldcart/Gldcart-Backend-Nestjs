@@ -18,17 +18,21 @@ import {
 import { CartItemDto } from '@cart/dto/cart-item.dto';
 import { Cart } from '@cart/schemas/cart.schema';
 import { CartService } from '@cart/services/cart.service';
+import { SerializeWith } from '@shared/decorators/serialize.decorator';
 
 @ApiTags('Carts')
 @Controller('cart')
+@SerializeWith(Cart)
 export class CartController {
   public constructor(private readonly cartService: CartService) { }
 
-  @Get()
-  @ApiOperation({ summary: 'Get all carts' })
-  @ApiOkResponse({ description: 'The list of all carts', type: [Cart] })
-  public async findAll(): Promise<Cart[]> {
-    return this.cartService.findAll();
+  @Get(':userId')
+  @ApiOperation({ summary: 'Get a cart for user' })
+  @ApiOkResponse({ description: 'The cart for user', type: Cart })
+  public async findAllItemsByUserId(
+    @Param('userId') userId: string,
+  ): Promise<Cart> {
+    return this.cartService.findByUserId(userId);
   }
 
   @Get(':id')
