@@ -7,17 +7,21 @@ import { CartItemDto } from '@cart/dto/cart-item.dto';
 @Injectable()
 export class CartService {
   private readonly logger = new Logger(CartService.name);
+
   public constructor(
     @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
   ) {
     this.logger.log('CartService initialized');
   }
 
-  public async findAll(): Promise<Cart[]> {
-    this.logger.log('Fetching all carts');
-    const carts = await this.cartModel.find().exec();
-    this.logger.log(`Found ${carts.length} carts`);
-    return carts;
+  public async findByUserId(userId: string): Promise<Cart> {
+    const cart = await this.cartModel.findOne({ userId }).exec();
+    if (!cart) {
+      this.logger.error(`No carts found for user with id ${userId}`);
+      throw new NotFoundException(`No carts found for user with id ${userId}`);
+    }
+    this.logger.log(`Found a cart for user with id ${userId}`);
+    return cart;
   }
 
   public async findOne(id: string): Promise<Cart> {
@@ -33,6 +37,7 @@ export class CartService {
 
   public async addItem(userId: string, newItem: CartItemDto): Promise<Cart> {
     this.logger.log(`Adding item to cart for user ${userId}`);
+
     let cart = await this.cartModel.findOne({ userId });
 
     if (!cart) {
@@ -43,7 +48,7 @@ export class CartService {
       this.logger.debug(`New cart created: ${JSON.stringify(cart)}`);
     } else {
       const itemIndex = cart.items.findIndex(
-        (i) => i.itemId === newItem.itemId,
+        (i) => i.itemId === newItem.itemId && i.itemType === newItem.itemType,
       );
 
       if (itemIndex > -1) {
@@ -54,8 +59,7 @@ export class CartService {
         this.logger.debug(`Added item to cart: ${JSON.stringify(cart)}`);
       }
     }
-
-    return cart.save();
+    return await cart.save();
   }
 
   public async removeItem(id: string, removeItem: CartItemDto): Promise<Cart> {
@@ -63,7 +67,9 @@ export class CartService {
     const existingCart = await this._checkCartExists(id);
 
     existingCart.items = existingCart.items.filter(
-      (item: CartItem) => item.itemId !== removeItem.itemId,
+      (item: CartItem) =>
+        item.itemId !== removeItem.itemId ||
+        item.itemType !== removeItem.itemType,
     );
 
     this.logger.debug(
@@ -78,7 +84,9 @@ export class CartService {
     const existingCart = await this._checkCartExists(id);
 
     const itemIndex = existingCart.items.findIndex(
-      (item: CartItem) => item.itemId === updateItem.itemId,
+      (item: CartItem) =>
+        item.itemId === updateItem.itemId &&
+        item.itemType === updateItem.itemType,
     );
 
     if (itemIndex === -1) {
