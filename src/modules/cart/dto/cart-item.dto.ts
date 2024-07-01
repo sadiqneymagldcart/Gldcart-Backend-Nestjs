@@ -16,7 +16,7 @@ export class CartItemDto {
     enum: ItemTypes,
   })
   @IsEnum(ItemTypes)
-  itemType: ItemTypes;
+  type: ItemTypes;
 
   @ApiProperty({
     description: 'The quantity of the item',
