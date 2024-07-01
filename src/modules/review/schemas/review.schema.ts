@@ -9,7 +9,7 @@ export type ReviewDocument = Review & Document;
 export class Review {
   @ApiProperty({ description: 'The unique identifier of the review' })
   @Transform(({ value }) => value.toString())
-  _id: Types.ObjectId;
+  _id: string;
 
   @ApiProperty({ description: 'User ID who created the review' })
   @Transform(({ value }) => value.toString())
