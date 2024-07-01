@@ -113,7 +113,9 @@ export class TokenService implements ITokenService {
     userId: string,
     token: string,
   ): Promise<string> {
-    let existingToken = await this.tokenModel.findOne({ user: { id: userId } });
+    let existingToken = await this.tokenModel.findOne({
+      user: { _id: userId },
+    });
 
     this.logger.debug('User has existing refresh token');
 
@@ -123,7 +125,7 @@ export class TokenService implements ITokenService {
     } else {
       this.logger.debug(`Creating refresh token for user with id`);
       existingToken = new this.tokenModel({
-        user: { id: userId },
+        user: { _id: userId },
         refresh_token: token,
       });
     }
