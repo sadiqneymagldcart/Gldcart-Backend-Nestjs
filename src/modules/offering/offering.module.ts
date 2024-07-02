@@ -4,6 +4,7 @@ import { Offering, OfferingSchema } from './schemas/offering.schema';
 import { OfferingController } from './controllers/offering.controller';
 import { OfferingService } from './services/offering.service';
 import { CacheModule } from '@nestjs/cache-manager';
+import { SearchService } from '@search/services/search.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     ]),
   ],
   controllers: [OfferingController],
-  providers: [OfferingService],
+  providers: [OfferingService, SearchService],
   exports: [OfferingService],
 })
 export class OfferingModule {}
