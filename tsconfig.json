@@ -54,7 +54,15 @@
       "@item/*": [
         "src/modules/item/*"
       ],
-
+      "@chat/*": [
+        "src/modules/chat/*"
+      ],
+      "@order/*": [
+        "src/modules/order/*"
+      ],
+      "@stripe/*": [
+        "src/modules/stripe/*"
+      ],
       "@shared/*": [
         "src/shared/*"
       ],
