@@ -13,7 +13,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway(3002, {
+@WebSocketGateway({
   namespace: 'chat',
   cors: {
     origin: process.env.CLIENT_URL,
