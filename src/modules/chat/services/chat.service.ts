@@ -1,26 +1,56 @@
-import { CreateChatDto } from '@chat/dto/create-chat.dto';
-import { UpdateChatDto } from '@chat/dto/update-chat.dto';
+import { Chat, ChatDocument } from '@chat/schemas/chat.schema';
+import { Message, MessageDocument } from '@chat/schemas/message.schema';
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { User, UserDocument } from '@user/schemas/user.schema';
+import { Model } from 'mongoose';
+import { Socket } from 'socket.io';
 
 @Injectable()
 export class ChatService {
-  create(createChatDto: CreateChatDto) {
-    return 'This action adds a new chat';
+  public constructor(
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(Chat.name) private readonly chatModel: Model<ChatDocument>,
+    @InjectModel(Message.name)
+    private readonly messageModel: Model<MessageDocument>,
+  ) { }
+
+  public async createChat(chat: Chat): Promise<Chat> {
+    return await this.chatModel.create(chat);
   }
 
-  findAll() {
-    return `This action returns all chat`;
+  public async updateUserOnlineStatus(
+    userId: string,
+    status: boolean,
+  ): Promise<void> {
+    await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      { is_online: status },
+    );
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} chat`;
+  public async getUserChats(userId: string): Promise<any> {
+    return await this.chatModel.find({ participants: userId }).populate({
+      path: 'participants',
+      select: { name: 1, surname: 1, type: 1, is_online: 1 },
+    });
   }
 
-  update(id: number, updateChatDto: UpdateChatDto) {
-    return `This action updates a #${id} chat`;
+  public watchChatCollectionChanges(socket: Socket): void {
+    const changeStream = this.chatModel.watch();
+    changeStream.on('change', async (change) => {
+      let chat: any;
+      if (change.operationType === 'insert') {
+        chat = await this.chatModel.findById(change.documentKey._id).populate({
+          path: 'participants',
+          select: { name: 1, surname: 1, type: 1, is_online: 1 },
+        });
+      }
+      socket.emit('newChat', chat);
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} chat`;
+  public async createMessage(message: Message): Promise<Message> {
+    return await this.messageModel.create(message);
   }
 }
