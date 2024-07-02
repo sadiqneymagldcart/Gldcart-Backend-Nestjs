@@ -5,13 +5,14 @@ import { TokenModule } from '@token/token.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { OfferingModule } from './modules/offering/offering.module';
-import { CartModule } from './modules/cart/cart.module';
 import { ReviewModule } from '@review/review.module';
 import { EmailModule } from '@email/email.module';
 import { ProductModule } from '@product/product.module';
 import { RentingModule } from '@renting/renting.module';
+import { OfferingModule } from '@offering/offering.module';
+import { CartModule } from '@cart/cart.module';
 import mongoDB from '@config/mongoDB';
+import { ChatModule } from '@chat/chat.module';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import mongoDB from '@config/mongoDB';
     CartModule,
     ReviewModule,
     EmailModule,
+    ChatModule,
   ],
   controllers: [AppController],
 })
-export class AppModule {}
+export class AppModule { }
