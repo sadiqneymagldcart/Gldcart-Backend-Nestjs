@@ -1,4 +1,4 @@
-import { Message } from '@chat/schemas/message.schema';
+import { CreateMessageDto } from '@chat/dto/create-message.dto';
 import { ChatService } from '@chat/services/chat.service';
 import { Logger } from '@nestjs/common';
 import {
@@ -9,6 +9,7 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  WsException,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
@@ -48,26 +49,30 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.logger.log(`User joined chat: ${chatId}`);
       socket.join(chatId);
     } catch (error) {
-      this._handleError(socket, error);
+      throw new WsException(error.message);
     }
   }
 
   @SubscribeMessage('send_message')
   public async handleMessage(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() message: Message,
+    @MessageBody() message: CreateMessageDto,
   ) {
     try {
       this.logger.log('Message received', message);
       const savedMessage = await this.chatService.createMessage(message);
       socket.to(message.chatId as string).emit('receive_message', savedMessage);
     } catch (error) {
-      this._handleError(socket, error);
+      throw new WsException(error.message);
     }
   }
 
   @SubscribeMessage('leave')
-  handleLeave(@ConnectedSocket() socket: Socket, chatId: string) {
+  handleLeave(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() chatId: string,
+  ) {
+    this.logger.log(`User left chat: ${chatId}`);
     socket.leave(chatId);
   }
 
@@ -77,12 +82,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const chats = await this.chatService.getUserChats(userId);
       socket.emit('chats', chats);
     } catch (error) {
-      this._handleError(socket, error);
+      throw new WsException(error.message);
     }
-  }
-
-  private _handleError(socket: Socket, error: Error) {
-    this.logger.error('Error occurred', error.stack);
-    socket.emit('error', { message: error.message });
   }
 }
