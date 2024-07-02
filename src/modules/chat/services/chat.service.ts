@@ -1,3 +1,5 @@
+import { CreateChatDto } from '@chat/dto/create-chat.dto';
+import { CreateMessageDto } from '@chat/dto/create-message.dto';
 import { Chat, ChatDocument } from '@chat/schemas/chat.schema';
 import { Message, MessageDocument } from '@chat/schemas/message.schema';
 import { Injectable } from '@nestjs/common';
@@ -15,7 +17,7 @@ export class ChatService {
     private readonly messageModel: Model<MessageDocument>,
   ) { }
 
-  public async createChat(chat: Chat): Promise<Chat> {
+  public async createChat(chat: CreateChatDto): Promise<Chat> {
     return await this.chatModel.create(chat);
   }
 
@@ -50,7 +52,7 @@ export class ChatService {
     });
   }
 
-  public async createMessage(message: Message): Promise<Message> {
+  public async createMessage(message: CreateMessageDto): Promise<Message> {
     return await this.messageModel.create(message);
   }
 }
