@@ -8,7 +8,7 @@ import { TokenService } from '@token/services/token.service';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class JwtAuthGuard implements CanActivate {
+export class JwtAuthenticationGuard implements CanActivate {
   private readonly tokenService: TokenService;
 
   public constructor(tokenService: TokenService) {
