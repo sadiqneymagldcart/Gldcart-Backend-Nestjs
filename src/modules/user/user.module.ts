@@ -4,14 +4,14 @@ import { UserController } from './controllers/user.controller';
 import { AuthModule } from '@auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
-import { TokenModule } from '@token/token.module';
+import StripeService from '@stripe/services/stripe.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     forwardRef(() => AuthModule),
   ],
-  providers: [UserService],
+  providers: [UserService, StripeService],
   controllers: [UserController],
   exports: [UserService],
 })
