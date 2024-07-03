@@ -1,29 +1,21 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
-import { Document, Types } from 'mongoose';
+import { Transform, Type } from 'class-transformer';
 import { ItemTypes } from '@cart/enums/item-types.enum';
 import { NotFoundException } from '@nestjs/common';
+import { User } from '@user/schemas/user.schema';
+import mongoose from 'mongoose';
 
-export type CartDocument = Cart & Document;
+export type CartDocument = Cart & mongoose.Document;
 
 @Schema({
   _id: false,
+  versionKey: false,
 })
 export class CartItem {
-  @ApiProperty({
-    description: 'ID of the product',
-    example: '668177b0ac6c1a132e160a6b',
-  })
-  @Prop({ required: true, type: Types.ObjectId })
+  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId })
   @Transform(({ value }) => value.toString())
   itemId: string;
 
-  @ApiProperty({
-    description: 'Type of the item (e.g., product, offering, renting)',
-    enum: ['product', 'offering', 'renting'],
-    example: 'offering',
-  })
   @Prop({
     required: true,
     enum: ItemTypes,
@@ -32,7 +24,6 @@ export class CartItem {
   })
   itemType: string;
 
-  @ApiProperty({ description: 'Quantity of the product', example: 1 })
   @Prop({ required: true, type: Number })
   quantity: number;
 }
@@ -41,37 +32,28 @@ export const CartItemSchema = SchemaFactory.createForClass(CartItem);
 
 @Schema({ timestamps: true })
 export class Cart {
-  @ApiProperty({
-    description: 'The unique identifier of the cart',
-    example: '668177b0ac6c1a132e160a6b',
-  })
   @Transform(({ value }) => value.toString())
   _id: string;
 
-  @ApiProperty({
-    description: 'User ID associated with the cart',
-    example: '66792047d6650afd5905252e',
-  })
   @Prop({
     required: true,
-    type: Types.ObjectId,
-    ref: 'User',
-    index: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: User.name,
   })
   @Transform(({ value }) => value.toString())
-  userId: string;
+  user: User;
 
-  @ApiProperty({ description: 'Items in the cart', type: [CartItem] })
   @Prop({ required: true, type: [CartItemSchema] })
+  @Type(() => CartItem)
   items: CartItem[];
 }
 
 export const CartSchema = SchemaFactory.createForClass(Cart);
 
-async function validateUser(userId: string, userModel: any) {
-  const userExists = await userModel.exists({ _id: userId });
+async function validateUser(user: User, userModel: any) {
+  const userExists = await userModel.exists({ _id: user });
   if (!userExists) {
-    throw new NotFoundException(`User with ID ${userId} not found`);
+    throw new NotFoundException(`User with ID ${user} not found`);
   }
 }
 
@@ -103,7 +85,7 @@ CartSchema.pre<CartDocument>('save', async function(next) {
   };
 
   try {
-    await validateUser(this.userId, userModel);
+    await validateUser(this.user, userModel);
     await validateItems(this.items, models);
     next();
   } catch (error) {
