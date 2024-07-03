@@ -48,14 +48,12 @@ export class TokenService implements ITokenService {
       { ...payload },
       this.jwtRefreshOptions,
     );
-    this.logger.debug(`Generated refresh token`);
     return await this._saveOrUpdateRefreshToken(payload._id, refreshToken);
   }
 
   public async revokeRefreshToken(refreshToken: string): Promise<void> {
     try {
       await this.tokenModel.deleteOne({ refresh_token: refreshToken });
-      this.logger.debug(`Revoked refresh token: ${refreshToken}`);
     } catch (error) {
       this.logger.error('Failed to revoke refresh token', error.stack);
       throw new BadRequestException('Failed to revoke refresh token');
@@ -68,9 +66,6 @@ export class TokenService implements ITokenService {
         token,
         this.jwtAccessVerifyOptions,
       );
-      this.logger.debug(
-        `Access token verified for payload: ${JSON.stringify(payload)}`,
-      );
       return plainToInstance(CreateTokenDto, payload);
     } catch (error) {
       this.logger.error('Failed to verify access token', error.stack);
@@ -81,8 +76,6 @@ export class TokenService implements ITokenService {
   public async verifyRefreshToken(
     refreshToken: string,
   ): Promise<CreateTokenDto> {
-    this.logger.debug(`Verifying refresh token: ${refreshToken}`);
-
     const storedToken = await this._findRefreshToken(refreshToken);
     if (!storedToken) {
       this.logger.warn('Refresh token not found');
@@ -92,9 +85,6 @@ export class TokenService implements ITokenService {
       const payload = this.jwtService.verify(
         refreshToken,
         this.jwtRefreshVerifyOptions,
-      );
-      this.logger.debug(
-        `Refresh token verified for payload: ${JSON.stringify(payload)}`,
       );
       return plainToInstance(CreateTokenDto, payload);
     } catch (error) {
@@ -117,20 +107,15 @@ export class TokenService implements ITokenService {
       user: { _id: userId },
     });
 
-    this.logger.debug('User has existing refresh token');
-
     if (existingToken) {
       existingToken.refresh_token = token;
-      this.logger.debug(`Updating refresh token for user with id`);
     } else {
-      this.logger.debug(`Creating refresh token for user with id`);
       existingToken = new this.tokenModel({
         user: { _id: userId },
         refresh_token: token,
       });
     }
     await existingToken.save();
-    this.logger.debug('Refresh token for user saved');
     return existingToken.refresh_token;
   }
 }
