@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@user/schemas/user.schema';
-import { Transform } from 'class-transformer';
-import { Types, Document } from 'mongoose';
+import { Transform, Type } from 'class-transformer';
+import mongoose, { Document } from 'mongoose';
 
 export type RefreshTokenDocument = RefreshToken & Document;
 
@@ -15,7 +15,8 @@ export class RefreshToken {
     description: 'The user ID associated with the token',
     type: String,
   })
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
+  @Type(() => User)
   user: User;
 
   @ApiProperty({
