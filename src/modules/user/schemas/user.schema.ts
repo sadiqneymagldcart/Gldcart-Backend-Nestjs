@@ -161,6 +161,10 @@ export class User {
   })
   @Prop({ default: false })
   is_online: boolean;
+
+  @ApiPropertyOptional({ description: 'The stripe customer ID of the user' })
+  @Prop()
+  stripeCustomerId?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
