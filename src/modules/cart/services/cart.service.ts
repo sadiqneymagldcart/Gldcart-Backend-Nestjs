@@ -16,7 +16,7 @@ export class CartService implements ICartService {
   }
 
   public async findByUserId(userId: string): Promise<Cart> {
-    const cart = await this.cartModel.findOne({ userId }).exec();
+    const cart = await this.cartModel.findOne({ user: userId });
     if (!cart) {
       this.logger.error(`No carts found for user with id ${userId}`);
       throw new NotFoundException(`No carts found for user with id ${userId}`);
@@ -27,7 +27,7 @@ export class CartService implements ICartService {
 
   public async findOne(id: string): Promise<Cart> {
     this.logger.log(`Fetching cart with id ${id}`);
-    const cart = await this.cartModel.findById(id).exec();
+    const cart = await this.cartModel.findById(id);
     if (!cart) {
       this.logger.error(`Cart with ID ${id} not found`);
       throw new NotFoundException(`Cart with ID ${id} not found`);
@@ -39,17 +39,19 @@ export class CartService implements ICartService {
   public async addItem(userId: string, newItem: CartItemDto): Promise<Cart> {
     this.logger.log(`Adding item to cart for user ${userId}`);
 
-    let cart = await this.cartModel.findOne({ userId });
+    let cart = await this.cartModel.findOne({ user: userId });
 
     if (!cart) {
       cart = new this.cartModel({
-        userId: userId,
+        user: userId,
         items: [newItem],
       });
       this.logger.debug(`New cart created: ${JSON.stringify(cart)}`);
     } else {
       const itemIndex = cart.items.findIndex(
-        (i) => i.itemId === newItem.itemId && i.itemType === newItem.itemType,
+        (i) =>
+          i.itemId.toString() === newItem.itemId &&
+          i.itemType === newItem.itemType,
       );
 
       if (itemIndex > -1) {
@@ -109,7 +111,7 @@ export class CartService implements ICartService {
 
   public async remove(id: string): Promise<void> {
     this.logger.log(`Removing cart with id ${id}`);
-    const result = await this.cartModel.findByIdAndDelete(id).exec();
+    const result = await this.cartModel.findByIdAndDelete(id);
     if (!result) {
       this.logger.error(`Cart with ID ${id} not found`);
       throw new NotFoundException(`Cart with ID ${id} not found`);
@@ -119,7 +121,7 @@ export class CartService implements ICartService {
 
   private async _checkCartExists(id: string): Promise<CartDocument> {
     this.logger.log(`Checking if cart with id ${id} exists`);
-    const cart = await this.cartModel.findById(id).exec();
+    const cart = await this.cartModel.findById(id);
     if (!cart) {
       this.logger.error(`Cart with ID ${id} not found`);
       throw new NotFoundException(`Cart with ID ${id} not found`);
