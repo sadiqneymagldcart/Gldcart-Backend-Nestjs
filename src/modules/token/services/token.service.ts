@@ -104,14 +104,14 @@ export class TokenService implements ITokenService {
     token: string,
   ): Promise<string> {
     let existingToken = await this.tokenModel.findOne({
-      user: { _id: userId },
+      user: userId,
     });
 
     if (existingToken) {
       existingToken.refresh_token = token;
     } else {
       existingToken = new this.tokenModel({
-        user: { _id: userId },
+        user: userId,
         refresh_token: token,
       });
     }
