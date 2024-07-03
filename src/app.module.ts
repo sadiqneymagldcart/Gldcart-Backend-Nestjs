@@ -13,6 +13,7 @@ import { OfferingModule } from '@offering/offering.module';
 import { CartModule } from '@cart/cart.module';
 import mongoDB from '@config/mongoDB';
 import { ChatModule } from '@chat/chat.module';
+import { StripeModule } from '@stripe/stripe.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { ChatModule } from '@chat/chat.module';
     ReviewModule,
     EmailModule,
     ChatModule,
+    StripeModule,
   ],
   controllers: [AppController],
 })
