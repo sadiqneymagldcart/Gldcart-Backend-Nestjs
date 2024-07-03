@@ -8,7 +8,7 @@ export class CartItemDto {
     example: '60f4d9a3b6e2b2f3f8c6f6e6',
   })
   @IsNotEmpty()
-  readonly itemId: string;
+  itemId: string;
 
   @ApiProperty({
     description: 'The item type',
@@ -16,7 +16,7 @@ export class CartItemDto {
     enum: ItemTypes,
   })
   @IsEnum(ItemTypes)
-  readonly itemType: ItemTypes;
+  itemType: ItemTypes;
 
   @ApiProperty({
     description: 'The quantity of the item',
@@ -24,5 +24,5 @@ export class CartItemDto {
   })
   @IsNumber()
   @IsPositive()
-  readonly quantity: number;
+  quantity: number;
 }
