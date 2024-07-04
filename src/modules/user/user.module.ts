@@ -4,7 +4,7 @@ import { UserController } from './controllers/user.controller';
 import { AuthModule } from '@auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
-import StripeService from '@stripe/services/stripe.service';
+import { StripeService } from '@stripe/services/stripe.service';
 
 @Module({
   imports: [

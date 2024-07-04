@@ -1,60 +1,37 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
-import { Document, SchemaTypes } from 'mongoose';
+import mongoose from 'mongoose';
 
-export type OfferingDocument = Offering & Document;
+export type OfferingDocument = Offering & mongoose.Document;
 
 @Schema({ timestamps: true })
 export class Offering {
-  @ApiProperty({ description: 'The unique identifier of the offering' })
   @Transform(({ value }) => value.toString())
   _id: string;
 
-  @ApiProperty({
-    description: 'The name of the offering',
-    example: 'Sample Offering',
-  })
-  @Prop({ required: true, index: true })
+  @Prop({ required: true })
   name: string;
 
-  @ApiProperty({
-    description: 'A brief description of the offering',
-    example: 'This is a sample offering',
-  })
   @Prop()
   description?: string;
 
-  @ApiProperty({
-    description: 'Array of image URLs associated with the offering',
-    example: [
-      'https://example.com/image1.jpg',
-      'https://example.com/image2.jpg',
-    ],
-  })
-  @Prop({ required: true, type: [String] })
+  @Prop({ type: [String], required: true })
   images: string[];
 
-  @ApiProperty({ description: 'The category of the offering' })
-  @Prop({ required: true, index: true })
+  @Prop({ required: true })
   category: string;
 
-  @ApiProperty({
-    description: 'The subcategory of the offering',
-    example: 'Subcategory1',
-  })
-  @Prop({ required: true, index: true })
+  @Prop({ required: true })
   subcategory: string;
 
-  @ApiProperty({
-    description: 'Attributes of the offering',
-    example: [
-      { key: 'color', value: 'red' },
-      { key: 'size', value: 'M' },
-    ],
-  })
-  @Prop({ required: true, type: SchemaTypes.Mixed, index: true })
+  @Prop({ type: mongoose.Schema.Types.Mixed, required: true })
   attributes: { key: string; value: string }[];
 }
 
 export const OfferingSchema = SchemaFactory.createForClass(Offering);
+
+OfferingSchema.index({
+  name: 1,
+  category: 1,
+  subcategory: 1,
+});

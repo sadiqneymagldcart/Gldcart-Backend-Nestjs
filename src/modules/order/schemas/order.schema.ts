@@ -3,6 +3,7 @@ import { User } from '@user/schemas/user.schema';
 import { Transform, Type } from 'class-transformer';
 import { OrderStatus } from '@order/enums/order-status.enum';
 import mongoose from 'mongoose';
+import { Item } from '@item/schemas/item.schema';
 
 @Schema({
   timestamps: true,
@@ -20,15 +21,24 @@ export class Order {
   @Type(() => User)
   customer: User;
 
-  @Prop()
-  items: string[];
+  @Prop([
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+  ])
+  @Type(() => Item)
+  items: Item[];
 
-  @Prop()
+  @Prop({ required: true, default: 0.0 })
   total: number;
+
+  @Prop({ default: 0.0 })
+  discount: number;
 
   @Prop({ enum: OrderStatus, default: OrderStatus.PLACED })
   status: OrderStatus;
 
-  @Prop({ type: Number })
+  @Prop({ type: Number, required: true })
   trackNumber: number;
 }

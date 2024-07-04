@@ -11,9 +11,11 @@ import { ProductModule } from '@product/product.module';
 import { RentingModule } from '@renting/renting.module';
 import { OfferingModule } from '@offering/offering.module';
 import { CartModule } from '@cart/cart.module';
-import mongoDB from '@config/mongoDB';
 import { ChatModule } from '@chat/chat.module';
 import { StripeModule } from '@stripe/stripe.module';
+import { SubscriptionModule } from '@subscription/subscription.module';
+import mongoDB from '@config/mongoDB';
+import { ItemModule } from '@item/item.module';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { StripeModule } from '@stripe/stripe.module';
     EmailModule,
     ChatModule,
     StripeModule,
+    SubscriptionModule,
+    ItemModule,
   ],
   controllers: [AppController],
 })

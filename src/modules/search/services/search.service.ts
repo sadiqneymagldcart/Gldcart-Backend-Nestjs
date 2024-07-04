@@ -10,7 +10,7 @@ export class SearchService<T extends Document> {
                 { limit, offset }: Pagination,
                 filters: Record<string, any> = {},
         ): Promise<T[]> {
-                return await this.model.find(filters).skip(offset).limit(limit).lean();
+                return this.model.find(filters).skip(offset).limit(limit).lean();
         }
 
         public async searchWithPaginationAndText(
@@ -28,6 +28,6 @@ export class SearchService<T extends Document> {
                         })),
                 } as FilterQuery<T>;
 
-                return await this.model.find(searchQuery).skip(offset).limit(limit).lean();
+                return this.model.find(searchQuery).skip(offset).limit(limit).lean();
         }
 }

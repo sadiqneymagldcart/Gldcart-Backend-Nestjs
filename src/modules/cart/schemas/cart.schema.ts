@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform, Type } from 'class-transformer';
-import { ItemTypes } from '@cart/enums/item-types.enum';
 import { NotFoundException } from '@nestjs/common';
 import { User } from '@user/schemas/user.schema';
+import { ItemTypes } from '@item/enums/item-types.enum';
 import mongoose from 'mongoose';
 
 export type CartDocument = Cart & mongoose.Document;
@@ -30,7 +30,7 @@ export class CartItem {
 
 export const CartItemSchema = SchemaFactory.createForClass(CartItem);
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, versionKey: false }) 
 export class Cart {
   @Transform(({ value }) => value.toString())
   _id: string;
@@ -77,18 +77,19 @@ async function validateItems(
 }
 
 CartSchema.pre<CartDocument>('save', async function(next) {
-  const userModel = this.model('User');
-  const models = {
-    [ItemTypes.PRODUCT]: this.model('Product'),
-    [ItemTypes.OFFERING]: this.model('Offering'),
-    [ItemTypes.RENTING]: this.model('Renting'),
-  };
+  
+    const userModel = this.model('User');
+    const models = {
+      [ItemTypes.PRODUCT]: this.model('Product'),
+      [ItemTypes.OFFERING]: this.model('Offering'),
+      [ItemTypes.RENTING]: this.model('Renting'),
+    };
 
-  try {
-    await validateUser(this.user, userModel);
-    await validateItems(this.items, models);
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
+    try {
+      await validateUser(this.user, userModel);
+      await validateItems(this.items, models);
+      next();
+    } catch (error) {
+      next(error);
+    }
+  });

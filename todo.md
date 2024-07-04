@@ -10,3 +10,5 @@
 
 6. [ ] Implement generic pagination.
 
+7. [ ] To implement subscriptions functionality with Stripe.
+
