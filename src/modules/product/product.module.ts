@@ -12,5 +12,6 @@ import { CacheModule } from '@nestjs/cache-manager';
   ],
   controllers: [ProductController],
   providers: [ProductService],
+  exports: [ProductService],
 })
 export class ProductModule {}
