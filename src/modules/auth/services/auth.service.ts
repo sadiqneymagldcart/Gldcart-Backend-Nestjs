@@ -8,7 +8,7 @@ import { TokenService } from '@token/services/token.service';
 import { UserService } from '@user/services/user.service';
 import { LoginCredentialsDto } from '@auth/dto/login-credentials.dto';
 import { AuthResponseDto } from '@auth/dto/auth.response.dto';
-import { CreateTokenDto } from '@token/dto/create-tokens.dto';
+import { CreateTokenDto } from '@token/dto/create-token.dto';
 import { IAuthService } from '@auth/interfaces/auth.service.interface';
 import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';
 import { plainToInstance } from 'class-transformer';

@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { JwtService, JwtSignOptions, JwtVerifyOptions } from '@nestjs/jwt';
 import { Nullable } from '@shared/types/common';
-import { CreateTokenDto } from '@token/dto/create-tokens.dto';
+import { CreateTokenDto } from '@token/dto/create-token.dto';
 import { ConfigService } from '@nestjs/config';
 import { ITokenService } from '@token/interfaces/token.service.interface';
 import { InjectModel } from '@nestjs/mongoose';
