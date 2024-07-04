@@ -1,54 +1,80 @@
+import { ItemTypes } from '@item/enums/item-types.enum';
 import {
   BadRequestException,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Product, ProductDocument } from '@product/schemas/product.schema';
-import { Model } from 'mongoose';
+import { OfferingService } from '@offering/services/offering.service';
+import { ProductService } from '@product/services/product.service';
+import { RentingService } from '@renting/services/renting.service';
 
 @Injectable()
 export class ItemService {
   private readonly logger = new Logger(ItemService.name);
 
   public constructor(
-    @InjectModel(Product.name) private productModel: Model<ProductDocument>,
+    private productService: ProductService,
+    private offeringService: OfferingService,
+    private rentingService: RentingService,
   ) {}
+
+  private getServiceByType(type: ItemTypes) {
+    switch (type) {
+      case ItemTypes.PRODUCT:
+        return this.productService;
+      case ItemTypes.OFFERING:
+        return this.offeringService;
+      case ItemTypes.RENTING:
+        return this.rentingService;
+      default:
+        throw new Error(`Unsupported item type: ${type}`);
+    }
+  }
 
   public async updateStock(itemId: string, quantity: number) {
     this.logger.log(`Updating stock for item ${itemId}`);
-    const session = await this.productModel.startSession();
-    session.startTransaction();
     try {
-      const item = await this.productModel
-        .findOne({ itemId })
-        .select('stock')
-        .session(session);
-      if (!item) {
-        this.logger.error(`Item with ID ${itemId} not found`);
-        throw new NotFoundException(`Item with ID ${itemId} not found`);
-      }
-      if (item.stock < quantity) {
+      const updatedItem = await this.productService.updateStock(
+        itemId,
+        quantity,
+      );
+      if (!updatedItem) {
         this.logger.error(`Insufficient stock for item ${itemId}`);
         throw new BadRequestException(`Insufficient stock for item ${itemId}`);
       }
-      const updatedItem = await this.productModel.findOneAndUpdate(
-        { itemId },
-        { $inc: { stock: -quantity } },
-        { new: true, session },
-      );
-      await session.commitTransaction();
       this.logger.log(`Stock for item ${itemId} updated successfully`);
       return updatedItem;
     } catch (error) {
-      await session.abortTransaction();
       this.logger.error(
         `Failed to update stock for item ${itemId}: ${error.message}`,
       );
       throw error;
-    } finally {
-      session.endSession();
     }
+  }
+
+  public async populateItems(items: { type: ItemTypes; _id: string }[]) {
+    const promises = items.map(async ({ type, _id: id }) => {
+      try {
+        const service = this.getServiceByType(type);
+        const populatedItem = await service.findById(id);
+        if (!populatedItem) {
+          throw new NotFoundException(`Item with ID ${id} not found`);
+        }
+        return populatedItem;
+      } catch (error) {
+        this.logger.error(
+          `Failed to populate item with ID ${id}: ${error.message}`,
+        );
+        throw error;
+      }
+    });
+
+    const results = await Promise.allSettled(promises);
+    const populatedItems = results
+      .filter((result) => result.status === 'fulfilled')
+      .map((result) => (result as PromiseFulfilledResult<any>).value);
+
+    return populatedItems;
   }
 }
