@@ -63,6 +63,12 @@
       "@stripe/*": [
         "src/modules/stripe/*"
       ],
+      "@address/*": [
+        "src/modules/address/*"
+      ],
+      "@subscription/*": [
+        "src/modules/subscription/*"
+      ],
       "@shared/*": [
         "src/shared/*"
       ],
