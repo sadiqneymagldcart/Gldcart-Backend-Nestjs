@@ -14,6 +14,7 @@ import { CartModule } from '@cart/cart.module';
 import mongoDB from '@config/mongoDB';
 import { ChatModule } from '@chat/chat.module';
 import { StripeModule } from '@stripe/stripe.module';
+import { SubscriptionModule } from '@subscription/subscription.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { StripeModule } from '@stripe/stripe.module';
     EmailModule,
     ChatModule,
     StripeModule,
+    SubscriptionModule,
   ],
   controllers: [AppController],
 })
