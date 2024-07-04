@@ -32,7 +32,7 @@ export class RentingController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.rentingService.findOne(+id);
+    return this.rentingService.findById(id);
   }
 
   @Patch(':id')
