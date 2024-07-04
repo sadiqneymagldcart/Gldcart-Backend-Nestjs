@@ -11,7 +11,7 @@ export class ProductService implements IProductService {
   public constructor(
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
-  ) {}
+  ) { }
 
   public async create(createProductDto: CreateProductDto): Promise<Product> {
     const createdProduct = new this.productModel(createProductDto);

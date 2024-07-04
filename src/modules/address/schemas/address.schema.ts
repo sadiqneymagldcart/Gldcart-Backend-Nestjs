@@ -1,15 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
-import { Document } from 'mongoose';
+import mongoose from 'mongoose';
 
-export type AddressDocument = Address & Document;
+export type AddressDocument = Address & mongoose.Document;
 
-@Schema({
-  timestamps: true,
-  toJSON: {
-    virtuals: false,
-  },
-})
+@Schema()
 export class Address {
   @Transform(({ value }) => value.toString())
   _id: string;
