@@ -12,7 +12,7 @@ export class RentingService {
     return `This action returns all renting`;
   }
 
-  findOne(id: number) {
+  findById(id: string) {
     return `This action returns a #${id} renting`;
   }
 
