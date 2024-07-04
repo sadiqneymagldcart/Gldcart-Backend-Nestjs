@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Exclude, Transform } from 'class-transformer';
+import { Exclude, Transform, Type } from 'class-transformer';
 import { IsEmail } from 'class-validator';
 import { UserRole } from '@user/enums/roles.enum';
 import mongoose from 'mongoose';
+import { Address } from '@address/schemas/address.schema';
 
 export type UserDocument = User & mongoose.Document;
 
@@ -36,13 +37,9 @@ export class User {
   })
   email: string;
 
-  // @ApiProperty({
-  //   description: 'List of address IDs associated with the user',
-  //   type: [String],
-  // })
-  // @Prop({ type: [{ type: Types.ObjectId, ref: 'Address' }] })
-  // @IsArray()
-  // addresses: Address[];
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address' }] })
+  @Type(() => Address)
+  addresses: Address;
 
   @Prop()
   picture?: string;

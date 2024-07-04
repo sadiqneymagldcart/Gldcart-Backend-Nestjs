@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Nullable } from '@shared/types/common';
-import StripeService from '@stripe/services/stripe.service';
+import { StripeService } from '@stripe/services/stripe.service';
 import { CreateUserDto } from '@user/dto/create-user.dto';
 import { UpdateUserDto } from '@user/dto/update-user.dto';
 import { User, UserDocument } from '@user/schemas/user.schema';
