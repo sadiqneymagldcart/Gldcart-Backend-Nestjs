@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StripeController } from './stripe.controller';
-import { StripePaymentService } from '@stripe/services/stripe.service';
+import { StripeService } from '@stripe/services/stripe.service';
 
 describe('StripeController', () => {
   let controller: StripeController;
@@ -8,7 +8,7 @@ describe('StripeController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [StripeController],
-      providers: [StripePaymentService],
+      providers: [StripeService],
     }).compile();
 
     controller = module.get<StripeController>(StripeController);
