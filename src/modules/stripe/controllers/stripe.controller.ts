@@ -2,14 +2,14 @@ import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from '@shared/guards/jwt.auth.guard';
 import { PaymentIntentDto } from '@stripe/dto/payment-intent.dto';
-import StripeService from '@stripe/services/stripe.service';
+import { StripeService } from '@stripe/services/stripe.service';
 
 @ApiTags('Stripe')
 @Controller('stripe')
 export class StripeController {
   public constructor(private readonly stripeService: StripeService) { }
 
-  @Post()
+  @Post('payment-intent')
   @UseGuards(JwtAuthenticationGuard)
   @ApiOperation({ summary: 'Create a new payment intent' })
   @ApiResponse({

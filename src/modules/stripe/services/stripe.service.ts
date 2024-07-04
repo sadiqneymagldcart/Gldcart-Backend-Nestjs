@@ -1,10 +1,16 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { StripeError } from '@stripe/enums/stripe-error.enum';
 import { Metadata } from '@stripe/interfaces/metadata.interface';
 import Stripe from 'stripe';
 
 @Injectable()
-export default class StripeService {
+export class StripeService {
   private stripe: Stripe;
 
   private readonly logger = new Logger(StripeService.name);
@@ -45,5 +51,31 @@ export default class StripeService {
       );
       throw error;
     }
+  }
+
+  public async createSubscription(priceId: string, customerId: string) {
+    try {
+      return await this.stripe.subscriptions.create({
+        customer: customerId,
+        items: [
+          {
+            price: priceId,
+          },
+        ],
+      });
+    } catch (error) {
+      if (error?.code === StripeError.ResourceMissing) {
+        throw new BadRequestException('Credit card not set up');
+      }
+      throw new InternalServerErrorException();
+    }
+  }
+
+  public async listSubscriptions(priceId: string, customerId: string) {
+    return this.stripe.subscriptions.list({
+      customer: customerId,
+      price: priceId,
+      expand: ['data.latest_invoice', 'data.latest_invoice.payment_intent'],
+    });
   }
 }

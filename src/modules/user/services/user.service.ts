@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Nullable } from '@shared/types/common';
-import StripeService from '@stripe/services/stripe.service';
+import { StripeService } from '@stripe/services/stripe.service';
 import { CreateUserDto } from '@user/dto/create-user.dto';
 import { UpdateUserDto } from '@user/dto/update-user.dto';
 import { User, UserDocument } from '@user/schemas/user.schema';
@@ -19,22 +19,12 @@ export class UserService {
       userData.name,
       userData.email,
     );
-    const user = new this.userModel({
-      ...userData,
-      stripeCustomerId: stripeCustomer.id,
-    });
-    return user.save();
-  }
-
-  public async updateOrCreate(userData: CreateUserDto): Promise<User> {
-    return this.userModel.findOneAndUpdate(
+    const user = await this.userModel.findOneAndUpdate(
       { email: userData.email },
-      userData,
-      {
-        upsert: true,
-        new: true,
-      },
+      { ...userData, stripeCustomerId: stripeCustomer.id },
+      { upsert: true, new: true },
     );
+    return user;
   }
 
   public async update(id: string, userData: UpdateUserDto): Promise<User> {
@@ -48,7 +38,7 @@ export class UserService {
   }
 
   public async findAll(): Promise<User[]> {
-    return this.userModel.find();
+    return this.userModel.find().lean();
   }
 
   public async findById(id: string): Promise<User> {
@@ -60,9 +50,7 @@ export class UserService {
   }
 
   public async findByEmail(email: string): Promise<Nullable<User>> {
-    return this.userModel.findOne({
-      email,
-    });
+    return this.userModel.findOne({ email }).lean();
   }
 
   public async remove(id: string): Promise<void> {

@@ -1,4 +1,4 @@
-import { CreateTokenDto } from '@token/dto/create-tokens.dto';
+import { CreateTokenDto } from '@token/dto/create-token.dto';
 
 export interface ITokenService {
   /**

@@ -1,4 +1,4 @@
-import { ItemTypes } from '@cart/enums/item-types.enum';
+import { ItemTypes } from '@item/enums/item-types.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 
