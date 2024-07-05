@@ -1,5 +1,6 @@
 import { CreateChatDto } from '@chat/dto/create-chat.dto';
 import { CreateMessageDto } from '@chat/dto/create-message.dto';
+import { Events } from '@chat/enums/events.enum';
 import { Chat, ChatDocument } from '@chat/schemas/chat.schema';
 import { Message, MessageDocument } from '@chat/schemas/message.schema';
 import { Injectable } from '@nestjs/common';
@@ -48,7 +49,7 @@ export class ChatService {
           select: { name: 1, surname: 1, type: 1, is_online: 1 },
         });
       }
-      socket.emit('newChat', chat);
+      socket.emit(Events.NEW_CHAT, chat);
     });
   }
 
