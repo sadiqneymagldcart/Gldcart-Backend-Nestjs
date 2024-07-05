@@ -1,14 +1,13 @@
-import { TokenService } from "@services/token/token.service";
+import { TokenService } from "../token/token.service";
 import { Logger } from "@utils/logger";
 import { BaseService } from "../base/base.service";
 import * as bcrypt from "bcrypt";
 import { inject, injectable } from "inversify";
+import { ITokens } from "@interfaces/ITokens";
 import { BadRequestException } from "@exceptions/bad-request.exception";
 import { InternalServerErrorException } from "@exceptions/internal-server-error.exception";
 import { UserService } from "@services/user/user.service";
-import { ITokenPayload } from "@src/ts/interfaces/ITokenPayload";
-import { ILoginDto } from "@src/controllers/auth/auth.controller";
-import { LoginRequestDto } from "@src/dto/login.request.dto";
+import { IUser } from "@models/user/User";
 
 @injectable()
 export class AuthService extends BaseService {
@@ -25,20 +24,27 @@ export class AuthService extends BaseService {
         this.userService = userService;
     }
 
-    public async register(registrationData: LoginRequestDto) {
-        if (await this.doesUserExist(registrationData.email)) {
-            this.logger.logError(
-                `User already exists with email: ${registrationData.email}`,
-            );
+    public async register(
+        type: string,
+        name: string,
+        surname: string,
+        email: string,
+        password: string,
+    ) {
+        if (await this.doesUserExist(email)) {
+            this.logger.logError(`User already exists with email: ${email}`);
             throw new BadRequestException("User already exists");
         }
+        const hashedPassword: string = await this.hashPassword(password);
 
-        const hashPassword = await bcrypt.hash(registrationData.password, 5);
         const user = await this.userService.addUser({
-            ...registrationData,
-            password: hashPassword,
+            type,
+            name,
+            surname,
+            email,
+            password: hashedPassword,
         });
-        return this.formUserLoginResponse(user);
+        return this.formUserLoginResponse(user, `User registered: ${email}`);
     }
 
     public async login(email: string, password: string) {
@@ -47,7 +53,7 @@ export class AuthService extends BaseService {
         if (user) {
             const auth = await bcrypt.compare(password, user.password);
             if (auth) {
-                return this.formUserLoginResponse(user);
+                return this.formUserLoginResponse(user, `User logged in: ${email}`);
             }
             this.logger.logError(`Incorrect password for ${email}`);
             throw new BadRequestException("Incorrect password");
@@ -58,7 +64,7 @@ export class AuthService extends BaseService {
 
     public async logout(refreshToken: string) {
         this.logger.logInfo(`User logged out`);
-        await this.tokenService.removeToken(refreshToken);
+        return await this.tokenService.removeToken(refreshToken);
     }
 
     public async refresh(refreshToken: string) {
@@ -66,11 +72,18 @@ export class AuthService extends BaseService {
             this.logger.logError("There is no refresh token");
             throw new BadRequestException("There is no refresh token");
         }
-        const user = await this.tokenService.validateRefreshToken(refreshToken);
+        const userData = this.tokenService.validateRefreshToken(refreshToken);
 
-        if (!user) {
+        const tokenFromDb = await this.tokenService.findToken(refreshToken);
+
+        if (!userData || !tokenFromDb) {
             this.logger.logError("Refresh token is invalid");
             throw new BadRequestException("Refresh token is invalid");
+        }
+        const user = await this.userService.getUserById(userData.id);
+        if (!user) {
+            this.logger.logError("User not found");
+            throw new BadRequestException("User not found");
         }
 
         return this.formUserLoginResponse(user);
@@ -90,11 +103,22 @@ export class AuthService extends BaseService {
         }
     }
 
-    private async formUserLoginResponse(user: LoginRequestDto) {
+    private async formUserLoginResponse(user: IUser, logMessage?: string) {
         try {
-            const tokens = this.tokenService.createTokens({ ...user });
-            await this.tokenService.saveRefreshToken(user.id, tokens.refreshToken);
-            return { ...tokens, user: user };
+            const userObj = {
+                id: user._id,
+                type: user.type,
+                name: user.name,
+                surname: user.surname,
+                email: user.email,
+            };
+
+            const tokens: ITokens = this.tokenService.createTokens({ ...userObj });
+            await this.tokenService.saveToken(userObj.id, tokens.refreshToken);
+            if (logMessage) {
+                this.logger.logInfo(logMessage);
+            }
+            return { ...tokens, user: userObj };
         } catch (error: any) {
             this.logger.logError(error.message, error);
             throw new InternalServerErrorException();
