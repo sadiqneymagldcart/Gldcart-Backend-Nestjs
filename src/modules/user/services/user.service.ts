@@ -70,4 +70,12 @@ export class UserService {
       { new: true },
     );
   }
+
+  public async retrieveStripeCustomerId(userId: string): Promise<string> {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+    return user.stripeCustomerId;
+  }
 }
