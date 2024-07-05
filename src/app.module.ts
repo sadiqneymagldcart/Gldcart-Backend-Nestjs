@@ -14,8 +14,8 @@ import { CartModule } from '@cart/cart.module';
 import { ChatModule } from '@chat/chat.module';
 import { StripeModule } from '@stripe/stripe.module';
 import { SubscriptionModule } from '@subscription/subscription.module';
-import mongoDB from '@config/mongoDB';
 import { ItemModule } from '@item/item.module';
+import mongoDB from '@config/mongoDB';
 
 @Module({
   imports: [
