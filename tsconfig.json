@@ -22,7 +22,7 @@
     "esModuleInterop": true,
     "moduleResolution": "node10",
     "incremental": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
