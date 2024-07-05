@@ -10,6 +10,7 @@ async function bootstrap() {
       process.env.NODE_ENV === 'development'
         ? ['log', 'debug', 'error', 'verbose', 'warn']
         : ['error', 'warn', 'log'],
+    rawBody: true,
   });
   const configService = app.get(ConfigService);
   setup(app);
