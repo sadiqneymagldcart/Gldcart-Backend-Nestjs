@@ -44,6 +44,14 @@ export class CreateTokenDto {
   profile_picture?: string;
 
   @ApiProperty({
+    example: 'cus_JKJH',
+    description: 'The Stripe customer ID of the user.',
+  })
+  @IsNotEmpty({ message: 'Stripe customer ID is required' })
+  @Expose()
+  stripeCustomerId: string;
+
+  @ApiProperty({
     example: 'user@example.com',
     description: 'The email address of the user.',
   })
