@@ -90,7 +90,7 @@ export class User {
   is_online: boolean;
 
   @Prop()
-  stripeCustomerId?: string;
+  stripeCustomerId: string;
 
   @Prop({ nullable: true })
   monthlySubscriptionStatus?: string;
