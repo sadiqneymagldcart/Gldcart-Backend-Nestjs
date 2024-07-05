@@ -71,6 +71,20 @@ export class StripeService {
     }
   }
 
+  public async attachCreditCard(paymentMethodId: string, customerId: string) {
+    return this.stripe.setupIntents.create({
+      customer: customerId,
+      payment_method: paymentMethodId,
+    });
+  }
+
+  public async listCreditCards(customerId: string) {
+    return this.stripe.paymentMethods.list({
+      customer: customerId,
+      type: 'card',
+    });
+  }
+
   public async listSubscriptions(priceId: string, customerId: string) {
     return this.stripe.subscriptions.list({
       customer: customerId,
