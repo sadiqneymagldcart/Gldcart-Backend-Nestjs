@@ -1,9 +1,10 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Cart, CartDocument, CartItem } from '@cart/schemas/cart.schema';
-import { CartItemDto } from '@cart/dto/cart-item.dto';
+import { Cart, CartDocument } from '@cart/schemas/cart.schema';
+import { ItemDto } from '@cart/dto/cart-item.dto';
 import { ICartService } from '@cart/iterfaces/cart.service.interface';
+import { Item } from '@item/schemas/item.schema';
 
 @Injectable()
 export class CartService implements ICartService {
@@ -36,7 +37,7 @@ export class CartService implements ICartService {
     return cart;
   }
 
-  public async addItem(userId: string, newItem: CartItemDto): Promise<Cart> {
+  public async addItem(userId: string, newItem: ItemDto): Promise<Cart> {
     this.logger.log(`Adding item to cart for user ${userId}`);
 
     let cart = await this.cartModel.findOne({ user: userId });
@@ -49,9 +50,7 @@ export class CartService implements ICartService {
       this.logger.debug(`New cart created: ${JSON.stringify(cart)}`);
     } else {
       const itemIndex = cart.items.findIndex(
-        (i) =>
-          i.itemId.toString() === newItem.itemId &&
-          i.itemType === newItem.itemType,
+        (i) => i.id.toString() === newItem.id && i.type === newItem.type,
       );
 
       if (itemIndex > -1) {
@@ -70,12 +69,12 @@ export class CartService implements ICartService {
     const existingCart = await this._checkCartExists(id);
 
     const itemIndex = existingCart.items.findIndex(
-      (item: CartItem) => item.itemId === itemId,
+      (item: Item) => item.id === itemId,
     );
 
     if (itemIndex === -1) {
-      this.logger.error(`Item with ID ${itemId} not found in cart`);
-      throw new NotFoundException(`Item with ID ${itemId} not found in cart`);
+      this.logger.error(`Item with ID ${id} not found in cart`);
+      throw new NotFoundException(`Item with ID ${id} not found in cart`);
     }
 
     existingCart.items.splice(itemIndex, 1);
@@ -87,20 +86,19 @@ export class CartService implements ICartService {
     return existingCart.save();
   }
 
-  public async updateItem(id: string, updateItem: CartItemDto): Promise<Cart> {
+  public async updateItem(id: string, updateItem: ItemDto): Promise<Cart> {
     this.logger.log(`Updating item in cart with id ${id}`);
     const existingCart = await this._checkCartExists(id);
 
     const itemIndex = existingCart.items.findIndex(
-      (item: CartItem) =>
-        item.itemId === updateItem.itemId &&
-        item.itemType === updateItem.itemType,
+      (item: Item) =>
+        item.id === updateItem.id && item.type === updateItem.type,
     );
 
     if (itemIndex === -1) {
-      this.logger.error(`Item with ID ${updateItem.itemId} not found in cart`);
+      this.logger.error(`Item with ID ${updateItem.id} not found in cart`);
       throw new NotFoundException(
-        `Item with ID ${updateItem.itemId} not found in cart`,
+        `Item with ID ${updateItem.id} not found in cart`,
       );
     }
 
