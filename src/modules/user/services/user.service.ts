@@ -28,9 +28,9 @@ export class UserService {
   }
 
   public async update(id: string, userData: UpdateUserDto): Promise<User> {
-    const existingUser = await this.userModel
-      .findByIdAndUpdate(id, userData, { new: true })
-      .exec();
+    const existingUser = await this.userModel.findByIdAndUpdate(id, userData, {
+      new: true,
+    });
     if (!existingUser) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
@@ -42,7 +42,7 @@ export class UserService {
   }
 
   public async findById(id: string): Promise<User> {
-    const user = await this.userModel.findById(id);
+    const user = await this.userModel.findById(id).lean();
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
@@ -54,9 +54,20 @@ export class UserService {
   }
 
   public async remove(id: string): Promise<void> {
-    const result = await this.userModel.findByIdAndDelete(id);
+    const result = await this.userModel.findOneAndDelete({ _id: id });
     if (!result) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
+  }
+
+  public async updateMonthlySubscriptionStatus(
+    stripeCustomerId: string,
+    monthlySubscriptionStatus: string,
+  ) {
+    return this.userModel.findOneAndUpdate(
+      { stripeCustomerId },
+      { monthlySubscriptionStatus },
+      { new: true },
+    );
   }
 }
