@@ -91,6 +91,9 @@ export class User {
 
   @Prop()
   stripeCustomerId?: string;
+
+  @Prop({ nullable: true })
+  monthlySubscriptionStatus?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
