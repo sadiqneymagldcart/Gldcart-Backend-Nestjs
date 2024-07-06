@@ -32,11 +32,15 @@ import redisConfig from '@config/redis.config';
       useFactory: mongoConfig,
       inject: [ConfigService],
     }),
+    // CacheModule.register({
+    //   isGlobal: true,
+    //   store: redisStore,
+    //   useFactory: redisConfig,
+    // }),
     CacheModule.register({
       isGlobal: true,
-      store: redisStore,
-      useFactory: redisConfig,
     }),
+
     UserModule,
     AuthModule,
     TokenModule,
