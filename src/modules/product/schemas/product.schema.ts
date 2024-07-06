@@ -1,15 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import { User } from '@user/schemas/user.schema';
 import mongoose from 'mongoose';
 
 export type ProductDocument = Product & mongoose.Document;
 
-@Schema({ timestamps: true })
+@Schema({})
 export class Product {
-  @Transform(({ value }) => value.toString())
-  _id: string;
-
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -43,6 +40,7 @@ export class Product {
 export const ProductSchema = SchemaFactory.createForClass(Product);
 
 ProductSchema.index({
+  _id: 1,
   name: 1,
   category: 1,
   subcategory: 1,

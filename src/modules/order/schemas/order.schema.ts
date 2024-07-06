@@ -1,24 +1,22 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import { User } from '@user/schemas/user.schema';
-import { Transform, Type } from 'class-transformer';
 import { OrderStatus } from '@order/enums/order-status.enum';
-import mongoose from 'mongoose';
 import { Item } from '@item/schemas/item.schema';
+import { PaymentMethod } from '@order/enums/payment-method';
+import mongoose from 'mongoose';
+
+export type OrderDocument = Order & mongoose.Document;
 
 @Schema({
   timestamps: true,
   versionKey: false,
 })
 export class Order {
-  @Transform(({ value }) => value.toString())
-  _id: string;
-
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: User.name,
     required: true,
   })
-  @Type(() => User)
   customer: User;
 
   @Prop([
@@ -27,8 +25,10 @@ export class Order {
       required: true,
     },
   ])
-  @Type(() => Item)
   items: Item[];
+
+  @Prop({ required: false, enum: PaymentMethod })
+  paymentMethod: PaymentMethod;
 
   @Prop({ required: true, default: 0.0 })
   total: number;
