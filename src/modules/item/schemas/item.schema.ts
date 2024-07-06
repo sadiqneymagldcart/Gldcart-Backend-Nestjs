@@ -1,16 +1,29 @@
 import { ItemTypes } from '@item/enums/item-types.enum';
-import { Prop, Schema } from '@nestjs/mongoose';
-import { Transform } from 'class-transformer';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 
-@Schema({ versionKey: false })
+export type ItemDocument = Item & mongoose.Document;
+
+@Schema({
+  versionKey: false,
+  _id: false,
+})
 export class Item {
-  @Transform(({ value }) => value.toString())
-  _id: string;
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    refPath: 'items.type',
+    required: true,
+  })
+  id: string;
 
   @Prop({
     required: true,
     enum: ItemTypes,
-    type: String,
   })
-  type: string;
+  type: ItemTypes;
+
+  @Prop({ type: Number, default: 1 })
+  quantity: number;
 }
+
+export const ItemSchema = SchemaFactory.createForClass(Item);

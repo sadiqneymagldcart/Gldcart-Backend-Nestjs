@@ -2,16 +2,13 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Transform, Type } from 'class-transformer';
 import { IsEmail } from 'class-validator';
 import { UserRole } from '@user/enums/roles.enum';
-import mongoose from 'mongoose';
 import { Address } from '@address/schemas/address.schema';
+import mongoose from 'mongoose';
 
 export type UserDocument = User & mongoose.Document;
 
 @Schema({ timestamps: true })
 export class User {
-  @Transform(({ value }) => value.toString())
-  _id: string;
-
   @Prop({
     required: [true, 'role field is required'],
     enum: UserRole,
@@ -38,7 +35,6 @@ export class User {
   email: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address' }] })
-  @Type(() => Address)
   addresses: Address;
 
   @Prop()
@@ -56,14 +52,6 @@ export class User {
 
   @Prop()
   password_token?: string;
-
-  @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Subscription',
-    default: null,
-  })
-  // TODO: Add subscription schema
-  active_subscription?: string;
 
   @Prop()
   bio?: string;
