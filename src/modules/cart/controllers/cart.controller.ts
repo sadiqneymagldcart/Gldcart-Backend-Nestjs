@@ -14,7 +14,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { CartItemDto } from '@cart/dto/cart-item.dto';
+import { ItemDto } from '@item/dto/item.dto';
 import { Cart } from '@cart/schemas/cart.schema';
 import { CartService } from '@cart/services/cart.service';
 import { SerializeWith } from '@shared/decorators/serialize.decorator';
@@ -36,10 +36,13 @@ export class CartController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a cart by id' })
-  @ApiOkResponse({ description: 'The cart with the matching id', type: Cart })
+  @ApiOkResponse({
+    description: 'The cart with the matching id with populated items',
+    type: Cart,
+  })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
   public async findOne(@Param('id') id: string): Promise<Cart> {
-    return await this.cartService.findOne(id);
+    return await this.cartService.getCartWithItems(id);
   }
 
   @Post(':userId')
@@ -48,7 +51,7 @@ export class CartController {
   @ApiBadRequestResponse({ description: 'Invalid item data' })
   public async addItem(
     @Param('userId') userId: string,
-    @Body() newItem: CartItemDto,
+    @Body() newItem: ItemDto,
   ): Promise<Cart> {
     return this.cartService.addItem(userId, newItem);
   }
@@ -60,7 +63,7 @@ export class CartController {
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
   public async updateItem(
     @Param('id') id: string,
-    @Body() updateItem: CartItemDto,
+    @Body() updateItem: ItemDto,
   ): Promise<Cart> {
     return this.cartService.updateItem(id, updateItem);
   }
