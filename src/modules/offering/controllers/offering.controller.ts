@@ -29,11 +29,9 @@ import {
   Pagination,
   PaginationParams,
 } from '@shared/decorators/pagination.decorator';
-import { SerializeWith } from '@shared/decorators/serialize.decorator';
 
 @ApiTags('Proffesional Services')
 @Controller('offerings')
-@SerializeWith(Offering)
 export class OfferingController {
   public constructor(private readonly offeringService: OfferingService) {}
 

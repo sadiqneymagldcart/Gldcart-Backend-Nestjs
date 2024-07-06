@@ -11,7 +11,6 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { SerializeWith } from '@shared/decorators/serialize.decorator';
 import { Review } from '@review/schemas/review.schema';
 import { ReviewService } from '@review/services/review.service';
 import { CreateReviewDto } from '@review/dto/create-review.dto';
@@ -19,7 +18,6 @@ import { UpdateReviewDto } from '@review/dto/update-review.dto';
 
 @ApiTags('Reviews')
 @Controller('/reviews')
-@SerializeWith(Review)
 export class ReviewController {
   private readonly logger: Logger = new Logger(ReviewController.name);
 

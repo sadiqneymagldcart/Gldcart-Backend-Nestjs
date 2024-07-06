@@ -14,11 +14,9 @@ import { CreateProductDto } from '@product/dto/create-product.dto';
 import { UpdateProductDto } from '@product/dto/update-product.dto';
 import { Product } from '@product/schemas/product.schema';
 import { ProductService } from '@product/services/product.service';
-import { SerializeWith } from '@shared/decorators/serialize.decorator';
 
 @ApiTags('Products')
 @Controller('products')
-@SerializeWith(Product)
 export class ProductController {
   public constructor(private readonly productService: ProductService) {}
 
