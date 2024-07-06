@@ -17,8 +17,9 @@ import { ProductService } from '@product/services/product.service';
 
 @ApiTags('Products')
 @Controller('products')
+@UseInterceptors(CacheInterceptor)
 export class ProductController {
-  public constructor(private readonly productService: ProductService) {}
+  public constructor(private readonly productService: ProductService) { }
 
   @ApiOperation({ summary: 'Create a product' })
   @ApiResponse({
@@ -35,7 +36,6 @@ export class ProductController {
   @ApiOperation({ summary: 'Get all products' })
   @ApiResponse({ status: 200, description: 'Return all products.' })
   @Get()
-  @UseInterceptors(CacheInterceptor)
   public async findAll(): Promise<Product[]> {
     return this.productService.findAll();
   }
@@ -47,7 +47,6 @@ export class ProductController {
   })
   @ApiResponse({ status: 404, description: 'Product not found.' })
   @Get(':id')
-  @UseInterceptors(CacheInterceptor)
   public async findById(@Param('id') id: string): Promise<Product> {
     return this.productService.findById(id);
   }
