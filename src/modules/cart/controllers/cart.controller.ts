@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBody,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -17,6 +18,7 @@ import {
 import { ItemDto } from '@item/dto/item.dto';
 import { Cart } from '@cart/schemas/cart.schema';
 import { CartService } from '@cart/services/cart.service';
+import { UpdateItemDto } from '@cart/dto/update-item.dto';
 
 @ApiTags('Carts')
 @Controller('cart')
@@ -52,16 +54,22 @@ export class CartController {
     return this.cartService.addItemToCart(userId, newItem);
   }
 
-  @Put(':id')
-  @ApiOperation({ summary: 'Update an item in a cart' })
+  @Put(':id/item/:itemId')
+  @ApiOperation({ summary: 'Update an item quantity in a cart' })
+  @ApiBody({ type: UpdateItemDto })
   @ApiOkResponse({ description: 'The updated cart', type: Cart })
   @ApiBadRequestResponse({ description: 'Invalid item data' })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
-  public async updateItemInCart(
+  public async updateItemQuantityInCart(
     @Param('id') id: string,
-    @Body() updateItem: ItemDto,
+    @Param('itemId') itemId: string,
+    @Body() updateItem: UpdateItemDto,
   ): Promise<Cart> {
-    return this.cartService.updateItemInCart(id, updateItem);
+    return this.cartService.updateItemQuantityInCart(
+      id,
+      itemId,
+      updateItem.quantity,
+    );
   }
 
   @Delete(':id/item/:itemId')

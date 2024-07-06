@@ -12,7 +12,7 @@ export class CartService implements ICartService {
 
   public constructor(
     @InjectModel(Cart.name) private readonly cartModel: Model<CartDocument>,
-  ) {}
+  ) { }
 
   public async findCartByUserId(userId: string): Promise<Cart> {
     const cart = await this.cartModel.findOne({ customer: userId });
@@ -97,7 +97,32 @@ export class CartService implements ICartService {
     return existingCart.save();
   }
 
-  public async updateItemInCart(id: string, updateItem: ItemDto): Promise<Cart> {
+  public async updateItemQuantityInCart(
+    id: string,
+    itemId: string,
+    quantity: number,
+  ): Promise<Cart> {
+    this.logger.log(`Updating item quantity in cart with id ${id}`);
+    const existingCart = await this._checkIfCartExists(id);
+
+    const itemIndex = existingCart.items.findIndex(
+      (item: Item) => item.id.toString() === itemId,
+    );
+
+    if (itemIndex === -1) {
+      this.logger.error(`Item with ID ${itemId} not found in cart`);
+      throw new NotFoundException(`Item with ID ${itemId} not found in cart`);
+    }
+
+    existingCart.items[itemIndex].quantity = quantity;
+
+    return existingCart.save();
+  }
+
+  public async updateItemInCart(
+    id: string,
+    updateItem: ItemDto,
+  ): Promise<Cart> {
     this.logger.log(`Updating item in cart with id ${id}`);
     const existingCart = await this._checkIfCartExists(id);
 
