@@ -14,34 +14,34 @@ services:
     depends_on:
       - redis
 
-  # webserver:
-  #   image: nginx:mainline-alpine
-  #   container_name: webserver
-  #   restart: unless-stopped
-  #   ports:
-  #     - '80:80'
-  #     - '443:443'
-  #   volumes:
-  #     - web-root:/var/www/html
-  #     - ./nginx-conf:/etc/nginx/conf.d
-  #     - certbot-etc:/etc/letsencrypt
-  #     - certbot-var:/var/lib/letsencrypt
-  #     - dhparam:/etc/ssl/certs
-  #   depends_on:
-  #     - api
-  #   networks:
-  #     - app-network
+  webserver:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - web-root:/var/www/html
+      - ./nginx-conf:/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - dhparam:/etc/ssl/certs
+    depends_on:
+      - api
+    networks:
+      - app-network
 
-  # certbot:
-  #   image: certbot/certbot
-  #   container_name: certbot
-  #   volumes:
-  #     - certbot-etc:/etc/letsencrypt
-  #     - certbot-var:/var/lib/letsencrypt
-  #     - web-root:/var/www/html
-  #   depends_on:
-  #     - webserver
-  #   command: certonly --webroot --webroot-path=/var/www/html --email gld-user@api.gld.com --agree-tos --no-eff-email --force-renewal -d api.gld.com -d www.api.gld.com
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+    depends_on:
+      - webserver
+    command: certonly --webroot --webroot-path=/var/www/html --email gld-user@api.gld.com --agree-tos --no-eff-email --force-renewal -d api.gld.com -d www.api.gld.com
 
   redis:
     image: redis:alpine
@@ -55,20 +55,20 @@ services:
 volumes:
   redis-data:
     driver: local
-  # certbot-etc:
-  # certbot-var:
-  # web-root:
-  #   driver: local
-  #   driver_opts:
-  #     type: none
-  #     device: /home/gld-user/gld-cart-backend/views/
-  #     o: bind
-  # dhparam:
-  #   driver: local
-  #   driver_opts:
-  #     type: none
-  #     device: /home/gld-user/gld-cart-backend/dhparam/
-  #     o: bind
+  certbot-etc:
+  certbot-var:
+  web-root:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/gld-user/gld-cart-backend/views/
+      o: bind
+  dhparam:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/gld-user/gld-cart-backend/dhparam/
+      o: bind
 
 networks:
   app-network:
