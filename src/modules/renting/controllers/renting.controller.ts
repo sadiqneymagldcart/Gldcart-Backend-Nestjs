@@ -10,13 +10,10 @@ import {
 import { RentingService } from '../services/renting.service';
 import { CreateRentingDto } from '../dto/create-renting.dto';
 import { UpdateRentingDto } from '../dto/update-renting.dto';
-import { SerializeWith } from '@shared/decorators/serialize.decorator';
-import { Renting } from '@renting/schemas/renting.schema';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Rentings')
 @Controller('renting')
-@SerializeWith(Renting)
 export class RentingController {
   public constructor(private readonly rentingService: RentingService) {}
 
