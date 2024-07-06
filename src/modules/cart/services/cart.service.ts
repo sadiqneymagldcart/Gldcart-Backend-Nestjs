@@ -2,7 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Cart, CartDocument } from '@cart/schemas/cart.schema';
-import { ItemDto } from '@cart/dto/cart-item.dto';
+import { ItemDto } from '@item/dto/item.dto';
 import { ICartService } from '@cart/iterfaces/cart.service.interface';
 import { Item } from '@item/schemas/item.schema';
 
@@ -11,13 +11,11 @@ export class CartService implements ICartService {
   private readonly logger = new Logger(CartService.name);
 
   public constructor(
-    @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
-  ) {
-    this.logger.log('CartService initialized');
-  }
+    @InjectModel(Cart.name) private readonly cartModel: Model<CartDocument>,
+  ) { }
 
   public async findByUserId(userId: string): Promise<Cart> {
-    const cart = await this.cartModel.findOne({ user: userId });
+    const cart = await this.cartModel.findOne({ customer: userId });
     if (!cart) {
       this.logger.error(`No carts found for user with id ${userId}`);
       throw new NotFoundException(`No carts found for user with id ${userId}`);
@@ -37,14 +35,27 @@ export class CartService implements ICartService {
     return cart;
   }
 
+  public async getCartWithItems(id: string): Promise<Cart> {
+    this.logger.log(`Fetching cart with items with id ${id}`);
+
+    const cart = await this.cartModel.findById(id).populate('items.id').exec();
+
+    if (!cart) {
+      this.logger.error(`Cart with ID ${id} not found`);
+      throw new NotFoundException(`Cart with ID ${id} not found`);
+    }
+
+    return cart;
+  }
+
   public async addItem(userId: string, newItem: ItemDto): Promise<Cart> {
     this.logger.log(`Adding item to cart for user ${userId}`);
 
-    let cart = await this.cartModel.findOne({ user: userId });
+    let cart = await this.cartModel.findOne({ customer: userId });
 
     if (!cart) {
       cart = new this.cartModel({
-        user: userId,
+        customer: userId,
         items: [newItem],
       });
       this.logger.debug(`New cart created: ${JSON.stringify(cart)}`);

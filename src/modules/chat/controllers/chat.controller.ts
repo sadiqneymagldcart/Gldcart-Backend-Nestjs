@@ -11,7 +11,7 @@ import { SerializeWith } from '@shared/decorators/serialize.decorator';
 export class ChatController {
   public constructor(private readonly chatService: ChatService) { }
 
-  @ApiOperation({ summary: 'Create chat' })
+  @ApiOperation({ summary: 'Create a chat' })
   @ApiResponse({ status: 201, type: Chat })
   @Post()
   public async createChat(@Body() chat: CreateChatDto): Promise<Chat> {

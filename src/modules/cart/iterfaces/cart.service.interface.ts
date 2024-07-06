@@ -1,4 +1,4 @@
-import { CartItemDto } from "@cart/dto/cart-item.dto";
+import { ItemDto } from "@item/dto/item.dto";
 import { Cart } from "@cart/schemas/cart.schema";
 
 /**
@@ -28,7 +28,7 @@ export interface ICartService {
    * @param newItem - The item to add to the cart.
    * @returns A promise that resolves to the updated Cart object.
    */
-  addItem(userId: string, newItem: CartItemDto): Promise<Cart>;
+  addItem(userId: string, newItem: ItemDto): Promise<Cart>;
 
   /**
    * Removes an item from a cart.
@@ -46,7 +46,7 @@ export interface ICartService {
    * @returns A promise that resolves to the updated Cart object.
    * @throws {NotFoundException} If no item is found with the given ID in the cart.
    */
-  updateItem(id: string, updateItem: CartItemDto): Promise<Cart>;
+  updateItem(id: string, updateItem: ItemDto): Promise<Cart>;
 
   /**
    * Removes a cart.
