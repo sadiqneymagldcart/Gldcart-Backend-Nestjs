@@ -1,5 +1,5 @@
 export enum ItemTypes {
-  PRODUCT = 'product',
-  OFFERING = 'offering',
-  RENTING = 'renting',
+  PRODUCT = 'Product',
+  OFFERING = 'Offering',
+  RENTING = 'Renting',
 }
