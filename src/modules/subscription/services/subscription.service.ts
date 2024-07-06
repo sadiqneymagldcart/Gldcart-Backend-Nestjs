@@ -11,7 +11,7 @@ export class SubscriptionService {
   public constructor(
     private readonly stripeService: StripeService,
     private readonly configService: ConfigService,
-  ) { }
+  ) {}
 
   public async createMonthlySubscription(customerId: string) {
     const subscription = await this._getSubscription(customerId);

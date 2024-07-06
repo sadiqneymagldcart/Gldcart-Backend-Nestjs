@@ -9,4 +9,4 @@ import { RentingModule } from '@renting/renting.module';
   providers: [ItemService],
   exports: [ItemService],
 })
-export class ItemModule { }
+export class ItemModule {}

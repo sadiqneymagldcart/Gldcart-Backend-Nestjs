@@ -14,7 +14,7 @@ export class StripeWebhookService {
     @InjectModel(StripeEvent.name)
     private eventModel: Model<StripeEventDocument>,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   public async createEvent(id: string): Promise<StripeEvent> {
     const event = new this.eventModel({ _id: id });

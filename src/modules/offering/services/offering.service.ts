@@ -12,7 +12,7 @@ export class OfferingService {
   public constructor(
     @InjectModel(Offering.name) private offeringModel: Model<OfferingDocument>,
     private readonly searchService: SearchService<OfferingDocument>,
-  ) { }
+  ) {}
 
   public async create(createOfferingDto: CreateOfferingDto): Promise<Offering> {
     const createdOffering = new this.offeringModel(createOfferingDto);

@@ -45,4 +45,4 @@ import mongoDB from '@config/mongoDB';
   ],
   controllers: [AppController],
 })
-export class AppModule { }
+export class AppModule {}

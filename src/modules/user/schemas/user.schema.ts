@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Exclude, Transform, Type } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import { IsEmail } from 'class-validator';
 import { UserRole } from '@user/enums/roles.enum';
 import { Address } from '@address/schemas/address.schema';

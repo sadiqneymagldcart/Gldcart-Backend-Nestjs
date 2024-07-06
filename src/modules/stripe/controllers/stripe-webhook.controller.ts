@@ -20,7 +20,7 @@ export class StripeWebhookController {
   public constructor(
     private readonly stripeService: StripeService,
     private readonly stripeWebhookService: StripeWebhookService,
-  ) { }
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Handle incoming Stripe events' })

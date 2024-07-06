@@ -13,7 +13,7 @@ import { SubscriptionService } from '@subscription/services/subscription.service
 export class SubscriptionController {
   public constructor(
     private readonly subscriptionService: SubscriptionService,
-  ) { }
+  ) {}
 
   @Post('monthly')
   @UseGuards(JwtAuthenticationGuard)

@@ -16,7 +16,7 @@ export class ChatService {
     @InjectModel(Chat.name) private readonly chatModel: Model<ChatDocument>,
     @InjectModel(Message.name)
     private readonly messageModel: Model<MessageDocument>,
-  ) { }
+  ) {}
 
   public async createChat(chat: CreateChatDto): Promise<Chat> {
     return await this.chatModel.create(chat);

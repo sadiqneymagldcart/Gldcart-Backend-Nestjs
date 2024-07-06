@@ -12,7 +12,7 @@ export class OrderService {
   public constructor(
     @InjectModel(Order.name) private readonly orderModel: Model<OrderDocument>,
     private readonly itemService: ItemService,
-  ) { }
+  ) {}
 
   public async create(order: Order): Promise<Order> {
     this.logger.log('Creating order');

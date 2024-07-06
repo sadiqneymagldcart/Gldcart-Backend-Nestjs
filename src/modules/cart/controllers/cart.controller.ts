@@ -23,7 +23,7 @@ import { SerializeWith } from '@shared/decorators/serialize.decorator';
 @Controller('cart')
 @SerializeWith(Cart)
 export class CartController {
-  public constructor(private readonly cartService: CartService) { }
+  public constructor(private readonly cartService: CartService) {}
 
   @Get('/user/:userId')
   @ApiOperation({ summary: 'Get a cart for user' })
