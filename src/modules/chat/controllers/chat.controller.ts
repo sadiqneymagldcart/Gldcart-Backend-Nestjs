@@ -9,7 +9,7 @@ import { SerializeWith } from '@shared/decorators/serialize.decorator';
 @Controller('/chat')
 @SerializeWith(Chat)
 export class ChatController {
-  public constructor(private readonly chatService: ChatService) { }
+  public constructor(private readonly chatService: ChatService) {}
 
   @ApiOperation({ summary: 'Create a chat' })
   @ApiResponse({ status: 201, type: Chat })

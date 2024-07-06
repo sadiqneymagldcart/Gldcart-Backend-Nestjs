@@ -19,4 +19,4 @@ import { UserModule } from '@user/user.module';
   controllers: [StripeController, StripeWebhookController],
   providers: [StripeService, StripeWebhookService],
 })
-export class StripeModule { }
+export class StripeModule {}

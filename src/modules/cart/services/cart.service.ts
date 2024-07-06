@@ -12,7 +12,7 @@ export class CartService implements ICartService {
 
   public constructor(
     @InjectModel(Cart.name) private readonly cartModel: Model<CartDocument>,
-  ) { }
+  ) {}
 
   public async findByUserId(userId: string): Promise<Cart> {
     const cart = await this.cartModel.findOne({ customer: userId });

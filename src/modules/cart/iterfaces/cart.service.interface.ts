@@ -1,5 +1,5 @@
-import { ItemDto } from "@item/dto/item.dto";
-import { Cart } from "@cart/schemas/cart.schema";
+import { ItemDto } from '@item/dto/item.dto';
+import { Cart } from '@cart/schemas/cart.schema';
 
 /**
  * ICartService interface.
@@ -56,4 +56,3 @@ export interface ICartService {
    */
   remove(id: string): Promise<void>;
 }
-

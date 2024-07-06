@@ -9,4 +9,4 @@ import { TokenModule } from '@token/token.module';
   controllers: [SubscriptionController],
   providers: [SubscriptionService, StripeService],
 })
-export class SubscriptionModule { }
+export class SubscriptionModule {}

@@ -7,7 +7,11 @@ export type MessageDocument = Message & mongoose.Document;
 
 @Schema({ timestamps: true })
 export class Message {
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Chat.name, required: true })
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: Chat.name,
+    required: true,
+  })
   chat: Chat;
 
   @Prop({ type: String })
@@ -16,7 +20,11 @@ export class Message {
   @Prop({ type: mongoose.Schema.Types.Mixed })
   files?: any;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name, required: true })
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: User.name,
+    required: true,
+  })
   sender: User;
 }
 

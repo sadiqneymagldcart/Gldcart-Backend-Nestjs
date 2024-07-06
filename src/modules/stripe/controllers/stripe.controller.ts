@@ -7,7 +7,7 @@ import { StripeService } from '@stripe/services/stripe.service';
 @ApiTags('Stripe')
 @Controller('stripe')
 export class StripeController {
-  public constructor(private readonly stripeService: StripeService) { }
+  public constructor(private readonly stripeService: StripeService) {}
 
   @Post('payment-intent')
   @UseGuards(JwtAuthenticationGuard)
