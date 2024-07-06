@@ -14,7 +14,7 @@ export class CartService implements ICartService {
     @InjectModel(Cart.name) private readonly cartModel: Model<CartDocument>,
   ) {}
 
-  public async findByUserId(userId: string): Promise<Cart> {
+  public async findCartByUserId(userId: string): Promise<Cart> {
     const cart = await this.cartModel.findOne({ customer: userId });
     if (!cart) {
       this.logger.error(`No carts found for user with id ${userId}`);
@@ -24,7 +24,7 @@ export class CartService implements ICartService {
     return cart;
   }
 
-  public async findOne(id: string): Promise<Cart> {
+  public async findCartById(id: string): Promise<Cart> {
     this.logger.log(`Fetching cart with id ${id}`);
     const cart = await this.cartModel.findById(id);
     if (!cart) {
@@ -35,7 +35,7 @@ export class CartService implements ICartService {
     return cart;
   }
 
-  public async getCartWithItems(id: string): Promise<Cart> {
+  public async findCartWithItemsById(id: string): Promise<Cart> {
     this.logger.log(`Fetching cart with items with id ${id}`);
 
     const cart = await this.cartModel.findById(id).populate('items.id').exec();
@@ -48,7 +48,7 @@ export class CartService implements ICartService {
     return cart;
   }
 
-  public async addItem(userId: string, newItem: ItemDto): Promise<Cart> {
+  public async addItemToCart(userId: string, newItem: ItemDto): Promise<Cart> {
     this.logger.log(`Adding item to cart for user ${userId}`);
 
     let cart = await this.cartModel.findOne({ customer: userId });
@@ -75,9 +75,9 @@ export class CartService implements ICartService {
     return await cart.save();
   }
 
-  public async removeItem(id: string, itemId: string): Promise<Cart> {
+  public async removeItemFromCart(id: string, itemId: string): Promise<Cart> {
     this.logger.log(`Removing item from cart with id ${id}`);
-    const existingCart = await this._checkCartExists(id);
+    const existingCart = await this._checkIfCartExists(id);
 
     const itemIndex = existingCart.items.findIndex(
       (item: Item) => item.id === itemId,
@@ -97,9 +97,9 @@ export class CartService implements ICartService {
     return existingCart.save();
   }
 
-  public async updateItem(id: string, updateItem: ItemDto): Promise<Cart> {
+  public async updateItemInCart(id: string, updateItem: ItemDto): Promise<Cart> {
     this.logger.log(`Updating item in cart with id ${id}`);
-    const existingCart = await this._checkCartExists(id);
+    const existingCart = await this._checkIfCartExists(id);
 
     const itemIndex = existingCart.items.findIndex(
       (item: Item) =>
@@ -118,7 +118,7 @@ export class CartService implements ICartService {
     return existingCart.save();
   }
 
-  public async remove(id: string): Promise<void> {
+  public async removeCartById(id: string): Promise<void> {
     this.logger.log(`Removing cart with id ${id}`);
     const result = await this.cartModel.findByIdAndDelete(id);
     if (!result) {
@@ -128,7 +128,7 @@ export class CartService implements ICartService {
     this.logger.log(`Removed cart with id ${id}`);
   }
 
-  private async _checkCartExists(id: string): Promise<CartDocument> {
+  private async _checkIfCartExists(id: string): Promise<CartDocument> {
     this.logger.log(`Checking if cart with id ${id} exists`);
     const cart = await this.cartModel.findById(id);
     if (!cart) {

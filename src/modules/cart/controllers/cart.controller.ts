@@ -17,21 +17,17 @@ import {
 import { ItemDto } from '@item/dto/item.dto';
 import { Cart } from '@cart/schemas/cart.schema';
 import { CartService } from '@cart/services/cart.service';
-import { SerializeWith } from '@shared/decorators/serialize.decorator';
 
 @ApiTags('Carts')
 @Controller('cart')
-@SerializeWith(Cart)
 export class CartController {
-  public constructor(private readonly cartService: CartService) {}
+  public constructor(private readonly cartService: CartService) { }
 
   @Get('/user/:userId')
   @ApiOperation({ summary: 'Get a cart for user' })
   @ApiOkResponse({ description: 'The cart for user', type: Cart })
-  public async findAllItemsByUserId(
-    @Param('userId') userId: string,
-  ): Promise<Cart> {
-    return this.cartService.findByUserId(userId);
+  public async getCartByUserId(@Param('userId') userId: string): Promise<Cart> {
+    return this.cartService.findCartByUserId(userId);
   }
 
   @Get(':id')
@@ -41,19 +37,19 @@ export class CartController {
     type: Cart,
   })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
-  public async findOne(@Param('id') id: string): Promise<Cart> {
-    return await this.cartService.getCartWithItems(id);
+  public async getCartById(@Param('id') id: string): Promise<Cart> {
+    return this.cartService.findCartWithItemsById(id);
   }
 
   @Post(':userId')
   @ApiOperation({ summary: 'Add an item to a cart' })
   @ApiOkResponse({ description: 'The updated cart', type: Cart })
   @ApiBadRequestResponse({ description: 'Invalid item data' })
-  public async addItem(
+  public async addItemToCart(
     @Param('userId') userId: string,
     @Body() newItem: ItemDto,
   ): Promise<Cart> {
-    return this.cartService.addItem(userId, newItem);
+    return this.cartService.addItemToCart(userId, newItem);
   }
 
   @Put(':id')
@@ -61,29 +57,29 @@ export class CartController {
   @ApiOkResponse({ description: 'The updated cart', type: Cart })
   @ApiBadRequestResponse({ description: 'Invalid item data' })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
-  public async updateItem(
+  public async updateItemInCart(
     @Param('id') id: string,
     @Body() updateItem: ItemDto,
   ): Promise<Cart> {
-    return this.cartService.updateItem(id, updateItem);
+    return this.cartService.updateItemInCart(id, updateItem);
   }
 
   @Delete(':id/item/:itemId')
   @ApiOperation({ summary: 'Remove an item from a cart' })
   @ApiOkResponse({ description: 'The updated cart after removal', type: Cart })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
-  public async removeItem(
+  public async removeItemFromCart(
     @Param('id') id: string,
     @Param('itemId') itemId: string,
   ): Promise<Cart> {
-    return this.cartService.removeItem(id, itemId);
+    return this.cartService.removeItemFromCart(id, itemId);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Remove a cart' })
   @ApiOkResponse({ description: 'The cart has been removed' })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
-  public async remove(@Param('id') id: string): Promise<void> {
-    return this.cartService.remove(id);
+  public async removeCartById(@Param('id') id: string): Promise<void> {
+    return this.cartService.removeCartById(id);
   }
 }
