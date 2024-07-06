@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Exclude, Transform } from 'class-transformer';
 import { IsEmail } from 'class-validator';
 import { UserRole } from '@user/enums/roles.enum';
 import { Address } from '@address/schemas/address.schema';
@@ -19,11 +18,9 @@ export class User {
   @Prop({
     required: [true, 'name field is required'],
   })
-  @Transform(({ value }) => value.trim())
   name: string;
 
   @Prop()
-  @Transform(({ value }) => value?.trim())
   surname?: string;
 
   @Prop({
@@ -44,7 +41,6 @@ export class User {
     required: [true, 'password field is required'],
     minlength: [6, 'Minimum password length is 6 characters'],
   })
-  @Exclude({ toPlainOnly: true })
   password: string;
 
   @Prop({ type: [String] })
