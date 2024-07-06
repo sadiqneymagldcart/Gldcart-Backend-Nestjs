@@ -15,6 +15,7 @@ import { ChatModule } from '@chat/chat.module';
 import { StripeModule } from '@stripe/stripe.module';
 import { SubscriptionModule } from '@subscription/subscription.module';
 import { ItemModule } from '@item/item.module';
+import { CacheModule } from '@nestjs/cache-manager';
 import mongoDB from '@config/mongoDB';
 
 @Module({
@@ -29,6 +30,7 @@ import mongoDB from '@config/mongoDB';
       useFactory: mongoDB,
       inject: [ConfigService],
     }),
+    CacheModule.register({ isGlobal: true }),
     UserModule,
     AuthModule,
     TokenModule,
@@ -45,4 +47,4 @@ import mongoDB from '@config/mongoDB';
   ],
   controllers: [AppController],
 })
-export class AppModule {}
+export class AppModule { }
