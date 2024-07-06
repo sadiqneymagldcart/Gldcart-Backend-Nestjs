@@ -16,7 +16,9 @@ import { StripeModule } from '@stripe/stripe.module';
 import { SubscriptionModule } from '@subscription/subscription.module';
 import { ItemModule } from '@item/item.module';
 import { CacheModule } from '@nestjs/cache-manager';
-import mongoDB from '@config/mongoDB';
+import * as redisStore from 'cache-manager-redis-store';
+import mongoConfig from '@config/mongo.config';
+import redisConfig from '@config/redis.config';
 
 @Module({
   imports: [
@@ -27,10 +29,14 @@ import mongoDB from '@config/mongoDB';
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: mongoDB,
+      useFactory: mongoConfig,
       inject: [ConfigService],
     }),
-    CacheModule.register({ isGlobal: true }),
+    CacheModule.register({
+      isGlobal: true,
+      store: redisStore,
+      useFactory: redisConfig,
+    }),
     UserModule,
     AuthModule,
     TokenModule,
