@@ -4,4 +4,5 @@ export enum Events {
   RECEIVE_MESSAGE = 'receive-message',
   LEAVE = 'leave',
   CHATS = 'chats',
+  NEW_CHAT = 'new-chat',
 }
