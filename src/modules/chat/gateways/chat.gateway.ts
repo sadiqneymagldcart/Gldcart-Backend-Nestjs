@@ -28,7 +28,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   public constructor(
     @Inject(ChatService)
     private readonly chatService: ChatService,
-  ) { }
+  ) {}
 
   public async handleConnection(
     @ConnectedSocket() socket: Socket,

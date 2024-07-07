@@ -71,11 +71,38 @@ export class StripeService {
     }
   }
 
+  public async attachCreditCard(paymentMethodId: string, customerId: string) {
+    return this.stripe.setupIntents.create({
+      customer: customerId,
+      payment_method: paymentMethodId,
+    });
+  }
+
+  public async listCreditCards(customerId: string) {
+    return this.stripe.paymentMethods.list({
+      customer: customerId,
+      type: 'card',
+    });
+  }
+
   public async listSubscriptions(priceId: string, customerId: string) {
     return this.stripe.subscriptions.list({
       customer: customerId,
       price: priceId,
       expand: ['data.latest_invoice', 'data.latest_invoice.payment_intent'],
     });
+  }
+
+  public async constructEventFromPayload(
+    signature: string,
+    payload: Buffer,
+  ): Promise<Stripe.Event> {
+    const webhookSecret = this.configService.get('STRIPE_WEBHOOK_SECRET');
+
+    return this.stripe.webhooks.constructEvent(
+      payload,
+      signature,
+      webhookSecret,
+    );
   }
 }

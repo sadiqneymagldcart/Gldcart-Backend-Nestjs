@@ -18,7 +18,7 @@ export class ProductService implements IProductService {
   public constructor(
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
-  ) { }
+  ) {}
 
   public async create(createProductDto: CreateProductDto): Promise<Product> {
     const createdProduct = new this.productModel(createProductDto);
@@ -26,11 +26,11 @@ export class ProductService implements IProductService {
   }
 
   public async findAll(): Promise<Product[]> {
-    return this.productModel.find().lean().exec();
+    return this.productModel.find().lean();
   }
 
   public async findById(id: string): Promise<Product> {
-    const offering = await this.productModel.findById(id).lean().exec();
+    const offering = await this.productModel.findById(id).lean();
     if (!offering) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
@@ -41,9 +41,11 @@ export class ProductService implements IProductService {
     id: string,
     updateProductDto: UpdateProductDto,
   ): Promise<Product> {
-    const existingProduct = await this.productModel
-      .findByIdAndUpdate(id, updateProductDto, { new: true })
-      .exec();
+    const existingProduct = await this.productModel.findByIdAndUpdate(
+      id,
+      updateProductDto,
+      { new: true },
+    );
     if (!existingProduct) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
@@ -51,7 +53,7 @@ export class ProductService implements IProductService {
   }
 
   public async remove(id: string): Promise<void> {
-    const result = await this.productModel.findByIdAndDelete(id).exec();
+    const result = await this.productModel.findByIdAndDelete(id);
     if (!result) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }

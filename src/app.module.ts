@@ -14,8 +14,12 @@ import { CartModule } from '@cart/cart.module';
 import { ChatModule } from '@chat/chat.module';
 import { StripeModule } from '@stripe/stripe.module';
 import { SubscriptionModule } from '@subscription/subscription.module';
-import mongoDB from '@config/mongoDB';
 import { ItemModule } from '@item/item.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import * as redisStore from 'cache-manager-redis-store';
+import mongoConfig from '@config/mongo.config';
+import redisConfig from '@config/redis.config';
+import { WishlistModule } from '@wishlist/wishlist.module';
 
 @Module({
   imports: [
@@ -26,9 +30,18 @@ import { ItemModule } from '@item/item.module';
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: mongoDB,
+      useFactory: mongoConfig,
       inject: [ConfigService],
     }),
+    // CacheModule.register({
+    //   isGlobal: true,
+    //   store: redisStore,
+    //   useFactory: redisConfig,
+    // }),
+    CacheModule.register({
+      isGlobal: true,
+    }),
+
     UserModule,
     AuthModule,
     TokenModule,
@@ -42,6 +55,7 @@ import { ItemModule } from '@item/item.module';
     StripeModule,
     SubscriptionModule,
     ItemModule,
+    WishlistModule,
   ],
   controllers: [AppController],
 })

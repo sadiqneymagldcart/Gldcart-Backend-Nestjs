@@ -7,9 +7,9 @@ import {
 import { ExecutionContext, CallHandler } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
-import { Document } from 'mongoose';
 import { map } from 'rxjs/operators';
 import { plainToInstance } from 'class-transformer';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class MongooseClassSerializerInterceptor extends ClassSerializerInterceptor {
@@ -24,10 +24,10 @@ export class MongooseClassSerializerInterceptor extends ClassSerializerIntercept
     object: PlainLiteralObject,
     classToIntercept: Type<any>,
   ) {
-    if (!(object instanceof Document)) {
-      return object;
+    if (object instanceof mongoose.Document) {
+      return plainToInstance(classToIntercept, object.toJSON());
     }
-    return plainToInstance(classToIntercept, object.toJSON());
+    return object;
   }
 
   private _prepareResponse(

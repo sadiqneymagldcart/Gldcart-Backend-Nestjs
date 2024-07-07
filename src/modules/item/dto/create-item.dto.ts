@@ -1,14 +1,20 @@
 import { ItemTypes } from '@item/enums/item-types.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+} from 'class-validator';
 
-export class CartItemDto {
+export class CreateItemDto {
   @ApiProperty({
     description: 'The item ID',
     example: '60f4d9a3b6e2b2f3f8c6f6e6',
   })
   @IsNotEmpty()
-  itemId: string;
+  id: string;
 
   @ApiProperty({
     description: 'The item type',
@@ -16,7 +22,7 @@ export class CartItemDto {
     enum: ItemTypes,
   })
   @IsEnum(ItemTypes)
-  itemType: ItemTypes;
+  type: ItemTypes;
 
   @ApiProperty({
     description: 'The quantity of the item',
@@ -24,5 +30,6 @@ export class CartItemDto {
   })
   @IsNumber()
   @IsPositive()
+  @IsOptional()
   quantity: number;
 }

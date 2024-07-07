@@ -11,6 +11,8 @@ services:
       - .:/usr/src/app
     networks:
       - app-network
+    depends_on:
+      - redis
 
   webserver:
     image: nginx:mainline-alpine
@@ -41,7 +43,18 @@ services:
       - webserver
     command: certonly --webroot --webroot-path=/var/www/html --email gld-user@api.gld.com --agree-tos --no-eff-email --force-renewal -d api.gld.com -d www.api.gld.com
 
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: unless-stopped
+    networks:
+      - app-network
+    volumes:
+      - redis-data:/data
+
 volumes:
+  redis-data:
+    driver: local
   certbot-etc:
   certbot-var:
   web-root:

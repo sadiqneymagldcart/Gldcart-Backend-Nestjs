@@ -29,11 +29,10 @@ import {
   Pagination,
   PaginationParams,
 } from '@shared/decorators/pagination.decorator';
-import { SerializeWith } from '@shared/decorators/serialize.decorator';
 
 @ApiTags('Proffesional Services')
 @Controller('offerings')
-@SerializeWith(Offering)
+@UseInterceptors(CacheInterceptor)
 export class OfferingController {
   public constructor(private readonly offeringService: OfferingService) { }
 
@@ -48,7 +47,7 @@ export class OfferingController {
   public async create(
     @Body() createOfferingDto: CreateOfferingDto,
   ): Promise<Offering> {
-    return await this.offeringService.create(createOfferingDto);
+    return this.offeringService.create(createOfferingDto);
   }
 
   @Get()
@@ -57,7 +56,7 @@ export class OfferingController {
   @ApiResponse({ status: 200, description: 'Return all offerings.' })
   @UseInterceptors(CacheInterceptor)
   public async findAll(): Promise<Offering[]> {
-    return await this.offeringService.findAll();
+    return this.offeringService.findAll();
   }
 
   @Get()
@@ -82,12 +81,11 @@ export class OfferingController {
   })
   @ApiResponse({ status: 400, description: 'Invalid input' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  @UseInterceptors(CacheInterceptor)
   public async getByFilters(
     @PaginationParams() paginationParams: Pagination,
     @FilteringParams() filters: { [key: string]: any },
   ) {
-    return await this.offeringService.getByFilters(paginationParams, filters);
+    return this.offeringService.getByFilters(paginationParams, filters);
   }
 
   @Get()
@@ -131,7 +129,6 @@ export class OfferingController {
     description: 'Return the offering with the given ID.',
   })
   @ApiResponse({ status: 404, description: 'Offering not found.' })
-  @UseInterceptors(CacheInterceptor)
   public async findById(@Param('id') id: string): Promise<Offering> {
     return await this.offeringService.findById(id);
   }
@@ -148,7 +145,7 @@ export class OfferingController {
     @Param('id') id: string,
     @Body() updateOfferingDto: UpdateOfferingDto,
   ): Promise<Offering> {
-    return await this.offeringService.update(id, updateOfferingDto);
+    return this.offeringService.update(id, updateOfferingDto);
   }
 
   @Delete(':id')
@@ -160,6 +157,6 @@ export class OfferingController {
   })
   @ApiResponse({ status: 404, description: 'Offering not found.' })
   public async remove(@Param('id') id: string): Promise<void> {
-    return await this.offeringService.remove(id);
+    return this.offeringService.remove(id);
   }
 }

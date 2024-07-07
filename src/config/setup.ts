@@ -60,6 +60,6 @@ export function setup(app: INestApplication) {
   enableCors(app);
   setupGlobalPipes(app);
   setupMiddleware(app);
-  setupGlobalInterceptors(app);
+  // setupGlobalInterceptors(app);
   setupSwagger(app);
 }
