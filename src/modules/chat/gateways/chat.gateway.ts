@@ -1,5 +1,6 @@
 import { CreateMessageDto } from '@chat/dto/create-message.dto';
 import { Events } from '@chat/enums/events.enum';
+import { IChatGateway } from '@chat/interfaces/chat-gateway.interface';
 import { ChatService } from '@chat/services/chat.service';
 import { MessageService } from '@chat/services/message.service';
 import { Logger, Injectable } from '@nestjs/common';
@@ -23,7 +24,8 @@ import { Server, Socket } from 'socket.io';
     origin: process.env.CLIENT_URL,
   },
 })
-export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class ChatGateway
+  implements OnGatewayConnection, OnGatewayDisconnect, IChatGateway {
   @WebSocketServer() server: Server;
   private readonly logger = new Logger(ChatGateway.name);
 
@@ -110,12 +112,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage(Events.REQUEST_ALL_CHATS)
-  private async sendUserChatsList(
-    socket: Socket,
-    userId: string,
-  ): Promise<void> {
+  public async requestAllChats(socket: Socket): Promise<void> {
+    const userId = await this.getUserId(socket);
+
+    if (!userId) {
+      this.logger.warn('User tried to request all chats without userId');
+      return;
+    }
+
     const chats = await this.chatService.getUserChats(userId);
-    socket.emit(Events.CHATS, chats);
+    socket.emit(Events.SEND_ALL_CHATS, chats);
   }
 
   @SubscribeMessage(Events.LEAVE)
@@ -157,7 +163,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ): Promise<void> {
     await this.chatService.updateUserOnlineStatus(userId, isOnline);
     if (isOnline) {
-      await this.sendUserChatsList(socket, userId);
+      await this.requestAllChats(socket);
       this.chatService.watchChatCollectionChanges(socket);
     }
   }
