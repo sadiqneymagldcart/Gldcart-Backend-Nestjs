@@ -6,6 +6,8 @@ export enum Events {
   RECEIVE_MESSAGE = 'receive-message',
   REQUEST_ALL_MESSAGES = 'request-all-messages',
   SEND_ALL_MESSAGES = 'send-all-messages',
+  CREATE_CHAT = 'create-chat',
+  RECEIVE_CHAT = 'receive-chat',
   REQUEST_ALL_CHATS = 'request-all-chats',
   SEND_ALL_CHATS = 'send-all-chats',
   LEAVE = 'leave',
