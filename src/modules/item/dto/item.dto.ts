@@ -1,6 +1,12 @@
 import { ItemTypes } from '@item/enums/item-types.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+} from 'class-validator';
 
 export class ItemDto {
   @ApiProperty({
@@ -24,5 +30,6 @@ export class ItemDto {
   })
   @IsNumber()
   @IsPositive()
+  @IsOptional()
   quantity: number;
 }
