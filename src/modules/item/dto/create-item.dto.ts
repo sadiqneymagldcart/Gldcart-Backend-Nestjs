@@ -8,7 +8,7 @@ import {
   IsPositive,
 } from 'class-validator';
 
-export class ItemDto {
+export class CreateItemDto {
   @ApiProperty({
     description: 'The item ID',
     example: '60f4d9a3b6e2b2f3f8c6f6e6',
