@@ -19,7 +19,7 @@ import { Wishlist } from '@wishlist/schemas/wishlist.schema';
 import { WishlistService } from '@wishlist/services/wishlist.service';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 
-@ApiTags('Wishlist')
+@ApiTags('Wishlists')
 @Controller('wishlist')
 @UseInterceptors(CacheInterceptor)
 export class WishlistController {
