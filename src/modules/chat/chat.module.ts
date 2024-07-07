@@ -6,9 +6,12 @@ import { Chat, ChatSchema } from './schemas/chat.schema';
 import { Message, MessageSchema } from './schemas/message.schema';
 import { User, UserSchema } from '@user/schemas/user.schema';
 import { ChatController } from './controllers/chat.controller';
+import { MessageService } from './services/message.service';
+import { TokenModule } from '@token/token.module';
 
 @Module({
   imports: [
+    TokenModule,
     MongooseModule.forFeature([
       {
         name: Chat.name,
@@ -25,6 +28,6 @@ import { ChatController } from './controllers/chat.controller';
     ]),
   ],
   controllers: [ChatController],
-  providers: [ChatGateway, ChatService],
+  providers: [ChatGateway, ChatService, MessageService],
 })
-export class ChatModule {}
+export class ChatModule { }

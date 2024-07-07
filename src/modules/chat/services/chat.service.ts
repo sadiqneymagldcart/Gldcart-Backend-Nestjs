@@ -1,8 +1,6 @@
 import { CreateChatDto } from '@chat/dto/create-chat.dto';
-import { CreateMessageDto } from '@chat/dto/create-message.dto';
 import { Events } from '@chat/enums/events.enum';
 import { Chat, ChatDocument } from '@chat/schemas/chat.schema';
-import { Message, MessageDocument } from '@chat/schemas/message.schema';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '@user/schemas/user.schema';
@@ -14,9 +12,7 @@ export class ChatService {
   public constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     @InjectModel(Chat.name) private readonly chatModel: Model<ChatDocument>,
-    @InjectModel(Message.name)
-    private readonly messageModel: Model<MessageDocument>,
-  ) {}
+  ) { }
 
   public async createChat(chat: CreateChatDto): Promise<Chat> {
     return await this.chatModel.create(chat);
@@ -51,9 +47,5 @@ export class ChatService {
       }
       socket.emit(Events.NEW_CHAT, chat);
     });
-  }
-
-  public async createMessage(message: CreateMessageDto): Promise<Message> {
-    return await this.messageModel.create(message);
   }
 }
