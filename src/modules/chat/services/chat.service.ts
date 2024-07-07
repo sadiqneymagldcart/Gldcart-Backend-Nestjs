@@ -14,9 +14,7 @@ export class ChatService {
   public constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     @InjectModel(Chat.name) private readonly chatModel: Model<ChatDocument>,
-    @InjectModel(Message.name)
-    private readonly messageModel: Model<MessageDocument>,
-  ) {}
+  ) { }
 
   public async createChat(chat: CreateChatDto): Promise<Chat> {
     return await this.chatModel.create(chat);
@@ -51,9 +49,5 @@ export class ChatService {
       }
       socket.emit(Events.NEW_CHAT, chat);
     });
-  }
-
-  public async createMessage(message: CreateMessageDto): Promise<Message> {
-    return await this.messageModel.create(message);
   }
 }
