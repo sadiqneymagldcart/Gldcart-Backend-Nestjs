@@ -1,8 +1,6 @@
 import { CreateChatDto } from '@chat/dto/create-chat.dto';
-import { CreateMessageDto } from '@chat/dto/create-message.dto';
 import { Events } from '@chat/enums/events.enum';
 import { Chat, ChatDocument } from '@chat/schemas/chat.schema';
-import { Message, MessageDocument } from '@chat/schemas/message.schema';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '@user/schemas/user.schema';
