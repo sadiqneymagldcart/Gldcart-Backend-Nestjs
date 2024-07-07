@@ -14,11 +14,10 @@ import { CreateProductDto } from '@product/dto/create-product.dto';
 import { UpdateProductDto } from '@product/dto/update-product.dto';
 import { Product } from '@product/schemas/product.schema';
 import { ProductService } from '@product/services/product.service';
-import { SerializeWith } from '@shared/decorators/serialize.decorator';
 
 @ApiTags('Products')
 @Controller('products')
-@SerializeWith(Product)
+@UseInterceptors(CacheInterceptor)
 export class ProductController {
   public constructor(private readonly productService: ProductService) { }
 
@@ -37,7 +36,6 @@ export class ProductController {
   @ApiOperation({ summary: 'Get all products' })
   @ApiResponse({ status: 200, description: 'Return all products.' })
   @Get()
-  @UseInterceptors(CacheInterceptor)
   public async findAll(): Promise<Product[]> {
     return this.productService.findAll();
   }
@@ -49,7 +47,6 @@ export class ProductController {
   })
   @ApiResponse({ status: 404, description: 'Product not found.' })
   @Get(':id')
-  @UseInterceptors(CacheInterceptor)
   public async findById(@Param('id') id: string): Promise<Product> {
     return this.productService.findById(id);
   }

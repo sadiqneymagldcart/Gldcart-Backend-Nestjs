@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform, Type } from 'class-transformer';
 import { Chat } from './chat.schema';
 import { User } from '@user/schemas/user.schema';
 import mongoose from 'mongoose';
@@ -8,11 +7,11 @@ export type MessageDocument = Message & mongoose.Document;
 
 @Schema({ timestamps: true })
 export class Message {
-  @Transform(({ value }) => value.toString())
-  _id: string;
-
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Chat.name, required: true })
-  @Type(() => Chat)
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: Chat.name,
+    required: true,
+  })
   chat: Chat;
 
   @Prop({ type: String })
@@ -21,8 +20,11 @@ export class Message {
   @Prop({ type: mongoose.Schema.Types.Mixed })
   files?: any;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name, required: true })
-  @Type(() => User)
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: User.name,
+    required: true,
+  })
   sender: User;
 }
 

@@ -1,5 +1,5 @@
-import { CartItemDto } from "@cart/dto/cart-item.dto";
-import { Cart } from "@cart/schemas/cart.schema";
+import { Cart } from '@cart/schemas/cart.schema';
+import { CreateItemDto } from '@item/dto/create-item.dto';
 
 /**
  * ICartService interface.
@@ -12,7 +12,7 @@ export interface ICartService {
    * @returns A promise that resolves to the Cart object.
    * @throws {NotFoundException} If no cart is found for the user.
    */
-  findByUserId(userId: string): Promise<Cart>;
+  findCartByUserId(userId: string): Promise<Cart>;
 
   /**
    * Finds a cart by its ID.
@@ -20,7 +20,7 @@ export interface ICartService {
    * @returns A promise that resolves to the Cart object.
    * @throws {NotFoundException} If no cart is found with the given ID.
    */
-  findOne(id: string): Promise<Cart>;
+  findCartById(id: string): Promise<Cart>;
 
   /**
    * Adds an item to a user's cart.
@@ -28,7 +28,7 @@ export interface ICartService {
    * @param newItem - The item to add to the cart.
    * @returns A promise that resolves to the updated Cart object.
    */
-  addItem(userId: string, newItem: CartItemDto): Promise<Cart>;
+  addItemToCart(userId: string, newItem: CreateItemDto): Promise<Cart>;
 
   /**
    * Removes an item from a cart.
@@ -37,7 +37,7 @@ export interface ICartService {
    * @returns A promise that resolves to the updated Cart object.
    * @throws {NotFoundException} If no item is found with the given ID in the cart.
    */
-  removeItem(id: string, itemId: string): Promise<Cart>;
+  removeItemFromCart(id: string, itemId: string): Promise<Cart>;
 
   /**
    * Updates an item in a cart.
@@ -46,14 +46,13 @@ export interface ICartService {
    * @returns A promise that resolves to the updated Cart object.
    * @throws {NotFoundException} If no item is found with the given ID in the cart.
    */
-  updateItem(id: string, updateItem: CartItemDto): Promise<Cart>;
+  updateItemInCart(id: string, updateItem: CreateItemDto): Promise<Cart>;
 
   /**
    * Removes a cart.
    * @param id - The ID of the cart.
-   * @returns A promise that resolves when the cart is removed.
+   * @returns A promise that resolves to a message indicating the cart was removed.
    * @throws {NotFoundException} If no cart is found with the given ID.
    */
-  remove(id: string): Promise<void>;
+  removeCartById(id: string): Promise<{ message: string }>;
 }
-

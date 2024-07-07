@@ -11,7 +11,6 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { SerializeWith } from '@shared/decorators/serialize.decorator';
 import { CreateUserDto } from '@user/dto/create-user.dto';
 import { UpdateUserDto } from '@user/dto/update-user.dto';
 import { User } from '@user/schemas/user.schema';
@@ -19,7 +18,6 @@ import { UserService } from '@user/services/user.service';
 
 @ApiTags('Users')
 @Controller('/users')
-@SerializeWith(User)
 export class UserController {
   private readonly logger: Logger = new Logger(UserController.name);
 

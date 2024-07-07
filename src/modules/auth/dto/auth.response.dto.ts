@@ -17,6 +17,7 @@ export class AuthResponseDto {
       email: 'example@example.com',
       role: 'Buyer',
       profile_picture: 'https://example.com/image.jpg',
+      stripeCustomerId: 'cus_JKJH',
     },
   })
   @Expose()
@@ -27,5 +28,6 @@ export class AuthResponseDto {
     email: string;
     role?: string;
     profile_picture?: string;
+    stripeCustomerId: string;
   };
 }
