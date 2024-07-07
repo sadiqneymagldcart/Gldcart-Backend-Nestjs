@@ -65,11 +65,7 @@ export class CartController {
     @Param('itemId') itemId: string,
     @Body() updateItem: UpdateItemDto,
   ): Promise<Cart> {
-    return this.cartService.updateItemQuantityInCart(
-      id,
-      itemId,
-      updateItem.quantity,
-    );
+    return this.cartService.updateItemQuantityInCart(id, itemId, updateItem);
   }
 
   @Delete(':id/item/:itemId')
@@ -87,7 +83,9 @@ export class CartController {
   @ApiOperation({ summary: 'Remove a cart' })
   @ApiOkResponse({ description: 'The cart has been removed' })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
-  public async removeCartById(@Param('id') id: string): Promise<void> {
+  public async removeCartById(
+    @Param('id') id: string,
+  ): Promise<{ message: string }> {
     return this.cartService.removeCartById(id);
   }
 }
