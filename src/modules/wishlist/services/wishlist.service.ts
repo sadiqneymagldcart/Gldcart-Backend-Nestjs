@@ -4,9 +4,10 @@ import { Model } from 'mongoose';
 import { CreateItemDto } from '@item/dto/create-item.dto';
 import { Item } from '@item/schemas/item.schema';
 import { Wishlist, WishlistDocument } from '@wishlist/schemas/wishlist.schema';
+import { IWishlistService } from '@wishlist/interfaces/wishlist.service.interface';
 
 @Injectable()
-export class WishlistService {
+export class WishlistService implements IWishlistService {
   private readonly logger = new Logger(WishlistService.name);
 
   public constructor(
