@@ -49,7 +49,7 @@ async function validateItems(items: Item[], models: Record<ItemTypes, any>) {
   }
 }
 
-CartSchema.pre<CartDocument>('save', async function (next) {
+CartSchema.pre<CartDocument>('save', async function(next) {
   const userModel = this.model('User');
   const models = {
     [ItemTypes.PRODUCT]: this.model('Product'),

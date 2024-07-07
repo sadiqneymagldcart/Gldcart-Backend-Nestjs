@@ -2,9 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Cart, CartDocument } from '@cart/schemas/cart.schema';
-import { ItemDto } from '@item/dto/item.dto';
+import { CreateItemDto } from '@item/dto/create-item.dto';
 import { ICartService } from '@cart/iterfaces/cart.service.interface';
-import { UpdateItemDto } from '@cart/dto/update-item.dto';
+import { UpdateItemDto } from '@item/dto/update-item.dto';
 
 @Injectable()
 export class CartService implements ICartService {
@@ -36,7 +36,10 @@ export class CartService implements ICartService {
     return cart;
   }
 
-  public async addItemToCart(userId: string, newItem: ItemDto): Promise<Cart> {
+  public async addItemToCart(
+    userId: string,
+    newItem: CreateItemDto,
+  ): Promise<Cart> {
     const existingCart = await this.cartModel.findOne({ customer: userId });
 
     if (!existingCart) {
@@ -75,7 +78,7 @@ export class CartService implements ICartService {
 
   public async updateItemInCart(
     id: string,
-    updateItem: ItemDto,
+    updateItem: CreateItemDto,
   ): Promise<Cart> {
     const existingCart = await this.getCartByIdOrThrow(id);
 

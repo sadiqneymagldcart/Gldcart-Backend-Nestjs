@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -15,13 +16,15 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { ItemDto } from '@item/dto/item.dto';
+import { CreateItemDto } from '@item/dto/create-item.dto';
 import { Cart } from '@cart/schemas/cart.schema';
 import { CartService } from '@cart/services/cart.service';
-import { UpdateItemDto } from '@cart/dto/update-item.dto';
+import { UpdateItemDto } from '@item/dto/update-item.dto';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('Carts')
 @Controller('cart')
+@UseInterceptors(CacheInterceptor)
 export class CartController {
   public constructor(private readonly cartService: CartService) { }
 
@@ -49,7 +52,7 @@ export class CartController {
   @ApiBadRequestResponse({ description: 'Invalid item data' })
   public async addItemToCart(
     @Param('userId') userId: string,
-    @Body() newItem: ItemDto,
+    @Body() newItem: CreateItemDto,
   ): Promise<Cart> {
     return this.cartService.addItemToCart(userId, newItem);
   }
