@@ -1,7 +1,8 @@
 import { CreateMessageDto } from '@chat/dto/create-message.dto';
 import { Events } from '@chat/enums/events.enum';
 import { ChatService } from '@chat/services/chat.service';
-import { Logger, Inject, Injectable } from '@nestjs/common';
+import { MessageService } from '@chat/services/message.service';
+import { Logger, Injectable } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -26,63 +27,55 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(ChatGateway.name);
 
   public constructor(
-    @Inject(ChatService)
     private readonly chatService: ChatService,
-  ) {}
+    private readonly messageService: MessageService,
+  ) { }
 
   public async handleConnection(
     @ConnectedSocket() socket: Socket,
   ): Promise<void> {
-    const userId = socket.handshake.query.userId as string;
-    if (!userId) {
-      this.logger.warn('User connected without userId');
-      socket.disconnect();
-      return;
-    }
+    const userId = this.getUserId(socket);
+    if (!userId) return;
 
-    this.logger.log('User connected: ' + userId);
+    this.logger.log(`User connected: ${userId}`);
     try {
-      await Promise.all([
-        this.chatService.updateUserOnlineStatus(userId, true),
-        this.sendUserChatsList(socket, userId),
-      ]);
-      this.chatService.watchChatCollectionChanges(socket);
+      await this.handleUserStatusChange(userId, true, socket);
     } catch (error) {
-      this.handleError(
-        'Error handling connection for user ' + userId,
-        error,
-        socket,
-      );
+      this.handleError('Error handling connection', error, socket);
     }
   }
 
   public async handleDisconnect(
     @ConnectedSocket() socket: Socket,
   ): Promise<void> {
-    const userId = socket.handshake.query.userId as string;
-    this.logger.log('User disconnected: ' + userId);
+    const userId = this.getUserId(socket);
+    if (!userId) return;
+
+    this.logger.log(`User disconnected: ${userId}`);
     try {
-      await this.chatService.updateUserOnlineStatus(userId, false);
+      await this.handleUserStatusChange(userId, false, socket);
     } catch (error) {
-      this.handleError(
-        'Error handling connection for user ' + userId,
-        error,
-        socket,
-      );
+      this.handleError('Error handling disconnection', error, socket);
     }
   }
 
   @SubscribeMessage(Events.JOIN)
-  public handleJoin(
+  public async handleJoin(
     @ConnectedSocket() socket: Socket,
     @MessageBody() chatId: string,
-  ): void {
+  ): Promise<void> {
     if (!chatId) {
       this.logger.warn('User tried to join a chat without chatId');
       return;
     }
-    this.logger.log(`User joined chat: ${chatId}`);
-    socket.join(chatId);
+    try {
+      const userId = this.getUserId(socket);
+      socket.join(chatId);
+      socket.emit('join_ack', { message: 'Successfully joined chat' });
+      this.server.to(chatId).emit('user_joined', { userId });
+    } catch (error) {
+      this.handleError('Error handling join', error, socket);
+    }
   }
 
   @SubscribeMessage(Events.SEND_MESSAGE)
@@ -91,7 +84,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ): Promise<void> {
     this.logger.log('Message received', JSON.stringify(message));
     try {
-      const savedMessage = await this.chatService.createMessage(message);
+      const savedMessage = await this.messageService.createMessage(message);
       this.server
         .to(message.chatId as string)
         .emit(Events.RECEIVE_MESSAGE, savedMessage);
@@ -101,34 +94,73 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  @SubscribeMessage(Events.LEAVE)
-  public handleLeave(
+  @SubscribeMessage(Events.REQUEST_ALL_MESSAGES)
+  public async requestAllMessages(
     @ConnectedSocket() socket: Socket,
     @MessageBody() chatId: string,
-  ): void {
+  ): Promise<void> {
     if (!chatId) {
-      this.logger.warn('User tried to leave a chat without chatId');
+      this.logger.warn('User requested all messages without chatId');
       return;
     }
-    this.logger.log(`User left chat: ${chatId}`);
-    socket.leave(chatId);
+    const messages = await this.messageService.getChatMessages(chatId);
+    socket.emit(Events.SEND_ALL_MESSAGES, messages);
   }
 
+  @SubscribeMessage(Events.REQUEST_ALL_CHATS)
   private async sendUserChatsList(
     socket: Socket,
     userId: string,
   ): Promise<void> {
-    this.logger.log(`Getting chats for user: ${userId}`);
+    const chats = await this.chatService.getUserChats(userId);
+    socket.emit(Events.CHATS, chats);
+  }
+
+  @SubscribeMessage(Events.LEAVE)
+  public async handleLeave(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() chatId: string,
+  ): Promise<void> {
+    if (!chatId) {
+      this.logger.warn('User tried to leave a chat without chatId');
+      return;
+    }
+
     try {
-      const chats = await this.chatService.getUserChats(userId);
-      socket.emit(Events.CHATS, chats);
+      const userId = this.getUserId(socket);
+
+      socket.leave(chatId);
+      socket.emit('leave_ack', { message: 'Successfully left chat' });
+      this.server.to(chatId).emit('user_left', { userId });
     } catch (error) {
-      this.handleError(`Error getting chats for user ${userId}`, error, socket);
+      this.handleError('Error handling leave', error, socket);
+    }
+  }
+
+  private getUserId(socket: Socket): string | null {
+    const userId = socket.handshake.query.userId;
+    if (typeof userId !== 'string') {
+      this.logger.warn('Invalid userId');
+      socket.disconnect();
+      return null;
+    }
+    return userId;
+  }
+
+  private async handleUserStatusChange(
+    userId: string,
+    isOnline: boolean,
+    socket: Socket,
+  ): Promise<void> {
+    await this.chatService.updateUserOnlineStatus(userId, isOnline);
+    if (isOnline) {
+      await this.sendUserChatsList(socket, userId);
+      this.chatService.watchChatCollectionChanges(socket);
     }
   }
 
   private handleError(message: string, error: any, socket: Socket): void {
-    this.logger.error(message, error.stack);
-    socket.disconnect();
+    this.logger.error(`${message}: ${error.stack}`);
+    socket.emit('error', { message: error.message });
   }
 }
