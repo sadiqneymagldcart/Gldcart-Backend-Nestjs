@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Cart, CartDocument } from '@cart/schemas/cart.schema';
 import { ItemDto } from '@item/dto/item.dto';
 import { ICartService } from '@cart/iterfaces/cart.service.interface';
+import { UpdateItemDto } from '@cart/dto/update-item.dto';
 
 @Injectable()
 export class CartService implements ICartService {
@@ -45,7 +46,9 @@ export class CartService implements ICartService {
       });
       return cart.save();
     } else {
-      const itemExists = existingCart.items.some((i) => i.id === newItem.id);
+      const itemExists = existingCart.items.some(
+        (item) => item.id.toString() === newItem.id,
+      );
 
       if (!itemExists) {
         existingCart.items.push(newItem);
@@ -87,6 +90,24 @@ export class CartService implements ICartService {
     }
 
     existingCart.items[itemIndex] = updateItem;
+
+    return existingCart.save();
+  }
+
+  public async updateItemQuantityInCart(
+    id: string,
+    itemId: string,
+    updateItem: UpdateItemDto,
+  ): Promise<Cart> {
+    const existingCart = await this.getCartByIdOrThrow(id);
+
+    const item = existingCart.items.find((i) => i.id.toString() === itemId);
+
+    if (!item) {
+      throw new NotFoundException(`Item with ID ${itemId} not found in cart`);
+    }
+
+    item.quantity = updateItem.quantity;
 
     return existingCart.save();
   }
