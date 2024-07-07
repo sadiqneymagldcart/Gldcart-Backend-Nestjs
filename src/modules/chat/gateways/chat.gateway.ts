@@ -13,6 +13,7 @@ import {
   WebSocketServer,
   WsException,
 } from '@nestjs/websockets';
+import { TokenService } from '@token/services/token.service';
 import { Server, Socket } from 'socket.io';
 
 @Injectable()
@@ -29,12 +30,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   public constructor(
     private readonly chatService: ChatService,
     private readonly messageService: MessageService,
+    private readonly tokenService: TokenService,
   ) { }
 
   public async handleConnection(
     @ConnectedSocket() socket: Socket,
   ): Promise<void> {
-    const userId = this.getUserId(socket);
+    const userId = await this.getUserId(socket);
     if (!userId) return;
 
     this.logger.log(`User connected: ${userId}`);
@@ -48,7 +50,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   public async handleDisconnect(
     @ConnectedSocket() socket: Socket,
   ): Promise<void> {
-    const userId = this.getUserId(socket);
+    const userId = await this.getUserId(socket);
     if (!userId) return;
 
     this.logger.log(`User disconnected: ${userId}`);
@@ -71,8 +73,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       const userId = this.getUserId(socket);
       socket.join(chatId);
-      socket.emit('join_ack', { message: 'Successfully joined chat' });
-      this.server.to(chatId).emit('user_joined', { userId });
+      socket.emit(Events.JOIN_ACK, { message: 'Successfully joined chat' });
+      this.server.to(chatId).emit(Events.USER_JOINED, { userId });
     } catch (error) {
       this.handleError('Error handling join', error, socket);
     }
@@ -130,21 +132,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const userId = this.getUserId(socket);
 
       socket.leave(chatId);
-      socket.emit('leave_ack', { message: 'Successfully left chat' });
-      this.server.to(chatId).emit('user_left', { userId });
+      socket.emit(Events.LEAVE_ACK, { message: 'Successfully left chat' });
+      this.server.to(chatId).emit(Events.USER_LEFT, { userId });
     } catch (error) {
       this.handleError('Error handling leave', error, socket);
     }
   }
 
-  private getUserId(socket: Socket): string | null {
-    const userId = socket.handshake.query.userId;
-    if (typeof userId !== 'string') {
-      this.logger.warn('Invalid userId');
-      socket.disconnect();
+  private async getUserId(socket: Socket) {
+    const accessToken = socket.handshake.query.accessToken as string;
+    try {
+      const { _id } = await this.tokenService.verifyAccessToken(accessToken);
+      return _id;
+    } catch (error) {
+      this.logger.error('Error verifying access token', error.stack);
       return null;
     }
-    return userId;
   }
 
   private async handleUserStatusChange(
@@ -161,6 +164,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   private handleError(message: string, error: any, socket: Socket): void {
     this.logger.error(`${message}: ${error.stack}`);
-    socket.emit('error', { message: error.message });
+    socket.emit(Events.ERROR, { message: error.message });
   }
 }
