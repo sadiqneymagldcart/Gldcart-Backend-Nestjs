@@ -1,3 +1,4 @@
+import { CreateChatDto } from '@chat/dto/create-chat.dto';
 import { CreateMessageDto } from '@chat/dto/create-message.dto';
 import { Events } from '@chat/enums/events.enum';
 import { IChatGateway } from '@chat/interfaces/chat-gateway.interface';
@@ -38,12 +39,12 @@ export class ChatGateway
   public async handleConnection(
     @ConnectedSocket() socket: Socket,
   ): Promise<void> {
-    const userId = await this.getUserId(socket);
-    if (!userId) return;
-
-    this.logger.log(`User connected: ${userId}`);
+    const accessToken = socket.handshake.query.accessToken as string;
     try {
-      await this.handleUserStatusChange(userId, true, socket);
+      const { _id } = await this.tokenService.verifyAccessToken(accessToken);
+      socket.data.userId = _id;
+      this.logger.log(`User connected: ${_id}`);
+      await this.handleUserStatusChange(_id, true, socket);
     } catch (error) {
       this.handleError('Error handling connection', error, socket);
     }
@@ -52,7 +53,7 @@ export class ChatGateway
   public async handleDisconnect(
     @ConnectedSocket() socket: Socket,
   ): Promise<void> {
-    const userId = await this.getUserId(socket);
+    const userId = this.getUserId(socket);
     if (!userId) return;
 
     this.logger.log(`User disconnected: ${userId}`);
@@ -111,9 +112,22 @@ export class ChatGateway
     socket.emit(Events.SEND_ALL_MESSAGES, messages);
   }
 
+  @SubscribeMessage(Events.CREATE_CHAT)
+  public async createChat(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() userIds: CreateChatDto,
+  ): Promise<void> {
+    try {
+      const chat = await this.chatService.createChat(userIds);
+      this.server.emit(Events.RECEIVE_CHAT, chat);
+    } catch (error) {
+      this.handleError('Error creating chat', error, socket);
+    }
+  }
+
   @SubscribeMessage(Events.REQUEST_ALL_CHATS)
   public async requestAllChats(socket: Socket): Promise<void> {
-    const userId = await this.getUserId(socket);
+    const userId = this.getUserId(socket);
 
     if (!userId) {
       this.logger.warn('User tried to request all chats without userId');
@@ -145,15 +159,8 @@ export class ChatGateway
     }
   }
 
-  private async getUserId(socket: Socket) {
-    const accessToken = socket.handshake.query.accessToken as string;
-    try {
-      const { _id } = await this.tokenService.verifyAccessToken(accessToken);
-      return _id;
-    } catch (error) {
-      this.logger.error('Error verifying access token', error.stack);
-      return null;
-    }
+  private getUserId(socket: Socket): string {
+    return socket.data.userId;
   }
 
   private async handleUserStatusChange(
