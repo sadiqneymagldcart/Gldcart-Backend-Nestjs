@@ -19,6 +19,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
 import mongoConfig from '@config/mongo.config';
 import redisConfig from '@config/redis.config';
+import { WishlistModule } from '@wishlist/wishlist.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import redisConfig from '@config/redis.config';
     StripeModule,
     SubscriptionModule,
     ItemModule,
+    WishlistModule,
   ],
   controllers: [AppController],
 })
