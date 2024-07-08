@@ -9,21 +9,25 @@ import { Pagination } from '@shared/decorators/pagination.decorator';
 
 @Injectable()
 export class OfferingService {
+  private readonly searchService: SearchService<OfferingDocument>;
   public constructor(
     @InjectModel(Offering.name) private offeringModel: Model<OfferingDocument>,
-    private readonly searchService: SearchService<OfferingDocument>,
-  ) {}
-
-  public async create(createOfferingDto: CreateOfferingDto): Promise<Offering> {
-    const createdOffering = new this.offeringModel(createOfferingDto);
-    return await createdOffering.save();
+  ) {
+    this.searchService = new SearchService<OfferingDocument>(offeringModel);
   }
 
-  public async findAll(): Promise<Offering[]> {
+  public async createOffering(
+    createOfferingDto: CreateOfferingDto,
+  ): Promise<Offering> {
+    const newOffering = new this.offeringModel(createOfferingDto);
+    return await newOffering.save();
+  }
+
+  public async getAllOfferings(): Promise<Offering[]> {
     return await this.offeringModel.find();
   }
 
-  public async findById(id: string): Promise<Offering> {
+  public async findOfferingById(id: string): Promise<Offering> {
     const offering = await this.offeringModel.findById(id);
     if (!offering) {
       throw new NotFoundException(`Offering with ID ${id} not found`);
@@ -31,7 +35,7 @@ export class OfferingService {
     return offering;
   }
 
-  public async getByFilters(
+  public async getOfferingsByFilters(
     pagination: Pagination,
     filters: {
       [key: string]: any;
@@ -43,35 +47,34 @@ export class OfferingService {
     );
   }
 
-  public async getBySearchQuery(
+  public async getOfferingsBySearchQuery(
     pagination: Pagination,
     searchQuery: string,
   ): Promise<Offering[]> {
     return await this.searchService.searchWithPaginationAndText(
       pagination,
-      ['name', 'description', 'category'],
       searchQuery,
     );
   }
 
-  public async update(
+  public async updateOffering(
     id: string,
     updateOfferingDto: UpdateOfferingDto,
   ): Promise<Offering> {
-    const existingOffering = await this.offeringModel.findByIdAndUpdate(
+    const updatedOffering = await this.offeringModel.findByIdAndUpdate(
       id,
       updateOfferingDto,
       { new: true },
     );
-    if (!existingOffering) {
+    if (!updatedOffering) {
       throw new NotFoundException(`Offering with ID ${id} not found`);
     }
-    return existingOffering;
+    return updatedOffering;
   }
 
-  public async remove(id: string): Promise<void> {
-    const result = await this.offeringModel.findByIdAndDelete(id);
-    if (!result) {
+  public async deleteOffering(id: string): Promise<void> {
+    const deletedOffering = await this.offeringModel.findByIdAndDelete(id);
+    if (!deletedOffering) {
       throw new NotFoundException(`Offering with ID ${id} not found`);
     }
   }
