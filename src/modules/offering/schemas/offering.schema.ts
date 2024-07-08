@@ -27,8 +27,8 @@ export class Offering {
 export const OfferingSchema = SchemaFactory.createForClass(Offering);
 
 OfferingSchema.index({
-  _id: 1,
-  name: 1,
-  category: 1,
-  subcategory: 1,
+  name: 'text',
+  category: 'text',
+  description: 'text',
+  subcategory: 'text',
 });
