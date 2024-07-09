@@ -18,18 +18,18 @@ export class ProductService implements IProductService {
   public constructor(
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
-  ) {}
+  ) { }
 
   public async create(createProductDto: CreateProductDto): Promise<Product> {
     const createdProduct = new this.productModel(createProductDto);
     return createdProduct.save();
   }
 
-  public async findAll(): Promise<Product[]> {
+  public async getAll(): Promise<Product[]> {
     return this.productModel.find().lean();
   }
 
-  public async findById(id: string): Promise<Product> {
+  public async getById(id: string): Promise<Product> {
     const offering = await this.productModel.findById(id).lean();
     if (!offering) {
       throw new NotFoundException(`Product with ID ${id} not found`);
