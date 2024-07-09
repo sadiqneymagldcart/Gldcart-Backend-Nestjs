@@ -1,4 +1,4 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '@user/schemas/user.schema';
 import { OrderStatus } from '@order/enums/order-status.enum';
 import { Item } from '@item/schemas/item.schema';
@@ -42,3 +42,5 @@ export class Order {
   @Prop({ type: Number, required: true })
   trackNumber: number;
 }
+
+export const OrderSchema = SchemaFactory.createForClass(Order);
