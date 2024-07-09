@@ -10,7 +10,6 @@ import { RequestWithRawBody } from '@stripe/interfaces/raw-body.interface';
 import { StripeWebhookService } from '@stripe/services/stripe-webhook.service';
 import { StripeService } from '@stripe/services/stripe.service';
 import { ApiTags, ApiOperation, ApiHeader, ApiResponse } from '@nestjs/swagger';
-import Stripe from 'stripe';
 
 @ApiTags('Stripe Webhook')
 @Controller('webhook')
@@ -20,7 +19,7 @@ export class StripeWebhookController {
   public constructor(
     private readonly stripeService: StripeService,
     private readonly stripeWebhookService: StripeWebhookService,
-  ) {}
+  ) { }
 
   @Post()
   @ApiOperation({ summary: 'Handle incoming Stripe events' })
@@ -53,21 +52,11 @@ export class StripeWebhookController {
     switch (event.type) {
       case 'customer.subscription.updated':
       case 'customer.subscription.created':
-        return this._handleSubscriptionEvent(event);
+        return this.stripeWebhookService.processSubscriptionUpdate(event);
       case 'payment_intent.succeeded':
-        return this._handlePaymentIntentEvent(event);
+        this.stripeWebhookService.processPaymentSucceded(event);
       default:
         this.logger.warn(`Unhandled event type: ${event.type}`);
     }
-  }
-
-  private _handleSubscriptionEvent(event: Stripe.Event) {
-    this.logger.log('Processing subscription event', event);
-    return this.stripeWebhookService.processSubscriptionUpdate(event);
-  }
-
-  private _handlePaymentIntentEvent(event: Stripe.Event) {
-    this.logger.log('Payment Intent was successful!', event);
-    // TODO: Add order handling logic
   }
 }
