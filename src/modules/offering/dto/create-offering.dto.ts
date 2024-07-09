@@ -39,6 +39,15 @@ export class CreateOfferingDto {
   description?: string;
 
   @ApiProperty({
+    type: 'string',
+    format: 'binary',
+    isArray: true,
+    description: 'Images of the offering',
+  })
+  @IsNotEmpty()
+  images: any;
+
+  @ApiProperty({
     description: 'The category of the offering',
     example: 'Category1',
   })
