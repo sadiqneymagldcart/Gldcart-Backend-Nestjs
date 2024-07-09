@@ -9,6 +9,7 @@ import {
   Delete,
   UseInterceptors,
   Query,
+  UploadedFiles,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -30,24 +31,33 @@ import {
   Pagination,
   PaginationParams,
 } from '@shared/decorators/pagination.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { AwsStorageService } from '@storages/services/storages.service';
 
 @ApiTags('Proffesional Services')
 @Controller('offerings')
 @UseInterceptors(CacheInterceptor)
 export class OfferingController {
-  public constructor(private readonly offeringService: OfferingService) { }
+  public constructor(
+    private readonly offeringService: OfferingService,
+    private readonly awsStorage: AwsStorageService,
+  ) { }
 
-  @Post()
   @ApiOperation({ summary: 'Create an offering' })
   @ApiBody({ type: CreateOfferingDto })
   @ApiResponse({
     status: 201,
-    description: 'The offering has been successfully created.',
+    description: 'The product has been successfully created.',
   })
-  public async createNewOffering(
-    @Body() offeringDto: CreateOfferingDto,
+  @UseInterceptors(FileInterceptor('images'))
+  @Post()
+  public async createOffering(
+    @UploadedFiles() images: Express.Multer.File[],
+    @Body() createOfferingDto: CreateOfferingDto,
   ): Promise<Offering> {
-    return this.offeringService.createOffering(offeringDto);
+    const imageUrls = await this.awsStorage.upload(images);
+    const offeringWithImages = { ...createOfferingDto, images: imageUrls };
+    return this.offeringService.createOffering(offeringWithImages);
   }
 
   @Get()
