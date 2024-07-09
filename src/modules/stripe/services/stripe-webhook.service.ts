@@ -1,11 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { OrderService } from '@order/services/order.service';
 import {
   StripeEvent,
   StripeEventDocument,
 } from '@stripe/schemas/stripe-event.schema';
 import { UserService } from '@user/services/user.service';
 import { Model } from 'mongoose';
+import { OrderStatus } from '@order/enums/order-status.enum';
 import Stripe from 'stripe';
 
 @Injectable()
@@ -14,7 +16,8 @@ export class StripeWebhookService {
     @InjectModel(StripeEvent.name)
     private eventModel: Model<StripeEventDocument>,
     private readonly userService: UserService,
-  ) {}
+    private readonly orderService: OrderService,
+  ) { }
 
   public async createEvent(id: string): Promise<StripeEvent> {
     const event = new this.eventModel({ _id: id });
@@ -41,5 +44,16 @@ export class StripeWebhookService {
       customerId,
       subscriptionStatus,
     );
+  }
+
+  public async processPaymentSucceded(event: Stripe.Event) {
+    await this.createEvent(event.id);
+
+    const data = event.data.object as Stripe.PaymentIntent;
+
+    const orderId = data.metadata.orderId;
+
+    await this.orderService.updateOrderStatus(orderId, OrderStatus.READY);
+    await this.orderService.updateInventory(orderId);
   }
 }
