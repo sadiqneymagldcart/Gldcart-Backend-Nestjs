@@ -39,18 +39,6 @@ export class CreateOfferingDto {
   description?: string;
 
   @ApiProperty({
-    description: 'Array of image URLs associated with the offering',
-    example: [
-      'https://example.com/image1.jpg',
-      'https://example.com/image2.jpg',
-    ],
-  })
-  @IsNotEmpty()
-  @IsArray()
-  @IsString({ each: true })
-  images: string[];
-
-  @ApiProperty({
     description: 'The category of the offering',
     example: 'Category1',
   })
