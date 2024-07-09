@@ -23,15 +23,6 @@ export class CreateProductDto {
   })
   description?: string;
 
-  @ApiProperty({
-    description: 'Array of image URLs associated with the product',
-    example: [
-      'https://example.com/image1.jpg',
-      'https://example.com/image2.jpg',
-    ],
-  })
-  images: string[];
-
   @ApiProperty({ description: 'The category of the product' })
   category: string;
 
