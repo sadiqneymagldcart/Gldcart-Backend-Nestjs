@@ -72,6 +72,9 @@
       "@wishlist/*": [
         "src/modules/wishlist/*"
       ],
+      "@storages/*": [
+        "src/modules/storages/*"
+      ],
       "@shared/*": [
         "src/shared/*"
       ],
