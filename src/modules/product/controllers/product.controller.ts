@@ -10,8 +10,13 @@ import {
   UseInterceptors,
   UploadedFiles,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiConsumes,
+} from '@nestjs/swagger';
 import { CreateProductDto } from '@product/dto/create-product.dto';
 import { UpdateProductDto } from '@product/dto/update-product.dto';
 import { Product } from '@product/schemas/product.schema';
@@ -32,12 +37,14 @@ export class ProductController {
     status: 201,
     description: 'The product has been successfully created.',
   })
-  @UseInterceptors(FileInterceptor('images'))
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FilesInterceptor('images'))
   @Post()
   public async createProduct(
-    @UploadedFiles() images: Express.Multer.File[],
+    @UploadedFiles() images: Array<Express.Multer.File>,
     @Body() createProductDto: CreateProductDto,
   ): Promise<Product> {
+    console.log(images);
     const imageUrls = await this.awsStorage.upload(images);
     const productWithImages = { ...createProductDto, images: imageUrls };
     return this.productService.create(productWithImages);
@@ -47,7 +54,7 @@ export class ProductController {
   @ApiResponse({ status: 200, description: 'Return all products.' })
   @Get()
   public async getAllProducts(): Promise<Product[]> {
-    return this.productService.findAll();
+    return this.productService.getAll();
   }
 
   @ApiOperation({ summary: 'Get a product by ID' })
@@ -58,7 +65,7 @@ export class ProductController {
   @ApiResponse({ status: 404, description: 'Product not found.' })
   @Get(':id')
   public async getByProductById(@Param('id') id: string): Promise<Product> {
-    return this.productService.findById(id);
+    return this.productService.getById(id);
   }
 
   @ApiOperation({ summary: 'Update a product by ID' })
