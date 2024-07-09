@@ -1,24 +1,19 @@
-import {
+ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsArray,
   IsEnum,
 } from 'class-validator';
-import { Type } from 'class-transformer';
-import { User } from '@user/schemas/user.schema';
 import { OrderStatus } from '@order/enums/order-status.enum';
-import { Item } from '@item/schemas/item.schema';
 
 export class CreateOrderDto {
   @IsNotEmpty()
-  @Type(() => User)
-  customer: User;
+  customer: string;
 
   @IsArray()
   @IsNotEmpty()
-  @Type(() => Item)
-  items: Item[];
+  items: string[];
 
   @IsNumber()
   @IsOptional()
