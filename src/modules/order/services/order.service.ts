@@ -1,36 +1,78 @@
-import { ItemService } from '@item/services/item.service';
-import { Injectable, Logger } from '@nestjs/common';
+import { ItemTypes } from '@item/enums/item-types.enum';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { CreateOrderDto } from '@order/dto/create-order.dto';
+import { UpdateOrderDto } from '@order/dto/update-order.dto';
+import { OrderStatus } from '@order/enums/order-status.enum';
 import { Order, OrderDocument } from '@order/schemas/order.schema';
-import { Nullable } from '@shared/types/common';
+import { ProductService } from '@product/services/product.service';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class OrderService {
-  private readonly logger = new Logger(OrderService.name);
-
   public constructor(
     @InjectModel(Order.name) private readonly orderModel: Model<OrderDocument>,
-    private readonly itemService: ItemService,
-  ) {}
+    private readonly productService: ProductService,
+  ) { }
 
-  public async create(order: Order): Promise<Order> {
-    this.logger.log('Creating order');
-    const createdOrder = new this.orderModel(order);
-    return createdOrder.save();
+  public async createOrder(order: CreateOrderDto): Promise<Order> {
+    return this.orderModel.findOneAndUpdate({}, order, {
+      upsert: true,
+      new: true,
+    });
   }
 
-  public async getByIdWithPopulatedItems(id: string): Promise<Nullable<Order>> {
-    this.logger.log(`Retrieving order with populated items: ${id}`);
-    const order = await this.orderModel.findById(id);
-
-    if (!order) {
-      this.logger.error(`Order not found: ${id}`);
-      return null;
+  public async findOrderWithItemsById(id: string): Promise<Order> {
+    const cart = await this.orderModel.findById(id).populate('items.id').lean();
+    if (!cart) {
+      throw new NotFoundException(`Cart with ID ${id} not found`);
     }
+    return cart;
+  }
 
-    // const populatedItems = await this.itemService.populateItems(order.items);
+  public async updateOrder(
+    id: string,
+    data: UpdateOrderDto,
+  ): Promise<Order | null> {
+    return this.orderModel.findOneAndUpdate({ _id: id }, data, { new: true });
+  }
 
-    // return { ...order.toJSON(), items: populatedItems };
+  public async processPayment(
+    orderId: string,
+    status: OrderStatus,
+  ): Promise<void> {
+    await this.updateOrderStatus(orderId, status);
+    await this.updateInventory(orderId);
+  }
+
+  public async updateOrderStatus(
+    id: string,
+    status: OrderStatus,
+  ): Promise<Order> {
+    const order = await this.orderModel.findOneAndUpdate(
+      { _id: id },
+      { status },
+      { new: true },
+    );
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${id} not found`);
+    }
+    return order;
+  }
+
+  public async updateInventory(orderId: string): Promise<void> {
+    const order = await this.findOrderWithItemsById(orderId);
+
+    const productsToUpdate = order.items.filter(
+      (item) => item.type === ItemTypes.PRODUCT,
+    );
+
+    await Promise.all(
+      productsToUpdate.map((product) =>
+        this.productService.updateStock(product.id, product.quantity),
+      ),
+    );
+
+    return;
   }
 }

@@ -1,7 +1,11 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
+export interface Filtering {
+  [key: string]: string | string[];
+}
+
 export const FilteringParams = createParamDecorator(
-  (_data: unknown, ctx: ExecutionContext) => {
+  (_data: unknown, ctx: ExecutionContext): Filtering => {
     const request = ctx.switchToHttp().getRequest();
     const filters: any = {};
 
@@ -11,7 +15,7 @@ export const FilteringParams = createParamDecorator(
         !['page', 'limit', 'size', 'offset'].includes(key)
       ) {
         filters[key] =
-          key === 'categoryId'
+          key === 'category'
             ? request.query[key].split(',')
             : request.query[key];
       }

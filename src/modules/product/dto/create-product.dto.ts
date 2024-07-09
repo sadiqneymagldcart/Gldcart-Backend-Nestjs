@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Types } from 'mongoose';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateProductDto {
   @ApiProperty({
     description: 'The unique identifier of the seller',
-    example: '66792047d6650afd5905252e',
+    example: '668a5fb74ddcd5703f6fdba7',
   })
-  sellerId: Types.ObjectId;
+  seller: string;
 
   @ApiProperty({ description: 'The number of products in stock' })
   stock: number;
@@ -24,13 +24,13 @@ export class CreateProductDto {
   description?: string;
 
   @ApiProperty({
-    description: 'Array of image URLs associated with the product',
-    example: [
-      'https://example.com/image1.jpg',
-      'https://example.com/image2.jpg',
-    ],
+    type: 'string',
+    format: 'binary',
+    isArray: true,
+    description: 'Images of the product',
   })
-  images: string[];
+  @IsNotEmpty()
+  images: any;
 
   @ApiProperty({ description: 'The category of the product' })
   category: string;
