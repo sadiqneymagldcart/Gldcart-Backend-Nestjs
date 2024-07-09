@@ -26,7 +26,7 @@ export class StripeController {
     const paymentIntent = await this.stripeService.createPaymentIntent(
       intent.amount,
       intent.currency,
-      { order_id: intent.orderId },
+      { orderId: intent.orderId },
       request.user.stripeCustomerId,
     );
 
