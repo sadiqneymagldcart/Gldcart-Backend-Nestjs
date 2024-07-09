@@ -22,7 +22,10 @@ import { PaginatedResourceDto } from '@search/dto/paginated-resource.dto';
 import { UpdateOfferingDto } from '@offering/dto/update-offering.dto';
 import { Offering } from '@offering/schemas/offering.schema';
 import { OfferingService } from '@offering/services/offering.service';
-import { FilteringParams } from '@shared/decorators/filtering.decorator';
+import {
+  Filtering,
+  FilteringParams,
+} from '@shared/decorators/filtering.decorator';
 import {
   Pagination,
   PaginationParams,
@@ -74,7 +77,7 @@ export class OfferingController {
   })
   public async getAllOfferings(
     @PaginationParams() paginationParams: Pagination,
-    @FilteringParams() filters: { [key: string]: any },
+    @FilteringParams() filters: Filtering,
     @Query('text') text: string,
   ) {
     if (text) {
