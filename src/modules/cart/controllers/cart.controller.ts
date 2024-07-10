@@ -27,7 +27,7 @@ import { TransactionInterceptor } from '@shared/interceptors/transaction.interce
 @Controller('cart')
 @UseInterceptors(CacheInterceptor)
 export class CartController {
-  public constructor(private readonly cartService: CartService) { }
+  public constructor(private readonly cartService: CartService) {}
 
   @Get('/user/:userId')
   @ApiOperation({ summary: 'Get a cart for user' })

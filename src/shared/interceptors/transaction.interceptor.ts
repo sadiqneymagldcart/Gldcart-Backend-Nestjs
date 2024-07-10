@@ -6,7 +6,7 @@ import { Observable, catchError, tap } from 'rxjs';
 export class TransactionInterceptor implements NestInterceptor {
   public constructor(
     @InjectConnection() private readonly connection: mongoose.Connection,
-  ) { }
+  ) {}
 
   public async intercept(
     context: ExecutionContext,

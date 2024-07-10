@@ -9,7 +9,7 @@ export class MessageService {
   public constructor(
     @InjectModel(Message.name)
     private readonly messageModel: Model<MessageDocument>,
-  ) { }
+  ) {}
 
   public async createMessage(message: CreateMessageDto): Promise<Message> {
     return await this.messageModel.create(message);

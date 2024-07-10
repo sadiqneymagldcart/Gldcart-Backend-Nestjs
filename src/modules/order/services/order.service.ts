@@ -12,15 +12,10 @@ export class OrderService {
   public constructor(
     @InjectModel(Order.name) private readonly orderModel: Model<OrderDocument>,
     private readonly productService: ProductService,
-  ) { }
+  ) {}
 
   public async createOrder(order: CreateOrderDto): Promise<Order> {
-    try {
-      return await this.orderModel.create(order);
-    } catch (error) {
-      console.error(`Error creating order: ${error}`);
-      throw error;
-    }
+    return await this.orderModel.create(order);
   }
 
   public async findOrderWithItemsById(id: string) {
@@ -28,9 +23,8 @@ export class OrderService {
       .findById(id)
       .populate('items.id')
       .lean();
-    if (!order) {
-      throw new NotFoundException(`Order with ID ${id} not found`);
-    }
+    if (!order) throw new NotFoundException(`Order with ID ${id} not found`);
+
     return order;
   }
 
@@ -43,9 +37,8 @@ export class OrderService {
     try {
       const order = await this.updateOrder(orderId, { status }, session);
 
-      if (!order) {
-        throw new NotFoundException();
-      }
+      if (!order) throw new NotFoundException();
+
       await this.updateInventory(order, session);
       await session.commitTransaction();
     } catch (error) {
@@ -65,9 +58,8 @@ export class OrderService {
       new: true,
       session,
     });
-    if (!order) {
-      throw new NotFoundException(`Order with ID ${id} not found`);
-    }
+    if (!order) throw new NotFoundException(`Order with ID ${id} not found`);
+
     return order;
   }
 
