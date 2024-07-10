@@ -59,4 +59,4 @@ import { WishlistModule } from '@wishlist/wishlist.module';
   ],
   controllers: [AppController],
 })
-export class AppModule { }
+export class AppModule {}

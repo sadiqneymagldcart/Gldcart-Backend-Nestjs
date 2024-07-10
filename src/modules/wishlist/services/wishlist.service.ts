@@ -13,7 +13,7 @@ export class WishlistService implements IWishlistService {
   public constructor(
     @InjectModel(Wishlist.name)
     private readonly wishlistModel: Model<WishlistDocument>,
-  ) { }
+  ) {}
 
   public async findWishlistByUserId(userId: string): Promise<Wishlist> {
     const wishlist = await this.wishlistModel.findOne({ customer: userId });

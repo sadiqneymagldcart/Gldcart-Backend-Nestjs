@@ -17,7 +17,7 @@ export class StripeWebhookService {
     private eventModel: Model<StripeEventDocument>,
     private readonly userService: UserService,
     private readonly orderService: OrderService,
-  ) { }
+  ) {}
 
   public async createEvent(id: string): Promise<StripeEvent> {
     const event = new this.eventModel({ _id: id });
@@ -53,7 +53,6 @@ export class StripeWebhookService {
 
     const orderId = data.metadata.orderId;
 
-    await this.orderService.updateOrderStatus(orderId, OrderStatus.READY);
-    await this.orderService.updateInventory(orderId);
+    await this.orderService.processPayment(orderId, OrderStatus.PAID);
   }
 }

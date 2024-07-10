@@ -30,7 +30,7 @@ export class ProductController {
   public constructor(
     private readonly productService: ProductService,
     private readonly awsStorage: AwsStorageService,
-  ) { }
+  ) {}
 
   @ApiOperation({ summary: 'Create a product' })
   @ApiResponse({
@@ -44,7 +44,6 @@ export class ProductController {
     @UploadedFiles() images: Array<Express.Multer.File>,
     @Body() createProductDto: CreateProductDto,
   ): Promise<Product> {
-    console.log(images);
     const imageUrls = await this.awsStorage.upload(images);
     const productWithImages = { ...createProductDto, images: imageUrls };
     return this.productService.create(productWithImages);

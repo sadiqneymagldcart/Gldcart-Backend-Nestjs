@@ -2,7 +2,7 @@ import { Pagination } from '@shared/decorators/pagination.decorator';
 import { FilterQuery, Model, Document } from 'mongoose';
 
 export class SearchService<T extends Document> {
-  public constructor(private readonly model: Model<T>) { }
+  public constructor(private readonly model: Model<T>) {}
 
   public async searchWithPaginationAndFilters(
     pagination: Pagination,
