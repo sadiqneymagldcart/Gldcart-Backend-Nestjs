@@ -1,4 +1,4 @@
-import { AuthResponseDto } from '@auth/dto/auth.response.dto';
+import { AuthResponseDto } from '@auth/dto/auth-response.dto';
 import { LoginCredentialsDto } from '@auth/dto/login-credentials.dto';
 import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';
 
