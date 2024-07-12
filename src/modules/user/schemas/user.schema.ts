@@ -35,7 +35,7 @@ export class User {
   addresses: Address;
 
   @Prop()
-  picture?: string;
+  profile_picture?: string;
 
   @Prop({
     required: [true, 'password field is required'],
