@@ -8,20 +8,20 @@ export interface IProductService {
    * @param createProductDto - Data Transfer Object for product creation.
    * @returns A promise that resolves to the created Product object.
    */
-  create(createProductDto: CreateProductDto): Promise<Product>;
+  createProduct(createProductDto: CreateProductDto): Promise<Product>;
 
   /**
    * Get all products.
    * @returns A promise that resolves to an array of Product objects.
    */
-  getAll(): Promise<Product[]>;
+  getAllProducts(): Promise<Product[]>;
 
   /**
    * Get a product by its ID.
    * @param id - The ID of the product.
    * @returns A promise that resolves to the Product object if found, null otherwise.
    */
-  getById(id: string): Promise<Product>;
+  getProductById(id: string): Promise<Product>;
 
   /**
    * Update a product.
@@ -29,12 +29,12 @@ export interface IProductService {
    * @param updateProductDto - Data Transfer Object for product update.
    * @returns A promise that resolves to the updated Product object if found, null otherwise.
    */
-  update(id: string, updateProductDto: UpdateProductDto): Promise<Product>;
+  updateProduct(id: string, updateProductDto: UpdateProductDto): Promise<Product>;
 
   /**
    * Remove a product.
    * @param id - The ID of the product to remove.
    * @returns A promise that resolves when the removal is done.
    */
-  remove(id: string): Promise<void>;
+  removeProduct(id: string): Promise<void>;
 }

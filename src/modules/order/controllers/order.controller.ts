@@ -24,14 +24,14 @@ export class OrderController {
     description: 'The order has been successfully created.',
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
-  public async create(@Body() createOrderDto: CreateOrderDto): Promise<void> {
+  public async createOrder(@Body() createOrderDto: CreateOrderDto): Promise<void> {
     // return this.orderService.create(createOrderDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Retrieve orders' })
   @ApiResponse({ status: 200, description: 'Returned all orders.' })
-  public async findAll(): Promise<void> {
+  public async getAllOrders(): Promise<void> {
     // return this.orderService.findAll();
   }
 
@@ -39,7 +39,7 @@ export class OrderController {
   @ApiOperation({ summary: 'Retrieve order' })
   @ApiResponse({ status: 200, description: 'Returned one order.' })
   @ApiResponse({ status: 404, description: 'Order not found.' })
-  public async findOne(@Param('id') id: string): Promise<void> {
+  public async getOrderById(@Param('id') id: string): Promise<void> {
     // return this.orderService.findOne(id);
   }
 
@@ -51,7 +51,7 @@ export class OrderController {
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   @ApiResponse({ status: 404, description: 'Order not found.' })
-  public async update(
+  public async updateOrder(
     @Param('id') id: string,
     @Body() updateOrderDto: UpdateOrderDto,
   ): Promise<void> {
@@ -65,7 +65,7 @@ export class OrderController {
     description: 'The order has been successfully deleted.',
   })
   @ApiResponse({ status: 404, description: 'Order not found.' })
-  public async remove(@Param('id') id: string): Promise<void> {
+  public async removeOrder(@Param('id') id: string): Promise<void> {
     // return this.orderService.remove(id);
   }
 }

@@ -27,18 +27,18 @@ export class ReviewController {
   @ApiResponse({ status: 200, description: 'Reviews found', type: [Review] })
   @HttpCode(HttpStatus.OK)
   @Get()
-  public async findAll(): Promise<Review[]> {
+  public async getAllReviews(): Promise<Review[]> {
     this.logger.log('REST request to get all reviews');
-    return await this.reviewService.findAll();
+    return await this.reviewService.getAllReviews();
   }
 
   @ApiOperation({ summary: 'Get review by id' })
   @ApiResponse({ status: 200, description: 'Review found', type: Review })
   @HttpCode(HttpStatus.OK)
   @Get('/:id')
-  public async findOne(@Param('id') id: string): Promise<Review> {
+  public async getReviewById(@Param('id') id: string): Promise<Review> {
     this.logger.log(`REST request to get a review: ${id}`);
-    return this.reviewService.findOne(id);
+    return this.reviewService.getReviewById(id);
   }
 
   @ApiOperation({ summary: 'Create a review' })
@@ -46,13 +46,13 @@ export class ReviewController {
   @ApiResponse({ status: 201, description: 'Review created', type: Review })
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  public async create(
+  public async createReview(
     @Body() createReviewDto: CreateReviewDto,
   ): Promise<Review> {
     this.logger.log(
       `REST request to create a review: ${JSON.stringify(createReviewDto)}`,
     );
-    return this.reviewService.create(createReviewDto);
+    return this.reviewService.createReview(createReviewDto);
   }
 
   @ApiOperation({ summary: 'Update a review by id' })
@@ -60,20 +60,20 @@ export class ReviewController {
   @ApiResponse({ status: 200, description: 'Review updated', type: Review })
   @HttpCode(HttpStatus.OK)
   @Put('/:id')
-  public async update(
+  public async updateReview(
     @Param('id') id: string,
     @Body() updateReviewDto: UpdateReviewDto,
   ): Promise<Review> {
     this.logger.log(`REST request to update a review: ${id}`);
-    return this.reviewService.update(id, updateReviewDto);
+    return this.reviewService.updateReview(id, updateReviewDto);
   }
 
   @ApiOperation({ summary: 'Delete a review by id' })
   @ApiResponse({ status: 204, description: 'Review deleted' })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/:id')
-  public async remove(@Param('id') id: string): Promise<void> {
+  public async removeReview(@Param('id') id: string): Promise<void> {
     this.logger.log(`REST request to delete a review: ${id}`);
-    return this.reviewService.remove(id);
+    return this.reviewService.removeReview(id);
   }
 }

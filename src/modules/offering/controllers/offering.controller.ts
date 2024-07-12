@@ -113,7 +113,7 @@ export class OfferingController {
   })
   @ApiResponse({ status: 404, description: 'Offering not found.' })
   public async getOfferingById(@Param('id') id: string): Promise<Offering> {
-    return await this.offeringService.findOfferingById(id);
+    return await this.offeringService.getOfferingById(id);
   }
 
   @Put(':id')
@@ -138,6 +138,6 @@ export class OfferingController {
   })
   @ApiResponse({ status: 404, description: 'Offering not found.' })
   public async deleteOffering(@Param('id') id: string): Promise<void> {
-    return this.offeringService.deleteOffering(id);
+    return this.offeringService.removeOffering(id);
   }
 }

@@ -72,7 +72,7 @@ export class OrderService {
     );
     await Promise.all(
       productsToUpdate.map((product) =>
-        this.productService.updateStock(product.id, product.quantity, session),
+        this.productService.updateProductStock(product.id, product.quantity, session),
       ),
     );
   }

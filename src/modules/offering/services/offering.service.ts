@@ -27,7 +27,7 @@ export class OfferingService {
     return await this.offeringModel.find();
   }
 
-  public async findOfferingById(id: string): Promise<Offering> {
+  public async getOfferingById(id: string): Promise<Offering> {
     const offering = await this.offeringModel.findById(id);
     if (!offering) {
       throw new NotFoundException(`Offering with ID ${id} not found`);
@@ -72,7 +72,7 @@ export class OfferingService {
     return updatedOffering;
   }
 
-  public async deleteOffering(id: string): Promise<void> {
+  public async removeOffering(id: string): Promise<void> {
     const deletedOffering = await this.offeringModel.findByIdAndDelete(id);
     if (!deletedOffering) {
       throw new NotFoundException(`Offering with ID ${id} not found`);
