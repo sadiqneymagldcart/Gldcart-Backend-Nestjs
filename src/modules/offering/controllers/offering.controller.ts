@@ -57,7 +57,7 @@ export class OfferingController {
     @UploadedFiles() images: Array<Express.Multer.File>,
     @Body() createOfferingDto: CreateOfferingDto,
   ): Promise<Offering> {
-    const imageUrls = await this.awsStorage.upload(images);
+    const imageUrls = await this.awsStorage.uploadMultipleFiles(images);
     const offeringWithImages = { ...createOfferingDto, images: imageUrls };
     return this.offeringService.createOffering(offeringWithImages);
   }
