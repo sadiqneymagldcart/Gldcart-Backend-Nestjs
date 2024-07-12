@@ -7,7 +7,7 @@ import { RealIP } from 'nestjs-real-ip';
 export class AppController {
   @ApiOperation({ summary: 'Get app info' })
   @Get('')
-  getInfo(@RealIP() ip: string) {
+  public getInfo(@RealIP() ip: string) {
     return {
       version: process.env.npm_package_version,
       env: process.env.NODE_ENV,
