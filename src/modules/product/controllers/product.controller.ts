@@ -44,7 +44,7 @@ export class ProductController {
     @UploadedFiles() images: Array<Express.Multer.File>,
     @Body() createProductDto: CreateProductDto,
   ): Promise<Product> {
-    const imageUrls = await this.awsStorage.upload(images);
+    const imageUrls = await this.awsStorage.uploadMultipleFiles(images);
     const productWithImages = { ...createProductDto, images: imageUrls };
     return this.productService.create(productWithImages);
   }
