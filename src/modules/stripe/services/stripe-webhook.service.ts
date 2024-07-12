@@ -53,6 +53,6 @@ export class StripeWebhookService {
 
     const orderId = data.metadata.orderId;
 
-    await this.orderService.processPayment(orderId, OrderStatus.PAID);
+    await this.orderService.processPaymentAndInventory(orderId, OrderStatus.PAID);
   }
 }
