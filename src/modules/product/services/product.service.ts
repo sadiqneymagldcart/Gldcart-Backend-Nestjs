@@ -13,16 +13,16 @@ export class ProductService implements IProductService {
     private readonly productModel: Model<ProductDocument>,
   ) {}
 
-  public async create(createProductDto: CreateProductDto): Promise<Product> {
+  public async createProduct(createProductDto: CreateProductDto): Promise<Product> {
     const createdProduct = new this.productModel(createProductDto);
     return createdProduct.save();
   }
 
-  public async getAll(): Promise<Product[]> {
+  public async getAllProducts(): Promise<Product[]> {
     return this.productModel.find().lean();
   }
 
-  public async getById(id: string): Promise<Product> {
+  public async getProductById(id: string): Promise<Product> {
     const offering = await this.productModel.findById(id).lean();
     if (!offering) {
       throw new NotFoundException(`Product with ID ${id} not found`);
@@ -30,7 +30,7 @@ export class ProductService implements IProductService {
     return offering;
   }
 
-  public async update(
+  public async updateProduct(
     id: string,
     updateProductDto: UpdateProductDto,
   ): Promise<Product> {
@@ -45,7 +45,7 @@ export class ProductService implements IProductService {
     return existingProduct;
   }
 
-  public async updateStock(
+  public async updateProductStock(
     productId: string,
     quantity: number,
     session: any,
@@ -57,7 +57,7 @@ export class ProductService implements IProductService {
     );
   }
 
-  public async remove(id: string): Promise<void> {
+  public async removeProduct(id: string): Promise<void> {
     const result = await this.productModel.findByIdAndDelete(id);
     if (!result) {
       throw new NotFoundException(`Product with ID ${id} not found`);

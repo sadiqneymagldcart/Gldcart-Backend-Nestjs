@@ -32,8 +32,8 @@ export class WishlistController {
     type: Wishlist,
   })
   @ApiNotFoundResponse({ description: 'Wishlist not found.' })
-  public async findWishlistById(@Param('id') id: string): Promise<Wishlist> {
-    return this.wishlistService.findWishlistById(id);
+  public async getWishlistById(@Param('id') id: string): Promise<Wishlist> {
+    return this.wishlistService.getWishlistById(id);
   }
 
   @Post(':userId')

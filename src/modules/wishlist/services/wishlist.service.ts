@@ -13,9 +13,9 @@ export class WishlistService implements IWishlistService {
   public constructor(
     @InjectModel(Wishlist.name)
     private readonly wishlistModel: Model<WishlistDocument>,
-  ) {}
+  ) { }
 
-  public async findWishlistByUserId(userId: string): Promise<Wishlist> {
+  public async getWishlistByUserId(userId: string): Promise<Wishlist> {
     const wishlist = await this.wishlistModel.findOne({ customer: userId });
     if (!wishlist) {
       throw new NotFoundException(
@@ -25,7 +25,7 @@ export class WishlistService implements IWishlistService {
     return wishlist;
   }
 
-  public async findWishlistById(id: string): Promise<Wishlist> {
+  public async getWishlistById(id: string): Promise<Wishlist> {
     const wishlist = await this.wishlistModel.findById(id);
     if (!wishlist) {
       throw new NotFoundException(`Wishlist with ID ${id} not found`);
@@ -33,7 +33,7 @@ export class WishlistService implements IWishlistService {
     return wishlist;
   }
 
-  public async findWishlistWithItemsById(id: string): Promise<Wishlist> {
+  public async getWishlistWithItemsById(id: string): Promise<Wishlist> {
     const wishlist = await this.wishlistModel
       .findById(id)
       .populate('items.id', 'name price')
