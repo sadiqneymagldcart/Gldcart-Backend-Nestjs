@@ -17,12 +17,7 @@ export class AuthInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<any> {
-    const request = context.switchToHttp().getRequest();
     const response = context.switchToHttp().getResponse();
-
-    this.logger.log(
-      `REST request to ${request.url}: ${JSON.stringify(request.body)}`,
-    );
 
     return next.handle().pipe(
       map((data) => {
