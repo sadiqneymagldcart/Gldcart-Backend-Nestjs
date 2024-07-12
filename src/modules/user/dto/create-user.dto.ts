@@ -16,7 +16,24 @@ export class CreateUserDto {
     example: 'https://example.com/image.jpg',
     description: 'User profile picture',
   })
-  picture?: string;
+  profile_picture?: string;
+
+  @ApiProperty({
+    example: 'This is a bio',
+    description: 'User bio',
+  })
+  bio?: string;
+
+  @ApiProperty({
+    example: 'Street 1, City, Country',
+  })
+  address?: string;
+
+  @ApiProperty({
+    example: '+421 951 914 764',
+    description: 'User phone number',
+  })
+  phone_number?: string;
 
   @ApiProperty({ example: 'example@example.com', description: 'User email' })
   email: string;
