@@ -3,10 +3,10 @@ import { ConfigService } from '@nestjs/config';
 import { TokenService } from '@token/services/token.service';
 import { UserService } from '@user/services/user.service';
 import { CreateUserDto } from '@user/dto/create-user.dto';
-import { AuthResponseDto } from '@auth/dto/auth.response.dto';
+import { AuthResponseDto } from '@auth/dto/auth-response.dto';
 import { CreateTokenDto } from '@token/dto/create-token.dto';
-import { GoogleTokenDto } from '@auth/dto/google.token.dto';
-import { GoogleUserDto } from '@auth/dto/google.user.dto';
+import { GoogleToken } from '@auth/interfaces/google-token.interface';
+import { GoogleUser } from '@auth/interfaces/google-user.interface';
 import { Nullable } from '@shared/types/common';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { stringify } from 'qs';
@@ -60,10 +60,10 @@ export class GoogleAuthService {
 
   public async getGoogleOAuthTokens(
     code: string,
-  ): Promise<Nullable<GoogleTokenDto>> {
+  ): Promise<Nullable<GoogleToken>> {
     this.logger.debug(`Fetching Google OAuth Tokens with code: ${code}`);
 
-    const googleResponse = await this._postToUrl<GoogleTokenDto>(
+    const googleResponse = await this._postToUrl<GoogleToken>(
       this.googleTokenUrl,
       this._getOAuthValues(code),
     );
@@ -73,7 +73,7 @@ export class GoogleAuthService {
   public async getGoogleUser(
     id_token: string,
     access_token: string,
-  ): Promise<Nullable<GoogleUserDto>> {
+  ): Promise<Nullable<GoogleUser>> {
     const response = await this._getGoogleUserInfo(id_token, access_token);
     return response.data;
   }
@@ -108,8 +108,9 @@ export class GoogleAuthService {
   ): Promise<AxiosResponse<T>> {
     return this.axiosInstance.post<T>(url, stringify(values));
   }
+
   private async _getGoogleUserInfo(id_token: string, access_token: string) {
-    return axios.get<GoogleUserDto>(
+    return axios.get<GoogleUser>(
       `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
       {
         headers: { Authorization: `Bearer ${id_token}` },
