@@ -1,4 +1,5 @@
 import { CreateAddressDto } from '@address/dto/create-address.dto';
+import { UpdateAddressDto } from '@address/dto/update-address.dto';
 import {
   Body,
   Controller,
@@ -69,7 +70,7 @@ export class ProfileController {
   public async updateShippingAddress(
     @Param('id') id: string,
     @Param('addressId') addressId: string,
-    @Body() data: CreateAddressDto,
+    @Body() data: UpdateAddressDto,
   ) {
     return this.userService.updateShippingAddress(id, addressId, data);
   }
