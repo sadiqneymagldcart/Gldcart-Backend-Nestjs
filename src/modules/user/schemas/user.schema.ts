@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsEmail } from 'class-validator';
 import { UserRole } from '@user/enums/roles.enum';
-import { Address } from '@address/schemas/address.schema';
 import mongoose from 'mongoose';
+import { Address, AddressSchema } from '@address/schemas/address.schema';
 
 export type UserDocument = User & mongoose.Document;
 
@@ -31,11 +31,15 @@ export class User {
   })
   email: string;
 
-  @Prop({})
-  address?: string;
+  @Prop({
+    type: AddressSchema,
+  })
+  billing_address?: Address;
 
-  // @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address' }] })
-  // delivery_addresses: DeliveryAddress[];
+  @Prop({
+    type: [{ type: AddressSchema }],
+  })
+  shipping_addresses: Address[];
 
   @Prop()
   profile_picture?: string;
@@ -45,6 +49,15 @@ export class User {
     minlength: [6, 'Minimum password length is 6 characters'],
   })
   password: string;
+
+  @Prop()
+  rating?: number;
+
+  @Prop()
+  response_time?: string;
+
+  @Prop()
+  hire_count?: number;
 
   @Prop()
   password_token?: string;
