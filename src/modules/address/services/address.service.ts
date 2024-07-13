@@ -20,7 +20,7 @@ export class AddressService {
   }
 
   public async getAllAddressesForUser(userId: string): Promise<Address[]> {
-    return this.addressModel.find({ user: userId }).exec();
+    return this.addressModel.find({ user: userId });
   }
 
   public async updateAddress(
@@ -45,6 +45,6 @@ export class AddressService {
     if (!deletedAddress) {
       throw new NotFoundException('Address not found');
     }
-    return this.addressModel.find().exec();
+    return this.addressModel.find();
   }
 }
