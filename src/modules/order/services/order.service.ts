@@ -36,16 +36,13 @@ export class OrderService {
     session.startTransaction();
     try {
       const order = await this.updateOrder(orderId, { status }, session);
-
-      if (!order) throw new NotFoundException();
-
       await this.updateInventory(order, session);
       await session.commitTransaction();
     } catch (error) {
       await session.abortTransaction();
       throw error;
     } finally {
-      session.endSession();
+      await session.endSession();
     }
   }
 

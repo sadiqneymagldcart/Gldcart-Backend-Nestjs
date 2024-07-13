@@ -26,7 +26,7 @@ export class SearchService<T extends Document> {
     query: FilterQuery<T>,
     { limit, offset }: Pagination,
   ): Promise<T[]> {
-    return await this.model
+    return this.model
       .find(query)
       .select('name')
       .skip(offset)

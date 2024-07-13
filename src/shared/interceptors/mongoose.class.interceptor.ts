@@ -22,7 +22,7 @@ export class MongooseClassSerializerInterceptor extends ClassSerializerIntercept
 
   private _changePlainObjectToInstance(
     object: PlainLiteralObject,
-    classToIntercept: Type<any>,
+    classToIntercept: Type,
   ) {
     if (object instanceof mongoose.Document) {
       return plainToInstance(classToIntercept, object.toJSON());
@@ -32,7 +32,7 @@ export class MongooseClassSerializerInterceptor extends ClassSerializerIntercept
 
   private _prepareResponse(
     response: PlainLiteralObject | PlainLiteralObject[],
-    classToIntercept: Type<any>,
+    classToIntercept: Type,
   ) {
     if (Array.isArray(response)) {
       return response.map((document: Document) =>
@@ -46,7 +46,7 @@ export class MongooseClassSerializerInterceptor extends ClassSerializerIntercept
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<any> {
-    const classToIntercept = this.reflector.get<Type<any>>(
+    const classToIntercept = this.reflector.get<Type>(
       'classToIntercept',
       context.getClass(),
     );
