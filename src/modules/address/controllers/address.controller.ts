@@ -7,13 +7,13 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiExcludeController, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateAddressDto } from '@address/dto/create-address.dto';
 import { UpdateAddressDto } from '@address/dto/update-address.dto';
 import { Address } from '@address/schemas/address.schema';
 import { AddressService } from '@address/services/address.service';
 
-@ApiTags('Address')
+@ApiExcludeController()
 @Controller('address')
 export class AddressController {
   public constructor(private readonly addressService: AddressService) { }
