@@ -66,7 +66,7 @@ export class ProfileController {
     status: 200,
     description: 'Shipping address updated successfully.',
   })
-  @ApiBody({ type: CreateAddressDto })
+  @ApiBody({ type: UpdateAddressDto })
   public async updateShippingAddress(
     @Param('id') id: string,
     @Param('addressId') addressId: string,
