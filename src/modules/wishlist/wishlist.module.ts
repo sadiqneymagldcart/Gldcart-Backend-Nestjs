@@ -13,4 +13,4 @@ import { MongooseModule } from '@nestjs/mongoose';
   controllers: [WishlistController],
   providers: [WishlistService],
 })
-export class WishlistModule { }
+export class WishlistModule {}

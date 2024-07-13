@@ -12,7 +12,7 @@ export class CartService implements ICartService {
     @InjectModel(Cart.name) private readonly cartModel: Model<CartDocument>,
   ) {}
 
-  public async findCartByUserId(userId: string): Promise<Cart> {
+  public async getCartByUserId(userId: string): Promise<Cart> {
     const cart = await this.cartModel.findOne({ customer: userId });
     if (!cart) {
       throw new NotFoundException(`No carts found for user with id ${userId}`);
@@ -20,7 +20,7 @@ export class CartService implements ICartService {
     return cart;
   }
 
-  public async findCartById(id: string): Promise<Cart> {
+  public async getCartById(id: string): Promise<Cart> {
     const cart = await this.cartModel.findById(id);
     if (!cart) {
       throw new NotFoundException(`Cart with ID ${id} not found`);

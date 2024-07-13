@@ -5,4 +5,4 @@ import { AwsStorageService } from './services/storages.service';
   providers: [AwsStorageService],
   exports: [AwsStorageService],
 })
-export class StoragesModule { }
+export class StoragesModule {}

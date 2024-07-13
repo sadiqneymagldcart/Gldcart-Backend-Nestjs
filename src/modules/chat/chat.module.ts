@@ -30,4 +30,4 @@ import { TokenModule } from '@token/token.module';
   controllers: [ChatController],
   providers: [ChatGateway, ChatService, MessageService],
 })
-export class ChatModule { }
+export class ChatModule {}

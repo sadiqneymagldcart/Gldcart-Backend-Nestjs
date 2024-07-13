@@ -23,7 +23,7 @@ import { CacheInterceptor } from '@nestjs/cache-manager';
 @Controller('wishlist')
 @UseInterceptors(CacheInterceptor)
 export class WishlistController {
-  public constructor(private readonly wishlistService: WishlistService) { }
+  public constructor(private readonly wishlistService: WishlistService) {}
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a wishlist by id' })
@@ -32,8 +32,8 @@ export class WishlistController {
     type: Wishlist,
   })
   @ApiNotFoundResponse({ description: 'Wishlist not found.' })
-  public async findWishlistById(@Param('id') id: string): Promise<Wishlist> {
-    return this.wishlistService.findWishlistById(id);
+  public async getWishlistById(@Param('id') id: string): Promise<Wishlist> {
+    return this.wishlistService.getWishlistById(id);
   }
 
   @Post(':userId')

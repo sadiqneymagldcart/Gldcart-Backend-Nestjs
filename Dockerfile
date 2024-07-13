@@ -2,7 +2,7 @@
 # BUILD FOR LOCAL DEVELOPMENT
 ###################
 
-FROM node:20 As development
+FROM node:22 AS development
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -25,7 +25,7 @@ USER node
 # BUILD FOR PRODUCTION
 ###################
 
-FROM node:20 As build
+FROM node:22 AS build
 
 WORKDIR /usr/src/app
 
@@ -53,7 +53,7 @@ USER node
 # PRODUCTION
 ###################
 
-FROM node:20 As production
+FROM node:22 AS production
 
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules

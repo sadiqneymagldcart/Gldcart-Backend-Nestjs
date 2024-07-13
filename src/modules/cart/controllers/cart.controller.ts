@@ -27,13 +27,13 @@ import { TransactionInterceptor } from '@shared/interceptors/transaction.interce
 @Controller('cart')
 @UseInterceptors(CacheInterceptor)
 export class CartController {
-  public constructor(private readonly cartService: CartService) { }
+  public constructor(private readonly cartService: CartService) {}
 
   @Get('/user/:userId')
   @ApiOperation({ summary: 'Get a cart for user' })
   @ApiOkResponse({ description: 'The cart for user', type: Cart })
   public async getCartByUserId(@Param('userId') userId: string): Promise<Cart> {
-    return this.cartService.findCartByUserId(userId);
+    return this.cartService.getCartByUserId(userId);
   }
 
   @Get(':id')

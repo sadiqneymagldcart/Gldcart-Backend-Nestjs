@@ -15,7 +15,7 @@ export class ChatService {
   ) { }
 
   public async createChat(chat: CreateChatDto): Promise<Chat> {
-    return await this.chatModel.create(chat);
+    return this.chatModel.create(chat);
   }
 
   public async updateUserOnlineStatus(
@@ -29,7 +29,7 @@ export class ChatService {
   }
 
   public async getUserChats(userId: string): Promise<any> {
-    return await this.chatModel.find({ participants: userId }).populate({
+    return this.chatModel.find({ participants: userId }).populate({
       path: 'participants',
       select: { name: 1, surname: 1, type: 1, is_online: 1 },
     });

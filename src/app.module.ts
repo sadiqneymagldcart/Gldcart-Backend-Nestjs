@@ -20,6 +20,7 @@ import * as redisStore from 'cache-manager-redis-store';
 import mongoConfig from '@config/mongo.config';
 import redisConfig from '@config/redis.config';
 import { WishlistModule } from '@wishlist/wishlist.module';
+import { AddressModule } from '@address/address.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { WishlistModule } from '@wishlist/wishlist.module';
     }),
 
     UserModule,
+    AddressModule,
     AuthModule,
     TokenModule,
     OfferingModule,

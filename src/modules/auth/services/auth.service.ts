@@ -7,7 +7,7 @@ import {
 import { TokenService } from '@token/services/token.service';
 import { UserService } from '@user/services/user.service';
 import { LoginCredentialsDto } from '@auth/dto/login-credentials.dto';
-import { AuthResponseDto } from '@auth/dto/auth.response.dto';
+import { AuthResponseDto } from '@auth/dto/auth-response.dto';
 import { CreateTokenDto } from '@token/dto/create-token.dto';
 import { IAuthService } from '@auth/interfaces/auth.service.interface';
 import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';
@@ -33,13 +33,13 @@ export class AuthService implements IAuthService {
   public async register(
     credentials: RegisterCredentialsDto,
   ): Promise<AuthResponseDto> {
-    const existingUser = await this.userService.findByEmail(credentials.email);
+    const existingUser = await this.userService.getUserByEmail(credentials.email);
     if (existingUser) {
       throw new BadRequestException('User already exists');
     }
 
     const hashedPassword = await bcrypt.hash(credentials.password, 10);
-    const user = await this.userService.create({
+    const user = await this.userService.createUser({
       ...credentials,
       password: hashedPassword,
     });
@@ -86,7 +86,7 @@ export class AuthService implements IAuthService {
   private async _validateUser(
     credentials: LoginCredentialsDto,
   ): Promise<CreateTokenDto> {
-    const user = await this.userService.findByEmail(credentials.email);
+    const user = await this.userService.getUserByEmail(credentials.email);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }

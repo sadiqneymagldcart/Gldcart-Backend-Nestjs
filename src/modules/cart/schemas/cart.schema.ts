@@ -32,16 +32,11 @@ async function validateUser(user: User, userModel: any) {
 async function validateItems(items: Item[], models: Record<ItemTypes, any>) {
   for (const item of items) {
     const model = models[item.type];
-    if (!model) {
-      console.log(`Item type ${item.type} is invalid or not recognized`);
+    if (!model)
       throw new NotFoundException(`Item type ${item.type} is invalid`);
-    }
 
     const itemExists = await model.exists({ _id: item.id });
     if (!itemExists) {
-      console.log(
-        `Item with ID ${item.id} of type ${item.type} not found in the database`,
-      );
       throw new NotFoundException(
         `Item with ID ${item.id} of type ${item.type} not found`,
       );
@@ -49,7 +44,7 @@ async function validateItems(items: Item[], models: Record<ItemTypes, any>) {
   }
 }
 
-CartSchema.pre<CartDocument>('save', async function(next) {
+CartSchema.pre<CartDocument>('save', async function (next) {
   const userModel = this.model('User');
   const models = {
     [ItemTypes.PRODUCT]: this.model('Product'),

@@ -3,22 +3,24 @@ import mongoose from 'mongoose';
 
 export type AddressDocument = Address & mongoose.Document;
 
-@Schema()
+@Schema({
+  versionKey: false,
+})
 export class Address {
-  @Prop({ required: true })
+  @Prop()
   street: string;
 
-  @Prop({ required: true })
+  @Prop()
   city: string;
 
-  @Prop({ required: true })
+  @Prop()
   state: string;
 
-  @Prop({ required: true })
+  @Prop()
   country: string;
 
-  @Prop({ required: true })
-  postalCode: string;
+  @Prop()
+  postal_code: string;
 }
 
 export const AddressSchema = SchemaFactory.createForClass(Address);
