@@ -33,13 +33,13 @@ export class AuthService implements IAuthService {
   public async register(
     credentials: RegisterCredentialsDto,
   ): Promise<AuthResponseDto> {
-    const existingUser = await this.userService.findByEmail(credentials.email);
+    const existingUser = await this.userService.getUserByEmail(credentials.email);
     if (existingUser) {
       throw new BadRequestException('User already exists');
     }
 
     const hashedPassword = await bcrypt.hash(credentials.password, 10);
-    const user = await this.userService.create({
+    const user = await this.userService.createUser({
       ...credentials,
       password: hashedPassword,
     });
@@ -86,7 +86,7 @@ export class AuthService implements IAuthService {
   private async _validateUser(
     credentials: LoginCredentialsDto,
   ): Promise<CreateTokenDto> {
-    const user = await this.userService.findByEmail(credentials.email);
+    const user = await this.userService.getUserByEmail(credentials.email);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
