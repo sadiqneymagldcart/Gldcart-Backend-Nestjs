@@ -42,7 +42,7 @@ export class OfferingController {
   public constructor(
     private readonly offeringService: OfferingService,
     private readonly awsStorage: AwsStorageService,
-  ) { }
+  ) {}
 
   @ApiOperation({ summary: 'Create an offering' })
   @ApiBody({ type: CreateOfferingDto })
@@ -57,7 +57,7 @@ export class OfferingController {
     @UploadedFiles() images: Array<Express.Multer.File>,
     @Body() createOfferingDto: CreateOfferingDto,
   ): Promise<Offering> {
-    const imageUrls = await this.awsStorage.upload(images);
+    const imageUrls = await this.awsStorage.uploadMultipleFiles(images);
     const offeringWithImages = { ...createOfferingDto, images: imageUrls };
     return this.offeringService.createOffering(offeringWithImages);
   }
@@ -113,7 +113,7 @@ export class OfferingController {
   })
   @ApiResponse({ status: 404, description: 'Offering not found.' })
   public async getOfferingById(@Param('id') id: string): Promise<Offering> {
-    return await this.offeringService.findOfferingById(id);
+    return await this.offeringService.getOfferingById(id);
   }
 
   @Put(':id')
@@ -138,6 +138,6 @@ export class OfferingController {
   })
   @ApiResponse({ status: 404, description: 'Offering not found.' })
   public async deleteOffering(@Param('id') id: string): Promise<void> {
-    return this.offeringService.deleteOffering(id);
+    return this.offeringService.removeOffering(id);
   }
 }

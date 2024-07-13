@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsEmail } from 'class-validator';
 import { UserRole } from '@user/enums/roles.enum';
-import { Address } from '@address/schemas/address.schema';
 import mongoose from 'mongoose';
+import { Address, AddressSchema } from '@address/schemas/address.schema';
 
 export type UserDocument = User & mongoose.Document;
 
@@ -31,11 +31,18 @@ export class User {
   })
   email: string;
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address' }] })
-  addresses: Address;
+  @Prop({
+    type: AddressSchema,
+  })
+  billing_address?: Address;
+
+  @Prop({
+    type: [{ type: AddressSchema }],
+  })
+  shipping_addresses: Address[];
 
   @Prop()
-  picture?: string;
+  profile_picture?: string;
 
   @Prop({
     required: [true, 'password field is required'],
@@ -43,8 +50,14 @@ export class User {
   })
   password: string;
 
-  @Prop({ type: [String] })
-  wishlist: string[];
+  @Prop()
+  rating?: number;
+
+  @Prop()
+  response_time?: string;
+
+  @Prop()
+  hire_count?: number;
 
   @Prop()
   password_token?: string;

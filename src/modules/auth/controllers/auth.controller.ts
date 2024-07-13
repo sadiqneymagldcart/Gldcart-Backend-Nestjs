@@ -12,7 +12,7 @@ import {
 import { ApiTags, ApiResponse, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { AuthService } from '@auth/services/auth.service';
-import { AuthResponseDto } from '@auth/dto/auth.response.dto';
+import { AuthResponseDto } from '@auth/dto/auth-response.dto';
 import { AuthInterceptor } from '@shared/interceptors/auth.interceptor';
 import { LoginCredentialsDto } from '@auth/dto/login-credentials.dto';
 import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';

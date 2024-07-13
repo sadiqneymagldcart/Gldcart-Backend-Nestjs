@@ -11,21 +11,21 @@ export interface IWishlistService {
    * @param userId - The id of the user
    * @returns A promise that resolves to a Wishlist
    */
-  findWishlistByUserId(userId: string): Promise<Wishlist>;
+  getWishlistByUserId(userId: string): Promise<Wishlist>;
 
   /**
    * Find a wishlist by id
    * @param id - The id of the wishlist
    * @returns A promise that resolves to a Wishlist
    */
-  findWishlistById(id: string): Promise<Wishlist>;
+  getWishlistById(id: string): Promise<Wishlist>;
 
   /**
    * Find a wishlist with items by id
    * @param id - The id of the wishlist
    * @returns A promise that resolves to a Wishlist with items
    */
-  findWishlistWithItemsById(id: string): Promise<Wishlist>;
+  getWishlistWithItemsById(id: string): Promise<Wishlist>;
 
   /**
    * Add an item to a wishlist

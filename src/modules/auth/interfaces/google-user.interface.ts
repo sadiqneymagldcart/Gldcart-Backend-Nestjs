@@ -1,4 +1,4 @@
-export class GoogleUserDto {
+export interface GoogleUser {
   _id: string;
   email: string;
   verified_email: boolean;

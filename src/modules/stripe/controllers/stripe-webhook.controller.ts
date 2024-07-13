@@ -19,7 +19,7 @@ export class StripeWebhookController {
   public constructor(
     private readonly stripeService: StripeService,
     private readonly stripeWebhookService: StripeWebhookService,
-  ) { }
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Handle incoming Stripe events' })
@@ -54,7 +54,7 @@ export class StripeWebhookController {
       case 'customer.subscription.created':
         return this.stripeWebhookService.processSubscriptionUpdate(event);
       case 'payment_intent.succeeded':
-        this.stripeWebhookService.processPaymentSucceded(event);
+        await this.stripeWebhookService.processPaymentSucceded(event);
       default:
         this.logger.warn(`Unhandled event type: ${event.type}`);
     }

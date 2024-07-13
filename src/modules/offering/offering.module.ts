@@ -16,4 +16,4 @@ import { AwsStorageService } from '@storages/services/storages.service';
   providers: [OfferingService, SearchService, AwsStorageService],
   exports: [OfferingService],
 })
-export class OfferingModule { }
+export class OfferingModule {}

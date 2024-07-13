@@ -9,13 +9,13 @@ export class MessageService {
   public constructor(
     @InjectModel(Message.name)
     private readonly messageModel: Model<MessageDocument>,
-  ) { }
+  ) {}
 
   public async createMessage(message: CreateMessageDto): Promise<Message> {
     return await this.messageModel.create(message);
   }
 
   public async getChatMessages(chatId: string): Promise<Message[]> {
-    return await this.messageModel.find({ chat: chatId }).lean();
+    return this.messageModel.find({ chat: chatId }).lean();
   }
 }

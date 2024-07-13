@@ -11,16 +11,16 @@ export class ReviewService {
     @InjectModel(Review.name) private reviewModel: Model<ReviewDocument>,
   ) {}
 
-  public async create(createReviewDto: CreateReviewDto): Promise<Review> {
+  public async createReview(createReviewDto: CreateReviewDto): Promise<Review> {
     const createdReview = new this.reviewModel(createReviewDto);
     return createdReview.save();
   }
 
-  public async findAll(): Promise<Review[]> {
+  public async getAllReviews(): Promise<Review[]> {
     return this.reviewModel.find().exec();
   }
 
-  public async findOne(id: string): Promise<Review> {
+  public async getReviewById(id: string): Promise<Review> {
     const review = await this.reviewModel.findById(id).exec();
     if (!review) {
       throw new NotFoundException(`Review with ID ${id} not found`);
@@ -28,7 +28,7 @@ export class ReviewService {
     return review;
   }
 
-  public async update(
+  public async updateReview(
     id: string,
     updateReviewDto: UpdateReviewDto,
   ): Promise<Review> {
@@ -41,7 +41,7 @@ export class ReviewService {
     return existingReview;
   }
 
-  public async remove(id: string): Promise<void> {
+  public async removeReview(id: string): Promise<void> {
     const result = await this.reviewModel.findByIdAndDelete(id).exec();
     if (!result) {
       throw new NotFoundException(`Review with ID ${id} not found`);
