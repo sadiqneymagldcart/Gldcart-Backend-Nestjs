@@ -1,5 +1,6 @@
 import { CreateAddressDto } from '@address/dto/create-address.dto';
-import { Address, AddressDocument } from '@address/schemas/address.schema';
+import { UpdateAddressDto } from '@address/dto/update-address.dto';
+import { AddressDocument } from '@address/schemas/address.schema';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Nullable } from '@shared/types/common';
@@ -125,7 +126,7 @@ export class UserService {
   public async updateShippingAddress(
     userId: string,
     addressId: string,
-    updatedAddress: Address,
+    updatedAddress: UpdateAddressDto,
   ) {
     const user = await this.userModel.findById(userId);
     if (!user) {
@@ -137,7 +138,15 @@ export class UserService {
     if (addressIndex === -1) {
       throw new NotFoundException(`Address with ID ${addressId} not found`);
     }
-    user.shipping_addresses[addressIndex] = updatedAddress;
+    console.log(user.shipping_addresses[addressIndex]);
+
+    user.shipping_addresses[addressIndex] = Object.assign(
+      user.shipping_addresses[addressIndex],
+      updatedAddress,
+    );
+
+    console.log(user.shipping_addresses[addressIndex]);
+
     return user.save().then((user) => user.shipping_addresses);
   }
 }

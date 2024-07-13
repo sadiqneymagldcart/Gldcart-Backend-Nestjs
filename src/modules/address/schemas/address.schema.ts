@@ -7,19 +7,19 @@ export type AddressDocument = Address & mongoose.Document;
   versionKey: false,
 })
 export class Address {
-  @Prop({ required: true })
+  @Prop()
   street: string;
 
-  @Prop({ required: true })
+  @Prop()
   city: string;
 
-  @Prop({ required: true })
+  @Prop()
   state: string;
 
-  @Prop({ required: true })
+  @Prop()
   country: string;
 
-  @Prop({ required: true })
+  @Prop()
   postalCode: string;
 }
 
