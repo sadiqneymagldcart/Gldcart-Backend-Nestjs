@@ -138,14 +138,11 @@ export class UserService {
     if (addressIndex === -1) {
       throw new NotFoundException(`Address with ID ${addressId} not found`);
     }
-    console.log(user.shipping_addresses[addressIndex]);
 
     user.shipping_addresses[addressIndex] = Object.assign(
       user.shipping_addresses[addressIndex],
       updatedAddress,
     );
-
-    console.log(user.shipping_addresses[addressIndex]);
 
     return user.save().then((user) => user.shipping_addresses);
   }
