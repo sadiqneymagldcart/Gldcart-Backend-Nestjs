@@ -31,8 +31,11 @@ export class User {
   })
   email: string;
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address' }] })
-  addresses: Address;
+  @Prop({})
+  address?: string;
+
+  // @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address' }] })
+  // delivery_addresses: DeliveryAddress[];
 
   @Prop()
   profile_picture?: string;
@@ -42,9 +45,6 @@ export class User {
     minlength: [6, 'Minimum password length is 6 characters'],
   })
   password: string;
-
-  @Prop({ type: [String] })
-  wishlist: string[];
 
   @Prop()
   password_token?: string;
