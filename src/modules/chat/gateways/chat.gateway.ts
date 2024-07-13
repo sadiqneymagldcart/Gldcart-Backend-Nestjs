@@ -26,8 +26,7 @@ import { Server, Socket } from 'socket.io';
   },
 })
 export class ChatGateway
-  implements OnGatewayConnection, OnGatewayDisconnect, IChatGateway
-{
+  implements OnGatewayConnection, OnGatewayDisconnect, IChatGateway {
   @WebSocketServer() server: Server;
   private readonly logger = new Logger(ChatGateway.name);
 
@@ -35,7 +34,7 @@ export class ChatGateway
     private readonly chatService: ChatService,
     private readonly messageService: MessageService,
     private readonly tokenService: TokenService,
-  ) {}
+  ) { }
 
   public async handleConnection(
     @ConnectedSocket() socket: Socket,
@@ -56,7 +55,6 @@ export class ChatGateway
   ): Promise<void> {
     const userId = this.getUserId(socket);
     if (!userId) return;
-
     this.logger.log(`User disconnected: ${userId}`);
     try {
       await this.handleUserStatusChange(userId, false, socket);
@@ -150,10 +148,8 @@ export class ChatGateway
       this.logger.warn('User tried to leave a chat without chatId');
       return;
     }
-
     try {
       const userId = this.getUserId(socket);
-
       socket.leave(chatId);
       socket.emit(Events.LEAVE_ACK, { message: 'Successfully left chat' });
       this.server.to(chatId).emit(Events.USER_LEFT, { userId });

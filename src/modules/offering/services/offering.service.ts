@@ -24,7 +24,7 @@ export class OfferingService {
   }
 
   public async getAllOfferings(): Promise<Offering[]> {
-    return await this.offeringModel.find();
+    return this.offeringModel.find();
   }
 
   public async getOfferingById(id: string): Promise<Offering> {
