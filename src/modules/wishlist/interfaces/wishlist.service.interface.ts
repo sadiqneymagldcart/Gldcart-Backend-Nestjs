@@ -8,10 +8,10 @@ import { Wishlist } from '@wishlist/schemas/wishlist.schema';
 export interface IWishlistService {
   /**
    * Find a wishlist by user id
-   * @param userId - The id of the user
+   * @param user_id - The id of the user
    * @returns A promise that resolves to a Wishlist
    */
-  getWishlistByUserId(userId: string): Promise<Wishlist>;
+  getWishlistByUserId(user_id: string): Promise<Wishlist>;
 
   /**
    * Find a wishlist by id
@@ -29,11 +29,11 @@ export interface IWishlistService {
 
   /**
    * Add an item to a wishlist
-   * @param userId - The id of the user
+   * @param user_id - The id of the user
    * @param newItem - The item to add
    * @returns A promise that resolves to a Wishlist
    */
-  addItemToWishlist(userId: string, newItem: CreateItemDto): Promise<Wishlist>;
+  addItemToWishlist(user_id: string, newItem: CreateItemDto): Promise<Wishlist>;
 
   /**
    * Remove an item from a wishlist
