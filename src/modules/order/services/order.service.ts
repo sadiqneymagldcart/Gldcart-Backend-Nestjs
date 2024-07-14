@@ -12,30 +12,31 @@ export class OrderService {
   public constructor(
     @InjectModel(Order.name) private readonly orderModel: Model<OrderDocument>,
     private readonly productService: ProductService,
-  ) {}
+  ) { }
 
   public async createOrder(order: CreateOrderDto): Promise<Order> {
     return await this.orderModel.create(order);
   }
 
-  public async findOrderWithItemsById(id: string) {
+  public async findOrderWithItemsById(order_id: string) {
     const order = await this.orderModel
-      .findById(id)
+      .findById(order_id)
       .populate('items.id')
       .lean();
-    if (!order) throw new NotFoundException(`Order with ID ${id} not found`);
+    if (!order)
+      throw new NotFoundException(`Order with ID ${order_id} not found`);
 
     return order;
   }
 
   public async processPaymentAndInventory(
-    orderId: string,
+    order_id: string,
     status: OrderStatus,
   ) {
     const session = await this.orderModel.db.startSession();
     session.startTransaction();
     try {
-      const order = await this.updateOrder(orderId, { status }, session);
+      const order = await this.updateOrder(order_id, { status }, session);
       await this.updateInventory(order, session);
       await session.commitTransaction();
     } catch (error) {
@@ -47,15 +48,20 @@ export class OrderService {
   }
 
   private async updateOrder(
-    id: string,
+    order_id: string,
     data: Partial<OrderDocument>,
     session: ClientSession,
   ): Promise<Order> {
-    const order = await this.orderModel.findOneAndUpdate({ _id: id }, data, {
-      new: true,
-      session,
-    });
-    if (!order) throw new NotFoundException(`Order with ID ${id} not found`);
+    const order = await this.orderModel.findOneAndUpdate(
+      { _id: order_id },
+      data,
+      {
+        new: true,
+        session,
+      },
+    );
+    if (!order)
+      throw new NotFoundException(`Order with ID ${order_id} not found`);
 
     return order;
   }
@@ -69,7 +75,11 @@ export class OrderService {
     );
     await Promise.all(
       productsToUpdate.map((product) =>
-        this.productService.updateProductStock(product.id, product.quantity, session),
+        this.productService.updateProductStock(
+          product.id,
+          product.quantity,
+          session,
+        ),
       ),
     );
   }
