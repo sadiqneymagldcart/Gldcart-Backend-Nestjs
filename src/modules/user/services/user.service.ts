@@ -75,47 +75,47 @@ export class UserService {
     );
   }
 
-  public async retrieveStripeCustomerId(userId: string): Promise<string> {
-    const user = await this.userModel.findById(userId);
+  public async retrieveStripeCustomerId(user_id: string): Promise<string> {
+    const user = await this.userModel.findById(user_id);
     if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+      throw new NotFoundException(`User with ID ${user_id} not found`);
     }
     return user.stripeCustomerId;
   }
 
-  public async updateProfilePicture(userId: string, image: string) {
-    const user = await this.userModel.findById(userId);
+  public async updateProfilePicture(user_id: string, image: string) {
+    const user = await this.userModel.findById(user_id);
     if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+      throw new NotFoundException(`User with ID ${user_id} not found`);
     }
     user.profile_picture = image;
     return user.save();
   }
 
-  public async getShippingAddresses(userId: string) {
-    const user = await this.userModel.findById(userId);
+  public async getShippingAddresses(user_id: string) {
+    const user = await this.userModel.findById(user_id);
     if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+      throw new NotFoundException(`User with ID ${user_id} not found`);
     }
     return user.shipping_addresses;
   }
 
   public async addShippingAddress(
-    userId: string,
+    user_id: string,
     newAddress: CreateAddressDto,
   ) {
-    const user = await this.userModel.findById(userId);
+    const user = await this.userModel.findById(user_id);
     if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+      throw new NotFoundException(`User with ID ${user_id} not found`);
     }
     user.shipping_addresses.push(newAddress);
     return user.save().then((user) => user.shipping_addresses);
   }
 
-  public async removeShippingAddress(userId: string, addressId: string) {
-    const user = await this.userModel.findById(userId);
+  public async removeShippingAddress(user_id: string, addressId: string) {
+    const user = await this.userModel.findById(user_id);
     if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+      throw new NotFoundException(`User with ID ${user_id} not found`);
     }
     user.shipping_addresses = user.shipping_addresses.filter(
       (address: AddressDocument) => address._id?.toString() !== addressId,
@@ -124,13 +124,13 @@ export class UserService {
   }
 
   public async updateShippingAddress(
-    userId: string,
+    user_id: string,
     addressId: string,
     updatedAddress: UpdateAddressDto,
   ) {
-    const user = await this.userModel.findById(userId);
+    const user = await this.userModel.findById(user_id);
     if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+      throw new NotFoundException(`User with ID ${user_id} not found`);
     }
     const addressIndex = user.shipping_addresses.findIndex(
       (address: AddressDocument) => address._id?.toString() === addressId,

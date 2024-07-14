@@ -15,11 +15,11 @@ export class WishlistService implements IWishlistService {
     private readonly wishlistModel: Model<WishlistDocument>,
   ) { }
 
-  public async getWishlistByUserId(userId: string): Promise<Wishlist> {
-    const wishlist = await this.wishlistModel.findOne({ customer: userId });
+  public async getWishlistByUserId(user_id: string): Promise<Wishlist> {
+    const wishlist = await this.wishlistModel.findOne({ customer: user_id });
     if (!wishlist) {
       throw new NotFoundException(
-        `No wishlists found for user with id ${userId}`,
+        `No wishlists found for user with id ${user_id}`,
       );
     }
     return wishlist;
@@ -47,19 +47,19 @@ export class WishlistService implements IWishlistService {
   }
 
   public async addItemToWishlist(
-    userId: string,
+    user_id: string,
     newItem: CreateItemDto,
   ): Promise<Wishlist> {
     const existingWishlist = await this.wishlistModel.findOne({
-      customer: userId,
+      customer: user_id,
     });
 
     if (!existingWishlist) {
       const wishlist = new this.wishlistModel({
-        customer: userId,
+        customer: user_id,
         items: [newItem],
       });
-      this.logger.log(`Created new wishlist for user ${userId}`);
+      this.logger.log(`Created new wishlist for user ${user_id}`);
       return wishlist.save();
     } else {
       const itemExists = existingWishlist.items.some(

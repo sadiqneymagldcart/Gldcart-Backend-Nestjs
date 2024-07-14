@@ -36,7 +36,7 @@ export class WishlistController {
     return this.wishlistService.getWishlistById(id);
   }
 
-  @Post(':userId')
+  @Post(':user_id')
   @ApiOperation({ summary: 'Add an item to a wishlist' })
   @ApiOkResponse({
     description: 'The item has been successfully added.',
@@ -44,10 +44,10 @@ export class WishlistController {
   })
   @ApiBadRequestResponse({ description: 'Invalid item data.' })
   public async addItemToWishlist(
-    @Param('userId') userId: string,
+    @Param('user_id') user_id: string,
     @Body() newItem: CreateItemDto,
   ): Promise<Wishlist> {
-    return this.wishlistService.addItemToWishlist(userId, newItem);
+    return this.wishlistService.addItemToWishlist(user_id, newItem);
   }
 
   @Delete(':id/item/:itemId')

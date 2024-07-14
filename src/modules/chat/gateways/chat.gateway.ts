@@ -42,7 +42,7 @@ export class ChatGateway
     const accessToken = socket.handshake.query.accessToken as string;
     try {
       const { _id } = await this.tokenService.verifyAccessToken(accessToken);
-      socket.data.userId = _id;
+      socket.data.user_id = _id;
       this.logger.log(`User connected: ${_id}`);
       await this.handleUserStatusChange(_id, true, socket);
     } catch (error) {
@@ -53,11 +53,11 @@ export class ChatGateway
   public async handleDisconnect(
     @ConnectedSocket() socket: Socket,
   ): Promise<void> {
-    const userId = this.getUserId(socket);
-    if (!userId) return;
-    this.logger.log(`User disconnected: ${userId}`);
+    const user_id = this.getUserId(socket);
+    if (!user_id) return;
+    this.logger.log(`User disconnected: ${user_id}`);
     try {
-      await this.handleUserStatusChange(userId, false, socket);
+      await this.handleUserStatusChange(user_id, false, socket);
     } catch (error) {
       this.handleError('Error handling disconnection', error, socket);
     }
@@ -73,10 +73,10 @@ export class ChatGateway
       return;
     }
     try {
-      const userId = this.getUserId(socket);
+      const user_id = this.getUserId(socket);
       socket.join(chatId);
       socket.emit(Events.JOIN_ACK, { message: 'Successfully joined chat' });
-      this.server.to(chatId).emit(Events.USER_JOINED, { userId });
+      this.server.to(chatId).emit(Events.USER_JOINED, { user_id });
     } catch (error) {
       this.handleError('Error handling join', error, socket);
     }
@@ -128,14 +128,14 @@ export class ChatGateway
   public async requestAllChats(
     @ConnectedSocket() socket: Socket,
   ): Promise<void> {
-    const userId = this.getUserId(socket);
+    const user_id = this.getUserId(socket);
 
-    if (!userId) {
-      this.logger.warn('User tried to request all chats without userId');
+    if (!user_id) {
+      this.logger.warn('User tried to request all chats without user_id');
       return;
     }
 
-    const chats = await this.chatService.getUserChats(userId);
+    const chats = await this.chatService.getUserChats(user_id);
     socket.emit(Events.SEND_ALL_CHATS, chats);
   }
 
@@ -149,25 +149,25 @@ export class ChatGateway
       return;
     }
     try {
-      const userId = this.getUserId(socket);
+      const user_id = this.getUserId(socket);
       socket.leave(chatId);
       socket.emit(Events.LEAVE_ACK, { message: 'Successfully left chat' });
-      this.server.to(chatId).emit(Events.USER_LEFT, { userId });
+      this.server.to(chatId).emit(Events.USER_LEFT, { user_id });
     } catch (error) {
       this.handleError('Error handling leave', error, socket);
     }
   }
 
   private getUserId(socket: Socket): string {
-    return socket.data.userId;
+    return socket.data.user_id;
   }
 
   private async handleUserStatusChange(
-    userId: string,
+    user_id: string,
     isOnline: boolean,
     socket: Socket,
   ): Promise<void> {
-    await this.chatService.updateUserOnlineStatus(userId, isOnline);
+    await this.chatService.updateUserOnlineStatus(user_id, isOnline);
     if (isOnline) {
       await this.requestAllChats(socket);
       this.chatService.watchChatCollectionChanges(socket);

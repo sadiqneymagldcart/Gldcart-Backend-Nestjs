@@ -100,18 +100,18 @@ export class TokenService implements ITokenService {
   }
 
   private async _saveOrUpdateRefreshToken(
-    userId: string,
+    user_id: string,
     token: string,
   ): Promise<string> {
     let existingToken = await this.tokenModel.findOne({
-      user: userId,
+      user: user_id,
     });
 
     if (existingToken) {
       existingToken.refresh_token = token;
     } else {
       existingToken = new this.tokenModel({
-        user: userId,
+        user: user_id,
         refresh_token: token,
       });
     }

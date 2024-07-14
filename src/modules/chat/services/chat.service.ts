@@ -19,17 +19,17 @@ export class ChatService {
   }
 
   public async updateUserOnlineStatus(
-    userId: string,
+    user_id: string,
     status: boolean,
   ): Promise<void> {
     await this.userModel.findOneAndUpdate(
-      { _id: userId },
+      { _id: user_id },
       { is_online: status },
     );
   }
 
-  public async getUserChats(userId: string): Promise<any> {
-    return this.chatModel.find({ participants: userId }).populate({
+  public async getUserChats(user_id: string): Promise<any> {
+    return this.chatModel.find({ participants: user_id }).populate({
       path: 'participants',
       select: { name: 1, surname: 1, type: 1, is_online: 1 },
     });

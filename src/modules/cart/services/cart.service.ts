@@ -12,10 +12,10 @@ export class CartService implements ICartService {
     @InjectModel(Cart.name) private readonly cartModel: Model<CartDocument>,
   ) {}
 
-  public async getCartByUserId(userId: string): Promise<Cart> {
-    const cart = await this.cartModel.findOne({ customer: userId });
+  public async getCartByUserId(user_id: string): Promise<Cart> {
+    const cart = await this.cartModel.findOne({ customer: user_id });
     if (!cart) {
-      throw new NotFoundException(`No carts found for user with id ${userId}`);
+      throw new NotFoundException(`No carts found for user with id ${user_id}`);
     }
     return cart;
   }
@@ -37,14 +37,14 @@ export class CartService implements ICartService {
   }
 
   public async addItemToCart(
-    userId: string,
+    user_id: string,
     newItem: CreateItemDto,
   ): Promise<Cart> {
-    const existingCart = await this.cartModel.findOne({ customer: userId });
+    const existingCart = await this.cartModel.findOne({ customer: user_id });
 
     if (!existingCart) {
       const cart = new this.cartModel({
-        customer: userId,
+        customer: user_id,
         items: [newItem],
       });
       return cart.save();
