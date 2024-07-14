@@ -51,8 +51,8 @@ export class StripeWebhookService {
 
     const data = event.data.object as Stripe.PaymentIntent;
 
-    const orderId = data.metadata.orderId;
+    const order_id = data.metadata.order_id;
 
-    await this.orderService.processPaymentAndInventory(orderId, OrderStatus.PAID);
+    await this.orderService.processPaymentAndInventory(order_id, OrderStatus.PAID);
   }
 }
