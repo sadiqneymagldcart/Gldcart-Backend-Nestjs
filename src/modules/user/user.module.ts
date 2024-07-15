@@ -17,4 +17,4 @@ import { AwsStorageService } from '@storages/services/storages.service';
   controllers: [UserController, ProfileController],
   exports: [UserService],
 })
-export class UserModule { }
+export class UserModule {}
