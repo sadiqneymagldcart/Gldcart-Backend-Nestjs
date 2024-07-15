@@ -1,4 +1,4 @@
-import { CacheInterceptor } from '@nestjs/cache-manager';
+import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import {
   Controller,
   Get,
@@ -42,7 +42,7 @@ export class OfferingController {
   public constructor(
     private readonly offeringService: OfferingService,
     private readonly awsStorage: AwsStorageService,
-  ) {}
+  ) { }
 
   @ApiOperation({ summary: 'Create an offering' })
   @ApiBody({ type: CreateOfferingDto })
@@ -59,10 +59,9 @@ export class OfferingController {
   ): Promise<Offering> {
     const imageUrls = await this.awsStorage.uploadMultipleFiles(images);
     const offeringWithImages = { ...createOfferingDto, images: imageUrls };
-    return this.offeringService.createOffering(offeringWithImages);
+    return this.offeringService.create(offeringWithImages);
   }
 
-  @Get()
   @ApiOperation({ summary: 'Get offerings' })
   @ApiQuery({
     name: 'size',
@@ -87,21 +86,17 @@ export class OfferingController {
     description: 'Successful retrieval of offerings',
     type: PaginatedResourceDto<Offering>,
   })
+  @CacheTTL(120)
+  @Get()
   public async getAllOfferings(
     @PaginationParams() paginationParams: Pagination,
     @FilteringParams() filters: Filtering,
     @Query('text') text: string,
   ) {
     if (text) {
-      return this.offeringService.getOfferingsBySearchQuery(
-        paginationParams,
-        text,
-      );
+      return this.offeringService.getBySearchQuery(paginationParams, text);
     } else {
-      return this.offeringService.getOfferingsByFilters(
-        paginationParams,
-        filters,
-      );
+      return this.offeringService.getByFilters(paginationParams, filters);
     }
   }
 
@@ -113,7 +108,7 @@ export class OfferingController {
   })
   @ApiResponse({ status: 404, description: 'Offering not found.' })
   public async getOfferingById(@Param('id') id: string): Promise<Offering> {
-    return await this.offeringService.getOfferingById(id);
+    return await this.offeringService.getById(id);
   }
 
   @Put(':id')
@@ -127,7 +122,7 @@ export class OfferingController {
     @Param('id') id: string,
     @Body() updateOfferingDto: UpdateOfferingDto,
   ): Promise<Offering> {
-    return this.offeringService.updateOffering(id, updateOfferingDto);
+    return this.offeringService.update(id, updateOfferingDto);
   }
 
   @Delete(':id')
@@ -138,6 +133,6 @@ export class OfferingController {
   })
   @ApiResponse({ status: 404, description: 'Offering not found.' })
   public async deleteOffering(@Param('id') id: string): Promise<void> {
-    return this.offeringService.removeOffering(id);
+    return this.offeringService.remove(id);
   }
 }
