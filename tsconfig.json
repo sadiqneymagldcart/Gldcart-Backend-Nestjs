@@ -75,6 +75,12 @@
       "@storages/*": [
         "src/modules/storages/*"
       ],
+      "@shipping/*": [
+        "src/modules/shipping/*"
+      ],
+      "@inventory/*": [
+        "src/modules/inventory/*"
+      ],
       "@shared/*": [
         "src/shared/*"
       ],
