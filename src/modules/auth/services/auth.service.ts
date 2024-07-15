@@ -33,9 +33,7 @@ export class AuthService implements IAuthService {
   public async register(
     credentials: RegisterCredentialsDto,
   ): Promise<AuthResponseDto> {
-    const existingUser = await this.userService.getByEmail(
-      credentials.email,
-    );
+    const existingUser = await this.userService.getByEmail(credentials.email);
     if (existingUser) {
       throw new BadRequestException('User already exists');
     }

@@ -32,6 +32,7 @@ export class StripeWebhookService {
 
     return event;
   }
+
   public async processSubscriptionUpdate(event: Stripe.Event) {
     await this.createEvent(event.id);
 
