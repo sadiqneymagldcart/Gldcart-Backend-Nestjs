@@ -3,6 +3,6 @@ module.exports = [
                 script: 'dist/main.js',
                 name: 'gldcart-api',
                 exec_mode: 'cluster',
-                instances: 2,
+                instances: 0,
         },
 ];
