@@ -23,7 +23,7 @@ export class ProfileController {
   public constructor(
     private readonly awsStorage: AwsStorageService,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   @Put('/:id/profile-picture')
   @UseInterceptors(FileInterceptor('image'))
@@ -96,6 +96,6 @@ export class ProfileController {
     @Param('id') id: string,
     @Body() data: UpdateUserDto,
   ) {
-    return this.userService.updateUser(id, data);
+    return this.userService.update(id, data);
   }
 }
