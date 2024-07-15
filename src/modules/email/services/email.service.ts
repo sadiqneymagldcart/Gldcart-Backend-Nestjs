@@ -2,7 +2,7 @@ import { Injectable, Logger, NotImplementedException } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ContactEmailDto } from '@email/dto/contact.email.dto';
 import { IEmailService } from '@email/interfaces/mail.service.interface';
-import * as path from 'path';
+import path from 'path';
 
 @Injectable()
 export class EmailService implements IEmailService {
