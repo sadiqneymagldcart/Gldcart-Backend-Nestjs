@@ -21,15 +21,15 @@ export class StripeController {
   @ApiBody({ type: PaymentIntentDto })
   public async createPaymentIntent(
     @Body() intent: PaymentIntentDto,
-    @Req() request: Request & { user: { stripeCustomerId: string } },
+    @Req() request: Request & { user: { stripe_cus_id: string } },
   ) {
-    const paymentIntent = await this.stripeService.createPaymentIntent(
+    const payment_intent = await this.stripeService.createPaymentIntent(
       intent.amount,
       intent.currency,
       { order_id: intent.order_id },
-      request.user.stripeCustomerId,
+      request.user.stripe_cus_id,
     );
 
-    return { client_secret: paymentIntent.client_secret };
+    return { client_secret: payment_intent.client_secret };
   }
 }
