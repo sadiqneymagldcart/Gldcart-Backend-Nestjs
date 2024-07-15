@@ -7,7 +7,11 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiExcludeController, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiExcludeController,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { CreateAddressDto } from '@address/dto/create-address.dto';
 import { UpdateAddressDto } from '@address/dto/update-address.dto';
 import { Address } from '@address/schemas/address.schema';
@@ -16,7 +20,7 @@ import { AddressService } from '@address/services/address.service';
 @ApiExcludeController()
 @Controller('address')
 export class AddressController {
-  public constructor(private readonly addressService: AddressService) { }
+  public constructor(private readonly addressService: AddressService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new address' })
@@ -30,13 +34,13 @@ export class AddressController {
     return this.addressService.createAddress(createAddressDto);
   }
 
-  @Get(':userId')
+  @Get(':user_id')
   @ApiOperation({ summary: 'Get all addresses for a user' })
   @ApiResponse({ status: 200, description: 'Return all addresses for a user.' })
   public async getAllUserAddresses(
-    @Param('userId') userId: string,
+    @Param('user_id') user_id: string,
   ): Promise<Address[]> {
-    return this.addressService.getAllAddressesForUser(userId);
+    return this.addressService.getAllAddressesForUser(user_id);
   }
 
   @Put(':id')
@@ -58,7 +62,10 @@ export class AddressController {
     status: 200,
     description: 'The address has been successfully deleted.',
   })
-  public async deleteAddress(@Param('id') id: string): Promise<Address[]> {
-    return this.addressService.removeAddressAndReturnRemaining(id);
+  public async deleteAddress(
+    @Param('user_id') user_id: string,
+    @Param('id') id: string,
+  ): Promise<Address[]> {
+    return this.addressService.removeAddressAndReturnRemaining(user_id, id);
   }
 }

@@ -12,10 +12,10 @@ export class CartService implements ICartService {
     @InjectModel(Cart.name) private readonly cartModel: Model<CartDocument>,
   ) {}
 
-  public async getCartByUserId(userId: string): Promise<Cart> {
-    const cart = await this.cartModel.findOne({ customer: userId });
+  public async getByUserId(user_id: string): Promise<Cart> {
+    const cart = await this.cartModel.findOne({ customer: user_id });
     if (!cart) {
-      throw new NotFoundException(`No carts found for user with id ${userId}`);
+      throw new NotFoundException(`No carts found for user with id ${user_id}`);
     }
     return cart;
   }
@@ -28,7 +28,7 @@ export class CartService implements ICartService {
     return cart;
   }
 
-  public async findCartWithItemsById(id: string): Promise<Cart> {
+  public async getWithItemsById(id: string): Promise<Cart> {
     const cart = await this.cartModel.findById(id).populate('items.id');
     if (!cart) {
       throw new NotFoundException(`Cart with ID ${id} not found`);
@@ -36,32 +36,18 @@ export class CartService implements ICartService {
     return cart;
   }
 
-  public async addItemToCart(
-    userId: string,
-    newItem: CreateItemDto,
-  ): Promise<Cart> {
-    const existingCart = await this.cartModel.findOne({ customer: userId });
+  public async addItem(user_id: string, newItem: CreateItemDto): Promise<Cart> {
+    const existingCart = await this.cartModel.findOne({ customer: user_id });
 
     if (!existingCart) {
-      const cart = new this.cartModel({
-        customer: userId,
-        items: [newItem],
-      });
-      return cart.save();
+      return this.createCartWithItem(user_id, newItem);
     } else {
-      const itemExists = existingCart.items.some(
-        (item) => item.id.toString() === newItem.id,
-      );
-
-      if (!itemExists) {
-        existingCart.items.push(newItem);
-      }
-      return existingCart.save();
+      return this.addItemToExistingCart(existingCart, newItem);
     }
   }
 
-  public async removeItemFromCart(id: string, itemId: string): Promise<Cart> {
-    const existingCart = await this.getCartByIdOrThrow(id);
+  public async removeItem(id: string, itemId: string): Promise<Cart> {
+    const existingCart = await this.getByIdOrThrow(id);
 
     const itemIndex = existingCart.items.findIndex(
       (item) => item.id === itemId,
@@ -76,11 +62,11 @@ export class CartService implements ICartService {
     return existingCart.save();
   }
 
-  public async updateItemInCart(
+  public async updateItem(
     id: string,
     updateItem: CreateItemDto,
   ): Promise<Cart> {
-    const existingCart = await this.getCartByIdOrThrow(id);
+    const existingCart = await this.getByIdOrThrow(id);
 
     const itemIndex = existingCart.items.findIndex(
       (item) => item.id === updateItem.id,
@@ -97,12 +83,12 @@ export class CartService implements ICartService {
     return existingCart.save();
   }
 
-  public async updateItemQuantityInCart(
+  public async updateItemQuantity(
     id: string,
     itemId: string,
     updateItem: UpdateItemDto,
   ): Promise<Cart> {
-    const existingCart = await this.getCartByIdOrThrow(id);
+    const existingCart = await this.getByIdOrThrow(id);
 
     const item = existingCart.items.find((i) => i.id.toString() === itemId);
 
@@ -115,7 +101,7 @@ export class CartService implements ICartService {
     return existingCart.save();
   }
 
-  public async removeCartById(id: string): Promise<{ message: string }> {
+  public async remove(id: string): Promise<{ message: string }> {
     const result = await this.cartModel.findByIdAndDelete(id);
     if (!result) {
       throw new NotFoundException(`Cart with ID ${id} not found`);
@@ -123,11 +109,35 @@ export class CartService implements ICartService {
     return { message: 'Cart deleted successfully' };
   }
 
-  private async getCartByIdOrThrow(id: string): Promise<CartDocument> {
+  private async getByIdOrThrow(id: string): Promise<CartDocument> {
     const cart = await this.cartModel.findById(id);
     if (!cart) {
       throw new NotFoundException(`Cart with ID ${id} not found`);
     }
     return cart;
+  }
+
+  private createCartWithItem(
+    user_id: string,
+    newItem: CreateItemDto,
+  ): Promise<Cart> {
+    const cart = new this.cartModel({
+      customer: user_id,
+      items: [newItem],
+    });
+    return cart.save();
+  }
+
+  private addItemToExistingCart(
+    existingCart: CartDocument,
+    newItem: CreateItemDto,
+  ): Promise<Cart> {
+    const itemExists = existingCart.items.some(
+      (item) => item.id.toString() === newItem.id,
+    );
+    if (!itemExists) {
+      existingCart.items.push(newItem);
+    }
+    return existingCart.save();
   }
 }

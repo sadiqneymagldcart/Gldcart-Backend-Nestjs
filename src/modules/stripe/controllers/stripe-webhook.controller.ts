@@ -52,9 +52,13 @@ export class StripeWebhookController {
     switch (event.type) {
       case 'customer.subscription.updated':
       case 'customer.subscription.created':
+        this.logger.log(`Subscription updated for customer: ${event.id}`);
         return this.stripeWebhookService.processSubscriptionUpdate(event);
       case 'payment_intent.succeeded':
+        this.logger.log(`Payment succeeded for payment intent: ${event.id}`);
         await this.stripeWebhookService.processPaymentSucceded(event);
+      case 'payment_intent.payment_failed':
+        this.logger.warn(`Payment failed for payment intent: ${event.id}`);
       default:
         this.logger.warn(`Unhandled event type: ${event.type}`);
     }

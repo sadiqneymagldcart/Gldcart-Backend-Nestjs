@@ -26,11 +26,6 @@ export class SearchService<T extends Document> {
     query: FilterQuery<T>,
     { limit, offset }: Pagination,
   ): Promise<T[]> {
-    return this.model
-      .find(query)
-      .select('name')
-      .skip(offset)
-      .limit(limit)
-      .lean();
+    return this.model.find(query).skip(offset).limit(limit).lean();
   }
 }

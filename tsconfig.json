@@ -6,6 +6,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
+     "esModuleInterop": true,
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
@@ -74,6 +75,12 @@
       ],
       "@storages/*": [
         "src/modules/storages/*"
+      ],
+      "@shipping/*": [
+        "src/modules/shipping/*"
+      ],
+      "@inventory/*": [
+        "src/modules/inventory/*"
       ],
       "@shared/*": [
         "src/shared/*"

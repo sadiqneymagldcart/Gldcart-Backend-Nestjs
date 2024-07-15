@@ -12,7 +12,7 @@ export class CreateReviewDto {
   @ApiProperty({ description: 'User ID who created the review' })
   @IsNotEmpty()
   @IsMongoId()
-  userId: string;
+  user_id: string;
 
   @ApiProperty({ description: 'Product ID that the review is for' })
   @IsNotEmpty()

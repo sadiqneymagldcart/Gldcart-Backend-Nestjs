@@ -87,10 +87,10 @@ export class User {
   is_online: boolean;
 
   @Prop()
-  stripeCustomerId: string;
+  stripe_cus_id: string;
 
   @Prop({ nullable: true })
-  monthlySubscriptionStatus?: string;
+  monthly_subscription_status?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

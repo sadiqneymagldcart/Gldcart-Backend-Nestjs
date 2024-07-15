@@ -20,7 +20,7 @@ export class MongooseClassSerializerInterceptor extends ClassSerializerIntercept
     super(reflector, defaultOptions);
   }
 
-  private _changePlainObjectToInstance(
+  private changePlainObjectToInstance(
     object: PlainLiteralObject,
     classToIntercept: Type,
   ) {
@@ -30,16 +30,16 @@ export class MongooseClassSerializerInterceptor extends ClassSerializerIntercept
     return object;
   }
 
-  private _prepareResponse(
+  private prepareResponse(
     response: PlainLiteralObject | PlainLiteralObject[],
     classToIntercept: Type,
   ) {
     if (Array.isArray(response)) {
       return response.map((document: Document) =>
-        this._changePlainObjectToInstance(document, classToIntercept),
+        this.changePlainObjectToInstance(document, classToIntercept),
       );
     }
-    return this._changePlainObjectToInstance(response, classToIntercept);
+    return this.changePlainObjectToInstance(response, classToIntercept);
   }
 
   public intercept(
@@ -56,7 +56,7 @@ export class MongooseClassSerializerInterceptor extends ClassSerializerIntercept
       .pipe(
         map((response) =>
           this.serialize(
-            this._prepareResponse(response, classToIntercept),
+            this.prepareResponse(response, classToIntercept),
             this.defaultOptions,
           ),
         ),

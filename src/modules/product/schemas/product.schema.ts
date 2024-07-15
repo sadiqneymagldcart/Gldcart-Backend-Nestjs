@@ -33,6 +33,9 @@ export class Product {
   @Prop({ required: true })
   subcategory: string;
 
+  @Prop()
+  rating?: number;
+
   @Prop({ required: true, type: mongoose.Schema.Types.Mixed })
   attributes: { key: string; value: string }[];
 }
