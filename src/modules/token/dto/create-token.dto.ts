@@ -49,7 +49,7 @@ export class CreateTokenDto {
   })
   @IsNotEmpty({ message: 'Stripe customer ID is required' })
   @Expose()
-  stripeCustomerId: string;
+  stripe_cus_id: string;
 
   @ApiProperty({
     example: 'user@example.com',
