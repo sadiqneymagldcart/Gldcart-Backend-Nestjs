@@ -10,7 +10,7 @@ export class AddressService {
   public constructor(
     @InjectModel(Address.name)
     private readonly addressModel: Model<AddressDocument>,
-  ) { }
+  ) {}
 
   public async createAddress(
     createAddressDto: CreateAddressDto,
@@ -19,17 +19,19 @@ export class AddressService {
     return createdAddress.save();
   }
 
-  public async getAllAddressesForUser(userId: string): Promise<Address[]> {
-    return this.addressModel.find({ user: userId });
+  public async getAllAddressesForUser(user_id: string): Promise<Address[]> {
+    return this.addressModel.find({ user: user_id });
   }
 
   public async updateAddress(
     addressId: string,
     updateAddressDto: UpdateAddressDto,
   ): Promise<Address> {
-    const updatedAddress = await this.addressModel
-      .findByIdAndUpdate(addressId, updateAddressDto, { new: true })
-      .exec();
+    const updatedAddress = await this.addressModel.findByIdAndUpdate(
+      addressId,
+      updateAddressDto,
+      { new: true },
+    );
     if (!updatedAddress) {
       throw new NotFoundException('Address not found');
     }
@@ -37,14 +39,13 @@ export class AddressService {
   }
 
   public async removeAddressAndReturnRemaining(
+    user_id: string,
     addressId: string,
   ): Promise<Address[]> {
-    const deletedAddress = await this.addressModel
-      .findByIdAndDelete(addressId)
-      .exec();
+    const deletedAddress = await this.addressModel.findByIdAndDelete(addressId);
     if (!deletedAddress) {
       throw new NotFoundException('Address not found');
     }
-    return this.addressModel.find();
+    return this.addressModel.find({ user: user_id });
   }
 }
