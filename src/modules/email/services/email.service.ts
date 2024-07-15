@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, NotImplementedException } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ContactEmailDto } from '@email/dto/contact.email.dto';
 import { IEmailService } from '@email/interfaces/mail.service.interface';
@@ -6,6 +6,8 @@ import * as path from 'path';
 
 @Injectable()
 export class EmailService implements IEmailService {
+  private readonly logger = new Logger(EmailService.name);
+
   public constructor(private readonly mailerService: MailerService) {}
 
   public async sendContactFormEmail(emailData: ContactEmailDto): Promise<void> {
@@ -22,5 +24,9 @@ export class EmailService implements IEmailService {
         message: emailData.message,
       },
     });
+  }
+
+  public async sendOrderConfirmationEmail(emailData: any) {
+    this.logger.log('Sending order confirmation email');
   }
 }
