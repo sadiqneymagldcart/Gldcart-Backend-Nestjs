@@ -1,8 +1,8 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as cookieParser from 'cookie-parser';
-import * as express from 'express';
-import * as compression from 'compression';
+import cookieParser from 'cookie-parser';
+import express from 'express';
+import compression from 'compression';
 
 function setupGlobalPrefix(app: INestApplication) {
   app.setGlobalPrefix('api');
