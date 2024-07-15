@@ -16,18 +16,18 @@ export class OfferingService {
     this.searchService = new SearchService<OfferingDocument>(offeringModel);
   }
 
-  public async createOffering(
+  public async create(
     createOfferingDto: CreateOfferingDto,
   ): Promise<Offering> {
     const newOffering = new this.offeringModel(createOfferingDto);
     return await newOffering.save();
   }
 
-  public async getAllOfferings(): Promise<Offering[]> {
+  public async getAll(): Promise<Offering[]> {
     return this.offeringModel.find();
   }
 
-  public async getOfferingById(id: string): Promise<Offering> {
+  public async getById(id: string): Promise<Offering> {
     const offering = await this.offeringModel.findById(id);
     if (!offering) {
       throw new NotFoundException(`Offering with ID ${id} not found`);
@@ -35,7 +35,7 @@ export class OfferingService {
     return offering;
   }
 
-  public async getOfferingsByFilters(
+  public async getByFilters(
     pagination: Pagination,
     filters: {
       [key: string]: any;
@@ -47,7 +47,7 @@ export class OfferingService {
     );
   }
 
-  public async getOfferingsBySearchQuery(
+  public async getBySearchQuery(
     pagination: Pagination,
     searchQuery: string,
   ): Promise<Offering[]> {
@@ -57,7 +57,7 @@ export class OfferingService {
     );
   }
 
-  public async updateOffering(
+  public async update(
     id: string,
     updateOfferingDto: UpdateOfferingDto,
   ): Promise<Offering> {
@@ -72,7 +72,7 @@ export class OfferingService {
     return updatedOffering;
   }
 
-  public async removeOffering(id: string): Promise<void> {
+  public async remove(id: string): Promise<void> {
     const deletedOffering = await this.offeringModel.findByIdAndDelete(id);
     if (!deletedOffering) {
       throw new NotFoundException(`Offering with ID ${id} not found`);
