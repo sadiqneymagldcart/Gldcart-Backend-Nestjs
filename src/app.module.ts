@@ -61,4 +61,4 @@ import { AddressModule } from '@address/address.module';
   ],
   controllers: [AppController],
 })
-export class AppModule { }
+export class AppModule {}

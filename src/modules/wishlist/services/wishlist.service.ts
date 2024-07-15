@@ -76,10 +76,7 @@ export class WishlistService implements IWishlistService {
     }
   }
 
-  public async removeItem(
-    id: string,
-    itemId: string,
-  ): Promise<Wishlist> {
+  public async removeItem(id: string, itemId: string): Promise<Wishlist> {
     const existingWishlist = await this.getByIdOrThrow(id);
 
     const itemIndex = existingWishlist.items.findIndex(

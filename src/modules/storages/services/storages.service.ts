@@ -20,7 +20,9 @@ export class AwsStorageService {
     });
   }
 
-  public async uploadMultipleFiles(files: Array<Express.Multer.File>): Promise<string[]> {
+  public async uploadMultipleFiles(
+    files: Array<Express.Multer.File>,
+  ): Promise<string[]> {
     const uploadPromises = files.map((file) => this.uploadFile(file));
     const urls = await Promise.all(uploadPromises);
     return urls.map((url) => url.url);
