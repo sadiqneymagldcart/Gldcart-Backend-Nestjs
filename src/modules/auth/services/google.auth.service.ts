@@ -50,7 +50,7 @@ export class GoogleAuthService {
   ): Promise<AuthResponseDto> {
     const userDto = plainToInstance(
       CreateTokenDto,
-      await this.userService.createUser(createUserDto),
+      await this.userService.create(createUserDto),
       {
         excludeExtraneousValues: true,
       },
