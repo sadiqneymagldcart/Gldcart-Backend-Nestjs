@@ -13,9 +13,9 @@ export class WishlistService implements IWishlistService {
   public constructor(
     @InjectModel(Wishlist.name)
     private readonly wishlistModel: Model<WishlistDocument>,
-  ) { }
+  ) {}
 
-  public async getWishlistByUserId(user_id: string): Promise<Wishlist> {
+  public async getByUserId(user_id: string): Promise<Wishlist> {
     const wishlist = await this.wishlistModel.findOne({ customer: user_id });
     if (!wishlist) {
       throw new NotFoundException(
@@ -25,7 +25,7 @@ export class WishlistService implements IWishlistService {
     return wishlist;
   }
 
-  public async getWishlistById(id: string): Promise<Wishlist> {
+  public async getById(id: string): Promise<Wishlist> {
     const wishlist = await this.wishlistModel.findById(id);
     if (!wishlist) {
       throw new NotFoundException(`Wishlist with ID ${id} not found`);
@@ -33,7 +33,7 @@ export class WishlistService implements IWishlistService {
     return wishlist;
   }
 
-  public async getWishlistWithItemsById(id: string): Promise<Wishlist> {
+  public async getWithItemsById(id: string): Promise<Wishlist> {
     const wishlist = await this.wishlistModel
       .findById(id)
       .populate('items.id', 'name price')
@@ -46,7 +46,7 @@ export class WishlistService implements IWishlistService {
     return wishlist;
   }
 
-  public async addItemToWishlist(
+  public async addItem(
     user_id: string,
     newItem: CreateItemDto,
   ): Promise<Wishlist> {
@@ -76,11 +76,11 @@ export class WishlistService implements IWishlistService {
     }
   }
 
-  public async removeItemFromWishlist(
+  public async removeItem(
     id: string,
     itemId: string,
   ): Promise<Wishlist> {
-    const existingWishlist = await this.getWishlistByIdOrThrow(id);
+    const existingWishlist = await this.getByIdOrThrow(id);
 
     const itemIndex = existingWishlist.items.findIndex(
       (item: Item) => item.id === itemId,
@@ -95,7 +95,7 @@ export class WishlistService implements IWishlistService {
     return existingWishlist.save();
   }
 
-  public async removeWishlistById(id: string): Promise<Wishlist> {
+  public async remove(id: string): Promise<Wishlist> {
     const result = await this.wishlistModel.findByIdAndDelete(id);
     if (!result) {
       throw new NotFoundException(`Wishlist with ID ${id} not found`);
@@ -103,7 +103,7 @@ export class WishlistService implements IWishlistService {
     return result;
   }
 
-  private async getWishlistByIdOrThrow(id: string): Promise<WishlistDocument> {
+  private async getByIdOrThrow(id: string): Promise<WishlistDocument> {
     const wishlist = await this.wishlistModel.findById(id);
     if (!wishlist) {
       throw new NotFoundException(`Wishlist with ID ${id} not found`);
