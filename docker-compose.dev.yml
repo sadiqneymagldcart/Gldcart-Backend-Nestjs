@@ -9,6 +9,8 @@ services:
       - .development.env
     volumes:
       - .:/usr/src/app
+    ports: 
+      - 3001:3001
     networks:
       - app-network
     depends_on:
@@ -22,6 +24,17 @@ services:
       - app-network
     volumes:
       - redis:/data
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - '8081:8081'
+    networks:
+      - app-network
+    depends_on:
+      - redis
 
 networks:
   app-network:
