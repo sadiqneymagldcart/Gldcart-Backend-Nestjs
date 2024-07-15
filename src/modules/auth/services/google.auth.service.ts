@@ -55,7 +55,7 @@ export class GoogleAuthService {
         excludeExtraneousValues: true,
       },
     );
-    return this._authorizeWithGoogle(userDto);
+    return this.authorizeWithGoogle(userDto);
   }
 
   public async getGoogleOAuthTokens(
@@ -63,9 +63,9 @@ export class GoogleAuthService {
   ): Promise<Nullable<GoogleToken>> {
     this.logger.debug(`Fetching Google OAuth Tokens with code: ${code}`);
 
-    const googleResponse = await this._postToUrl<GoogleToken>(
+    const googleResponse = await this.postToUrl<GoogleToken>(
       this.googleTokenUrl,
-      this._getOAuthValues(code),
+      this.getOAuthValues(code),
     );
     return googleResponse.data;
   }
@@ -74,11 +74,11 @@ export class GoogleAuthService {
     id_token: string,
     access_token: string,
   ): Promise<Nullable<GoogleUser>> {
-    const response = await this._getGoogleUserInfo(id_token, access_token);
+    const response = await this.getGoogleUserInfo(id_token, access_token);
     return response.data;
   }
 
-  private async _authorizeWithGoogle(
+  private async authorizeWithGoogle(
     tokenPayload: CreateTokenDto,
   ): Promise<AuthResponseDto> {
     const [refreshToken, accessToken] = await Promise.all([
@@ -92,7 +92,7 @@ export class GoogleAuthService {
     };
   }
 
-  private _getOAuthValues(code: string) {
+  private getOAuthValues(code: string) {
     return {
       code,
       client_id: this.googleClientId,
@@ -102,14 +102,14 @@ export class GoogleAuthService {
     };
   }
 
-  private async _postToUrl<T>(
+  private async postToUrl<T>(
     url: string,
     values: any,
   ): Promise<AxiosResponse<T>> {
     return this.axiosInstance.post<T>(url, stringify(values));
   }
 
-  private async _getGoogleUserInfo(id_token: string, access_token: string) {
+  private async getGoogleUserInfo(id_token: string, access_token: string) {
     return axios.get<GoogleUser>(
       `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
       {
