@@ -13,16 +13,16 @@ export class ProductService implements IProductService {
     private readonly productModel: Model<ProductDocument>,
   ) {}
 
-  public async createProduct(createProductDto: CreateProductDto): Promise<Product> {
+  public async create(createProductDto: CreateProductDto): Promise<Product> {
     const createdProduct = new this.productModel(createProductDto);
     return createdProduct.save();
   }
 
-  public async getAllProducts(): Promise<Product[]> {
+  public async getAll(): Promise<Product[]> {
     return this.productModel.find().lean();
   }
 
-  public async getProductById(id: string): Promise<Product> {
+  public async getById(id: string): Promise<Product> {
     const offering = await this.productModel.findById(id).lean();
     if (!offering) {
       throw new NotFoundException(`Product with ID ${id} not found`);
@@ -30,7 +30,7 @@ export class ProductService implements IProductService {
     return offering;
   }
 
-  public async updateProduct(
+  public async update(
     id: string,
     updateProductDto: UpdateProductDto,
   ): Promise<Product> {
@@ -45,19 +45,19 @@ export class ProductService implements IProductService {
     return existingProduct;
   }
 
-  public async updateProductStock(
+  public async updateStock(
     productId: string,
     quantity: number,
     session: any,
   ): Promise<void> {
-    await this.productModel.updateOne(
+    this.productModel.updateOne(
       { _id: productId },
       { $inc: { stock: -quantity } },
       { session },
     );
   }
 
-  public async removeProduct(id: string): Promise<void> {
+  public async remove(id: string): Promise<void> {
     const result = await this.productModel.findByIdAndDelete(id);
     if (!result) {
       throw new NotFoundException(`Product with ID ${id} not found`);
