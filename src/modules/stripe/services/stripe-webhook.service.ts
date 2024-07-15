@@ -14,7 +14,7 @@ import Stripe from 'stripe';
 export class StripeWebhookService {
   public constructor(
     @InjectModel(StripeEvent.name)
-    private eventModel: Model<StripeEventDocument>,
+    private readonly eventModel: Model<StripeEventDocument>,
     private readonly userService: UserService,
     private readonly orderService: OrderService,
   ) {}
@@ -32,17 +32,18 @@ export class StripeWebhookService {
 
     return event;
   }
+
   public async processSubscriptionUpdate(event: Stripe.Event) {
     await this.createEvent(event.id);
 
     const data = event.data.object as Stripe.Subscription;
 
-    const customerId: string = data.customer as string;
-    const subscriptionStatus = data.status;
+    const customer_id: string = data.customer as string;
+    const subscription_status = data.status;
 
     await this.userService.updateMonthlySubscriptionStatus(
-      customerId,
-      subscriptionStatus,
+      customer_id,
+      subscription_status,
     );
   }
 
@@ -51,8 +52,8 @@ export class StripeWebhookService {
 
     const data = event.data.object as Stripe.PaymentIntent;
 
-    const orderId = data.metadata.orderId;
+    const order_id = data.metadata.order_id;
 
-    await this.orderService.processPaymentAndInventory(orderId, OrderStatus.PAID);
+    await this.orderService.process(order_id, OrderStatus.PAID);
   }
 }

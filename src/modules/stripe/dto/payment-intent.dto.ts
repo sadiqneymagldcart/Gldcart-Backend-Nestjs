@@ -5,5 +5,5 @@ export class PaymentIntentDto {
 
   currency: string;
 
-  orderId: string;
+  order_id: string;
 }

@@ -41,6 +41,9 @@ export class Order {
 
   @Prop({ type: Number, required: true })
   trackNumber: number;
+
+  @Prop({ type: String, required: true })
+  notes?: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

@@ -8,11 +8,11 @@ import { CreateItemDto } from '@item/dto/create-item.dto';
 export interface ICartService {
   /**
    * Finds a cart by the user's ID.
-   * @param userId - The ID of the user.
+   * @param user_id - The ID of the user.
    * @returns A promise that resolves to the Cart object.
    * @throws {NotFoundException} If no cart is found for the user.
    */
-  getCartByUserId(userId: string): Promise<Cart>;
+  getByUserId(user_id: string): Promise<Cart>;
 
   /**
    * Finds a cart by its ID.
@@ -24,11 +24,11 @@ export interface ICartService {
 
   /**
    * Adds an item to a user's cart.
-   * @param userId - The ID of the user.
+   * @param user_id - The ID of the user.
    * @param newItem - The item to add to the cart.
    * @returns A promise that resolves to the updated Cart object.
    */
-  addItemToCart(userId: string, newItem: CreateItemDto): Promise<Cart>;
+  addItem(user_id: string, newItem: CreateItemDto): Promise<Cart>;
 
   /**
    * Removes an item from a cart.
@@ -37,7 +37,7 @@ export interface ICartService {
    * @returns A promise that resolves to the updated Cart object.
    * @throws {NotFoundException} If no item is found with the given ID in the cart.
    */
-  removeItemFromCart(id: string, itemId: string): Promise<Cart>;
+  removeItem(id: string, itemId: string): Promise<Cart>;
 
   /**
    * Updates an item in a cart.
@@ -46,7 +46,7 @@ export interface ICartService {
    * @returns A promise that resolves to the updated Cart object.
    * @throws {NotFoundException} If no item is found with the given ID in the cart.
    */
-  updateItemInCart(id: string, updateItem: CreateItemDto): Promise<Cart>;
+  updateItem(id: string, updateItem: CreateItemDto): Promise<Cart>;
 
   /**
    * Removes a cart.
@@ -54,5 +54,5 @@ export interface ICartService {
    * @returns A promise that resolves to a message indicating the cart was removed.
    * @throws {NotFoundException} If no cart is found with the given ID.
    */
-  removeCartById(id: string): Promise<{ message: string }>;
+  remove(id: string): Promise<{ message: string }>;
 }

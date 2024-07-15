@@ -24,7 +24,9 @@ export class OrderController {
     description: 'The order has been successfully created.',
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
-  public async createOrder(@Body() createOrderDto: CreateOrderDto): Promise<void> {
+  public async createOrder(
+    @Body() createOrderDto: CreateOrderDto,
+  ): Promise<void> {
     // return this.orderService.create(createOrderDto);
   }
 

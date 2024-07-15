@@ -16,11 +16,10 @@ import { StripeModule } from '@stripe/stripe.module';
 import { SubscriptionModule } from '@subscription/subscription.module';
 import { ItemModule } from '@item/item.module';
 import { CacheModule } from '@nestjs/cache-manager';
-import * as redisStore from 'cache-manager-redis-store';
-import mongoConfig from '@config/mongo.config';
-import redisConfig from '@config/redis.config';
 import { WishlistModule } from '@wishlist/wishlist.module';
 import { AddressModule } from '@address/address.module';
+import mongoConfig from '@config/mongo.config';
+import redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -34,15 +33,16 @@ import { AddressModule } from '@address/address.module';
       useFactory: mongoConfig,
       inject: [ConfigService],
     }),
-    // CacheModule.register({
-    //   isGlobal: true,
-    //   store: redisStore,
-    //   useFactory: redisConfig,
-    // }),
-    CacheModule.register({
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
       isGlobal: true,
+      useFactory: async (configService: ConfigService) => ({
+        store: redisStore,
+        host: configService.get('REDIS_HOST'),
+        port: configService.get('REDIS_PORT'),
+      }),
+      inject: [ConfigService],
     }),
-
     UserModule,
     AddressModule,
     AuthModule,

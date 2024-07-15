@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
-import { setup } from '@config/setup';
 import { ConfigService } from '@nestjs/config';
+import { setup } from '@config/setup';
+import { runInCluster } from '@common/utils/run-in-cluster.util';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -18,3 +19,4 @@ async function bootstrap() {
 }
 
 bootstrap();
+// runInCluster(bootstrap);
