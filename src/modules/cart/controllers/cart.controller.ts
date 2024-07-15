@@ -32,8 +32,10 @@ export class CartController {
   @Get('/user/:user_id')
   @ApiOperation({ summary: 'Get a cart for user' })
   @ApiOkResponse({ description: 'The cart for user', type: Cart })
-  public async getCartByUserId(@Param('user_id') user_id: string): Promise<Cart> {
-    return this.cartService.getCartByUserId(user_id);
+  public async getCartByUserId(
+    @Param('user_id') user_id: string,
+  ): Promise<Cart> {
+    return this.cartService.getByUserId(user_id);
   }
 
   @Get(':id')
@@ -44,7 +46,7 @@ export class CartController {
   })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
   public async getCartById(@Param('id') id: string): Promise<Cart> {
-    return this.cartService.findCartWithItemsById(id);
+    return this.cartService.getWithItemsById(id);
   }
 
   @Post(':user_id')
@@ -56,7 +58,7 @@ export class CartController {
     @Param('user_id') user_id: string,
     @Body() newItem: CreateItemDto,
   ): Promise<Cart> {
-    return this.cartService.addItemToCart(user_id, newItem);
+    return this.cartService.addItem(user_id, newItem);
   }
 
   @Put(':id/item/:itemId')
@@ -71,7 +73,7 @@ export class CartController {
     @Param('itemId') itemId: string,
     @Body() updateItem: UpdateItemDto,
   ): Promise<Cart> {
-    return this.cartService.updateItemQuantityInCart(id, itemId, updateItem);
+    return this.cartService.updateItemQuantity(id, itemId, updateItem);
   }
 
   @Delete(':id/item/:itemId')
@@ -83,7 +85,7 @@ export class CartController {
     @Param('id') id: string,
     @Param('itemId') itemId: string,
   ): Promise<Cart> {
-    return this.cartService.removeItemFromCart(id, itemId);
+    return this.cartService.removeItem(id, itemId);
   }
 
   @Delete(':id')
@@ -94,6 +96,6 @@ export class CartController {
   public async removeCartById(
     @Param('id') id: string,
   ): Promise<{ message: string }> {
-    return this.cartService.removeCartById(id);
+    return this.cartService.remove(id);
   }
 }
