@@ -19,8 +19,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { WishlistModule } from '@wishlist/wishlist.module';
 import { AddressModule } from '@address/address.module';
 import mongoConfig from '@config/mongo.config';
-import * as redisStore from 'cache-manager-redis-store';
-import redisConfig from '@config/redis.config';
+import redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -34,12 +33,13 @@ import redisConfig from '@config/redis.config';
       useFactory: mongoConfig,
       inject: [ConfigService],
     }),
-    CacheModule.register({
+    CacheModule.registerAsync({
       imports: [ConfigModule],
       isGlobal: true,
       useFactory: async (configService: ConfigService) => ({
         store: redisStore,
-        ...redisConfig(configService),
+        host: configService.get('REDIS_HOST'),
+        port: configService.get('REDIS_PORT'),
       }),
       inject: [ConfigService],
     }),
@@ -61,4 +61,4 @@ import redisConfig from '@config/redis.config';
   ],
   controllers: [AppController],
 })
-export class AppModule {}
+export class AppModule { }
