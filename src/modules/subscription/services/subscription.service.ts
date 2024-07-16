@@ -13,18 +13,18 @@ export class SubscriptionService {
     private readonly configService: ConfigService,
   ) {}
 
-  public async createMonthlySubscription(customerId: string) {
-    const subscription = await this._getSubscription(customerId);
+  public async createMonthlySubscription(customer_id: string) {
+    const subscription = await this.getSubscription(customer_id);
 
     if (subscription) {
       throw new BadRequestException('Customer already subscribed');
     }
-    const priceId = this.configService.get('MONTHLY_SUBSCRIPTION_PRICE_ID');
-    return this.stripeService.createSubscription(priceId, customerId);
+    const price_id = this.configService.get('MONTHLY_SUBSCRIPTION_PRICE_ID');
+    return this.stripeService.createSubscription(price_id, customer_id);
   }
 
-  public async getMonthlySubscription(customerId: string) {
-    const subscription = await this._getSubscription(customerId);
+  public async getMonthlySubscription(customer_id: string) {
+    const subscription = await this.getSubscription(customer_id);
 
     if (!subscription) {
       throw new NotFoundException('Customer not subscribed');
@@ -32,11 +32,11 @@ export class SubscriptionService {
     return subscription;
   }
 
-  private async _getSubscription(customerId: string) {
-    const priceId = this.configService.get('MONTHLY_SUBSCRIPTION_PRICE_ID');
+  private async getSubscription(customer_id: string) {
+    const price_id = this.configService.get('MONTHLY_SUBSCRIPTION_PRICE_ID');
     const subscriptions = await this.stripeService.listSubscriptions(
-      priceId,
-      customerId,
+      price_id,
+      customer_id,
     );
 
     return subscriptions.data.length ? subscriptions.data[0] : null;

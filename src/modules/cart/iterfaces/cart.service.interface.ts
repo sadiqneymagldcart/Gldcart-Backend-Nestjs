@@ -33,11 +33,11 @@ export interface ICartService {
   /**
    * Removes an item from a cart.
    * @param id - The ID of the cart.
-   * @param itemId - The ID of the item to remove.
+   * @param item_id - The ID of the item to remove.
    * @returns A promise that resolves to the updated Cart object.
    * @throws {NotFoundException} If no item is found with the given ID in the cart.
    */
-  removeItem(id: string, itemId: string): Promise<Cart>;
+  removeItem(id: string, item_id: string): Promise<Cart>;
 
   /**
    * Updates an item in a cart.

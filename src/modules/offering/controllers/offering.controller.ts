@@ -1,4 +1,4 @@
-import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import {
   Controller,
   Get,
@@ -55,10 +55,10 @@ export class OfferingController {
   @Post()
   public async createOffering(
     @UploadedFiles() images: Array<Express.Multer.File>,
-    @Body() createOfferingDto: CreateOfferingDto,
+    @Body() offering: CreateOfferingDto,
   ): Promise<Offering> {
     const imageUrls = await this.awsStorage.uploadMultipleFiles(images);
-    const offeringWithImages = { ...createOfferingDto, images: imageUrls };
+    const offeringWithImages = { ...offering, images: imageUrls };
     return this.offeringService.create(offeringWithImages);
   }
 
@@ -89,14 +89,14 @@ export class OfferingController {
   @CacheTTL(120)
   @Get()
   public async getAllOfferings(
-    @PaginationParams() paginationParams: Pagination,
+    @PaginationParams() pagination: Pagination,
     @FilteringParams() filters: Filtering,
     @Query('text') text: string,
   ) {
     if (text) {
-      return this.offeringService.getBySearchQuery(paginationParams, text);
+      return this.offeringService.getBySearchQuery(pagination, text);
     } else {
-      return this.offeringService.getByFilters(paginationParams, filters);
+      return this.offeringService.getByFilters(pagination, filters);
     }
   }
 
@@ -120,9 +120,9 @@ export class OfferingController {
   @ApiResponse({ status: 404, description: 'Offering not found.' })
   public async updateOffering(
     @Param('id') id: string,
-    @Body() updateOfferingDto: UpdateOfferingDto,
+    @Body() offering: UpdateOfferingDto,
   ): Promise<Offering> {
-    return this.offeringService.update(id, updateOfferingDto);
+    return this.offeringService.update(id, offering);
   }
 
   @Delete(':id')

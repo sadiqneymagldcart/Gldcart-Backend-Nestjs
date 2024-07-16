@@ -38,8 +38,8 @@ export interface IWishlistService {
   /**
    * Remove an item from a wishlist
    * @param id - The id of the wishlist
-   * @param itemId - The id of the item to remove
+   * @param item_id - The id of the item to remove
    * @returns A promise that resolves to a Wishlist
    */
-  removeItem(id: string, itemId: string): Promise<Wishlist>;
+  removeItem(id: string, item_id: string): Promise<Wishlist>;
 }

@@ -46,11 +46,11 @@ export class CartService implements ICartService {
     }
   }
 
-  public async removeItem(id: string, itemId: string): Promise<Cart> {
+  public async removeItem(id: string, item_id: string): Promise<Cart> {
     const existingCart = await this.getByIdOrThrow(id);
 
     const itemIndex = existingCart.items.findIndex(
-      (item) => item.id === itemId,
+      (item) => item.id === item_id,
     );
 
     if (itemIndex === -1) {
@@ -85,15 +85,15 @@ export class CartService implements ICartService {
 
   public async updateItemQuantity(
     id: string,
-    itemId: string,
+    item_id: string,
     updateItem: UpdateItemDto,
   ): Promise<Cart> {
     const existingCart = await this.getByIdOrThrow(id);
 
-    const item = existingCart.items.find((i) => i.id.toString() === itemId);
+    const item = existingCart.items.find((i) => i.id.toString() === item_id);
 
     if (!item) {
-      throw new NotFoundException(`Item with ID ${itemId} not found in cart`);
+      throw new NotFoundException(`Item with ID ${item_id} not found in cart`);
     }
 
     item.quantity = updateItem.quantity;

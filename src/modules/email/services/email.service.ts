@@ -10,7 +10,7 @@ export class EmailService implements IEmailService {
 
   public constructor(private readonly mailerService: MailerService) {}
 
-  public async sendContactFormEmail(emailData: ContactEmailDto): Promise<void> {
+  public async sendContactFormEmail(email_data: ContactEmailDto): Promise<void> {
     const templatePath = path.join(__dirname, '../templates/contact.hbs');
 
     await this.mailerService.sendMail({
@@ -18,15 +18,15 @@ export class EmailService implements IEmailService {
       subject: 'New Contact Form Submission',
       template: templatePath,
       context: {
-        name: emailData.name,
-        email: emailData.email,
-        number: emailData.phone_number,
-        message: emailData.message,
+        name: email_data.name,
+        email: email_data.email,
+        number: email_data.phone_number,
+        message: email_data.message,
       },
     });
   }
 
-  public async sendOrderConfirmationEmail(emailData: any) {
+  public async sendOrderConfirmationEmail(email_data: any) {
     this.logger.log('Sending order confirmation email');
   }
 }

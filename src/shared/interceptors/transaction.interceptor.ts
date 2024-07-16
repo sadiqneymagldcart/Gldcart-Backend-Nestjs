@@ -1,7 +1,7 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
 import { Observable, catchError, tap } from 'rxjs';
+import mongoose from 'mongoose';
 
 export class TransactionInterceptor implements NestInterceptor {
   public constructor(
@@ -16,6 +16,7 @@ export class TransactionInterceptor implements NestInterceptor {
 
     const session: mongoose.ClientSession =
       await this.connection.startSession();
+
     request.mongooseSession = session;
 
     session.startTransaction();
