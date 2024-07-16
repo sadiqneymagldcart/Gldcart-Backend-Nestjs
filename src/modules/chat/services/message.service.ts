@@ -15,7 +15,7 @@ export class MessageService {
     return await this.messageModel.create(message);
   }
 
-  public async getChatMessages(chatId: string): Promise<Message[]> {
-    return this.messageModel.find({ chat: chatId }).lean();
+  public async getChatMessages(chat_id: string): Promise<Message[]> {
+    return this.messageModel.find({ chat: chat_id }).lean();
   }
 }
