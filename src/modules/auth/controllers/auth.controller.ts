@@ -62,8 +62,8 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Get('/refresh')
   public async refresh(@Req() request: Request): Promise<AuthResponseDto> {
-    const refreshToken = request.cookies.refreshToken;
-    return await this.authService.refresh(refreshToken);
+    const refresh_token = request.cookies.refresh_token;
+    return await this.authService.refresh(refresh_token);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -73,11 +73,11 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const refreshToken = request.cookies.refreshToken;
+    const refresh_token = request.cookies.refresh_token;
 
-    await this.authService.logout(refreshToken);
+    await this.authService.logout(refresh_token);
 
-    response.clearCookie('refreshToken');
+    response.clearCookie('refresh_token');
 
     return { message: 'Logout successful' };
   }

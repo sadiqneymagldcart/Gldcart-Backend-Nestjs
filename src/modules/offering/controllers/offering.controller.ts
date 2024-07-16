@@ -42,7 +42,7 @@ export class OfferingController {
   public constructor(
     private readonly offeringService: OfferingService,
     private readonly awsStorage: AwsStorageService,
-  ) { }
+  ) {}
 
   @ApiOperation({ summary: 'Create an offering' })
   @ApiBody({ type: CreateOfferingDto })

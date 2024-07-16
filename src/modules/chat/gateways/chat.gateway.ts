@@ -40,9 +40,9 @@ export class ChatGateway
   public async handleConnection(
     @ConnectedSocket() socket: Socket,
   ): Promise<void> {
-    const accessToken = socket.handshake.query.accessToken as string;
+    const access_token = socket.handshake.query.access_token as string;
     try {
-      const { _id } = await this.tokenService.verifyAccessToken(accessToken);
+      const { _id } = await this.tokenService.verifyAccessToken(access_token);
       socket.data.user_id = _id;
       this.logger.log(`User connected: ${_id}`);
       await this.handleUserStatusChange(_id, true, socket);

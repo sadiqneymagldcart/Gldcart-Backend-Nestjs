@@ -26,8 +26,8 @@ export interface IAuthService {
 
   /**
    * Logs out the user by invalidating the provided refresh token.
-   * @param refreshToken - A string representing the refresh token to be invalidated.
+   * @param refresh_token - A string representing the refresh token to be invalidated.
    * @returns A promise that resolves to void, indicating the completion of the logout process.
    */
-  logout(refreshToken: string): Promise<void>;
+  logout(refresh_token: string): Promise<void>;
 }
