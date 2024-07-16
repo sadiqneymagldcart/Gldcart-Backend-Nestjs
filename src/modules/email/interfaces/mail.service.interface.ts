@@ -4,5 +4,5 @@ export interface IEmailService {
   /**
    * @description Send email
    */
-  sendContactFormEmail(emailData: ContactEmailDto): Promise<void>;
+  sendContactFormEmail(email_data: ContactEmailDto): Promise<void>;
 }

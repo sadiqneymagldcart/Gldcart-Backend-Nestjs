@@ -32,12 +32,12 @@ export class StripeService {
     amount: number,
     currency: string,
     metadata: Metadata,
-    customerId: string,
+    customer_id: string,
   ): Promise<Stripe.PaymentIntent> {
     try {
       const paymentIntent = await this.stripe.paymentIntents.create({
         amount,
-        customer: customerId,
+        customer: customer_id,
         currency,
         metadata,
         confirm: false,
@@ -46,20 +46,20 @@ export class StripeService {
       return paymentIntent;
     } catch (error: any) {
       this.logger.error(
-        `Failed to create payment intent for customer ${customerId} with amount ${amount} ${currency}`,
+        `Failed to create payment intent for customer ${customer_id} with amount ${amount} ${currency}`,
         error,
       );
       throw error;
     }
   }
 
-  public async createSubscription(priceId: string, customerId: string) {
+  public async createSubscription(price_id: string, customer_id: string) {
     try {
       return await this.stripe.subscriptions.create({
-        customer: customerId,
+        customer: customer_id,
         items: [
           {
-            price: priceId,
+            price: price_id,
           },
         ],
       });
@@ -71,24 +71,24 @@ export class StripeService {
     }
   }
 
-  public async attachCreditCard(paymentMethodId: string, customerId: string) {
+  public async attachCreditCard(paymentMethodId: string, customer_id: string) {
     return this.stripe.setupIntents.create({
-      customer: customerId,
+      customer: customer_id,
       payment_method: paymentMethodId,
     });
   }
 
-  public async listCreditCards(customerId: string) {
+  public async listCreditCards(customer_id: string) {
     return this.stripe.paymentMethods.list({
-      customer: customerId,
+      customer: customer_id,
       type: 'card',
     });
   }
 
-  public async listSubscriptions(priceId: string, customerId: string) {
+  public async listSubscriptions(price_id: string, customer_id: string) {
     return this.stripe.subscriptions.list({
-      customer: customerId,
-      price: priceId,
+      customer: customer_id,
+      price: price_id,
       expand: ['data.latest_invoice', 'data.latest_invoice.payment_intent'],
     });
   }

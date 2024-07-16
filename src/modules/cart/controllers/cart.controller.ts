@@ -61,7 +61,7 @@ export class CartController {
     return this.cartService.addItem(user_id, newItem);
   }
 
-  @Put(':id/item/:itemId')
+  @Put(':id/item/:item_id')
   @ApiOperation({ summary: 'Update an item quantity in a cart' })
   @ApiBody({ type: UpdateItemDto })
   @ApiOkResponse({ description: 'The updated cart', type: Cart })
@@ -70,22 +70,22 @@ export class CartController {
   @UseInterceptors(TransactionInterceptor)
   public async updateItemQuantityInCart(
     @Param('id') id: string,
-    @Param('itemId') itemId: string,
+    @Param('item_id') item_id: string,
     @Body() updateItem: UpdateItemDto,
   ): Promise<Cart> {
-    return this.cartService.updateItemQuantity(id, itemId, updateItem);
+    return this.cartService.updateItemQuantity(id, item_id, updateItem);
   }
 
-  @Delete(':id/item/:itemId')
+  @Delete(':id/item/:item_id')
   @ApiOperation({ summary: 'Remove an item from a cart' })
   @ApiOkResponse({ description: 'The updated cart after removal', type: Cart })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
   @UseInterceptors(TransactionInterceptor)
   public async removeItemFromCart(
     @Param('id') id: string,
-    @Param('itemId') itemId: string,
+    @Param('item_id') item_id: string,
   ): Promise<Cart> {
-    return this.cartService.removeItem(id, itemId);
+    return this.cartService.removeItem(id, item_id);
   }
 
   @Delete(':id')

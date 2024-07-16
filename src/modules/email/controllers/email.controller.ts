@@ -38,12 +38,12 @@ export class EmailController {
     description: 'Internal server error',
   })
   public async sendContactFormEmail(
-    @Body() emailData: ContactEmailDto,
+    @Body() email_data: ContactEmailDto,
   ): Promise<{ message: string }> {
     this.logger.log(
-      `Received a new contact form submission from ${emailData.email}`,
+      `Received a new contact form submission from ${email_data.email}`,
     );
-    await this.emailService.sendContactFormEmail(emailData);
+    await this.emailService.sendContactFormEmail(email_data);
     return { message: 'Email sent successfully' };
   }
 }

@@ -42,10 +42,10 @@ export class ProductController {
   @Post()
   public async createProduct(
     @UploadedFiles() images: Array<Express.Multer.File>,
-    @Body() createProductDto: CreateProductDto,
+    @Body() product: CreateProductDto,
   ): Promise<Product> {
     const imageUrls = await this.awsStorage.uploadMultipleFiles(images);
-    const productWithImages = { ...createProductDto, images: imageUrls };
+    const productWithImages = { ...product, images: imageUrls };
     return this.productService.create(productWithImages);
   }
 
@@ -76,9 +76,9 @@ export class ProductController {
   @Put(':id')
   public async updateProduct(
     @Param('id') id: string,
-    @Body() updateProductDto: UpdateProductDto,
+    @Body() product: UpdateProductDto,
   ): Promise<Product> {
-    return this.productService.update(id, updateProductDto);
+    return this.productService.update(id, product);
   }
 
   @ApiOperation({ summary: 'Delete a product by ID' })

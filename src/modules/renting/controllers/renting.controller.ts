@@ -7,15 +7,15 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { RentingService } from '../services/renting.service';
-import { CreateRentingDto } from '../dto/create-renting.dto';
-import { UpdateRentingDto } from '../dto/update-renting.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateRentingDto } from '@renting/dto/create-renting.dto';
+import { UpdateRentingDto } from '@renting/dto/update-renting.dto';
+import { RentingService } from '@renting/services/renting.service';
 
 @ApiTags('Rentings')
 @Controller('renting')
 export class RentingController {
-  public constructor(private readonly rentingService: RentingService) {}
+  public constructor(private readonly rentingService: RentingService) { }
 
   @Post()
   create(@Body() createRentingDto: CreateRentingDto) {
@@ -23,13 +23,13 @@ export class RentingController {
   }
 
   @Get()
-  findAll() {
-    return this.rentingService.findAll();
+  getAllRentings() {
+    return this.rentingService.getAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.rentingService.findById(id);
+  getRenting(@Param('id') id: string) {
+    return this.rentingService.getById(id);
   }
 
   @Patch(':id')

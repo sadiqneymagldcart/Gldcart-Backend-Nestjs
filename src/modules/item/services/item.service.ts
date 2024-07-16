@@ -27,10 +27,10 @@ export class ItemService {
     return service;
   }
 
-  // public async updateStock(itemId: string, quantity: number) {
-  //   const updatedItem = await this.productService.updateStock(itemId, quantity);
+  // public async updateStock(item_id: string, quantity: number) {
+  //   const updatedItem = await this.productService.updateStock(item_id, quantity);
   //   if (!updatedItem) {
-  //     throw new BadRequestException(`Insufficient stock for item ${itemId}`);
+  //     throw new BadRequestException(`Insufficient stock for item ${item_id}`);
   //   }
   //   return updatedItem;
   // }

@@ -115,10 +115,10 @@ export class ChatGateway
   @SubscribeMessage(Events.CREATE_CHAT)
   public async createChat(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() newChat: CreateChatDto,
+    @MessageBody() new_chat: CreateChatDto,
   ): Promise<void> {
     try {
-      const chat = await this.chatService.createChat(newChat);
+      const chat = await this.chatService.createChat(new_chat);
       this.server.emit(Events.RECEIVE_CHAT, chat);
     } catch (error) {
       this.handleError('Error creating chat', error, socket);
