@@ -25,9 +25,9 @@ export interface IChatGateway {
    * Handles a user joining a chat.
    *
    * @param socket - The socket object representing the user's connection.
-   * @param chatId - The ID of the chat the user is joining.
+   * @param chat_id - The ID of the chat the user is joining.
    */
-  handleJoin(socket: Socket, chatId: string): Promise<void>;
+  handleJoin(socket: Socket, chat_id: string): Promise<void>;
 
   /**
    * Handles a user sending a message.
@@ -40,9 +40,9 @@ export interface IChatGateway {
    * Handles a request for all messages in a chat.
    *
    * @param socket - The socket object representing the user's connection.
-   * @param chatId - The ID of the chat the user is requesting messages from.
+   * @param chat_id - The ID of the chat the user is requesting messages from.
    */
-  requestAllMessages(socket: Socket, chatId: string): Promise<void>;
+  requestAllMessages(socket: Socket, chat_id: string): Promise<void>;
 
   /**
    * Sends a list of all chats a user is a part of.
@@ -56,7 +56,7 @@ export interface IChatGateway {
    * Handles a user leaving a chat.
    *
    * @param socket - The socket object representing the user's connection.
-   * @param chatId - The ID of the chat the user is leaving.
+   * @param chat_id - The ID of the chat the user is leaving.
    */
-  handleLeave(socket: Socket, chatId: string): Promise<void>;
+  handleLeave(socket: Socket, chat_id: string): Promise<void>;
 }
