@@ -5,7 +5,7 @@ import { CreateTokenDto } from '@token/dto/create-token.dto';
 import { ConfigService } from '@nestjs/config';
 import { ITokenService } from '@token/interfaces/token.service.interface';
 import { InjectModel } from '@nestjs/mongoose';
-import { RefreshToken } from '@token/schemas/token.schema';
+import { refresh_token } from '@token/schemas/token.schema';
 import { Model } from 'mongoose';
 import { plainToInstance } from 'class-transformer';
 
@@ -19,8 +19,8 @@ export class TokenService implements ITokenService {
 
   public constructor(
     private readonly jwtService: JwtService,
-    @InjectModel(RefreshToken.name)
-    private readonly tokenModel: Model<RefreshToken>,
+    @InjectModel(refresh_token.name)
+    private readonly tokenModel: Model<refresh_token>,
     private readonly configService: ConfigService,
   ) {
     this.jwtAccessOptions = {
@@ -44,16 +44,16 @@ export class TokenService implements ITokenService {
   }
 
   public async generateRefreshToken(payload: CreateTokenDto): Promise<string> {
-    const refreshToken = this.jwtService.sign(
+    const refresh_token = this.jwtService.sign(
       { ...payload },
       this.jwtRefreshOptions,
     );
-    return await this._saveOrUpdateRefreshToken(payload._id, refreshToken);
+    return await this._saveOrUpdateRefreshToken(payload._id, refresh_token);
   }
 
-  public async revokeRefreshToken(refreshToken: string): Promise<void> {
+  public async revokeRefreshToken(refresh_token: string): Promise<void> {
     try {
-      await this.tokenModel.deleteOne({ refresh_token: refreshToken });
+      await this.tokenModel.deleteOne({ refresh_token: refresh_token });
     } catch (error) {
       this.logger.error('Failed to revoke refresh token', error.stack);
       throw new BadRequestException('Failed to revoke refresh token');
@@ -74,16 +74,16 @@ export class TokenService implements ITokenService {
   }
 
   public async verifyRefreshToken(
-    refreshToken: string,
+    refresh_token: string,
   ): Promise<CreateTokenDto> {
-    const storedToken = await this._findRefreshToken(refreshToken);
+    const storedToken = await this._findRefreshToken(refresh_token);
     if (!storedToken) {
       this.logger.warn('Refresh token not found');
       throw new BadRequestException('Token not found');
     }
     try {
       const payload = this.jwtService.verify(
-        refreshToken,
+        refresh_token,
         this.jwtRefreshVerifyOptions,
       );
       return plainToInstance(CreateTokenDto, payload);
@@ -94,9 +94,9 @@ export class TokenService implements ITokenService {
   }
 
   private async _findRefreshToken(
-    refreshToken: string,
-  ): Promise<Nullable<RefreshToken>> {
-    return this.tokenModel.findOne({ refresh_token: refreshToken }).exec();
+    refresh_token: string,
+  ): Promise<Nullable<refresh_token>> {
+    return this.tokenModel.findOne({ refresh_token: refresh_token }).exec();
   }
 
   private async _saveOrUpdateRefreshToken(

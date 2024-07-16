@@ -12,7 +12,7 @@ import { CreateTokenDto } from '@token/dto/create-token.dto';
 import { IAuthService } from '@auth/interfaces/auth.service.interface';
 import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';
 import { plainToInstance } from 'class-transformer';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -26,8 +26,8 @@ export class AuthService implements IAuthService {
   public async login(
     credentials: LoginCredentialsDto,
   ): Promise<AuthResponseDto> {
-    const user = await this._validateUser(credentials);
-    return this._generateAuthResponse(user);
+    const user = await this.validateUser(credentials);
+    return this.generateAuthResponse(user);
   }
 
   public async register(
@@ -52,7 +52,7 @@ export class AuthService implements IAuthService {
       `User without password: ${JSON.stringify(userWithoutPassword)}`,
     );
 
-    return this._generateAuthResponse(userWithoutPassword);
+    return this.generateAuthResponse(userWithoutPassword);
   }
 
   public async refresh(token: string): Promise<AuthResponseDto> {
@@ -62,28 +62,28 @@ export class AuthService implements IAuthService {
 
     const userPayload = await this.tokenService.verifyRefreshToken(token);
 
-    return this._generateAuthResponse(userPayload);
+    return this.generateAuthResponse(userPayload);
   }
 
-  public async logout(refreshToken: string): Promise<void> {
-    await this.tokenService.revokeRefreshToken(refreshToken);
+  public async logout(refresh_token: string): Promise<void> {
+    await this.tokenService.revokeRefreshToken(refresh_token);
   }
 
-  private async _generateAuthResponse(
+  private async generateAuthResponse(
     tokenPayload: CreateTokenDto,
   ): Promise<AuthResponseDto> {
-    const [refreshToken, accessToken] = await Promise.all([
+    const [refresh_token, access_token] = await Promise.all([
       this.tokenService.generateRefreshToken(tokenPayload),
       this.tokenService.generateAccessToken(tokenPayload),
     ]);
     return {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
+      access_token: access_token,
+      refresh_token: refresh_token,
       user: tokenPayload,
     };
   }
 
-  private async _validateUser(
+  private async validateUser(
     credentials: LoginCredentialsDto,
   ): Promise<CreateTokenDto> {
     const user = await this.userService.getByEmail(credentials.email);

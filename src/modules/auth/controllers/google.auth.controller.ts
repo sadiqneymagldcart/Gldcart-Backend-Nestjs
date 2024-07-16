@@ -72,13 +72,13 @@ export class GoogleAuthController {
     };
 
     const result = await this.googleAuthService.loginGoogleUser(userDto);
-    if (!result.refreshToken) {
+    if (!result.refresh_token) {
       this.logger.error('Invalid credentials, no refresh token obtained');
       throw new UnauthorizedException('Invalid credentials');
     }
 
     this.logger.debug('Setting refresh token cookie and redirecting user');
-    setRefreshTokenCookie(response, result.refreshToken);
+    setRefreshTokenCookie(response, result.refresh_token);
 
     const redirectURL = process.env.CLIENT_URL!;
     return response.redirect(redirectURL);

@@ -81,13 +81,13 @@ export class GoogleAuthService {
   private async authorizeWithGoogle(
     tokenPayload: CreateTokenDto,
   ): Promise<AuthResponseDto> {
-    const [refreshToken, accessToken] = await Promise.all([
+    const [refresh_token, access_token] = await Promise.all([
       this.tokenService.generateRefreshToken(tokenPayload),
       this.tokenService.generateAccessToken(tokenPayload),
     ]);
     return {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
+      access_token: access_token,
+      refresh_token: refresh_token,
       user: tokenPayload,
     };
   }
