@@ -1,6 +1,6 @@
-import { ItemTypes } from '@item/enums/item-types.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { ItemTypes } from '@item/enums/item-types.enum';
 
 export type ItemDocument = Item & mongoose.Document;
 

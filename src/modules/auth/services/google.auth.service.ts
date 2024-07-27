@@ -1,4 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { stringify } from 'qs';
+import { plainToInstance } from 'class-transformer';
 import { ConfigService } from '@nestjs/config';
 import { TokenService } from '@token/services/token.service';
 import { UserService } from '@user/services/user.service';
@@ -8,9 +11,6 @@ import { CreateTokenDto } from '@token/dto/create-token.dto';
 import { GoogleToken } from '@auth/interfaces/google-token.interface';
 import { GoogleUser } from '@auth/interfaces/google-user.interface';
 import { Nullable } from '@shared/types/common';
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { stringify } from 'qs';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class GoogleAuthService {
@@ -72,22 +72,22 @@ export class GoogleAuthService {
 
   public async getGoogleUser(
     id_token: string,
-    access_token: string,
+    accessToken: string,
   ): Promise<Nullable<GoogleUser>> {
-    const response = await this.getGoogleUserInfo(id_token, access_token);
+    const response = await this.getGoogleUserInfo(id_token, accessToken);
     return response.data;
   }
 
   private async authorizeWithGoogle(
     tokenPayload: CreateTokenDto,
   ): Promise<AuthResponseDto> {
-    const [refresh_token, access_token] = await Promise.all([
+    const [refreshToken, accessToken] = await Promise.all([
       this.tokenService.generateRefreshToken(tokenPayload),
       this.tokenService.generateAccessToken(tokenPayload),
     ]);
     return {
-      access_token: access_token,
-      refresh_token: refresh_token,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
       user: tokenPayload,
     };
   }
@@ -109,9 +109,9 @@ export class GoogleAuthService {
     return this.axiosInstance.post<T>(url, stringify(values));
   }
 
-  private async getGoogleUserInfo(id_token: string, access_token: string) {
+  private async getGoogleUserInfo(id_token: string, accessToken: string) {
     return axios.get<GoogleUser>(
-      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&accessToken=${accessToken}`,
       {
         headers: { Authorization: `Bearer ${id_token}` },
       },

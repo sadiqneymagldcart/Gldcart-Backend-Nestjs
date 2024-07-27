@@ -1,9 +1,9 @@
-import { CreateAddressDto } from '@address/dto/create-address.dto';
-import { UpdateAddressDto } from '@address/dto/update-address.dto';
-import { Address, AddressDocument } from '@address/schemas/address.schema';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CreateAddressDto } from '@address/dto/create-address.dto';
+import { UpdateAddressDto } from '@address/dto/update-address.dto';
+import { Address, AddressDocument } from '@address/schemas/address.schema';
 
 @Injectable()
 export class AddressService {
@@ -19,8 +19,8 @@ export class AddressService {
     return createdAddress.save();
   }
 
-  public async getAllAddressesForUser(user_id: string): Promise<Address[]> {
-    return this.addressModel.find({ user: user_id });
+  public async getAllAddressesForUser(userId: string): Promise<Address[]> {
+    return this.addressModel.find({ user: userId });
   }
 
   public async updateAddress(
@@ -39,13 +39,13 @@ export class AddressService {
   }
 
   public async removeAddressAndReturnRemaining(
-    user_id: string,
+    userId: string,
     addressId: string,
   ): Promise<Address[]> {
     const deletedAddress = await this.addressModel.findByIdAndDelete(addressId);
     if (!deletedAddress) {
       throw new NotFoundException('Address not found');
     }
-    return this.addressModel.find({ user: user_id });
+    return this.addressModel.find({ user: userId });
   }
 }

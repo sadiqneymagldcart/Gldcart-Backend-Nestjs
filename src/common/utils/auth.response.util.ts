@@ -1,11 +1,11 @@
 import { Response } from 'express';
 
 export function setRefreshTokenCookie(response: Response, token: string): void {
-  const refreshTokenName = process.env.REFRESH_TOKEN_NAME;
+  const refreshTokenName = process.env.refreshToken_NAME;
 
   if (!refreshTokenName) {
     throw new Error(
-      'REFRESH_TOKEN_NAME is not set in the environment variables.',
+      'refreshToken_NAME is not set in the environment variables.',
     );
   }
 

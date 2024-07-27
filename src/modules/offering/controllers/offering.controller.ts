@@ -10,6 +10,8 @@ import {
   UseInterceptors,
   Query,
   UploadedFiles,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,6 +21,7 @@ import {
   ApiQuery,
   ApiConsumes,
 } from '@nestjs/swagger';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreateOfferingDto } from '@offering/dto/create-offering.dto';
 import { PaginatedResourceDto } from '@search/dto/paginated-resource.dto';
 import { UpdateOfferingDto } from '@offering/dto/update-offering.dto';
@@ -32,7 +35,6 @@ import {
   Pagination,
   PaginationParams,
 } from '@shared/decorators/pagination.decorator';
-import { FilesInterceptor } from '@nestjs/platform-express';
 import { AwsStorageService } from '@storages/services/storages.service';
 
 @ApiTags('Proffesional Services')
@@ -42,17 +44,18 @@ export class OfferingController {
   public constructor(
     private readonly offeringService: OfferingService,
     private readonly awsStorage: AwsStorageService,
-  ) {}
+  ) { }
 
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create an offering' })
   @ApiBody({ type: CreateOfferingDto })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'The product has been successfully created.',
   })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FilesInterceptor('images'))
-  @Post()
   public async createOffering(
     @UploadedFiles() images: Array<Express.Multer.File>,
     @Body() offering: CreateOfferingDto,
@@ -62,6 +65,7 @@ export class OfferingController {
     return this.offeringService.create(offeringWithImages);
   }
 
+  @Get()
   @ApiOperation({ summary: 'Get offerings' })
   @ApiQuery({
     name: 'size',
@@ -87,7 +91,6 @@ export class OfferingController {
     type: PaginatedResourceDto<Offering>,
   })
   @CacheTTL(120)
-  @Get()
   public async getAllOfferings(
     @PaginationParams() pagination: Pagination,
     @FilteringParams() filters: Filtering,

@@ -1,5 +1,3 @@
-import { GoogleAuthService } from '@auth/services/google.auth.service';
-import { setRefreshTokenCookie } from '@common/utils/auth.response.util';
 import {
   BadRequestException,
   Controller,
@@ -11,13 +9,15 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { Response } from 'express';
+import { GoogleAuthService } from '@auth/services/google.auth.service';
+import { setRefreshTokenCookie } from '@common/utils/auth.response.util';
 
 @ApiTags('Google Auth')
 @Controller()
 export class GoogleAuthController {
   private readonly logger = new Logger(GoogleAuthController.name);
 
-  public constructor(private readonly googleAuthService: GoogleAuthService) {}
+  public constructor(private readonly googleAuthService: GoogleAuthService) { }
 
   @Get('/tokens/oauth/google')
   @ApiOperation({ summary: 'Google OAuth Callback' })
@@ -55,7 +55,7 @@ export class GoogleAuthController {
 
     const googleUser = await this.googleAuthService.getGoogleUser(
       oAuthTokens.id_token,
-      oAuthTokens.access_token,
+      oAuthTokens.accessToken,
     );
     if (!googleUser) {
       this.logger.error('Google user not found');
@@ -72,13 +72,13 @@ export class GoogleAuthController {
     };
 
     const result = await this.googleAuthService.loginGoogleUser(userDto);
-    if (!result.refresh_token) {
+    if (!result.refreshToken) {
       this.logger.error('Invalid credentials, no refresh token obtained');
       throw new UnauthorizedException('Invalid credentials');
     }
 
     this.logger.debug('Setting refresh token cookie and redirecting user');
-    setRefreshTokenCookie(response, result.refresh_token);
+    setRefreshTokenCookie(response, result.refreshToken);
 
     const redirectURL = process.env.CLIENT_URL!;
     return response.redirect(redirectURL);

@@ -1,5 +1,3 @@
-import { ContactEmailDto } from '@email/dto/contact.email.dto';
-import { EmailService } from '@email/services/email.service';
 import {
   Controller,
   Post,
@@ -16,25 +14,27 @@ import {
   ApiInternalServerErrorResponse,
   ApiBody,
 } from '@nestjs/swagger';
+import { ContactEmailDto } from '@email/dto/contact.email.dto';
+import { EmailService } from '@email/services/email.service';
 
 @ApiTags('Emails')
 @Controller('/emails')
 export class EmailController {
   private readonly logger = new Logger(EmailController.name);
 
-  public constructor(private readonly emailService: EmailService) {}
+  public constructor(private readonly emailService: EmailService) { }
 
-  @HttpCode(HttpStatus.OK)
   @Post('/contact-us')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Send a contact form submission email' })
   @ApiResponse({ status: 200, description: 'Email sent successfully' })
   @ApiBody({ type: ContactEmailDto, description: 'Contact form data' })
   @ApiBadRequestResponse({
-    status: 400,
+    status: HttpStatus.BAD_REQUEST,
     description: 'Bad request: Invalid input data',
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error',
   })
   public async sendContactFormEmail(

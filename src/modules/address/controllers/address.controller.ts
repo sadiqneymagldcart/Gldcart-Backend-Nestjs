@@ -34,13 +34,13 @@ export class AddressController {
     return this.addressService.createAddress(createAddressDto);
   }
 
-  @Get(':user_id')
+  @Get(':userId')
   @ApiOperation({ summary: 'Get all addresses for a user' })
   @ApiResponse({ status: 200, description: 'Return all addresses for a user.' })
   public async getAllUserAddresses(
-    @Param('user_id') user_id: string,
+    @Param('userId') userId: string,
   ): Promise<Address[]> {
-    return this.addressService.getAllAddressesForUser(user_id);
+    return this.addressService.getAllAddressesForUser(userId);
   }
 
   @Put(':id')
@@ -63,9 +63,9 @@ export class AddressController {
     description: 'The address has been successfully deleted.',
   })
   public async deleteAddress(
-    @Param('user_id') user_id: string,
+    @Param('userId') userId: string,
     @Param('id') id: string,
   ): Promise<Address[]> {
-    return this.addressService.removeAddressAndReturnRemaining(user_id, id);
+    return this.addressService.removeAddressAndReturnRemaining(userId, id);
   }
 }

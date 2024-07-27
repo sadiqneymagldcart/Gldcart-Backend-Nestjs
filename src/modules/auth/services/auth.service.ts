@@ -4,6 +4,8 @@ import {
   UnauthorizedException,
   Logger,
 } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import bcrypt from 'bcrypt';
 import { TokenService } from '@token/services/token.service';
 import { UserService } from '@user/services/user.service';
 import { LoginCredentialsDto } from '@auth/dto/login-credentials.dto';
@@ -11,8 +13,6 @@ import { AuthResponseDto } from '@auth/dto/auth-response.dto';
 import { CreateTokenDto } from '@token/dto/create-token.dto';
 import { IAuthService } from '@auth/interfaces/auth.service.interface';
 import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';
-import { plainToInstance } from 'class-transformer';
-import bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -21,7 +21,7 @@ export class AuthService implements IAuthService {
   public constructor(
     private readonly userService: UserService,
     private readonly tokenService: TokenService,
-  ) {}
+  ) { }
 
   public async login(
     credentials: LoginCredentialsDto,
@@ -65,20 +65,20 @@ export class AuthService implements IAuthService {
     return this.generateAuthResponse(userPayload);
   }
 
-  public async logout(refresh_token: string): Promise<void> {
-    await this.tokenService.revokeRefreshToken(refresh_token);
+  public async logout(refreshToken: string): Promise<void> {
+    await this.tokenService.revokeRefreshToken(refreshToken);
   }
 
   private async generateAuthResponse(
     tokenPayload: CreateTokenDto,
   ): Promise<AuthResponseDto> {
-    const [refresh_token, access_token] = await Promise.all([
+    const [refreshToken, accessToken] = await Promise.all([
       this.tokenService.generateRefreshToken(tokenPayload),
       this.tokenService.generateAccessToken(tokenPayload),
     ]);
     return {
-      access_token: access_token,
-      refresh_token: refresh_token,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
       user: tokenPayload,
     };
   }

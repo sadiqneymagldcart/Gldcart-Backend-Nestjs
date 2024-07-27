@@ -62,8 +62,8 @@ export class AuthController {
     type: AuthResponseDto,
   })
   public async refresh(@Req() request: Request): Promise<AuthResponseDto> {
-    const refresh_token = request.cookies.refresh_token;
-    return await this.authService.refresh(refresh_token);
+    const refreshToken = request.cookies.refreshToken;
+    return await this.authService.refresh(refreshToken);
   }
 
   @Post('logout')
@@ -73,11 +73,11 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const refresh_token = request.cookies.refresh_token;
+    const refreshToken = request.cookies.refreshToken;
 
-    await this.authService.logout(refresh_token);
+    await this.authService.logout(refreshToken);
 
-    response.clearCookie('refresh_token');
+    response.clearCookie('refreshToken');
 
     return { message: 'Logout successful' };
   }

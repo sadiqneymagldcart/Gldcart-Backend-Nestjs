@@ -5,9 +5,9 @@ import { Exclude, Expose } from 'class-transformer';
 export class AuthResponseDto {
   @ApiProperty({ example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' })
   @Expose()
-  access_token: string;
+  accessToken: string;
 
-  refresh_token: string;
+  refreshToken: string;
 
   @ApiProperty({
     example: {
