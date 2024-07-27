@@ -1,5 +1,3 @@
-import { CreateAddressDto } from '@address/dto/create-address.dto';
-import { UpdateAddressDto } from '@address/dto/update-address.dto';
 import {
   Body,
   Controller,
@@ -16,6 +14,8 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AwsStorageService } from '@storages/services/storages.service';
 import { UpdateUserDto } from '@user/dto/update-user.dto';
 import { UserService } from '@user/services/user.service';
+import { CreateAddressDto } from '@address/dto/create-address.dto';
+import { UpdateAddressDto } from '@address/dto/update-address.dto';
 
 @ApiTags('Profile')
 @Controller('profile')
@@ -23,9 +23,9 @@ export class ProfileController {
   public constructor(
     private readonly awsStorage: AwsStorageService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
-  @Put('/:id/profile-picture')
+  @Put(':id/profile-picture')
   @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Update user profile picture' })
   @ApiResponse({
@@ -41,12 +41,12 @@ export class ProfileController {
   }
 
   @ApiOperation({ summary: 'Get user shipping addresses' })
-  @Get('/:id/shipping-addresses')
+  @Get(':id/shipping-addresses')
   public async getShippingAddresses(@Param('id') id: string) {
     return this.userService.getShippingAddresses(id);
   }
 
-  @Post('/:id/shipping-address')
+  @Post(':id/shipping-address')
   @ApiOperation({ summary: 'Add shipping address for a user' })
   @ApiResponse({
     status: 201,
@@ -60,7 +60,7 @@ export class ProfileController {
     return this.userService.addShippingAddress(id, data);
   }
 
-  @Put('/:id/shipping-address/:addressId')
+  @Put(':id/shipping-address/:addressId')
   @ApiOperation({ summary: 'Update shipping address for a user' })
   @ApiResponse({
     status: 200,
@@ -75,7 +75,7 @@ export class ProfileController {
     return this.userService.updateShippingAddress(id, addressId, data);
   }
 
-  @Delete('/:id/shipping-address/:addressId')
+  @Delete(':id/shipping-address/:addressId')
   @ApiOperation({ summary: 'Delete shipping address for a user' })
   @ApiResponse({
     status: 200,
@@ -88,7 +88,7 @@ export class ProfileController {
     return this.userService.removeShippingAddress(id, addressId);
   }
 
-  @Put('/:id')
+  @Put(':id')
   @ApiOperation({ summary: 'Update user profile' })
   @ApiResponse({ status: 200, description: 'Profile updated successfully.' })
   @ApiBody({ type: UpdateUserDto })

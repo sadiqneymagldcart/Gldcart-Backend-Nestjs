@@ -1,9 +1,8 @@
-import { ItemTypes } from '@item/enums/item-types.enum';
-import { Item } from '@item/schemas/item.schema';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { OfferingService } from '@offering/services/offering.service';
 import { ProductService } from '@product/services/product.service';
 import { RentingService } from '@renting/services/renting.service';
+import { ItemTypes } from '@item/enums/item-types.enum';
 
 @Injectable()
 export class ItemService {
@@ -17,7 +16,7 @@ export class ItemService {
     private productService: ProductService,
     private offeringService: OfferingService,
     private rentingService: RentingService,
-  ) {}
+  ) { }
 
   private _getServiceByType(type: ItemTypes) {
     const service = this.serviceByType[type];

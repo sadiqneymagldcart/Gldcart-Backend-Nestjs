@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 import { Type } from 'class-transformer';
 import { User } from '@user/schemas/user.schema';
-import mongoose from 'mongoose';
 
 export type ProductDocument = Product & mongoose.Document;
 

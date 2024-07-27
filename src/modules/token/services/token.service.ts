@@ -1,13 +1,14 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { JwtService, JwtSignOptions, JwtVerifyOptions } from '@nestjs/jwt';
-import { Nullable } from '@shared/types/common';
-import { CreateTokenDto } from '@token/dto/create-token.dto';
 import { ConfigService } from '@nestjs/config';
-import { ITokenService } from '@token/interfaces/token.service.interface';
 import { InjectModel } from '@nestjs/mongoose';
-import { RefreshToken } from '@token/schemas/token.schema';
 import { Model } from 'mongoose';
 import { plainToInstance } from 'class-transformer';
+import { Nullable } from '@shared/types/common';
+import { CreateTokenDto } from '@token/dto/create-token.dto';
+import { ITokenService } from '@token/interfaces/token.service.interface';
+import { RefreshToken } from '@token/schemas/token.schema';
+
 
 @Injectable()
 export class TokenService implements ITokenService {
@@ -100,19 +101,19 @@ export class TokenService implements ITokenService {
   }
 
   private async _saveOrUpdateRefreshToken(
-    user_id: string,
+    userId: string,
     token: string,
   ): Promise<string> {
     let existingToken = await this.tokenModel.findOne({
-      user: user_id,
+      user: userId,
     });
 
     if (existingToken) {
       existingToken.refresh_token = token;
     } else {
       existingToken = new this.tokenModel({
-        user: user_id,
-        refresh_token: token,
+        user: userId,
+        refreshToken: token,
       });
     }
     await existingToken.save();

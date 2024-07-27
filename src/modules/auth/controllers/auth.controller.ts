@@ -18,17 +18,17 @@ import { LoginCredentialsDto } from '@auth/dto/login-credentials.dto';
 import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';
 
 @ApiTags('Auth')
-@Controller('/auth')
+@Controller('auth')
 @UseInterceptors(AuthInterceptor)
 export class AuthController {
-  public constructor(private readonly authService: AuthService) {}
+  public constructor(private readonly authService: AuthService) { }
 
+  @Post('login')
   @HttpCode(HttpStatus.OK)
-  @Post('/login')
   @ApiOperation({ summary: 'Login' })
   @ApiBody({ type: LoginCredentialsDto, description: 'Login credentials' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Login successful.',
     type: AuthResponseDto,
   })
@@ -38,12 +38,12 @@ export class AuthController {
     return await this.authService.login(credentials);
   }
 
+  @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  @Post('/register')
   @ApiOperation({ summary: 'Register' })
   @ApiBody({ type: RegisterCredentialsDto, description: 'Registration data' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'Registration successful.',
     type: AuthResponseDto,
   })
@@ -53,22 +53,22 @@ export class AuthController {
     return await this.authService.register(credentials);
   }
 
+  @Get('refresh')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Refresh token' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Token refreshed.',
     type: AuthResponseDto,
   })
-  @HttpCode(HttpStatus.OK)
-  @Get('/refresh')
   public async refresh(@Req() request: Request): Promise<AuthResponseDto> {
     const refreshToken = request.cookies.refreshToken;
     return await this.authService.refresh(refreshToken);
   }
 
+  @Post('logout')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Logout' })
-  @Post('/logout')
   public async logout(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,

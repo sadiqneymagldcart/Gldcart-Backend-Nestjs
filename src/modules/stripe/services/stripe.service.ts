@@ -5,9 +5,9 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import Stripe from 'stripe';
 import { StripeError } from '@stripe/enums/stripe-error.enum';
 import { Metadata } from '@stripe/interfaces/metadata.interface';
-import Stripe from 'stripe';
 
 @Injectable()
 export class StripeService {
@@ -53,13 +53,13 @@ export class StripeService {
     }
   }
 
-  public async createSubscription(priceId: string, customerId: string) {
+  public async createSubscription(price_id: string, customerId: string) {
     try {
       return await this.stripe.subscriptions.create({
         customer: customerId,
         items: [
           {
-            price: priceId,
+            price: price_id,
           },
         ],
       });
@@ -85,10 +85,10 @@ export class StripeService {
     });
   }
 
-  public async listSubscriptions(priceId: string, customerId: string) {
+  public async listSubscriptions(price_id: string, customerId: string) {
     return this.stripe.subscriptions.list({
       customer: customerId,
-      price: priceId,
+      price: price_id,
       expand: ['data.latest_invoice', 'data.latest_invoice.payment_intent'],
     });
   }

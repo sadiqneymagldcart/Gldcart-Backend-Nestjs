@@ -1,9 +1,9 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { NotFoundException } from '@nestjs/common';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 import { User } from '@user/schemas/user.schema';
 import { ItemTypes } from '@item/enums/item-types.enum';
 import { Item, ItemSchema } from '@item/schemas/item.schema';
-import mongoose from 'mongoose';
 
 export type WishlistDocument = Wishlist & mongoose.Document;
 

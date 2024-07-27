@@ -1,16 +1,18 @@
 import { Injectable, Logger, NotImplementedException } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
+import path from 'path';
 import { ContactEmailDto } from '@email/dto/contact.email.dto';
 import { IEmailService } from '@email/interfaces/mail.service.interface';
-import * as path from 'path';
 
 @Injectable()
 export class EmailService implements IEmailService {
   private readonly logger = new Logger(EmailService.name);
 
-  public constructor(private readonly mailerService: MailerService) {}
+  public constructor(private readonly mailerService: MailerService) { }
 
-  public async sendContactFormEmail(emailData: ContactEmailDto): Promise<void> {
+  public async sendContactFormEmail(
+    email_data: ContactEmailDto,
+  ): Promise<void> {
     const templatePath = path.join(__dirname, '../templates/contact.hbs');
 
     await this.mailerService.sendMail({
@@ -18,15 +20,16 @@ export class EmailService implements IEmailService {
       subject: 'New Contact Form Submission',
       template: templatePath,
       context: {
-        name: emailData.name,
-        email: emailData.email,
-        number: emailData.phone_number,
-        message: emailData.message,
+        name: email_data.name,
+        email: email_data.email,
+        number: email_data.phone_number,
+        message: email_data.message,
       },
     });
   }
 
-  public async sendOrderConfirmationEmail(emailData: any) {
+  public async sendOrderConfirmationEmail(email_data: any) {
     this.logger.log('Sending order confirmation email');
+    throw new NotImplementedException();
   }
 }

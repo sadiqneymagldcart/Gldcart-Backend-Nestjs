@@ -1,6 +1,6 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 @Injectable()
 export class AwsStorageService {

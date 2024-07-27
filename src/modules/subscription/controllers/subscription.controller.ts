@@ -1,29 +1,41 @@
-import { Controller, Post, Req, UseGuards, Get } from '@nestjs/common';
-import { JwtAuthenticationGuard } from '@shared/guards/jwt.auth.guard';
+import {
+  Controller,
+  Post,
+  Req,
+  UseGuards,
+  Get,
+  HttpStatus,
+  HttpCode,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { JwtAuthenticationGuard } from '@shared/guards/jwt.auth.guard';
 import { SubscriptionService } from '@subscription/services/subscription.service';
 
+@ApiBearerAuth()
 @ApiTags('Subscriptions')
+@UseGuards(JwtAuthenticationGuard)
 @Controller('subscriptions')
 export class SubscriptionController {
   public constructor(
     private readonly subscriptionService: SubscriptionService,
-  ) {}
+  ) { }
 
   @Post('monthly')
-  @UseGuards(JwtAuthenticationGuard)
-  @ApiBearerAuth()
+  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a monthly subscription' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'The monthly subscription has been successfully created.',
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized.',
+  })
   public async createMonthlySubscription(
     @Req() request: Request & { user: { stripeCustomerId: string } },
   ) {
@@ -33,14 +45,16 @@ export class SubscriptionController {
   }
 
   @Get('monthly')
-  @UseGuards(JwtAuthenticationGuard)
-  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get a monthly subscription' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'The monthly subscription has been successfully retrieved.',
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized.',
+  })
   public async getMonthlySubscription(
     @Req() request: Request & { user: { stripeCustomerId: string } },
   ) {

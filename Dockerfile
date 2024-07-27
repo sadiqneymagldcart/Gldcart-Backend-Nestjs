@@ -1,7 +1,6 @@
 ###################
 # BUILD FOR LOCAL DEVELOPMENT
 ###################
-
 FROM node:22 AS development
 
 # Create app directory
@@ -24,7 +23,6 @@ USER node
 ###################
 # BUILD FOR PRODUCTION
 ###################
-
 FROM node:22 AS build
 
 WORKDIR /usr/src/app
@@ -51,7 +49,6 @@ USER node
 ###################
 # PRODUCTION
 ###################
-
 FROM node:22 AS production
 
 # Copy the bundled code from the build stage to the production image
@@ -63,5 +60,4 @@ COPY --chown=node:node --from=build /usr/src/app/ecosystem.config.js ./ecosystem
 ENV NODE_ENV production
 
 # Start the server using the production build
-# CMD [ "npx", "pm2-runtime", "dist/main.js" ]
 CMD [ "npx", "pm2-runtime", "ecosystem.config.js" ]

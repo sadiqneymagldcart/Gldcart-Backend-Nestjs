@@ -1,4 +1,4 @@
-import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import {
   Controller,
   Get,
@@ -10,6 +10,8 @@ import {
   UseInterceptors,
   Query,
   UploadedFiles,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,6 +21,7 @@ import {
   ApiQuery,
   ApiConsumes,
 } from '@nestjs/swagger';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreateOfferingDto } from '@offering/dto/create-offering.dto';
 import { PaginatedResourceDto } from '@search/dto/paginated-resource.dto';
 import { UpdateOfferingDto } from '@offering/dto/update-offering.dto';
@@ -32,7 +35,6 @@ import {
   Pagination,
   PaginationParams,
 } from '@shared/decorators/pagination.decorator';
-import { FilesInterceptor } from '@nestjs/platform-express';
 import { AwsStorageService } from '@storages/services/storages.service';
 
 @ApiTags('Proffesional Services')
@@ -44,24 +46,26 @@ export class OfferingController {
     private readonly awsStorage: AwsStorageService,
   ) { }
 
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create an offering' })
   @ApiBody({ type: CreateOfferingDto })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'The product has been successfully created.',
   })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FilesInterceptor('images'))
-  @Post()
   public async createOffering(
     @UploadedFiles() images: Array<Express.Multer.File>,
-    @Body() createOfferingDto: CreateOfferingDto,
+    @Body() offering: CreateOfferingDto,
   ): Promise<Offering> {
     const imageUrls = await this.awsStorage.uploadMultipleFiles(images);
-    const offeringWithImages = { ...createOfferingDto, images: imageUrls };
+    const offeringWithImages = { ...offering, images: imageUrls };
     return this.offeringService.create(offeringWithImages);
   }
 
+  @Get()
   @ApiOperation({ summary: 'Get offerings' })
   @ApiQuery({
     name: 'size',
@@ -87,16 +91,15 @@ export class OfferingController {
     type: PaginatedResourceDto<Offering>,
   })
   @CacheTTL(120)
-  @Get()
   public async getAllOfferings(
-    @PaginationParams() paginationParams: Pagination,
+    @PaginationParams() pagination: Pagination,
     @FilteringParams() filters: Filtering,
     @Query('text') text: string,
   ) {
     if (text) {
-      return this.offeringService.getBySearchQuery(paginationParams, text);
+      return this.offeringService.getBySearchQuery(pagination, text);
     } else {
-      return this.offeringService.getByFilters(paginationParams, filters);
+      return this.offeringService.getByFilters(pagination, filters);
     }
   }
 
@@ -120,9 +123,9 @@ export class OfferingController {
   @ApiResponse({ status: 404, description: 'Offering not found.' })
   public async updateOffering(
     @Param('id') id: string,
-    @Body() updateOfferingDto: UpdateOfferingDto,
+    @Body() offering: UpdateOfferingDto,
   ): Promise<Offering> {
-    return this.offeringService.update(id, updateOfferingDto);
+    return this.offeringService.update(id, offering);
   }
 
   @Delete(':id')

@@ -1,12 +1,12 @@
+import { Injectable } from '@nestjs/common';
+import { ClientSession } from 'mongoose';
+import { ProductService } from '@product/services/product.service';
 import { ItemTypes } from '@item/enums/item-types.enum';
 import { Item } from '@item/schemas/item.schema';
-import { Injectable } from '@nestjs/common';
-import { ProductService } from '@product/services/product.service';
-import { ClientSession } from 'mongoose';
 
 @Injectable()
 export class InventoryService {
-  public constructor(private readonly productService: ProductService) {}
+  public constructor(private readonly productService: ProductService) { }
 
   public async updateInventory(
     items: Item[],

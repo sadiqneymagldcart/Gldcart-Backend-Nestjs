@@ -1,8 +1,8 @@
 export interface GoogleToken {
-  access_token: string;
+  accessToken: string;
   id_token: string;
   expires_in: number;
-  refresh_token: string;
+  refreshToken: string;
   scope: string;
   token_type: string;
 }

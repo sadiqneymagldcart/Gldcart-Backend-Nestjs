@@ -4,6 +4,8 @@ import {
   UnauthorizedException,
   Logger,
 } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import bcrypt from 'bcrypt';
 import { TokenService } from '@token/services/token.service';
 import { UserService } from '@user/services/user.service';
 import { LoginCredentialsDto } from '@auth/dto/login-credentials.dto';
@@ -11,8 +13,6 @@ import { AuthResponseDto } from '@auth/dto/auth-response.dto';
 import { CreateTokenDto } from '@token/dto/create-token.dto';
 import { IAuthService } from '@auth/interfaces/auth.service.interface';
 import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';
-import { plainToInstance } from 'class-transformer';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -21,13 +21,13 @@ export class AuthService implements IAuthService {
   public constructor(
     private readonly userService: UserService,
     private readonly tokenService: TokenService,
-  ) {}
+  ) { }
 
   public async login(
     credentials: LoginCredentialsDto,
   ): Promise<AuthResponseDto> {
-    const user = await this._validateUser(credentials);
-    return this._generateAuthResponse(user);
+    const user = await this.validateUser(credentials);
+    return this.generateAuthResponse(user);
   }
 
   public async register(
@@ -52,7 +52,7 @@ export class AuthService implements IAuthService {
       `User without password: ${JSON.stringify(userWithoutPassword)}`,
     );
 
-    return this._generateAuthResponse(userWithoutPassword);
+    return this.generateAuthResponse(userWithoutPassword);
   }
 
   public async refresh(token: string): Promise<AuthResponseDto> {
@@ -62,14 +62,14 @@ export class AuthService implements IAuthService {
 
     const userPayload = await this.tokenService.verifyRefreshToken(token);
 
-    return this._generateAuthResponse(userPayload);
+    return this.generateAuthResponse(userPayload);
   }
 
   public async logout(refreshToken: string): Promise<void> {
     await this.tokenService.revokeRefreshToken(refreshToken);
   }
 
-  private async _generateAuthResponse(
+  private async generateAuthResponse(
     tokenPayload: CreateTokenDto,
   ): Promise<AuthResponseDto> {
     const [refreshToken, accessToken] = await Promise.all([
@@ -83,7 +83,7 @@ export class AuthService implements IAuthService {
     };
   }
 
-  private async _validateUser(
+  private async validateUser(
     credentials: LoginCredentialsDto,
   ): Promise<CreateTokenDto> {
     const user = await this.userService.getByEmail(credentials.email);
