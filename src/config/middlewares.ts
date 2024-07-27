@@ -2,7 +2,6 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import express from 'express';
-import compression from 'compression';
 
 function setupGlobalPrefix(app: INestApplication) {
   app.setGlobalPrefix('api');
@@ -30,7 +29,6 @@ function setupMiddleware(app: INestApplication) {
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
   app.use(cookieParser());
-  app.use(compression());
 }
 
 function setupSwagger(app: INestApplication) {
@@ -45,7 +43,7 @@ function setupSwagger(app: INestApplication) {
   SwaggerModule.setup('api/docs', app, document);
 }
 
-export function setup(app: INestApplication) {
+export function setupMiddlewares(app: INestApplication) {
   setupGlobalPrefix(app);
   enableCors(app);
   setupGlobalPipes(app);
