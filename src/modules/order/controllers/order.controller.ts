@@ -6,28 +6,36 @@ import {
   Delete,
   Body,
   Param,
+  HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { CreateOrderDto } from '@order/dto/create-order.dto';
 import { UpdateOrderDto } from '@order/dto/update-order.dto';
+import { Order } from '@order/schemas/order.schema';
 import { OrderService } from '@order/services/order.service';
 
 @ApiTags('Orders')
 @Controller('orders')
 export class OrderController {
-  public constructor(private readonly orderService: OrderService) {}
+  public constructor(private readonly orderService: OrderService) { }
 
   @Post()
   @ApiOperation({ summary: 'Create order' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'The order has been successfully created.',
   })
-  @ApiResponse({ status: 400, description: 'Invalid input.' })
-  public async createOrder(
+  @ApiBody({
+    type: CreateOrderDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_ACCEPTABLE,
+    description: 'Invalid input.',
+  })
+  public async placeOrder(
     @Body() createOrderDto: CreateOrderDto,
-  ): Promise<void> {
-    // return this.orderService.create(createOrderDto);
+  ): Promise<Order> {
+    return this.orderService.create(createOrderDto);
   }
 
   @Get()
@@ -39,8 +47,11 @@ export class OrderController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Retrieve order' })
-  @ApiResponse({ status: 200, description: 'Returned one order.' })
-  @ApiResponse({ status: 404, description: 'Order not found.' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Returned one order.' })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Order not found.',
+  })
   public async getOrderById(@Param('id') id: string): Promise<void> {
     // return this.orderService.findOne(id);
   }
@@ -48,11 +59,17 @@ export class OrderController {
   @Put(':id')
   @ApiOperation({ summary: 'Update order' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'The order has been successfully updated.',
   })
-  @ApiResponse({ status: 400, description: 'Invalid input.' })
-  @ApiResponse({ status: 404, description: 'Order not found.' })
+  @ApiResponse({
+    status: HttpStatus.NOT_ACCEPTABLE,
+    description: 'Invalid input.',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Order not found.',
+  })
   public async updateOrder(
     @Param('id') id: string,
     @Body() updateOrderDto: UpdateOrderDto,
@@ -63,10 +80,13 @@ export class OrderController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete order' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'The order has been successfully deleted.',
   })
-  @ApiResponse({ status: 404, description: 'Order not found.' })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Order not found.',
+  })
   public async removeOrder(@Param('id') id: string): Promise<void> {
     // return this.orderService.remove(id);
   }
