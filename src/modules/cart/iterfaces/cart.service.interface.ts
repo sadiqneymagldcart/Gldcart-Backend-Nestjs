@@ -8,11 +8,11 @@ import { CreateItemDto } from '@item/dto/create-item.dto';
 export interface ICartService {
   /**
    * Finds a cart by the user's ID.
-   * @param user_id - The ID of the user.
+   * @param userId - The ID of the user.
    * @returns A promise that resolves to the Cart object.
    * @throws {NotFoundException} If no cart is found for the user.
    */
-  getByUserId(user_id: string): Promise<Cart>;
+  getByUserId(userId: string): Promise<Cart>;
 
   /**
    * Finds a cart by its ID.
@@ -24,20 +24,20 @@ export interface ICartService {
 
   /**
    * Adds an item to a user's cart.
-   * @param user_id - The ID of the user.
+   * @param userId - The ID of the user.
    * @param newItem - The item to add to the cart.
    * @returns A promise that resolves to the updated Cart object.
    */
-  addItem(user_id: string, newItem: CreateItemDto): Promise<Cart>;
+  addItem(userId: string, newItem: CreateItemDto): Promise<Cart>;
 
   /**
    * Removes an item from a cart.
    * @param id - The ID of the cart.
-   * @param item_id - The ID of the item to remove.
+   * @param itemId - The ID of the item to remove.
    * @returns A promise that resolves to the updated Cart object.
    * @throws {NotFoundException} If no item is found with the given ID in the cart.
    */
-  removeItem(id: string, item_id: string): Promise<Cart>;
+  removeItem(id: string, itemId: string): Promise<Cart>;
 
   /**
    * Updates an item in a cart.

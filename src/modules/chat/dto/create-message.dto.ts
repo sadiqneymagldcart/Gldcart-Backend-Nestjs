@@ -1,7 +1,7 @@
 import { IsOptional } from 'class-validator';
 
 export class CreateMessageDto {
-  chat_id: string;
+  chatId: string;
 
   @IsOptional()
   text?: string;
@@ -9,5 +9,5 @@ export class CreateMessageDto {
   @IsOptional()
   files?: any;
 
-  sender_id: string;
+  senderId: string;
 }

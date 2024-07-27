@@ -10,12 +10,12 @@ import { UpdateItemDto } from '@item/dto/update-item.dto';
 export class CartService implements ICartService {
   public constructor(
     @InjectModel(Cart.name) private readonly cartModel: Model<CartDocument>,
-  ) {}
+  ) { }
 
-  public async getByUserId(user_id: string): Promise<Cart> {
-    const cart = await this.cartModel.findOne({ customer: user_id });
+  public async getByUserId(userId: string): Promise<Cart> {
+    const cart = await this.cartModel.findOne({ customer: userId });
     if (!cart) {
-      throw new NotFoundException(`No carts found for user with id ${user_id}`);
+      throw new NotFoundException(`No carts found for user with id ${userId}`);
     }
     return cart;
   }
@@ -36,21 +36,21 @@ export class CartService implements ICartService {
     return cart;
   }
 
-  public async addItem(user_id: string, newItem: CreateItemDto): Promise<Cart> {
-    const existingCart = await this.cartModel.findOne({ customer: user_id });
+  public async addItem(userId: string, newItem: CreateItemDto): Promise<Cart> {
+    const existingCart = await this.cartModel.findOne({ customer: userId });
 
     if (!existingCart) {
-      return this.createCartWithItem(user_id, newItem);
+      return this.createCartWithItem(userId, newItem);
     } else {
       return this.addItemToExistingCart(existingCart, newItem);
     }
   }
 
-  public async removeItem(id: string, item_id: string): Promise<Cart> {
+  public async removeItem(id: string, itemId: string): Promise<Cart> {
     const existingCart = await this.getByIdOrThrow(id);
 
     const itemIndex = existingCart.items.findIndex(
-      (item) => item.id === item_id,
+      (item) => item.id === itemId,
     );
 
     if (itemIndex === -1) {
@@ -85,15 +85,15 @@ export class CartService implements ICartService {
 
   public async updateItemQuantity(
     id: string,
-    item_id: string,
+    itemId: string,
     updateItem: UpdateItemDto,
   ): Promise<Cart> {
     const existingCart = await this.getByIdOrThrow(id);
 
-    const item = existingCart.items.find((i) => i.id.toString() === item_id);
+    const item = existingCart.items.find((i) => i.id.toString() === itemId);
 
     if (!item) {
-      throw new NotFoundException(`Item with ID ${item_id} not found in cart`);
+      throw new NotFoundException(`Item with ID ${itemId} not found in cart`);
     }
 
     item.quantity = updateItem.quantity;
@@ -118,11 +118,11 @@ export class CartService implements ICartService {
   }
 
   private createCartWithItem(
-    user_id: string,
+    userId: string,
     newItem: CreateItemDto,
   ): Promise<Cart> {
     const cart = new this.cartModel({
-      customer: user_id,
+      customer: userId,
       items: [newItem],
     });
     return cart.save();
