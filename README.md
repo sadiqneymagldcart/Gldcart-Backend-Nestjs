@@ -1,31 +1,25 @@
 ## Installation
+
 ```bash
 $ npm install
 ```
 
-## Running the app
+## Running the app(Redis won't launch)
+
 ```bash
 # development
-$ npm run start
-
-# watch mode
 $ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
 ## Running the app via docker-compose
-```bash
-$ sudo docker-compose up --build
-```
 
-## Redis
 ```bash
-sudo sysctl vm.overcommit_memory=1
+# development
+$ sudo docker-compose -f docker-compose.dev.yml up --build
 ```
 
 ## Test
+
 ```bash
 # unit tests
 $ npm run test
