@@ -10,12 +10,12 @@ import { UpdateItemDto } from '@item/dto/update-item.dto';
 export class CartService implements ICartService {
   public constructor(
     @InjectModel(Cart.name) private readonly cartModel: Model<CartDocument>,
-  ) {}
+  ) { }
 
-  public async getByUserId(user_id: string): Promise<Cart> {
-    const cart = await this.cartModel.findOne({ customer: user_id });
+  public async getByUserId(userId: string): Promise<Cart> {
+    const cart = await this.cartModel.findOne({ customer: userId });
     if (!cart) {
-      throw new NotFoundException(`No carts found for user with id ${user_id}`);
+      throw new NotFoundException(`No carts found for user with id ${userId}`);
     }
     return cart;
   }
@@ -36,11 +36,11 @@ export class CartService implements ICartService {
     return cart;
   }
 
-  public async addItem(user_id: string, newItem: CreateItemDto): Promise<Cart> {
-    const existingCart = await this.cartModel.findOne({ customer: user_id });
+  public async addItem(userId: string, newItem: CreateItemDto): Promise<Cart> {
+    const existingCart = await this.cartModel.findOne({ customer: userId });
 
     if (!existingCart) {
-      return this.createCartWithItem(user_id, newItem);
+      return this.createCartWithItem(userId, newItem);
     } else {
       return this.addItemToExistingCart(existingCart, newItem);
     }
@@ -118,11 +118,11 @@ export class CartService implements ICartService {
   }
 
   private createCartWithItem(
-    user_id: string,
+    userId: string,
     newItem: CreateItemDto,
   ): Promise<Cart> {
     const cart = new this.cartModel({
-      customer: user_id,
+      customer: userId,
       items: [newItem],
     });
     return cart.save();

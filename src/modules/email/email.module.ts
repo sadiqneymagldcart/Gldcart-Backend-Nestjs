@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { EmailService } from './services/email.service';
-import { EmailController } from './controllers/email.controller';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join } from 'path';
+import { EmailService } from './services/email.service';
+import { EmailController } from './controllers/email.controller';
 
 @Module({
   imports: [
@@ -35,4 +35,4 @@ import { join } from 'path';
   controllers: [EmailController],
   providers: [EmailService],
 })
-export class EmailModule {}
+export class EmailModule { }

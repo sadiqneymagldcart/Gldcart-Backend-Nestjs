@@ -6,10 +6,10 @@ import {
   BadRequestException,
   Logger,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiHeader, ApiResponse } from '@nestjs/swagger';
 import { RequestWithRawBody } from '@stripe/interfaces/raw-body.interface';
 import { StripeWebhookService } from '@stripe/services/stripe-webhook.service';
 import { StripeService } from '@stripe/services/stripe.service';
-import { ApiTags, ApiOperation, ApiHeader, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('Stripe Webhook')
 @Controller('webhook')
@@ -19,7 +19,7 @@ export class StripeWebhookController {
   public constructor(
     private readonly stripeService: StripeService,
     private readonly stripeWebhookService: StripeWebhookService,
-  ) {}
+  ) { }
 
   @Post()
   @ApiOperation({ summary: 'Handle incoming Stripe events' })

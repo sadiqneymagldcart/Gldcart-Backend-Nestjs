@@ -1,5 +1,3 @@
-import { AuthResponseDto } from '@auth/dto/auth-response.dto';
-import { setRefreshTokenCookie } from '@common/utils/auth.response.util';
 import {
   CallHandler,
   ExecutionContext,
@@ -9,6 +7,8 @@ import {
 import { plainToInstance } from 'class-transformer';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AuthResponseDto } from '@auth/dto/auth-response.dto';
+import { setRefreshTokenCookie } from '@common/utils/auth.response.util';
 
 export class AuthInterceptor implements NestInterceptor {
   private readonly logger: Logger = new Logger(AuthInterceptor.name);

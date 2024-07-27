@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { SearchService } from '@search/services/search.service';
+import { Pagination } from '@shared/decorators/pagination.decorator';
 import { Offering, OfferingDocument } from '../schemas/offering.schema';
 import { CreateOfferingDto } from '../dto/create-offering.dto';
 import { UpdateOfferingDto } from '../dto/update-offering.dto';
-import { SearchService } from '@search/services/search.service';
-import { Pagination } from '@shared/decorators/pagination.decorator';
 
 @Injectable()
 export class OfferingService {
@@ -16,9 +16,7 @@ export class OfferingService {
     this.searchService = new SearchService<OfferingDocument>(offeringModel);
   }
 
-  public async create(
-    createOfferingDto: CreateOfferingDto,
-  ): Promise<Offering> {
+  public async create(createOfferingDto: CreateOfferingDto): Promise<Offering> {
     const newOffering = new this.offeringModel(createOfferingDto);
     return await newOffering.save();
   }

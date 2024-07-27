@@ -16,26 +16,24 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import { CreateItemDto } from '@item/dto/create-item.dto';
 import { Cart } from '@cart/schemas/cart.schema';
 import { CartService } from '@cart/services/cart.service';
 import { UpdateItemDto } from '@item/dto/update-item.dto';
-import { CacheInterceptor } from '@nestjs/cache-manager';
 import { TransactionInterceptor } from '@shared/interceptors/transaction.interceptor';
 
 @ApiTags('Carts')
 @Controller('cart')
 @UseInterceptors(CacheInterceptor)
 export class CartController {
-  public constructor(private readonly cartService: CartService) {}
+  public constructor(private readonly cartService: CartService) { }
 
-  @Get('/user/:user_id')
+  @Get('/user/:userId')
   @ApiOperation({ summary: 'Get a cart for user' })
   @ApiOkResponse({ description: 'The cart for user', type: Cart })
-  public async getCartByUserId(
-    @Param('user_id') user_id: string,
-  ): Promise<Cart> {
-    return this.cartService.getByUserId(user_id);
+  public async getCartByUserId(@Param('userId') userId: string): Promise<Cart> {
+    return this.cartService.getByUserId(userId);
   }
 
   @Get(':id')
@@ -49,16 +47,16 @@ export class CartController {
     return this.cartService.getWithItemsById(id);
   }
 
-  @Post(':user_id')
+  @Post(':userId')
   @ApiOperation({ summary: 'Add an item to a cart' })
   @ApiOkResponse({ description: 'The updated cart', type: Cart })
   @ApiBadRequestResponse({ description: 'Invalid item data' })
   @UseInterceptors(TransactionInterceptor)
   public async addItemToCart(
-    @Param('user_id') user_id: string,
+    @Param('userId') userId: string,
     @Body() newItem: CreateItemDto,
   ): Promise<Cart> {
-    return this.cartService.addItem(user_id, newItem);
+    return this.cartService.addItem(userId, newItem);
   }
 
   @Put(':id/item/:itemId')

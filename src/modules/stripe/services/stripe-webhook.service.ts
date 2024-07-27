@@ -1,14 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { OrderService } from '@order/services/order.service';
 import {
   StripeEvent,
   StripeEventDocument,
 } from '@stripe/schemas/stripe-event.schema';
-import { UserService } from '@user/services/user.service';
-import { Model } from 'mongoose';
-import { OrderStatus } from '@order/enums/order-status.enum';
 import Stripe from 'stripe';
+import { UserService } from '@user/services/user.service';
+import { OrderStatus } from '@order/enums/order-status.enum';
 
 @Injectable()
 export class StripeWebhookService {
@@ -17,11 +17,10 @@ export class StripeWebhookService {
     private readonly eventModel: Model<StripeEventDocument>,
     private readonly userService: UserService,
     private readonly orderService: OrderService,
-  ) {}
+  ) { }
 
   public async createEvent(id: string): Promise<StripeEvent> {
     const event = new this.eventModel({ _id: id });
-
     try {
       await event.save();
     } catch (error) {
@@ -29,7 +28,6 @@ export class StripeWebhookService {
         throw new BadRequestException('This event was already processed');
       }
     }
-
     return event;
   }
 
@@ -38,11 +36,11 @@ export class StripeWebhookService {
 
     const data = event.data.object as Stripe.Subscription;
 
-    const customer_id: string = data.customer as string;
+    const customerId: string = data.customer as string;
     const subscription_status = data.status;
 
     await this.userService.updateMonthlySubscriptionStatus(
-      customer_id,
+      customerId,
       subscription_status,
     );
   }
@@ -52,8 +50,8 @@ export class StripeWebhookService {
 
     const data = event.data.object as Stripe.PaymentIntent;
 
-    const order_id = data.metadata.order_id;
+    const orderId = data.metadata.orderId;
 
-    await this.orderService.process(order_id, OrderStatus.PAID);
+    await this.orderService.process(orderId, OrderStatus.PAID);
   }
 }

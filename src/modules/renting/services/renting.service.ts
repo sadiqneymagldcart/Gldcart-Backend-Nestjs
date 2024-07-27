@@ -1,26 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRentingDto } from '../dto/create-renting.dto';
-import { UpdateRentingDto } from '../dto/update-renting.dto';
+import { CreateRentingDto } from '@renting/dto/create-renting.dto';
+import { UpdateRentingDto } from '@renting/dto/update-renting.dto';
 
 @Injectable()
 export class RentingService {
-  create(createRentingDto: CreateRentingDto) {
+  public create(createRentingDto: CreateRentingDto) {
     return 'This action adds a new renting';
   }
 
-  findAll() {
+  public getAll() {
     return `This action returns all renting`;
   }
 
-  findById(id: string) {
+  public getById(id: string) {
     return `This action returns a #${id} renting`;
   }
 
-  update(id: number, updateRentingDto: UpdateRentingDto) {
+  public update(id: number, updateRentingDto: UpdateRentingDto) {
     return `This action updates a #${id} renting`;
   }
 
-  remove(id: number) {
+  public remove(id: number) {
     return `This action removes a #${id} renting`;
   }
 }

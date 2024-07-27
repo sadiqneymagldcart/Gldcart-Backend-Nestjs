@@ -1,5 +1,5 @@
-import { CreateMessageDto } from '@chat/dto/create-message.dto';
 import { Socket } from 'socket.io';
+import { CreateMessageDto } from '@chat/dto/create-message.dto';
 /**
  * IChatGateway interface - provides a contract for the ChatGateway service.
  *
@@ -48,9 +48,9 @@ export interface IChatGateway {
    * Sends a list of all chats a user is a part of.
    *
    * @param socket - The socket object representing the user's connection.
-   * @param user_id - The ID of the user requesting the list of chats.
+   * @param userId - The ID of the user requesting the list of chats.
    */
-  requestAllChats(socket: Socket, user_id: string): Promise<void>;
+  requestAllChats(socket: Socket, userId: string): Promise<void>;
 
   /**
    * Handles a user leaving a chat.
