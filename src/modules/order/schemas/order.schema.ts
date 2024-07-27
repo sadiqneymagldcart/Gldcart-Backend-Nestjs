@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 import { User } from '@user/schemas/user.schema';
 import { OrderStatus } from '@order/enums/order-status.enum';
 import { Item } from '@item/schemas/item.schema';
 import { PaymentMethod } from '@order/enums/payment-method';
-import mongoose from 'mongoose';
 
 export type OrderDocument = Order & mongoose.Document;
 
@@ -28,7 +28,7 @@ export class Order {
   items: Item[];
 
   @Prop({ required: false, enum: PaymentMethod })
-  paymentMethod: PaymentMethod;
+  payment_method: PaymentMethod;
 
   @Prop({ required: true, default: 0.0 })
   total: number;
@@ -40,7 +40,7 @@ export class Order {
   status: OrderStatus;
 
   @Prop({ type: Number, required: true })
-  trackNumber: number;
+  track_number: number;
 
   @Prop({ type: String, required: true })
   notes?: string;

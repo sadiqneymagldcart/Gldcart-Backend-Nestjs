@@ -1,11 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { User } from '@user/schemas/user.schema';
 import mongoose from 'mongoose';
+import { User } from '@user/schemas/user.schema';
 
-export type RefreshTokenDocument = refresh_token & mongoose.Document;
+export type RefreshTokenDocument = RefreshToken & mongoose.Document;
 
 @Schema({ timestamps: true })
-export class refresh_token {
+export class RefreshToken {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: User.name,
@@ -17,6 +17,6 @@ export class refresh_token {
   refresh_token: string;
 }
 
-export const RerfreshTokenSchema = SchemaFactory.createForClass(refresh_token);
+export const RerfreshTokenSchema = SchemaFactory.createForClass(RefreshToken);
 
 RerfreshTokenSchema.index({ user: 1 });

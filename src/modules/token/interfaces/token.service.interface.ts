@@ -17,10 +17,10 @@ export interface ITokenService {
 
   /**
    * Revokes a refresh token.
-   * @param refresh_token - A string representing the refresh token to be revoked.
+   * @param refreshToken - A string representing the refresh token to be revoked.
    * @returns A promise that resolves once the refresh token is successfully revoked.
    */
-  revokeRefreshToken(refresh_token: string): Promise<void>;
+  revokeRefreshToken(refreshToken: string): Promise<void>;
 
   /**
    * Verifies the validity of an access token.

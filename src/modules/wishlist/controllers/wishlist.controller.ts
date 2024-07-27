@@ -36,7 +36,7 @@ export class WishlistController {
     return this.wishlistService.getById(id);
   }
 
-  @Post(':user_id')
+  @Post(':userId')
   @ApiOperation({ summary: 'Add an item to a wishlist' })
   @ApiOkResponse({
     description: 'The item has been successfully added.',
@@ -44,13 +44,13 @@ export class WishlistController {
   })
   @ApiBadRequestResponse({ description: 'Invalid item data.' })
   public async addItemToWishlist(
-    @Param('user_id') user_id: string,
+    @Param('userId') userId: string,
     @Body() item: CreateItemDto,
   ): Promise<Wishlist> {
-    return this.wishlistService.addItem(user_id, item);
+    return this.wishlistService.addItem(userId, item);
   }
 
-  @Delete(':id/item/:item_id')
+  @Delete(':id/item/:itemId')
   @ApiOperation({ summary: 'Remove an item from a wishlist' })
   @ApiOkResponse({
     description: 'The item has been successfully removed.',
@@ -59,9 +59,9 @@ export class WishlistController {
   @ApiNotFoundResponse({ description: 'Item not found in wishlist.' })
   public async removeItemFromWishlist(
     @Param('id') id: string,
-    @Param('item_id') item_id: string,
+    @Param('itemId') itemId: string,
   ): Promise<Wishlist> {
-    return this.wishlistService.removeItem(id, item_id);
+    return this.wishlistService.removeItem(id, itemId);
   }
 
   @Delete(':id')

@@ -5,9 +5,9 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import Stripe from 'stripe';
 import { StripeError } from '@stripe/enums/stripe-error.enum';
 import { Metadata } from '@stripe/interfaces/metadata.interface';
-import Stripe from 'stripe';
 
 @Injectable()
 export class StripeService {
@@ -32,12 +32,12 @@ export class StripeService {
     amount: number,
     currency: string,
     metadata: Metadata,
-    customer_id: string,
+    customerId: string,
   ): Promise<Stripe.PaymentIntent> {
     try {
       const paymentIntent = await this.stripe.paymentIntents.create({
         amount,
-        customer: customer_id,
+        customer: customerId,
         currency,
         metadata,
         confirm: false,
@@ -46,17 +46,17 @@ export class StripeService {
       return paymentIntent;
     } catch (error: any) {
       this.logger.error(
-        `Failed to create payment intent for customer ${customer_id} with amount ${amount} ${currency}`,
+        `Failed to create payment intent for customer ${customerId} with amount ${amount} ${currency}`,
         error,
       );
       throw error;
     }
   }
 
-  public async createSubscription(price_id: string, customer_id: string) {
+  public async createSubscription(price_id: string, customerId: string) {
     try {
       return await this.stripe.subscriptions.create({
-        customer: customer_id,
+        customer: customerId,
         items: [
           {
             price: price_id,
@@ -71,23 +71,23 @@ export class StripeService {
     }
   }
 
-  public async attachCreditCard(paymentMethodId: string, customer_id: string) {
+  public async attachCreditCard(paymentMethodId: string, customerId: string) {
     return this.stripe.setupIntents.create({
-      customer: customer_id,
+      customer: customerId,
       payment_method: paymentMethodId,
     });
   }
 
-  public async listCreditCards(customer_id: string) {
+  public async listCreditCards(customerId: string) {
     return this.stripe.paymentMethods.list({
-      customer: customer_id,
+      customer: customerId,
       type: 'card',
     });
   }
 
-  public async listSubscriptions(price_id: string, customer_id: string) {
+  public async listSubscriptions(price_id: string, customerId: string) {
     return this.stripe.subscriptions.list({
-      customer: customer_id,
+      customer: customerId,
       price: price_id,
       expand: ['data.latest_invoice', 'data.latest_invoice.payment_intent'],
     });
