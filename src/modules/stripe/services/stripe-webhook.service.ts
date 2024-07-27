@@ -36,11 +36,11 @@ export class StripeWebhookService {
 
     const data = event.data.object as Stripe.Subscription;
 
-    const customer_id: string = data.customer as string;
+    const customerId: string = data.customer as string;
     const subscription_status = data.status;
 
     await this.userService.updateMonthlySubscriptionStatus(
-      customer_id,
+      customerId,
       subscription_status,
     );
   }
@@ -50,8 +50,8 @@ export class StripeWebhookService {
 
     const data = event.data.object as Stripe.PaymentIntent;
 
-    const order_id = data.metadata.order_id;
+    const orderId = data.metadata.orderId;
 
-    await this.orderService.process(order_id, OrderStatus.PAID);
+    await this.orderService.process(orderId, OrderStatus.PAID);
   }
 }

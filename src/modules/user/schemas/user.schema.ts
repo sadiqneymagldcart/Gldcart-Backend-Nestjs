@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 import { IsEmail } from 'class-validator';
 import { UserRole } from '@user/enums/roles.enum';
-import mongoose from 'mongoose';
 import { Address, AddressSchema } from '@address/schemas/address.schema';
 
 export type UserDocument = User & mongoose.Document;
