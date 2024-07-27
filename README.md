@@ -1,11 +1,9 @@
 ## Installation
-
 ```bash
 $ npm install
 ```
 
 ## Running the app
-
 ```bash
 # development
 $ npm run start
@@ -18,13 +16,16 @@ $ npm run start:prod
 ```
 
 ## Running the app via docker-compose
-
 ```bash
 $ sudo docker-compose up --build
-
 ```
-## Test
 
+## Redis
+```bash
+sudo sysctl vm.overcommit_memory=1
+```
+
+## Test
 ```bash
 # unit tests
 $ npm run test
@@ -34,5 +35,4 @@ $ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
-
 ```
