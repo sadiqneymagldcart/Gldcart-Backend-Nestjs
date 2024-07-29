@@ -86,7 +86,7 @@ export class OfferingController {
     description: 'Text to search for',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Successful retrieval of offerings',
     type: PaginatedResourceDto<Offering>,
   })
@@ -106,10 +106,13 @@ export class OfferingController {
   @Get(':id')
   @ApiOperation({ summary: 'Get an offering by ID' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return the offering with the given ID.',
   })
-  @ApiResponse({ status: 404, description: 'Offering not found.' })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Offering not found.',
+  })
   public async getOfferingById(@Param('id') id: string): Promise<Offering> {
     return await this.offeringService.getById(id);
   }
@@ -117,10 +120,13 @@ export class OfferingController {
   @Put(':id')
   @ApiOperation({ summary: 'Update an offering by ID' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'The offering has been successfully updated.',
   })
-  @ApiResponse({ status: 404, description: 'Offering not found.' })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Offering not found.',
+  })
   public async updateOffering(
     @Param('id') id: string,
     @Body() offering: UpdateOfferingDto,
@@ -131,10 +137,13 @@ export class OfferingController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an offering by ID' })
   @ApiResponse({
-    status: 204,
+    status: HttpStatus.OK,
     description: 'The offering has been successfully deleted.',
   })
-  @ApiResponse({ status: 404, description: 'Offering not found.' })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Offering not found.',
+  })
   public async deleteOffering(@Param('id') id: string): Promise<void> {
     return this.offeringService.remove(id);
   }
