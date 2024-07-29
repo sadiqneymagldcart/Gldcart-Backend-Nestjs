@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WishlistController } from './wishlist.controller';
-import { WishlistService } from './wishlist.service';
+import { WishlistService } from '@wishlist/services/wishlist.service';
 
 describe('WishlistController', () => {
   let controller: WishlistController;
