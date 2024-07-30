@@ -72,9 +72,9 @@ export class AuthService implements IAuthService {
   private async generateAuthResponse(
     tokenPayload: CreateTokenDto,
   ): Promise<AuthResponseDto> {
-    const [refreshToken, accessToken] = await Promise.all([
-      this.tokenService.generateRefreshToken(tokenPayload),
+    const [accessToken, refreshToken] = await Promise.all([
       this.tokenService.generateAccessToken(tokenPayload),
+      this.tokenService.generateRefreshToken(tokenPayload),
     ]);
     return {
       accessToken: accessToken,
