@@ -7,7 +7,7 @@ import {
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { Response } from 'express';
 import { GoogleAuthService } from '@auth/services/google.auth.service';
 import { setRefreshTokenCookie } from '@common/utils/auth.response.util';
@@ -32,12 +32,6 @@ export class GoogleAuthController {
     description:
       'State parameter to maintain state between the request and callback. Used to store user role.',
   })
-  @ApiResponse({ status: 302, description: 'Redirect to client URL' })
-  @ApiResponse({ status: 400, description: 'Invalid OAuth tokens' })
-  @ApiResponse({
-    status: 401,
-    description: 'Google user not found or invalid credentials',
-  })
   public async googleAuthWebhook(
     @Query('code') code: string,
     @Query('state') state: string,
@@ -49,16 +43,16 @@ export class GoogleAuthController {
 
     const oAuthTokens = await this.googleAuthService.getGoogleOAuthTokens(code);
     if (!oAuthTokens) {
-      this.logger.error('Invalid OAuth tokens received');
       throw new BadRequestException('Invalid OAuth tokens');
     }
 
+    this.logger.debug('Received OAuth tokens: ' + JSON.stringify(oAuthTokens));
+
     const googleUser = await this.googleAuthService.getGoogleUser(
       oAuthTokens.id_token,
-      oAuthTokens.accessToken,
+      oAuthTokens.access_token,
     );
     if (!googleUser) {
-      this.logger.error('Google user not found');
       throw new UnauthorizedException('Google user not found');
     }
 

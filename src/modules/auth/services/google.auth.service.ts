@@ -19,6 +19,7 @@ export class GoogleAuthService {
   private readonly googleRedirectUri: string;
   private readonly googleTokenUrl: string;
   private readonly googleGrantType: string;
+
   private readonly axiosInstance: AxiosInstance;
 
   private readonly logger: Logger;
@@ -72,18 +73,18 @@ export class GoogleAuthService {
 
   public async getGoogleUser(
     id_token: string,
-    accessToken: string,
+    access_token: string,
   ): Promise<Nullable<GoogleUser>> {
-    const response = await this.getGoogleUserInfo(id_token, accessToken);
+    const response = await this.getGoogleUserInfo(id_token, access_token);
     return response.data;
   }
 
   private async authorizeWithGoogle(
     tokenPayload: CreateTokenDto,
   ): Promise<AuthResponseDto> {
-    const [refreshToken, accessToken] = await Promise.all([
-      this.tokenService.generateRefreshToken(tokenPayload),
+    const [accessToken, refreshToken] = await Promise.all([
       this.tokenService.generateAccessToken(tokenPayload),
+      this.tokenService.generateRefreshToken(tokenPayload),
     ]);
     return {
       accessToken: accessToken,
@@ -109,9 +110,12 @@ export class GoogleAuthService {
     return this.axiosInstance.post<T>(url, stringify(values));
   }
 
-  private async getGoogleUserInfo(id_token: string, accessToken: string) {
+  private async getGoogleUserInfo(id_token: string, access_token: string) {
+    this.logger.debug(
+      `Fetching Google user info with id_token: ${id_token} and accessToken: ${access_token}`,
+    );
     return axios.get<GoogleUser>(
-      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&accessToken=${accessToken}`,
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
       {
         headers: { Authorization: `Bearer ${id_token}` },
       },
