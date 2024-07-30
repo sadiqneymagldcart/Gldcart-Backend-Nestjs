@@ -15,7 +15,7 @@ $ npm run start:dev
 
 ```bash
 # development
-$ sudo docker-compose -f docker-compose.dev.yml up --build
+$ docker compose -f docker-compose.dev.yml up --build
 ```
 
 ### Test
