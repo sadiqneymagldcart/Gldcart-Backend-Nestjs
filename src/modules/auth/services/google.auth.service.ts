@@ -4,10 +4,10 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { stringify } from 'qs';
-import { plainToInstance } from 'class-transformer';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
+import { stringify } from 'qs';
+import { plainToInstance } from 'class-transformer';
 import { AxiosResponse } from 'axios';
 import { firstValueFrom, map } from 'rxjs';
 import { TokenService } from '@token/services/token.service';
@@ -45,7 +45,7 @@ export class GoogleAuthService {
     this.googleGrantType = this.configService.get<string>('GOOGLE_GRANT_TYPE')!;
   }
 
-  public async handleGoogleAuth(
+  public async authenticateWithGoogle(
     code: string,
     state: string,
   ): Promise<AuthResponseDto> {
