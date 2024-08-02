@@ -9,8 +9,8 @@ import {
   WebSocketServer,
   WsException,
 } from '@nestjs/websockets';
-import { TokenService } from '@token/services/token.service';
 import { Server, Socket } from 'socket.io';
+import { TokenService } from '@token/services/token.service';
 import { CreateChatDto } from '@chat/dto/create-chat.dto';
 import { CreateMessageDto } from '@chat/dto/create-message.dto';
 import { Events } from '@chat/enums/events.enum';
@@ -75,7 +75,7 @@ export class ChatGateway
     try {
       const userId = this.getUserId(socket);
       socket.join(chatId);
-      socket.emit(Events.JOIN_ACK, { message: 'Successfully joined chat' });
+      // socket.emit(Events.JOIN_ACK, { message: 'Successfully joined chat' });
       this.server.to(chatId).emit(Events.USER_JOINED, { userId });
     } catch (error) {
       this.handleError('Error handling join', error, socket);
@@ -151,7 +151,7 @@ export class ChatGateway
     try {
       const userId = this.getUserId(socket);
       socket.leave(chatId);
-      socket.emit(Events.LEAVE_ACK, { message: 'Successfully left chat' });
+      // socket.emit(Events.LEAVE_ACK, { message: 'Successfully left chat' });
       this.server.to(chatId).emit(Events.USER_LEFT, { userId });
     } catch (error) {
       this.handleError('Error handling leave', error, socket);

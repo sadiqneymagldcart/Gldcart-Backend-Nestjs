@@ -1,6 +1,5 @@
 export enum Events {
   JOIN = 'join',
-  JOIN_ACK = 'join-ack',
   USER_JOINED = 'user-joined',
   SEND_MESSAGE = 'send-message',
   RECEIVE_MESSAGE = 'receive-message',
@@ -11,7 +10,6 @@ export enum Events {
   REQUEST_ALL_CHATS = 'request-all-chats',
   SEND_ALL_CHATS = 'send-all-chats',
   LEAVE = 'leave',
-  LEAVE_ACK = 'leave-ack',
   USER_LEFT = 'user-left',
   CHATS = 'chats',
   NEW_CHAT = 'new-chat',
