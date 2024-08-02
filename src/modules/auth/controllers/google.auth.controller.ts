@@ -1,5 +1,6 @@
-import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
+import { Controller, Get, Query, Res } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 import { GoogleAuthService } from '@auth/services/google.auth.service';
 import { setRefreshTokenCookie } from '@common/utils/auth.response.util';
@@ -7,9 +8,14 @@ import { setRefreshTokenCookie } from '@common/utils/auth.response.util';
 @ApiTags('Google Auth')
 @Controller()
 export class GoogleAuthController {
-  private readonly logger = new Logger(GoogleAuthController.name);
+  private readonly clientUrl: string;
 
-  public constructor(private readonly googleAuthService: GoogleAuthService) { }
+  public constructor(
+    private readonly googleAuthService: GoogleAuthService,
+    private readonly configService: ConfigService,
+  ) {
+    this.clientUrl = this.configService.get('CLIENT_URL');
+  }
 
   @Get('tokens/oauth/google')
   @ApiOperation({ summary: 'Google OAuth Callback' })
@@ -24,15 +30,16 @@ export class GoogleAuthController {
     description:
       'State parameter to maintain state between the request and callback. Used to store user role.',
   })
-  public async googleAuthWebhook(
+  public async handleGoogleAuthCallback(
     @Query('code') code: string,
     @Query('state') state: string,
     @Res() response: Response,
   ) {
-    const result = await this.googleAuthService.handleGoogleAuth(code, state);
-    this.logger.debug('Setting refresh token cookie and redirecting user');
+    const result = await this.googleAuthService.authenticateWithGoogle(
+      code,
+      state,
+    );
     setRefreshTokenCookie(response, result.refreshToken);
-    const redirectURL = process.env.CLIENT_URL!;
-    return response.redirect(redirectURL);
+    return response.redirect(this.clientUrl);
   }
 }
