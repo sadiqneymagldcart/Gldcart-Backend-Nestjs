@@ -27,6 +27,7 @@ export class GoogleAuthService {
   private readonly googleRedirectUri: string;
   private readonly googleTokenUrl: string;
   private readonly googleGrantType: string;
+  private readonly googleApiUrl: string;
 
   public constructor(
     private readonly userService: UserService,
@@ -34,15 +35,16 @@ export class GoogleAuthService {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    this.googleClientId = this.configService.get<string>('GOOGLE_CLIENT_ID')!;
+    this.googleClientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
     this.googleClientSecret = this.configService.get<string>(
       'GOOGLE_CLIENT_SECRET',
     )!;
     this.googleRedirectUri = this.configService.get<string>(
       'GOOGLE_REDIRECT_URI',
     )!;
-    this.googleTokenUrl = this.configService.get<string>('GOOGLE_TOKEN_URL')!;
-    this.googleGrantType = this.configService.get<string>('GOOGLE_GRANT_TYPE')!;
+    this.googleTokenUrl = this.configService.get<string>('GOOGLE_TOKEN_URL');
+    this.googleGrantType = this.configService.get<string>('GOOGLE_GRANT_TYPE');
+    this.googleApiUrl = this.configService.get<string>('GOOGLE_API_URL');
   }
 
   public async authenticateWithGoogle(
@@ -70,7 +72,6 @@ export class GoogleAuthService {
 
     const result = await this.loginGoogleUser(userDto);
     if (!result.refreshToken) {
-      this.logger.error('Invalid credentials, no refresh token obtained');
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -103,10 +104,9 @@ export class GoogleAuthService {
     );
     const response = await firstValueFrom(
       this.httpService
-        .get<GoogleUser>(
-          `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
-          { headers: { Authorization: `Bearer ${id_token}` } },
-        )
+        .get<GoogleUser>(`${this.googleApiUrl}=${access_token}`, {
+          headers: { Authorization: `Bearer ${id_token}` },
+        })
         .pipe(map((response: AxiosResponse<GoogleUser>) => response.data)),
     );
     if (!response) {
