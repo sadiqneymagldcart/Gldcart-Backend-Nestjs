@@ -10,6 +10,7 @@ import { stringify } from 'qs';
 import { plainToInstance } from 'class-transformer';
 import { AxiosResponse } from 'axios';
 import { firstValueFrom, map } from 'rxjs';
+import bcrypt from 'bcrypt';
 import { TokenService } from '@token/services/token.service';
 import { UserService } from '@user/services/user.service';
 import { CreateUserDto } from '@user/dto/create-user.dto';
@@ -61,16 +62,21 @@ export class GoogleAuthService {
       oAuthTokens.access_token,
     );
 
-    const userDto: CreateUserDto = {
-      role: state,
-      name: googleUser.given_name,
-      surname: googleUser.family_name,
-      email: googleUser.email,
-      profile_picture: googleUser.picture,
-      password: process.env.GOOGLE_PASSWORD!,
-    };
+    return this.processGoogleUser(googleUser, state);
+  }
 
-    const result = await this.loginGoogleUser(userDto);
+  private async processGoogleUser(
+    googleUser: GoogleUser,
+    state: string,
+  ): Promise<AuthResponseDto> {
+    const userDto = await this.createUserDto(googleUser, state);
+    const user = await this.userService.create(userDto);
+
+    const userWithoutPassword = plainToInstance(CreateTokenDto, user, {
+      excludeExtraneousValues: true,
+    });
+    const result = await this.authorizeWithGoogle(userWithoutPassword);
+
     if (!result.refreshToken) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -88,9 +94,11 @@ export class GoogleAuthService {
         )
         .pipe(map((response: AxiosResponse<GoogleToken>) => response.data)),
     );
+
     if (!response) {
-      throw new BadRequestException('Invalid OAuth tokens');
+      throw new BadRequestException('Failed to fetch OAuth tokens');
     }
+
     this.logger.debug(`Received OAuth tokens: ${JSON.stringify(response)}`);
     return response;
   }
@@ -102,17 +110,26 @@ export class GoogleAuthService {
     this.logger.debug(
       `Fetching Google user info with id_token: ${id_token} and access_token: ${access_token}`,
     );
-    const response = await firstValueFrom(
+    const response = await this.getGoogleUserResponse(id_token, access_token);
+
+    if (!response) {
+      throw new UnauthorizedException('Failed to fetch Google user');
+    }
+
+    return response;
+  }
+
+  private async getGoogleUserResponse(
+    id_token: string,
+    access_token: string,
+  ): Promise<GoogleUser> {
+    return firstValueFrom(
       this.httpService
         .get<GoogleUser>(`${this.googleApiUrl}=${access_token}`, {
           headers: { Authorization: `Bearer ${id_token}` },
         })
         .pipe(map((response: AxiosResponse<GoogleUser>) => response.data)),
     );
-    if (!response) {
-      throw new UnauthorizedException('Google user not found');
-    }
-    return response;
   }
 
   public async loginGoogleUser(user: CreateUserDto): Promise<AuthResponseDto> {
@@ -133,6 +150,7 @@ export class GoogleAuthService {
       this.tokenService.generateAccessToken(tokenPayload),
       this.tokenService.generateRefreshToken(tokenPayload),
     ]);
+
     return {
       accessToken,
       refreshToken,
@@ -148,5 +166,26 @@ export class GoogleAuthService {
       redirect_uri: this.googleRedirectUri,
       grant_type: this.googleGrantType,
     };
+  }
+
+  private async createUserDto(
+    googleUser: GoogleUser,
+    role: string,
+  ): Promise<CreateUserDto> {
+    const password = await this.generateRandomPassword();
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    return {
+      role,
+      name: googleUser.given_name,
+      surname: googleUser.family_name,
+      email: googleUser.email,
+      profile_picture: googleUser.picture,
+      password: hashedPassword,
+    };
+  }
+
+  private async generateRandomPassword(): Promise<string> {
+    return Math.random().toString(36).substring(2, 15);
   }
 }
