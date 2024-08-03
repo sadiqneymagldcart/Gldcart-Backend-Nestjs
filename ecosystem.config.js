@@ -1,8 +1,8 @@
-module.exports = [
+export default [
         {
                 script: 'dist/main.js',
                 name: 'gldcart-api',
                 exec_mode: 'cluster',
-                instances: 0,
+                instances: 2,
         },
 ];
