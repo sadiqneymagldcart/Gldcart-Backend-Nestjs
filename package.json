@@ -32,6 +32,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/platform-socket.io": "^10.3.10",
     "@nestjs/swagger": "^7.3.1",
+    "@nestjs/terminus": "^10.2.3",
     "@nestjs/websockets": "^10.3.10",
     "@types/loopbench": "^1.2.4",
     "@types/nodemailer": "^6.4.15",
