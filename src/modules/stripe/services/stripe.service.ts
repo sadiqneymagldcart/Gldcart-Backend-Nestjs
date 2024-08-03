@@ -44,7 +44,7 @@ export class StripeService {
       });
       this.logger.log(`Payment intent created: ${paymentIntent.id}`);
       return paymentIntent;
-    } catch (error: any) {
+    } catch (error) {
       this.logger.error(
         `Failed to create payment intent for customer ${customerId} with amount ${amount} ${currency}`,
         error,
@@ -53,13 +53,13 @@ export class StripeService {
     }
   }
 
-  public async createSubscription(price_id: string, customerId: string) {
+  public async createSubscription(priceId: string, customerId: string) {
     try {
       return await this.stripe.subscriptions.create({
         customer: customerId,
         items: [
           {
-            price: price_id,
+            price: priceId,
           },
         ],
       });
@@ -85,10 +85,10 @@ export class StripeService {
     });
   }
 
-  public async listSubscriptions(price_id: string, customerId: string) {
+  public async listSubscriptions(priceId: string, customerId: string) {
     return this.stripe.subscriptions.list({
       customer: customerId,
-      price: price_id,
+      price: priceId,
       expand: ['data.latest_invoice', 'data.latest_invoice.payment_intent'],
     });
   }
