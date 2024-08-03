@@ -10,7 +10,7 @@ import { stringify } from 'qs';
 import { plainToInstance } from 'class-transformer';
 import { AxiosResponse } from 'axios';
 import { firstValueFrom, map } from 'rxjs';
-import bcrypt from 'bcrypt';
+import argon2 from 'argon2';
 import { TokenService } from '@token/services/token.service';
 import { UserService } from '@user/services/user.service';
 import { CreateUserDto } from '@user/dto/create-user.dto';
@@ -42,7 +42,7 @@ export class GoogleAuthService {
     )!;
     this.googleRedirectUri = this.configService.get<string>(
       'GOOGLE_REDIRECT_URI',
-    )!;
+    );
     this.googleTokenUrl = this.configService.get<string>('GOOGLE_TOKEN_URL');
     this.googleGrantType = this.configService.get<string>('GOOGLE_GRANT_TYPE');
     this.googleApiUrl = this.configService.get<string>('GOOGLE_API_URL');
@@ -132,17 +132,6 @@ export class GoogleAuthService {
     );
   }
 
-  public async loginGoogleUser(user: CreateUserDto): Promise<AuthResponseDto> {
-    const userDto = plainToInstance(
-      CreateTokenDto,
-      await this.userService.create(user),
-      {
-        excludeExtraneousValues: true,
-      },
-    );
-    return this.authorizeWithGoogle(userDto);
-  }
-
   private async authorizeWithGoogle(
     tokenPayload: CreateTokenDto,
   ): Promise<AuthResponseDto> {
@@ -173,7 +162,7 @@ export class GoogleAuthService {
     role: string,
   ): Promise<CreateUserDto> {
     const password = await this.generateRandomPassword();
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await argon2.hash(password);
 
     return {
       role,

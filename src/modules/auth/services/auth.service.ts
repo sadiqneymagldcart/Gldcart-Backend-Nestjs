@@ -5,7 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import bcrypt from 'bcrypt';
+import argon2 from 'argon2';
 import { TokenService } from '@token/services/token.service';
 import { UserService } from '@user/services/user.service';
 import { LoginCredentialsDto } from '@auth/dto/login-credentials.dto';
@@ -38,7 +38,7 @@ export class AuthService implements IAuthService {
       throw new BadRequestException('User already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(credentials.password, 10);
+    const hashedPassword = await argon2.hash(credentials.password);
     const user = await this.userService.create({
       ...credentials,
       password: hashedPassword,
@@ -91,9 +91,9 @@ export class AuthService implements IAuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    const isPasswordValid = await bcrypt.compare(
-      credentials.password,
+    const isPasswordValid = await argon2.verify(
       user.password,
+      credentials.password,
     );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid password');
