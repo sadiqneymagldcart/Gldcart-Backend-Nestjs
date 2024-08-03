@@ -29,7 +29,7 @@ export class ReviewController {
   @HttpCode(HttpStatus.OK)
   public async getAllReviews(): Promise<Review[]> {
     this.logger.log('REST request to get all reviews');
-    return await this.reviewService.getAllReviews();
+    return this.reviewService.getAllReviews();
   }
 
   @Get(':id')

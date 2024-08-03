@@ -40,6 +40,6 @@ export class ItemService {
   //     return service.findById(id);
   //   });
   //
-  //   return await Promise.all(promises);
+  //   return Promise.all(promises);
   // }
 }

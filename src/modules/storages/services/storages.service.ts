@@ -37,7 +37,7 @@ export class AwsStorageService {
     files: Express.Multer.File[],
   ): Promise<{ url: string; originalName: string }[]> {
     const uploadPromises = files.map((file) => this.uploadFile(file));
-    return await Promise.all(uploadPromises);
+    return Promise.all(uploadPromises);
   }
 
   private async uploadFile(

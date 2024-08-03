@@ -48,7 +48,7 @@ export class TokenService implements ITokenService {
       { ...payload },
       this.jwtRefreshOptions,
     );
-    return await this.saveOrUpdateRefreshToken(payload._id, refreshToken);
+    return this.saveOrUpdateRefreshToken(payload._id, refreshToken);
   }
 
   public async revokeRefreshToken(refreshToken: string): Promise<void> {

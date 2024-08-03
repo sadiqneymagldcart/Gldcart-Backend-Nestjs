@@ -55,7 +55,7 @@ export class StripeService {
 
   public async createSubscription(priceId: string, customerId: string) {
     try {
-      return await this.stripe.subscriptions.create({
+      return this.stripe.subscriptions.create({
         customer: customerId,
         items: [
           {

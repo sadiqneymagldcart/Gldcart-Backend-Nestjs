@@ -29,7 +29,7 @@ export class UserController {
   @Get()
   public async getAllUsers(): Promise<User[]> {
     this.logger.log('REST request to get all users');
-    return await this.userService.getAll();
+    return this.userService.getAll();
   }
 
   @ApiOperation({ summary: 'Get user by id' })

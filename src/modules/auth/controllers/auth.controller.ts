@@ -35,7 +35,7 @@ export class AuthController {
   public async login(
     @Body() credentials: LoginCredentialsDto,
   ): Promise<AuthResponseDto> {
-    return await this.authService.login(credentials);
+    return this.authService.login(credentials);
   }
 
   @Post('register')
@@ -50,7 +50,7 @@ export class AuthController {
   public async register(
     @Body() credentials: RegisterCredentialsDto,
   ): Promise<AuthResponseDto> {
-    return await this.authService.register(credentials);
+    return this.authService.register(credentials);
   }
 
   @Get('refresh')
@@ -63,7 +63,7 @@ export class AuthController {
   })
   public async refresh(@Req() request: Request): Promise<AuthResponseDto> {
     const refreshToken = request.cookies.refreshToken;
-    return await this.authService.refresh(refreshToken);
+    return this.authService.refresh(refreshToken);
   }
 
   @Post('logout')

@@ -16,7 +16,7 @@ export class OrderService {
   ) { }
 
   public async create(order: CreateOrderDto): Promise<Order> {
-    return await this.orderModel.create(order);
+    return this.orderModel.create(order);
   }
 
   public async getWithItemsById(orderId: string): Promise<Order> {

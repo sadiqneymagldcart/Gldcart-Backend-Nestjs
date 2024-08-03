@@ -18,7 +18,7 @@ export class OfferingService {
 
   public async create(createOfferingDto: CreateOfferingDto): Promise<Offering> {
     const newOffering = new this.offeringModel(createOfferingDto);
-    return await newOffering.save();
+    return newOffering.save();
   }
 
   public async getAll(): Promise<Offering[]> {
@@ -39,7 +39,7 @@ export class OfferingService {
       [key: string]: any;
     } = {},
   ): Promise<Offering[]> {
-    return await this.searchService.searchWithPaginationAndFilters(
+    return this.searchService.searchWithPaginationAndFilters(
       pagination,
       filters,
     );
@@ -49,7 +49,7 @@ export class OfferingService {
     pagination: Pagination,
     searchQuery: string,
   ): Promise<Offering[]> {
-    return await this.searchService.searchWithPaginationAndText(
+    return this.searchService.searchWithPaginationAndText(
       pagination,
       searchQuery,
     );

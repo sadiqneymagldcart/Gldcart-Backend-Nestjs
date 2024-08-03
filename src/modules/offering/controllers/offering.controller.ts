@@ -1,4 +1,3 @@
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import {
   Controller,
   Get,
@@ -13,6 +12,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import {
   ApiTags,
   ApiOperation,
@@ -114,7 +114,7 @@ export class OfferingController {
     description: 'Offering not found.',
   })
   public async getOfferingById(@Param('id') id: string): Promise<Offering> {
-    return await this.offeringService.getById(id);
+    return this.offeringService.getById(id);
   }
 
   @Put(':id')
