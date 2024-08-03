@@ -12,9 +12,9 @@ async function bootstrap() {
         : ['error', 'warn', 'log'],
     rawBody: true,
   });
-  const configService = app.get(ConfigService);
+  const port = app.get(ConfigService).get('PORT');
   setupMiddlewares(app);
-  app.listen(configService.get('API_PORT') || 3001);
+  app.listen(port);
 }
 
 bootstrap();
