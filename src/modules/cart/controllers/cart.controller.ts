@@ -29,7 +29,7 @@ import { TransactionInterceptor } from '@shared/interceptors/transaction.interce
 export class CartController {
   public constructor(private readonly cartService: CartService) { }
 
-  @Get('/user/:userId')
+  @Get('user/:userId')
   @ApiOperation({ summary: 'Get a cart for user' })
   @ApiOkResponse({ description: 'The cart for user', type: Cart })
   public async getCartByUserId(@Param('userId') userId: string): Promise<Cart> {
