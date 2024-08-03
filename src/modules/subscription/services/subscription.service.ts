@@ -19,8 +19,8 @@ export class SubscriptionService {
     if (subscription) {
       throw new BadRequestException('Customer already subscribed');
     }
-    const price_id = this.configService.get('MONTHLY_SUBSCRIPTION_PRICE_ID');
-    return this.stripeService.createSubscription(price_id, customerId);
+    const priceId = this.configService.get('MONTHLY_SUBSCRIPTION_priceId');
+    return this.stripeService.createSubscription(priceId, customerId);
   }
 
   public async getMonthlySubscription(customerId: string) {
@@ -33,9 +33,9 @@ export class SubscriptionService {
   }
 
   private async getSubscription(customerId: string) {
-    const price_id = this.configService.get('MONTHLY_SUBSCRIPTION_PRICE_ID');
+    const priceId = this.configService.get('MONTHLY_SUBSCRIPTION_priceId');
     const subscriptions = await this.stripeService.listSubscriptions(
-      price_id,
+      priceId,
       customerId,
     );
 
