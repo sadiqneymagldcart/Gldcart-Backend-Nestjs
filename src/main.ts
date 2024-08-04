@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { LogLevel } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { setupMiddlewares } from '@config/middlewares';
-import { AppModule } from './app.module';
+import { MainModule } from './main.module';
 
 async function bootstrap() {
   const loggerOptions: LogLevel[] =
@@ -10,7 +10,7 @@ async function bootstrap() {
       ? ['log', 'debug', 'error', 'verbose', 'warn']
       : ['error', 'warn', 'log'];
 
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(MainModule, {
     logger: loggerOptions,
     rawBody: true,
   });
