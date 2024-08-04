@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import mongoConfig from '@config/mongo.config';
+import redisStore from 'cache-manager-redis-store';
 import { UserModule } from '@user/user.module';
 import { AuthModule } from '@auth/auth.module';
 import { TokenModule } from '@token/token.module';
-import { AppController } from './app.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ReviewModule } from '@review/review.module';
 import { EmailModule } from '@email/email.module';
@@ -18,8 +19,6 @@ import { ItemModule } from '@item/item.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { WishlistModule } from '@wishlist/wishlist.module';
 import { AddressModule } from '@address/address.module';
-import mongoConfig from '@config/mongo.config';
-import redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -59,6 +58,5 @@ import redisStore from 'cache-manager-redis-store';
     ItemModule,
     WishlistModule,
   ],
-  controllers: [AppController],
 })
-export class AppModule {}
+export class MainModule { }
