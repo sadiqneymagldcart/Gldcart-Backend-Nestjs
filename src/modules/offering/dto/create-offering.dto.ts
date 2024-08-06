@@ -3,6 +3,12 @@ import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 
 export class CreateOfferingDto {
   @ApiProperty({
+    description: 'The unique identifier of the seller',
+    example: '668a5fb74ddcd5703f6fdba7',
+  })
+  seller: string;
+
+  @ApiProperty({
     description: 'The name of the offering',
     example: 'Sample Offering',
   })
