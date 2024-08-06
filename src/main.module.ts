@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import mongoConfig from '@config/mongo.config';
 import redisStore from 'cache-manager-redis-store';
+import { HealthModule } from '@health/health.module';
 import { UserModule } from '@user/user.module';
 import { AuthModule } from '@auth/auth.module';
 import { TokenModule } from '@token/token.module';
@@ -42,6 +43,7 @@ import { AddressModule } from '@address/address.module';
       }),
       inject: [ConfigService],
     }),
+    HealthModule,
     UserModule,
     AddressModule,
     AuthModule,
