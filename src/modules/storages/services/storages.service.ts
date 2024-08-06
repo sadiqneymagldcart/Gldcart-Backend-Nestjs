@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 @Injectable()
 export class AwsStorageService {
+  private readonly logger = new Logger(AwsStorageService.name);
+
   private readonly s3: S3Client;
   private readonly bucketName = this.configService.get('AWS_BUCKET_NAME');
   private readonly bucketRegion = this.configService.get('AWS_BUCKET_REGION');
@@ -23,21 +25,33 @@ export class AwsStorageService {
   public async uploadMultipleFiles(
     files: Array<Express.Multer.File>,
   ): Promise<string[]> {
+    this.logger.log(
+      `Uploading multiple files: ${files.map((file) => file.originalname).join(', ')}`,
+    );
     const uploadPromises = files.map((file) => this.uploadFile(file));
     const urls = await Promise.all(uploadPromises);
     return urls.map((url) => url.url);
   }
 
   public async uploadSingleFile(file: Express.Multer.File): Promise<string> {
+    this.logger.log(`Uploading single file: ${file.originalname}`);
     const { url } = await this.uploadFile(file);
+    this.logger.log(`Uploaded file URL: ${url}`);
     return url;
   }
 
   public async getUrlAndOriginalNames(
     files: Express.Multer.File[],
   ): Promise<{ url: string; originalName: string }[]> {
+    this.logger.log(
+      `Getting URLs and original names for files: ${files.map((file) => file.originalname).join(', ')}`,
+    );
     const uploadPromises = files.map((file) => this.uploadFile(file));
-    return Promise.all(uploadPromises);
+    const results = await Promise.all(uploadPromises);
+    this.logger.log(
+      `Uploaded files with URLs and original names: ${results.map((result) => `${result.originalName}: ${result.url}`).join(', ')}`,
+    );
+    return results;
   }
 
   private async uploadFile(
@@ -50,9 +64,11 @@ export class AwsStorageService {
       Body: file.buffer,
       ContentType: file.mimetype,
     };
+    this.logger.log(`Uploading file...`);
     const command = new PutObjectCommand(params);
     await this.s3.send(command);
     const url = `https://${this.bucketName}.s3.${this.bucketRegion}.amazonaws.com/${params.Key}`;
+    this.logger.log(`File uploaded to URL: ${url}`);
     return {
       url,
       originalName: file.originalname,
@@ -60,6 +76,8 @@ export class AwsStorageService {
   }
 
   private randomFileName(originalName: string): string {
-    return `${Date.now()}-${originalName}`;
+    const randomName = `${Date.now()}-${originalName}`;
+    this.logger.log(`Generated random file name: ${randomName}`);
+    return randomName;
   }
 }
