@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
 
 export class CreateProductDto {
   @ApiProperty({
@@ -24,13 +23,12 @@ export class CreateProductDto {
   description?: string;
 
   @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    isArray: true,
-    description: 'Images of the product',
+    description: 'Array of image files',
+    type: 'array',
+    items: { type: 'string', format: 'binary' },
+    required: true,
   })
-  @IsNotEmpty()
-  images: any;
+  images?: any;
 
   @ApiProperty({ description: 'The category of the product' })
   category: string;

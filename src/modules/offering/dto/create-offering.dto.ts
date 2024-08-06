@@ -1,24 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsString,
-  IsOptional,
-  IsArray,
-  ValidateNested,
-} from 'class-validator';
-import { Type } from 'class-transformer';
-
-class Attribute {
-  @ApiProperty({ example: 'color' })
-  @IsNotEmpty()
-  @IsString()
-  key: string;
-
-  @ApiProperty({ example: 'red' })
-  @IsNotEmpty()
-  @IsString()
-  value: string;
-}
+import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 
 export class CreateOfferingDto {
   @ApiProperty({
@@ -39,13 +20,12 @@ export class CreateOfferingDto {
   description?: string;
 
   @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    isArray: true,
-    description: 'Images of the offering',
+    description: 'Array of image files',
+    type: 'array',
+    items: { type: 'string', format: 'binary' },
+    required: true,
   })
-  @IsNotEmpty()
-  images: any;
+  images?: any;
 
   @ApiProperty({
     description: 'The category of the offering',
@@ -63,10 +43,12 @@ export class CreateOfferingDto {
   @IsString()
   subcategory: string;
 
-  @ApiProperty({ description: 'Attributes of the offering', type: [Attribute] })
-  @IsNotEmpty()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => Attribute)
-  attributes: Attribute[];
+  @ApiProperty({
+    description: 'Attributes of the product',
+    example: [
+      { key: 'color', value: 'red' },
+      { key: 'size', value: 'M' },
+    ],
+  })
+  attributes: { key: string; value: string }[];
 }
