@@ -5,11 +5,12 @@ services:
       dockerfile: Dockerfile
       target: development
     command: npm run start:dev
+    restart: always
     env_file:
       - .development.env
     volumes:
       - .:/usr/src/app
-    ports: 
+    ports:
       - 3001:3001
     networks:
       - app-network
