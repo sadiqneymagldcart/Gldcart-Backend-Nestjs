@@ -2,7 +2,7 @@
   "name": "gldcart-api",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Andrii Konotop",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -47,7 +47,6 @@
     "loopbench": "^2.0.0",
     "mongoose": "^8.4.3",
     "nestjs-real-ip": "^3.0.1",
-    "pm2": "^5.4.2",
     "pm2-runtime": "^5.4.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
