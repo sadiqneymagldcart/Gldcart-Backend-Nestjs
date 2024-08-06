@@ -1,18 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import { Type } from 'class-transformer';
 import { User } from '@user/schemas/user.schema';
 
 export type ProductDocument = Product & mongoose.Document;
 
-@Schema({})
+@Schema({ timestamps: true })
 export class Product {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: User.name,
   })
-  @Type(() => User)
   seller: User;
 
   @Prop({ required: true, type: Number })
