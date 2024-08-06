@@ -13,7 +13,7 @@ export class OrderService {
     @InjectModel(Order.name) private readonly orderModel: Model<OrderDocument>,
     private readonly inventoryService: InventoryService,
     private readonly emailService: EmailService,
-  ) { }
+  ) {}
 
   public async create(order: CreateOrderDto): Promise<Order> {
     return this.orderModel.create(order);

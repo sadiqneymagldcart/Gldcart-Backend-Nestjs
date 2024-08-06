@@ -21,4 +21,4 @@ import { StripeEvent, StripeEventSchema } from './schemas/stripe-event.schema';
   controllers: [StripeController, StripeWebhookController],
   providers: [StripeService, StripeWebhookService],
 })
-export class StripeModule { }
+export class StripeModule {}

@@ -16,4 +16,4 @@ import { OfferingService } from './services/offering.service';
   providers: [OfferingService, SearchService, AwsStorageService],
   exports: [OfferingService],
 })
-export class OfferingModule { }
+export class OfferingModule {}

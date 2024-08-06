@@ -44,7 +44,7 @@ export class OfferingController {
   public constructor(
     private readonly offeringService: OfferingService,
     private readonly awsStorage: AwsStorageService,
-  ) { }
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

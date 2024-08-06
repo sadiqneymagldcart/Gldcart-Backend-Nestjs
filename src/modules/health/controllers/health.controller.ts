@@ -5,7 +5,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('Health')
 @Controller('health')
 export class HealthController {
-  public constructor(private readonly healthService: HealthService) { }
+  public constructor(private readonly healthService: HealthService) {}
 
   @Get('block-loop')
   public async blockEventLoop() {

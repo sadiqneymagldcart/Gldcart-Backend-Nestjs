@@ -8,7 +8,7 @@ import { IEmailService } from '@email/interfaces/mail.service.interface';
 export class EmailService implements IEmailService {
   private readonly logger = new Logger(EmailService.name);
 
-  public constructor(private readonly mailerService: MailerService) { }
+  public constructor(private readonly mailerService: MailerService) {}
 
   public async sendContactFormEmail(
     email_data: ContactEmailDto,

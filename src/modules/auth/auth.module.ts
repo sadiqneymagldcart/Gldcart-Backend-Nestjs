@@ -12,4 +12,4 @@ import { HttpModule } from '@nestjs/axios';
   controllers: [AuthController, GoogleAuthController],
   providers: [AuthService, GoogleAuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

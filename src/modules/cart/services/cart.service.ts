@@ -10,7 +10,7 @@ import { UpdateItemDto } from '@item/dto/update-item.dto';
 export class CartService implements ICartService {
   public constructor(
     @InjectModel(Cart.name) private readonly cartModel: Model<CartDocument>,
-  ) { }
+  ) {}
 
   public async getByUserId(userId: string): Promise<Cart> {
     const cart = await this.cartModel.findOne({ customer: userId });

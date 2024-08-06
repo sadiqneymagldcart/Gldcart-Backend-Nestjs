@@ -6,7 +6,7 @@ import { Item } from '@item/schemas/item.schema';
 
 @Injectable()
 export class InventoryService {
-  public constructor(private readonly productService: ProductService) { }
+  public constructor(private readonly productService: ProductService) {}
 
   public async updateInventory(
     items: Item[],

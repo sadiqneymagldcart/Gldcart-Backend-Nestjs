@@ -61,4 +61,4 @@ import { AddressModule } from '@address/address.module';
     WishlistModule,
   ],
 })
-export class MainModule { }
+export class MainModule {}

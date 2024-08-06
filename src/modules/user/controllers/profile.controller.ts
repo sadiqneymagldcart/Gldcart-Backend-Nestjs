@@ -23,7 +23,7 @@ export class ProfileController {
   public constructor(
     private readonly awsStorage: AwsStorageService,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   @Put(':id/profile-picture')
   @UseInterceptors(FileInterceptor('image'))

@@ -30,7 +30,7 @@ export class ProductController {
   public constructor(
     private readonly productService: ProductService,
     private readonly awsStorage: AwsStorageService,
-  ) { }
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a product' })

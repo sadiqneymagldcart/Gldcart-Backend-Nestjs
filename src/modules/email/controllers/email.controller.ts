@@ -22,7 +22,7 @@ import { EmailService } from '@email/services/email.service';
 export class EmailController {
   private readonly logger = new Logger(EmailController.name);
 
-  public constructor(private readonly emailService: EmailService) { }
+  public constructor(private readonly emailService: EmailService) {}
 
   @Post('/contact-us')
   @HttpCode(HttpStatus.OK)

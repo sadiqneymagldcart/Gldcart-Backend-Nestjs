@@ -21,7 +21,7 @@ import { UpdateReviewDto } from '@review/dto/update-review.dto';
 export class ReviewController {
   private readonly logger: Logger = new Logger(ReviewController.name);
 
-  public constructor(private readonly reviewService: ReviewService) { }
+  public constructor(private readonly reviewService: ReviewService) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all reviews' })

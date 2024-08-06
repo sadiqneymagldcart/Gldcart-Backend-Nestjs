@@ -15,7 +15,7 @@ import { RentingService } from '@renting/services/renting.service';
 @ApiTags('Rentings')
 @Controller('renting')
 export class RentingController {
-  public constructor(private readonly rentingService: RentingService) { }
+  public constructor(private readonly rentingService: RentingService) {}
 
   @Post()
   create(@Body() createRentingDto: CreateRentingDto) {

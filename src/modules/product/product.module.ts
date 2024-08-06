@@ -13,4 +13,4 @@ import { Product, ProductSchema } from './schemas/product.schema';
   providers: [ProductService, AwsStorageService],
   exports: [ProductService],
 })
-export class ProductModule { }
+export class ProductModule {}

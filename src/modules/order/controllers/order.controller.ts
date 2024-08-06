@@ -17,7 +17,7 @@ import { OrderService } from '@order/services/order.service';
 @ApiTags('Orders')
 @Controller('orders')
 export class OrderController {
-  public constructor(private readonly orderService: OrderService) { }
+  public constructor(private readonly orderService: OrderService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create order' })

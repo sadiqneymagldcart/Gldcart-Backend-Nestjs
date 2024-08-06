@@ -12,7 +12,7 @@ export class ChatService {
   public constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     @InjectModel(Chat.name) private readonly chatModel: Model<ChatDocument>,
-  ) { }
+  ) {}
 
   public async createChat(chat: CreateChatDto): Promise<Chat> {
     return this.chatModel.create(chat);

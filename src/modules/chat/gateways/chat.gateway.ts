@@ -26,7 +26,8 @@ import { MessageService } from '@chat/services/message.service';
   },
 })
 export class ChatGateway
-  implements OnGatewayConnection, OnGatewayDisconnect, IChatGateway {
+  implements OnGatewayConnection, OnGatewayDisconnect, IChatGateway
+{
   @WebSocketServer() server: Server;
   private readonly logger = new Logger(ChatGateway.name);
 
@@ -34,7 +35,7 @@ export class ChatGateway
     private readonly chatService: ChatService,
     private readonly messageService: MessageService,
     private readonly tokenService: TokenService,
-  ) { }
+  ) {}
 
   public async handleConnection(
     @ConnectedSocket() socket: Socket,

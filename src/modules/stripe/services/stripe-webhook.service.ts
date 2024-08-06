@@ -17,7 +17,7 @@ export class StripeWebhookService {
     private readonly eventModel: Model<StripeEventDocument>,
     private readonly userService: UserService,
     private readonly orderService: OrderService,
-  ) { }
+  ) {}
 
   public async createEvent(id: string): Promise<StripeEvent> {
     const event = new this.eventModel({ _id: id });

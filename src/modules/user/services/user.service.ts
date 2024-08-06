@@ -16,7 +16,7 @@ export class UserService {
     @InjectModel(User.name)
     private readonly userModel: Model<UserDocument>,
     private readonly stripeService: StripeService,
-  ) { }
+  ) {}
 
   public async create(userData: CreateUserDto): Promise<User> {
     const stripeCustomer = await this.stripeService.createCustomer(

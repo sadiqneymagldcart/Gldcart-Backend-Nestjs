@@ -21,7 +21,7 @@ export class AuthService implements IAuthService {
   public constructor(
     private readonly userService: UserService,
     private readonly tokenService: TokenService,
-  ) { }
+  ) {}
 
   public async login(
     credentials: LoginCredentialsDto,

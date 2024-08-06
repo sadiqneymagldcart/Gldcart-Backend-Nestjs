@@ -16,7 +16,7 @@ export class ItemService {
     private productService: ProductService,
     private offeringService: OfferingService,
     private rentingService: RentingService,
-  ) { }
+  ) {}
 
   private _getServiceByType(type: ItemTypes) {
     const service = this.serviceByType[type];
