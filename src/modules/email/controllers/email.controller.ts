@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Logger,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Post, Body, Logger, HttpStatus } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -25,7 +18,6 @@ export class EmailController {
   public constructor(private readonly emailService: EmailService) {}
 
   @Post('/contact-us')
-  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Send a contact form submission email' })
   @ApiResponse({ status: 200, description: 'Email sent successfully' })
   @ApiBody({ type: ContactEmailDto, description: 'Contact form data' })

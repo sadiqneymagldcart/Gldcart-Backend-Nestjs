@@ -9,10 +9,9 @@ import {
   UseInterceptors,
   Query,
   UploadedFiles,
-  HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import {
   ApiTags,
   ApiOperation,
@@ -47,7 +46,6 @@ export class OfferingController {
   ) {}
 
   @Post()
-  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create an offering' })
   @ApiBody({ type: CreateOfferingDto })
   @ApiResponse({
@@ -90,7 +88,6 @@ export class OfferingController {
     description: 'Successful retrieval of offerings',
     type: PaginatedResourceDto<Offering>,
   })
-  @CacheTTL(120)
   public async getAllOfferings(
     @PaginationParams() pagination: Pagination,
     @FilteringParams() filters: Filtering,

@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Get,
-  HttpCode,
   HttpStatus,
   Body,
   Req,
@@ -24,7 +23,6 @@ export class AuthController {
   public constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login' })
   @ApiBody({ type: LoginCredentialsDto, description: 'Login credentials' })
   @ApiResponse({
@@ -39,7 +37,6 @@ export class AuthController {
   }
 
   @Post('register')
-  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Register' })
   @ApiBody({ type: RegisterCredentialsDto, description: 'Registration data' })
   @ApiResponse({
@@ -54,7 +51,6 @@ export class AuthController {
   }
 
   @Get('refresh')
-  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Refresh token' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -67,7 +63,6 @@ export class AuthController {
   }
 
   @Post('logout')
-  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Logout' })
   public async logout(
     @Req() request: Request,

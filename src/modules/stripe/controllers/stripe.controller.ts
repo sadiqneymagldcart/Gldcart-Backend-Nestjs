@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  HttpCode,
   HttpStatus,
   Post,
   Req,
@@ -18,7 +17,6 @@ export class StripeController {
   public constructor(private readonly stripeService: StripeService) {}
 
   @Post('payment-intent')
-  @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthenticationGuard)
   @ApiOperation({ summary: 'Create a new payment intent' })
   @ApiBody({ type: PaymentIntentDto })

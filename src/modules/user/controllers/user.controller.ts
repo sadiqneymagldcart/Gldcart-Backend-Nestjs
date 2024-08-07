@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpCode,
-  HttpStatus,
   Logger,
   Param,
   Post,
@@ -23,39 +21,35 @@ export class UserController {
 
   public constructor(private readonly userService: UserService) {}
 
+  @Get()
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'Users found', type: [User] })
-  @HttpCode(HttpStatus.OK)
-  @Get()
   public async getAllUsers(): Promise<User[]> {
     this.logger.log('REST request to get all users');
     return this.userService.getAll();
   }
 
+  @Get('/:id')
   @ApiOperation({ summary: 'Get user by id' })
   @ApiResponse({ status: 200, description: 'User found', type: User })
-  @HttpCode(HttpStatus.OK)
-  @Get('/:id')
   public async getUserById(@Param('id') id: string): Promise<User> {
     this.logger.log(`REST request to get a user: ${id}`);
     return this.userService.getById(id);
   }
 
+  @Post()
   @ApiOperation({ summary: 'Create a user' })
   @ApiBody({ type: CreateUserDto })
   @ApiResponse({ status: 201, description: 'User created', type: User })
-  @HttpCode(HttpStatus.CREATED)
-  @Post()
   public async createNewUser(@Body() user: CreateUserDto): Promise<User> {
     this.logger.log(`REST request to create a user: ${JSON.stringify(user)}`);
     return this.userService.create(user);
   }
 
+  @Put('/:id')
   @ApiOperation({ summary: 'Update a user by id' })
   @ApiBody({ type: UpdateUserDto })
   @ApiResponse({ status: 200, description: 'User updated', type: User })
-  @HttpCode(HttpStatus.OK)
-  @Put('/:id')
   public async updateUser(
     @Param('id') id: string,
     @Body() user: UpdateUserDto,
@@ -64,10 +58,9 @@ export class UserController {
     return this.userService.update(id, user);
   }
 
+  @Delete('/:id')
   @ApiOperation({ summary: 'Delete a user by id' })
   @ApiResponse({ status: 204, description: 'User deleted' })
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete('/:id')
   public async removeUser(@Param('id') id: string): Promise<void> {
     this.logger.log(`REST request to delete a user: ${id}`);
     return this.userService.remove(id);

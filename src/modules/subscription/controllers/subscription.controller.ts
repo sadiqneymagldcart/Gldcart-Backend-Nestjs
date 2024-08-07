@@ -5,7 +5,6 @@ import {
   UseGuards,
   Get,
   HttpStatus,
-  HttpCode,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -26,7 +25,6 @@ export class SubscriptionController {
   ) {}
 
   @Post('monthly')
-  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a monthly subscription' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -45,7 +43,6 @@ export class SubscriptionController {
   }
 
   @Get('monthly')
-  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get a monthly subscription' })
   @ApiResponse({
     status: HttpStatus.OK,
