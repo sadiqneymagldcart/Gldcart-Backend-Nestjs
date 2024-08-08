@@ -37,9 +37,7 @@ export class ChatGateway
     private readonly tokenService: TokenService,
   ) {}
 
-  public async handleConnection(
-    @ConnectedSocket() socket: Socket,
-  ): Promise<void> {
+  public async handleConnection(@ConnectedSocket() socket: Socket) {
     const accessToken = socket.handshake.query.accessToken as string;
     try {
       const { _id } = await this.tokenService.verifyAccessToken(accessToken);
@@ -51,9 +49,7 @@ export class ChatGateway
     }
   }
 
-  public async handleDisconnect(
-    @ConnectedSocket() socket: Socket,
-  ): Promise<void> {
+  public async handleDisconnect(@ConnectedSocket() socket: Socket) {
     const userId = this.getUserId(socket);
     if (!userId) return;
     this.logger.log(`User disconnected: ${userId}`);
@@ -68,7 +64,7 @@ export class ChatGateway
   public async handleJoin(
     @ConnectedSocket() socket: Socket,
     @MessageBody() chatId: string,
-  ): Promise<void> {
+  ) {
     if (!chatId) {
       this.logger.warn('User tried to join a chat without chatId');
       return;
@@ -84,9 +80,7 @@ export class ChatGateway
   }
 
   @SubscribeMessage(Events.SEND_MESSAGE)
-  public async handleMessage(
-    @MessageBody() message: CreateMessageDto,
-  ): Promise<void> {
+  public async handleMessage(@MessageBody() message: CreateMessageDto) {
     this.logger.log('Message received', JSON.stringify(message));
     try {
       const savedMessage = await this.messageService.createMessage(message);
@@ -103,7 +97,7 @@ export class ChatGateway
   public async requestAllMessages(
     @ConnectedSocket() socket: Socket,
     @MessageBody() chatId: string,
-  ): Promise<void> {
+  ) {
     if (!chatId) {
       this.logger.warn('User requested all messages without chatId');
       return;
@@ -116,7 +110,7 @@ export class ChatGateway
   public async createChat(
     @ConnectedSocket() socket: Socket,
     @MessageBody() newChat: CreateChatDto,
-  ): Promise<void> {
+  ) {
     try {
       const chat = await this.chatService.createChat(newChat);
       this.server.emit(Events.RECEIVE_CHAT, chat);
@@ -126,9 +120,7 @@ export class ChatGateway
   }
 
   @SubscribeMessage(Events.REQUEST_ALL_CHATS)
-  public async requestAllChats(
-    @ConnectedSocket() socket: Socket,
-  ): Promise<void> {
+  public async requestAllChats(@ConnectedSocket() socket: Socket) {
     const userId = this.getUserId(socket);
 
     if (!userId) {
@@ -144,7 +136,7 @@ export class ChatGateway
   public async handleLeave(
     @ConnectedSocket() socket: Socket,
     @MessageBody() chatId: string,
-  ): Promise<void> {
+  ) {
     if (!chatId) {
       this.logger.warn('User tried to leave a chat without chatId');
       return;
@@ -167,7 +159,7 @@ export class ChatGateway
     userId: string,
     isOnline: boolean,
     socket: Socket,
-  ): Promise<void> {
+  ) {
     await this.chatService.updateUserOnlineStatus(userId, isOnline);
     if (isOnline) {
       await this.requestAllChats(socket);
@@ -175,7 +167,7 @@ export class ChatGateway
     }
   }
 
-  private handleError(message: string, error: any, socket: Socket): void {
+  private handleError(message: string, error: any, socket: Socket) {
     this.logger.error(`${message}: ${error.stack}`);
     socket.emit(Events.ERROR, { message: error.message });
   }
