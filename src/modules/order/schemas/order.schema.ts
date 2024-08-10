@@ -27,23 +27,23 @@ export class Order {
   ])
   items: Item[];
 
-  @Prop({ required: false, enum: PaymentMethod })
+  @Prop({ enum: PaymentMethod })
   payment_method: PaymentMethod;
 
   @Prop({ required: true, default: 0.0 })
-  total: number;
+  amount: number;
 
-  @Prop({ default: 0.0 })
-  discount: number;
-
-  @Prop({ enum: OrderStatus, default: OrderStatus.PLACED })
+  @Prop({ enum: OrderStatus, default: OrderStatus.PENDING })
   status: OrderStatus;
 
-  @Prop({ type: Number, required: true })
+  @Prop({ type: Number })
   track_number: number;
 
-  @Prop({ type: String, required: true })
-  notes?: string;
+  @Prop({ type: mongoose.Schema.Types.Mixed })
+  billing_details: any;
+
+  @Prop({ type: String })
+  order_notes?: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
