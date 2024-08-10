@@ -3,26 +3,32 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateProductDto } from '@product/dto/create-product.dto';
 import { UpdateProductDto } from '@product/dto/update-product.dto';
-import { IProductService } from '@product/interfaces/product.service.interface';
 import { Product, ProductDocument } from '@product/schemas/product.schema';
+import { SearchService } from '@search/services/search.service';
+import { Pagination } from '@shared/decorators/pagination.decorator';
 
 @Injectable()
-export class ProductService implements IProductService {
+export class ProductService {
+  private readonly searchService: SearchService<ProductDocument>;
   public constructor(
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
-  ) {}
+  ) {
+    this.searchService = new SearchService<ProductDocument>(productModel);
+  }
 
-  public async create(createProductDto: CreateProductDto): Promise<Product> {
+  public async createProduct(
+    createProductDto: CreateProductDto,
+  ): Promise<Product> {
     const createdProduct = new this.productModel(createProductDto);
     return createdProduct.save();
   }
 
-  public async getAll(): Promise<Product[]> {
+  public async getAllProducts(): Promise<Product[]> {
     return this.productModel.find().lean();
   }
 
-  public async getById(id: string): Promise<Product> {
+  public async getProductById(id: string): Promise<Product> {
     const offering = await this.productModel.findById(id).lean();
     if (!offering) {
       throw new NotFoundException(`Product with ID ${id} not found`);
@@ -30,7 +36,29 @@ export class ProductService implements IProductService {
     return offering;
   }
 
-  public async update(
+  public async getProductByFilters(
+    pagination: Pagination,
+    filters: {
+      [key: string]: any;
+    } = {},
+  ): Promise<Product[]> {
+    return this.searchService.searchWithPaginationAndFilters(
+      pagination,
+      filters,
+    );
+  }
+
+  public async getProductBySearchQuery(
+    pagination: Pagination,
+    searchQuery: string,
+  ): Promise<Product[]> {
+    return this.searchService.searchWithPaginationAndText(
+      pagination,
+      searchQuery,
+    );
+  }
+
+  public async updateProduct(
     id: string,
     updateProductDto: UpdateProductDto,
   ): Promise<Product> {
@@ -45,7 +73,7 @@ export class ProductService implements IProductService {
     return existingProduct;
   }
 
-  public async updateStock(
+  public async updateProductStock(
     productId: string,
     quantity: number,
     session: any,
