@@ -40,7 +40,6 @@ export class CartService implements ICartService {
 
   public async addItem(userId: string, newItem: CreateItemDto): Promise<Cart> {
     const existingCart = await this.cartModel.findOne({ customer: userId });
-
     if (!existingCart) {
       return this.createCartWithItem(userId, newItem);
     } else {
@@ -50,16 +49,13 @@ export class CartService implements ICartService {
 
   public async removeItem(id: string, itemId: string): Promise<Cart> {
     const existingCart = await this.getByIdOrThrow(id);
-
     const itemIndex = existingCart.items.findIndex(
       (item) => item.id === itemId,
     );
-
     if (itemIndex === -1) {
       throw new NotFoundException(`Item with ID ${id} not found in cart`);
     }
     existingCart.items.splice(itemIndex, 1);
-
     return existingCart.save();
   }
 
