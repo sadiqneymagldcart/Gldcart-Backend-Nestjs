@@ -13,7 +13,9 @@ export class CartService implements ICartService {
   ) {}
 
   public async getByUserId(userId: string): Promise<Cart> {
-    const cart = await this.cartModel.findOne({ customer: userId });
+    const cart = await this.cartModel
+      .findOne({ customer: userId })
+      .populate('items.id');
     if (!cart) {
       throw new NotFoundException(`No carts found for user with id ${userId}`);
     }
@@ -56,7 +58,6 @@ export class CartService implements ICartService {
     if (itemIndex === -1) {
       throw new NotFoundException(`Item with ID ${id} not found in cart`);
     }
-
     existingCart.items.splice(itemIndex, 1);
 
     return existingCart.save();
