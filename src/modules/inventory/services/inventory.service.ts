@@ -17,7 +17,11 @@ export class InventoryService {
     );
     await Promise.all(
       productsToUpdate.map((product) =>
-        this.productService.updateProductStock(product.id, product.quantity, session),
+        this.productService.updateProductStock(
+          product.id,
+          product.quantity,
+          session,
+        ),
       ),
     );
   }
