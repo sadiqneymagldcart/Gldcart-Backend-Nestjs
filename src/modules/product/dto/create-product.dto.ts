@@ -3,11 +3,11 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateProductDto {
   @ApiProperty({
     description: 'The unique identifier of the seller',
-    example: '668a5fb74ddcd5703f6fdba7',
+    example: '66b7b3e8c32055a049b55029',
   })
   seller: string;
 
-  @ApiProperty({ description: 'The number of products in stock' })
+  @ApiProperty({ description: 'The number of products in stock', example: 10 })
   stock: number;
 
   @ApiProperty({
@@ -36,12 +36,15 @@ export class CreateProductDto {
   })
   images?: any;
 
-  @ApiProperty({ description: 'The category of the product' })
+  @ApiProperty({
+    description: 'The category of the product',
+    example: 'sample category',
+  })
   category: string;
 
   @ApiProperty({
     description: 'The subcategory of the product',
-    example: 'Subcategory1',
+    example: 'sample subcategory',
   })
   subcategory: string;
 
