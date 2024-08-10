@@ -1,22 +1,40 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Model, ClientSession } from 'mongoose';
 import { EmailService } from '@email/services/email.service';
 import { InventoryService } from '@inventory/services/inventory.service';
 import { CreateOrderDto } from '@order/dto/create-order.dto';
 import { OrderStatus } from '@order/enums/order-status.enum';
 import { Order, OrderDocument } from '@order/schemas/order.schema';
-import { Model, ClientSession } from 'mongoose';
+import { StripeService } from '@stripe/services/stripe.service';
 
 @Injectable()
 export class OrderService {
+  private readonly logger = new Logger(OrderService.name);
   public constructor(
     @InjectModel(Order.name) private readonly orderModel: Model<OrderDocument>,
     private readonly inventoryService: InventoryService,
     private readonly emailService: EmailService,
+    private readonly stripeService: StripeService,
   ) {}
 
-  public async create(order: CreateOrderDto): Promise<Order> {
-    return this.orderModel.create(order);
+  public async placeOrder(order: CreateOrderDto, stripeCustomerId: string) {
+    const newOrder = await this.createOrder(order);
+
+    this.logger.log(`Creating payment intent for order ${newOrder._id}`);
+
+    const paymentIntent = await this.stripeService.createPaymentIntent(
+      order.amount,
+      { order_id: newOrder._id.toString() },
+      stripeCustomerId,
+    );
+
+    return { client_secret: paymentIntent.client_secret };
+  }
+
+  public async createOrder(order: CreateOrderDto): Promise<OrderDocument> {
+    const newOrder = new this.orderModel(order);
+    return newOrder.save();
   }
 
   public async getWithItemsById(orderId: string): Promise<Order> {
@@ -24,8 +42,11 @@ export class OrderService {
       .findById(orderId)
       .populate('items.id')
       .lean();
-    if (!order)
+
+    if (!order) {
       throw new NotFoundException(`Order with ID ${orderId} not found`);
+    }
+
     return order;
   }
 
