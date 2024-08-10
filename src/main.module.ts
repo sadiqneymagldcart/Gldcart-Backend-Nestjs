@@ -20,6 +20,7 @@ import { ItemModule } from '@item/item.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { WishlistModule } from '@wishlist/wishlist.module';
 import { AddressModule } from '@address/address.module';
+import { OrderModule } from '@order/order.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { AddressModule } from '@address/address.module';
     SubscriptionModule,
     ItemModule,
     WishlistModule,
+    OrderModule,
   ],
 })
 export class MainModule {}
