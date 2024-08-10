@@ -19,9 +19,10 @@ export class OrderService {
   ) {}
 
   public async placeOrder(order: CreateOrderDto, stripeCustomerId: string) {
+    this.logger.log(
+      `Placing order for customer ${stripeCustomerId} with amount ${order.amount}`,
+    );
     const newOrder = await this.createOrder(order);
-
-    this.logger.log(`Creating payment intent for order ${newOrder._id}`);
 
     const paymentIntent = await this.stripeService.createPaymentIntent(
       order.amount,
