@@ -30,6 +30,9 @@ export class CreateOrderDto {
       name: 'John Doe',
       email: 'john.doe@example.com',
       address: '123 Main St, Anytown, USA',
+      city: 'Anytown',
+      postcode: '12345',
+      phone: '+1234567890',
     },
   })
   @IsNotEmpty()
