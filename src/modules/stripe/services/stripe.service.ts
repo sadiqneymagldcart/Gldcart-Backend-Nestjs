@@ -7,13 +7,12 @@ import {
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { StripeError } from '@stripe/enums/stripe-error.enum';
-import { Metadata } from '@stripe/interfaces/metadata.interface';
+import { StripeMetadata } from '@stripe/interfaces/metadata.interface';
 
 @Injectable()
 export class StripeService {
-  private stripe: Stripe;
-
   private readonly logger = new Logger(StripeService.name);
+  private stripe: Stripe;
 
   public constructor(private readonly configService: ConfigService) {
     this.stripe = new Stripe(this.configService.get('STRIPE_SECRET_KEY')!, {
@@ -30,23 +29,26 @@ export class StripeService {
 
   public async createPaymentIntent(
     amount: number,
-    currency: string,
-    metadata: Metadata,
+    metadata: StripeMetadata,
     customerId: string,
   ): Promise<Stripe.PaymentIntent> {
     try {
+      const amountInCents = Math.round(amount * 100);
+      this.logger.debug(
+        `Creating payment intent for customer ${customerId} with amount ${amount} and metadata ${JSON.stringify(metadata)}`,
+      );
       const paymentIntent = await this.stripe.paymentIntents.create({
-        amount,
+        amount: amountInCents,
         customer: customerId,
-        currency,
-        metadata,
+        currency: 'usd',
+        metadata: metadata,
         confirm: false,
       });
       this.logger.log(`Payment intent created: ${paymentIntent.id}`);
       return paymentIntent;
     } catch (error) {
       this.logger.error(
-        `Failed to create payment intent for customer ${customerId} with amount ${amount} ${currency}`,
+        `Failed to create payment intent for customer ${customerId} with amount ${amount}`,
         error,
       );
       throw error;
