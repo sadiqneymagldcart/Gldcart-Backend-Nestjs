@@ -11,14 +11,14 @@ import {
 export class CreateItemDto {
   @ApiProperty({
     description: 'The item ID',
-    example: '60f4d9a3b6e2b2f3f8c6f6e6',
+    example: '66b7b5a8901d3287c0cf6ea6',
   })
   @IsNotEmpty()
   id: string;
 
   @ApiProperty({
     description: 'The item type',
-    example: 'product',
+    example: 'Product',
     enum: ItemTypes,
   })
   @IsEnum(ItemTypes)
