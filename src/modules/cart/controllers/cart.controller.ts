@@ -30,7 +30,7 @@ export class CartController {
   public constructor(private readonly cartService: CartService) {}
 
   @Get('user/:userId')
-  @ApiOperation({ summary: 'Get a cart for user' })
+  @ApiOperation({ summary: 'Get a cart by user id' })
   @ApiOkResponse({ description: 'The cart for user', type: Cart })
   public async getCartByUserId(@Param('userId') userId: string): Promise<Cart> {
     return this.cartService.getByUserId(userId);
