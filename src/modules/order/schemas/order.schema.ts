@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { User } from '@user/schemas/user.schema';
@@ -47,3 +48,20 @@ export class Order {
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
+
+async function validateUser(user: User, userModel: any) {
+  const userExists = await userModel.exists({ _id: user });
+  if (!userExists) {
+    throw new NotFoundException(`User with ID ${user} not found`);
+  }
+}
+
+OrderSchema.pre<OrderDocument>('save', async function (next) {
+  const userModel = this.model('User');
+  try {
+    await validateUser(this.customer, userModel);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
