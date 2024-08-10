@@ -16,6 +16,9 @@ export class Product {
   @Prop({ required: true, type: Number })
   stock: number;
 
+  @Prop({ required: true, type: Number })
+  price: number;
+
   @Prop({ required: true })
   name: string;
 

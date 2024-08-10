@@ -11,6 +11,12 @@ export class CreateProductDto {
   stock: number;
 
   @ApiProperty({
+    description: 'The price of the product',
+    example: 100,
+  })
+  price: number;
+
+  @ApiProperty({
     description: 'The name of the product',
     example: 'Sample Product',
   })
