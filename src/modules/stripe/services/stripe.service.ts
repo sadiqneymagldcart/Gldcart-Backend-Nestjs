@@ -21,10 +21,18 @@ export class StripeService {
   }
 
   public async createCustomer(name: string, email: string) {
-    return this.stripe.customers.create({
-      name,
-      email,
-    });
+    this.logger.log(`Creating customer with name: ${name}, email: ${email}`);
+    try {
+      const customer = await this.stripe.customers.create({ name, email });
+      this.logger.log(`Customer created: ${customer.id}`);
+      return customer;
+    } catch (error) {
+      this.logger.error(
+        `Failed to create customer with email: ${email}`,
+        error,
+      );
+      throw error;
+    }
   }
 
   public async createPaymentIntent(
@@ -56,8 +64,11 @@ export class StripeService {
   }
 
   public async createSubscription(priceId: string, customerId: string) {
+    this.logger.log(
+      `Creating subscription for customer ${customerId} with price ID: ${priceId}`,
+    );
     try {
-      return this.stripe.subscriptions.create({
+      const subscription = await this.stripe.subscriptions.create({
         customer: customerId,
         items: [
           {
@@ -65,7 +76,13 @@ export class StripeService {
           },
         ],
       });
+      this.logger.log(`Subscription created: ${subscription.id}`);
+      return subscription;
     } catch (error) {
+      this.logger.error(
+        `Failed to create subscription for customer ${customerId}`,
+        error,
+      );
       if (error?.code === StripeError.ResourceMissing) {
         throw new BadRequestException('Credit card not set up');
       }
@@ -74,37 +91,87 @@ export class StripeService {
   }
 
   public async attachCreditCard(paymentMethodId: string, customerId: string) {
-    return this.stripe.setupIntents.create({
-      customer: customerId,
-      payment_method: paymentMethodId,
-    });
+    this.logger.log(
+      `Attaching credit card with payment method ID: ${paymentMethodId} to customer ${customerId}`,
+    );
+    try {
+      const setupIntent = await this.stripe.setupIntents.create({
+        customer: customerId,
+        payment_method: paymentMethodId,
+      });
+      this.logger.log(`Credit card attached: ${setupIntent.id}`);
+      return setupIntent;
+    } catch (error) {
+      this.logger.error(
+        `Failed to attach credit card to customer ${customerId}`,
+        error,
+      );
+      throw error;
+    }
   }
 
   public async listCreditCards(customerId: string) {
-    return this.stripe.paymentMethods.list({
-      customer: customerId,
-      type: 'card',
-    });
+    this.logger.log(`Listing credit cards for customer ${customerId}`);
+    try {
+      const paymentMethods = await this.stripe.paymentMethods.list({
+        customer: customerId,
+        type: 'card',
+      });
+      this.logger.log(
+        `Listed ${paymentMethods.data.length} credit cards for customer ${customerId}`,
+      );
+      return paymentMethods;
+    } catch (error) {
+      this.logger.error(
+        `Failed to list credit cards for customer ${customerId}`,
+        error,
+      );
+      throw error;
+    }
   }
 
   public async listSubscriptions(priceId: string, customerId: string) {
-    return this.stripe.subscriptions.list({
-      customer: customerId,
-      price: priceId,
-      expand: ['data.latest_invoice', 'data.latest_invoice.payment_intent'],
-    });
+    this.logger.log(
+      `Listing subscriptions for customer ${customerId} with price ID: ${priceId}`,
+    );
+    try {
+      const subscriptions = await this.stripe.subscriptions.list({
+        customer: customerId,
+        price: priceId,
+        expand: ['data.latest_invoice', 'data.latest_invoice.payment_intent'],
+      });
+      this.logger.log(
+        `Listed ${subscriptions.data.length} subscriptions for customer ${customerId}`,
+      );
+      return subscriptions;
+    } catch (error) {
+      this.logger.error(
+        `Failed to list subscriptions for customer ${customerId}`,
+        error,
+      );
+      throw error;
+    }
   }
 
   public async constructEventFromPayload(
     signature: string,
     payload: Buffer,
   ): Promise<Stripe.Event> {
-    const webhookSecret = this.configService.get('STRIPE_WEBHOOK_SECRET');
-
-    return this.stripe.webhooks.constructEvent(
-      payload,
-      signature,
-      webhookSecret,
+    this.logger.log(
+      `Constructing event from payload with signature: ${signature}`,
     );
+    try {
+      const webhookSecret = this.configService.get('STRIPE_WEBHOOK_SECRET');
+      const event = this.stripe.webhooks.constructEvent(
+        payload,
+        signature,
+        webhookSecret,
+      );
+      this.logger.log(`Event constructed: ${event.id}`);
+      return event;
+    } catch (error) {
+      this.logger.error(`Failed to construct event from payload`, error);
+      throw error;
+    }
   }
 }
