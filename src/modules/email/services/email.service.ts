@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotImplementedException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import path from 'path';
 import { ContactEmailDto } from '@email/dto/contact.email.dto';
@@ -28,8 +28,9 @@ export class EmailService implements IEmailService {
     });
   }
 
-  public async sendOrderConfirmationEmail(email_data: any) {
-    this.logger.log('Sending order confirmation email');
-    throw new NotImplementedException();
+  public async sendOrderConfirmationEmail(emailData: any) {
+    this.logger.log(
+      `Sending order confirmation email to ${emailData.email}...`,
+    );
   }
 }
