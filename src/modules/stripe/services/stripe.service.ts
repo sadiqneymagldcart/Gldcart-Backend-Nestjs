@@ -157,7 +157,7 @@ export class StripeService {
     signature: string,
     payload: Buffer,
   ): Promise<Stripe.Event> {
-    this.logger.log(
+    this.logger.debug(
       `Constructing event from payload with signature: ${signature}`,
     );
     try {
