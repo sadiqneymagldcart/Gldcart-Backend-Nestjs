@@ -14,9 +14,8 @@ async function bootstrap() {
     logger: loggerOptions,
     rawBody: true,
   });
-
   setupMiddlewares(app);
-  app.listen(process.env.PORT);
+  await app.listen(process.env.PORT);
 }
 
 bootstrap();
