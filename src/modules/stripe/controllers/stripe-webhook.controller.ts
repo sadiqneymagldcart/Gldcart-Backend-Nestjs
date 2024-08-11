@@ -5,9 +5,10 @@ import {
   Req,
   BadRequestException,
   Logger,
+  RawBodyRequest,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { ApiTags, ApiOperation, ApiHeader, ApiResponse } from '@nestjs/swagger';
-import { RequestWithRawBody } from '@stripe/interfaces/raw-body.interface';
 import { StripeWebhookService } from '@stripe/services/stripe-webhook.service';
 import { StripeService } from '@stripe/services/stripe.service';
 
@@ -38,11 +39,13 @@ export class StripeWebhookController {
   })
   public async handleIncomingEvents(
     @Headers('stripe-signature') signature: string,
-    @Req() request: RequestWithRawBody,
+    @Req() request: RawBodyRequest<Request>,
   ) {
     if (!signature) {
       throw new BadRequestException('Missing stripe-signature header');
     }
+
+    this.logger.debug(`Received Stripe event with signature: ${signature}`);
 
     const event = await this.stripeService.constructEventFromPayload(
       signature,
@@ -54,6 +57,8 @@ export class StripeWebhookController {
       case 'customer.subscription.created':
         this.logger.log(`Subscription updated for customer: ${event.id}`);
         return this.stripeWebhookService.processSubscriptionUpdate(event);
+      case 'payment_intent.created':
+        await this.stripeWebhookService.processPaymentSucceded(event);
       case 'payment_intent.succeeded':
         this.logger.log(`Payment succeeded for payment intent: ${event.id}`);
         await this.stripeWebhookService.processPaymentSucceded(event);
