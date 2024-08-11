@@ -1,4 +1,4 @@
-// import { CacheInterceptor } from '@nestjs/cache-manager';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import {
   Controller,
   Get,
@@ -38,7 +38,7 @@ import {
 
 @ApiTags('Products')
 @Controller('products')
-// @UseInterceptors(CacheInterceptor)
+@UseInterceptors(CacheInterceptor)
 export class ProductController {
   private readonly logger = new Logger(ProductController.name);
   public constructor(
