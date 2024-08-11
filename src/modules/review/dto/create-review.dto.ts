@@ -1,23 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsMongoId,
-  IsNumber,
-  IsString,
-  Min,
-  Max,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, Min, Max } from 'class-validator';
 
 export class CreateReviewDto {
   @ApiProperty({ description: 'User ID who created the review' })
   @IsNotEmpty()
-  @IsMongoId()
-  userId: string;
+  user: string;
 
   @ApiProperty({ description: 'Product ID that the review is for' })
   @IsNotEmpty()
-  @IsMongoId()
-  productId: string;
+  product: string;
 
   @ApiProperty({
     description: 'Rating given by the user',
