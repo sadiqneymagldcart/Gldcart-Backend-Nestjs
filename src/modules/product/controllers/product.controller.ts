@@ -100,7 +100,7 @@ export class ProductController {
     @Query('text') text: string,
   ) {
     this.logger.debug(
-      `Getting products with filters: ${JSON.stringify(filters)}`,
+      `Getting products with filters: ${JSON.stringify(filters)} and pagination: ${JSON.stringify(pagination)}`,
     );
     if (text) {
       return this.productService.getProductBySearchQuery(pagination, text);
