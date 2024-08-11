@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber, IsArray } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Item } from '@item/schemas/item.schema';
+import { CreateItemDto } from '@item/dto/create-item.dto';
 
 export class CreateOrderDto {
   @ApiProperty({
@@ -10,12 +10,11 @@ export class CreateOrderDto {
   customer: string;
 
   @ApiProperty({
-    description: 'List of item IDs',
-    example: ['66b7b5a8901d3287c0cf6ea6', '66b7b6ed6ede04186f84f77b'],
+    description: 'The items in the order',
+    type: [CreateItemDto],
   })
   @IsArray()
-  @IsNotEmpty()
-  items: Item[];
+  items: CreateItemDto[];
 
   @ApiProperty({
     description: 'Total amount of the order',
