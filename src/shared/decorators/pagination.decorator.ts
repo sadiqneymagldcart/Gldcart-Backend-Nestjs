@@ -30,7 +30,7 @@ export const PaginationParams = createParamDecorator(
     }
     // calculate pagination parameters
     const limit = size;
-    const offset = page * limit;
+    const offset = (page - 1) * limit;
     return { page, limit, size, offset };
   },
 );
