@@ -9,5 +9,5 @@ export class CreateMessageDto {
   @IsOptional()
   files?: any;
 
-  senderId: string;
+  sender_id: string;
 }
