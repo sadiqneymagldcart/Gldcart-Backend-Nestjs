@@ -1,8 +1,9 @@
 import {
   Injectable,
-  BadRequestException,
   UnauthorizedException,
   Logger,
+  ConflictException,
+  NotFoundException,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import argon2 from 'argon2';
@@ -35,7 +36,7 @@ export class AuthService implements IAuthService {
   ): Promise<AuthResponseDto> {
     const existingUser = await this.userService.getByEmail(credentials.email);
     if (existingUser) {
-      throw new BadRequestException('User already exists');
+      throw new ConflictException('User already exists');
     }
 
     const hashedPassword = await argon2.hash(credentials.password);
@@ -76,6 +77,7 @@ export class AuthService implements IAuthService {
       this.tokenService.generateAccessToken(tokenPayload),
       this.tokenService.generateRefreshToken(tokenPayload),
     ]);
+
     return {
       accessToken: accessToken,
       refreshToken: refreshToken,
@@ -88,7 +90,7 @@ export class AuthService implements IAuthService {
   ): Promise<CreateTokenDto> {
     const user = await this.userService.getByEmail(credentials.email);
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new NotFoundException('User not found');
     }
 
     const isPasswordValid = await argon2.verify(
