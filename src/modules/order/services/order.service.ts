@@ -53,7 +53,6 @@ export class OrderService {
       .lean();
 
     if (!order) {
-      this.logger.warn(`Order with ID ${orderId} not found`);
       throw new NotFoundException(`Order with ID ${orderId} not found`);
     }
 
@@ -101,7 +100,6 @@ export class OrderService {
     );
 
     if (!order) {
-      this.logger.warn(`Order with ID ${orderId} not found`);
       throw new NotFoundException(`Order with ID ${orderId} not found`);
     }
 
@@ -115,6 +113,5 @@ export class OrderService {
   ): Promise<void> {
     this.logger.log(`Updating inventory for items`);
     await this.inventoryService.updateInventory(items, session);
-    this.logger.log(`Inventory updated successfully`);
   }
 }
