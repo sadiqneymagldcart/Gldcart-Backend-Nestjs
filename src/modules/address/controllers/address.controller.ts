@@ -7,14 +7,9 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import {
-  ApiExcludeController,
-  ApiOperation,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiBody, ApiExcludeController, ApiOperation } from '@nestjs/swagger';
 import { CreateAddressDto } from '@address/dto/create-address.dto';
 import { UpdateAddressDto } from '@address/dto/update-address.dto';
-import { Address } from '@address/schemas/address.schema';
 import { AddressService } from '@address/services/address.service';
 
 @ApiExcludeController()
@@ -24,48 +19,32 @@ export class AddressController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new address' })
-  @ApiResponse({
-    status: 201,
-    description: 'The address has been successfully created.',
-  })
-  public async createNewAddress(
-    @Body() createAddressDto: CreateAddressDto,
-  ): Promise<Address> {
+  @ApiBody({ type: CreateAddressDto })
+  public async createNewAddress(@Body() createAddressDto: CreateAddressDto) {
     return this.addressService.createAddress(createAddressDto);
   }
 
   @Get(':userId')
   @ApiOperation({ summary: 'Get all addresses for a user' })
-  @ApiResponse({ status: 200, description: 'Return all addresses for a user.' })
-  public async getAllUserAddresses(
-    @Param('userId') userId: string,
-  ): Promise<Address[]> {
+  public async getAllUserAddresses(@Param('userId') userId: string) {
     return this.addressService.getAllAddressesForUser(userId);
   }
 
   @Put(':id')
   @ApiOperation({ summary: 'Update an address' })
-  @ApiResponse({
-    status: 200,
-    description: 'The address has been successfully updated.',
-  })
   public async updateExistingAddress(
     @Param('id') id: string,
     @Body() updateAddressDto: UpdateAddressDto,
-  ): Promise<Address> {
+  ) {
     return this.addressService.updateAddress(id, updateAddressDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an address' })
-  @ApiResponse({
-    status: 200,
-    description: 'The address has been successfully deleted.',
-  })
   public async deleteAddress(
     @Param('userId') userId: string,
     @Param('id') id: string,
-  ): Promise<Address[]> {
+  ) {
     return this.addressService.removeAddressAndReturnRemaining(userId, id);
   }
 }
