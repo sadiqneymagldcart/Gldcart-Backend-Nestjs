@@ -4,16 +4,14 @@ import { ContactEmailDto } from '@email/dto/contact.email.dto';
 import { EmailService } from '@email/services/email.service';
 
 @ApiTags('Emails')
-@Controller('/emails')
+@Controller('emails')
 export class EmailController {
   public constructor(private readonly emailService: EmailService) {}
 
-  @Post('/contact-us')
+  @Post('contact-us')
   @ApiOperation({ summary: 'Send a contact form submission email' })
   @ApiBody({ type: ContactEmailDto, description: 'Contact form data' })
-  public async sendContactFormEmail(
-    @Body() emailData: ContactEmailDto,
-  ): Promise<{ message: string }> {
+  public async sendContactFormEmail(@Body() emailData: ContactEmailDto) {
     return this.emailService.sendContactFormEmail(emailData);
   }
 }
