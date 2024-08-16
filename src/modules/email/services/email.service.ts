@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { MailerService } from '@nestjs-modules/mailer';
 import path from 'path';
 import { ContactEmailDto } from '@email/dto/contact.email.dto';
@@ -8,7 +9,10 @@ import { IEmailService } from '@email/interfaces/mail.service.interface';
 export class EmailService implements IEmailService {
   private readonly logger = new Logger(EmailService.name);
 
-  public constructor(private readonly mailerService: MailerService) {}
+  public constructor(
+    private readonly mailerService: MailerService,
+    private readonly configService: ConfigService,
+  ) {}
 
   public async sendContactFormEmail(
     emailData: ContactEmailDto,
@@ -16,7 +20,7 @@ export class EmailService implements IEmailService {
     const templatePath = path.join(__dirname, '../templates/contact.hbs');
 
     await this.mailerService.sendMail({
-      to: 'konotop401@gmail.com',
+      to: this.configService.get<string>('FEEDBACK_EMAIL'),
       subject: 'New Contact Form Submission',
       template: templatePath,
       context: {
@@ -26,6 +30,7 @@ export class EmailService implements IEmailService {
         message: emailData.message,
       },
     });
+
     return { message: 'Email sent successfully' };
   }
 
