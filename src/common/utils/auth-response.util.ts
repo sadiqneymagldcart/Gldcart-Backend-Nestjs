@@ -10,8 +10,8 @@ export function setRefreshTokenCookie(response: Response, token: string): void {
   }
 
   response.cookie(refreshTokenName, token, {
-    httpOnly: true, // cookie is not accessible via JavaScript
-    secure: process.env.NODE_ENV === 'production', // secure cookie in production
+    httpOnly: true, 
+    secure: process.env.NODE_ENV === 'production', 
     sameSite: 'strict', // helps against CSRF attacks
   });
 }
