@@ -8,7 +8,7 @@ import {
   RawBodyRequest,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { ApiTags, ApiOperation, ApiHeader, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiHeader } from '@nestjs/swagger';
 import { StripeWebhookService } from '@stripe/services/stripe-webhook.service';
 import { StripeService } from '@stripe/services/stripe.service';
 
@@ -28,14 +28,6 @@ export class StripeWebhookController {
     name: 'stripe-signature',
     description: 'Signature from Stripe to verify the request',
     required: true,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'The event has been successfully processed.',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Missing stripe-signature header',
   })
   public async handleIncomingEvents(
     @Headers('stripe-signature') signature: string,
@@ -57,13 +49,17 @@ export class StripeWebhookController {
       case 'customer.subscription.created':
         this.logger.log(`Subscription updated for customer: ${event.id}`);
         return this.stripeWebhookService.processSubscriptionUpdate(event);
+
       case 'payment_intent.created':
         await this.stripeWebhookService.processPaymentSucceded(event);
+
       case 'payment_intent.succeeded':
         this.logger.log(`Payment succeeded for payment intent: ${event.id}`);
         await this.stripeWebhookService.processPaymentSucceded(event);
+
       case 'payment_intent.payment_failed':
         this.logger.warn(`Payment failed for payment intent: ${event.id}`);
+
       default:
         this.logger.warn(`Unhandled event type: ${event.type}`);
     }
