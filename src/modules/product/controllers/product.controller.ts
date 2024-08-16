@@ -41,19 +41,16 @@ import {
 @UseInterceptors(CacheInterceptor)
 export class ProductController {
   private readonly logger = new Logger(ProductController.name);
+
   public constructor(
     private readonly productService: ProductService,
     private readonly awsStorage: AwsStorageService,
   ) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a product' })
-  @ApiResponse({
-    status: 201,
-    description: 'The product has been successfully created.',
-  })
-  @ApiConsumes('multipart/form-data')
   @UseInterceptors(FilesInterceptor('images'))
+  @ApiOperation({ summary: 'Create a product' })
+  @ApiConsumes('multipart/form-data')
   public async createProduct(
     @UploadedFiles() images: Array<Express.Multer.File>,
     @Body() product: CreateProductDto,
@@ -111,22 +108,12 @@ export class ProductController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a product by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'Return the product with the given ID.',
-  })
-  @ApiResponse({ status: 404, description: 'Product not found.' })
   public async getByProductById(@Param('id') id: string): Promise<Product> {
     return this.productService.getProductById(id);
   }
 
   @Put(':id')
   @ApiOperation({ summary: 'Update a product by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'The product has been successfully updated.',
-  })
-  @ApiResponse({ status: 404, description: 'Product not found.' })
   public async updateProduct(
     @Param('id') id: string,
     @Body() product: UpdateProductDto,
@@ -136,11 +123,6 @@ export class ProductController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a product by ID' })
-  @ApiResponse({
-    status: 204,
-    description: 'The product has been successfully deleted.',
-  })
-  @ApiResponse({ status: 404, description: 'Product not found.' })
   public async removeProduct(@Param('id') id: string): Promise<void> {
     return this.productService.remove(id);
   }
