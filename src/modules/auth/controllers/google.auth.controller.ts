@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 import { GoogleAuthService } from '@auth/services/google.auth.service';
-import { setRefreshTokenCookie } from '@common/utils/auth.response.util';
+import { setRefreshTokenCookie } from '@common/utils/auth-response.util';
 
 @ApiTags('Google Auth')
 @Controller()
