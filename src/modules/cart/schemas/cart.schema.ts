@@ -4,6 +4,10 @@ import mongoose from 'mongoose';
 import { User } from '@user/schemas/user.schema';
 import { ItemTypes } from '@item/enums/item-types.enum';
 import { Item, ItemSchema } from '@item/schemas/item.schema';
+import {
+  ShippingCosts,
+  ShippingOptions,
+} from '@shipping/enums/shipping-options.enum';
 
 export type CartDocument = Cart & mongoose.Document;
 
@@ -19,8 +23,14 @@ export class Cart {
   @Prop({ type: [ItemSchema], required: true })
   items: Item[];
 
+  @Prop({ type: [String], enum: ShippingOptions, required: true })
+  shipping: ShippingOptions[];
+
   @Prop({ type: Number, default: 0 })
   subtotal: number;
+
+  @Prop({ type: Number, default: 0 })
+  total: number;
 }
 
 export const CartSchema = SchemaFactory.createForClass(Cart);
@@ -80,6 +90,14 @@ CartSchema.pre<CartDocument>('save', async function (next) {
       total += price * item.quantity;
     }
     this.subtotal = total;
+
+    let shippingCost = 0;
+    for (const option of this.shipping) {
+      shippingCost += ShippingCosts[option];
+    }
+    total += shippingCost;
+
+    this.total = total;
 
     next();
   } catch (error) {
