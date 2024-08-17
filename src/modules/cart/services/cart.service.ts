@@ -5,6 +5,8 @@ import { Cart, CartDocument } from '@cart/schemas/cart.schema';
 import { CreateItemDto } from '@item/dto/create-item.dto';
 import { ICartService } from '@cart/iterfaces/cart.service.interface';
 import { UpdateItemDto } from '@item/dto/update-item.dto';
+import { AddShippingOptionsDto } from '@shipping/dtos/add-shipping-option.dto';
+import { RemoveShippingOptionDto } from '@shipping/dtos/remove-shipping-option.dto';
 
 @Injectable()
 export class CartService implements ICartService {
@@ -98,7 +100,40 @@ export class CartService implements ICartService {
     return existingCart.save();
   }
 
-  public async remove(id: string): Promise<{ message: string }> {
+  public async addShippingOption(
+    id: string,
+    shippingOption: AddShippingOptionsDto,
+  ): Promise<Cart> {
+    const cart = await this.getByIdOrThrow(id);
+
+    const newShippingOptions = shippingOption.shipping.filter(
+      (option) => !cart.shipping.includes(option),
+    );
+
+    cart.shipping.push(...newShippingOptions);
+
+    return cart.save();
+  }
+
+  public async removeShippingOption(
+    id: string,
+    shippingOption: RemoveShippingOptionDto,
+  ) {
+    const cart = await this.getByIdOrThrow(id);
+
+    const index = cart.shipping.indexOf(shippingOption.shipping);
+    if (index > -1) {
+      cart.shipping.splice(index, 1);
+    } else {
+      throw new NotFoundException(
+        `Shipping option ${shippingOption.shipping} not found in cart`,
+      );
+    }
+
+    return cart.save();
+  }
+
+  public async removeCart(id: string): Promise<{ message: string }> {
     const result = await this.cartModel.findByIdAndDelete(id);
     if (!result) {
       throw new NotFoundException(`Cart with ID ${id} not found`);
@@ -111,6 +146,7 @@ export class CartService implements ICartService {
     if (!cart) {
       throw new NotFoundException(`Cart with ID ${id} not found`);
     }
+
     return cart;
   }
 
@@ -122,6 +158,7 @@ export class CartService implements ICartService {
       customer: userId,
       items: [newItem],
     });
+
     return cart.save();
   }
 
@@ -135,6 +172,7 @@ export class CartService implements ICartService {
     if (!itemExists) {
       existingCart.items.push(newItem);
     }
+
     return existingCart.save();
   }
 }
