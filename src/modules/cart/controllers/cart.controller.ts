@@ -31,19 +31,14 @@ export class CartController {
 
   @Get('user/:userId')
   @ApiOperation({ summary: 'Get a cart by user id' })
-  @ApiOkResponse({ description: 'The cart for user', type: Cart })
-  public async getCartByUserId(@Param('userId') userId: string): Promise<Cart> {
-    return this.cartService.getByUserId(userId);
+  public async getCartByUserId(@Param('userId') userId: string) {
+    return this.cartService.getWithItemsByUserId(userId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a cart by id' })
-  @ApiOkResponse({
-    description: 'The cart with the matching id with populated items',
-    type: Cart,
-  })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
-  public async getCartById(@Param('id') id: string): Promise<Cart> {
+  public async getCartById(@Param('id') id: string) {
     return this.cartService.getWithItemsById(id);
   }
 
@@ -55,14 +50,13 @@ export class CartController {
   public async addItemToCart(
     @Param('userId') userId: string,
     @Body() newItem: CreateItemDto,
-  ): Promise<Cart> {
+  ) {
     return this.cartService.addItem(userId, newItem);
   }
 
   @Put(':id/item/:itemId')
   @ApiOperation({ summary: 'Update an item quantity in a cart' })
   @ApiBody({ type: UpdateItemDto })
-  @ApiOkResponse({ description: 'The updated cart', type: Cart })
   @ApiBadRequestResponse({ description: 'Invalid item data' })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
   @UseInterceptors(TransactionInterceptor)
@@ -70,19 +64,19 @@ export class CartController {
     @Param('id') id: string,
     @Param('itemId') itemId: string,
     @Body() updateItem: UpdateItemDto,
-  ): Promise<Cart> {
+  ) {
     return this.cartService.updateItemQuantity(id, itemId, updateItem);
   }
 
   @Delete(':id/item/:itemId')
   @ApiOperation({ summary: 'Remove an item from a cart' })
-  @ApiOkResponse({ description: 'The updated cart after removal', type: Cart })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
   @UseInterceptors(TransactionInterceptor)
   public async removeItemFromCart(
     @Param('id') id: string,
     @Param('itemId') itemId: string,
-  ): Promise<Cart> {
+  ) {
+    console.log(`Cart id: ${id}, item's id: ${itemId}`);
     return this.cartService.removeItem(id, itemId);
   }
 
@@ -91,9 +85,7 @@ export class CartController {
   @ApiOkResponse({ description: 'The cart has been removed' })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
   @UseInterceptors(TransactionInterceptor)
-  public async removeCartById(
-    @Param('id') id: string,
-  ): Promise<{ message: string }> {
+  public async removeCartById(@Param('id') id: string) {
     return this.cartService.remove(id);
   }
 }
