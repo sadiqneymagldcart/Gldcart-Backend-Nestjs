@@ -50,7 +50,7 @@ describe('CartController', () => {
 
       const result = await cartController.getCartByUserId(userId);
       expect(result).toEqual(expectedCart);
-      expect(cartService.getByUserId).toHaveBeenCalledWith(userId);
+      expect(cartService.getWithItemsByUserId).toHaveBeenCalledWith(userId);
     });
   });
 
