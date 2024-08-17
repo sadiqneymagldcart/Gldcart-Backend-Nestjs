@@ -78,7 +78,6 @@ export class CartController {
     @Param('id') id: string,
     @Param('itemId') itemId: string,
   ) {
-    console.log(`Cart id: ${id}, item's id: ${itemId}`);
     return this.cartService.removeItem(id, itemId);
   }
 
