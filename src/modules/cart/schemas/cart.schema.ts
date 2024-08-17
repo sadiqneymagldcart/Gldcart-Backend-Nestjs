@@ -35,15 +35,17 @@ export class Cart {
 
 export const CartSchema = SchemaFactory.createForClass(Cart);
 
-async function validateUser(user: User, userModel: any) {
-  const userExists = await userModel.exists({ _id: user });
+async function validateCart(
+  cart: CartDocument,
+  userModel: any,
+  models: Record<ItemTypes, any>,
+) {
+  const userExists = await userModel.exists({ _id: cart.customer });
   if (!userExists) {
-    throw new NotFoundException(`User with ID ${user} not found`);
+    throw new NotFoundException(`User with ID ${cart.customer} not found`);
   }
-}
 
-async function validateItems(items: Item[], models: Record<ItemTypes, any>) {
-  for (const item of items) {
+  const itemValidationPromises = cart.items.map(async (item) => {
     const model = models[item.type];
     if (!model) {
       throw new NotFoundException(`Item type ${item.type} is invalid`);
@@ -55,21 +57,27 @@ async function validateItems(items: Item[], models: Record<ItemTypes, any>) {
         `Item with ID ${item.id} of type ${item.type} not found`,
       );
     }
-  }
+  });
+
+  await Promise.all(itemValidationPromises);
 }
 
-async function getItemPrice(
-  item: Item,
+async function getItemPrices(
+  items: Item[],
   models: Record<ItemTypes, any>,
-): Promise<number> {
-  const model = models[item.type];
-  const itemData = await model.findById(item.id).select('price').exec();
-  if (!itemData) {
-    throw new NotFoundException(
-      `Item with ID ${item.id} of type ${item.type} not found`,
-    );
-  }
-  return itemData.price;
+): Promise<number[]> {
+  const pricePromises = items.map(async (item) => {
+    const model = models[item.type];
+    const itemData = await model.findById(item.id).select('price').exec();
+    if (!itemData) {
+      throw new NotFoundException(
+        `Item with ID ${item.id} of type ${item.type} not found`,
+      );
+    }
+    return itemData.price * item.quantity;
+  });
+
+  return Promise.all(pricePromises);
 }
 
 CartSchema.pre<CartDocument>('save', async function (next) {
@@ -81,23 +89,16 @@ CartSchema.pre<CartDocument>('save', async function (next) {
   };
 
   try {
-    await validateUser(this.customer, userModel);
-    await validateItems(this.items, models);
+    await validateCart(this, userModel, models);
 
-    let total = 0;
-    for (const item of this.items) {
-      const price = await getItemPrice(item, models);
-      total += price * item.quantity;
-    }
-    this.subtotal = total;
+    const itemPrices = await getItemPrices(this.items, models);
+    this.subtotal = itemPrices.reduce((acc, price) => acc + price, 0);
 
-    let shippingCost = 0;
-    for (const option of this.shipping) {
-      shippingCost += ShippingCosts[option];
-    }
-    total += shippingCost;
-
-    this.total = total;
+    const shippingCost = this.shipping.reduce(
+      (acc, option) => acc + ShippingCosts[option],
+      0,
+    );
+    this.total = this.subtotal + shippingCost;
 
     next();
   } catch (error) {
