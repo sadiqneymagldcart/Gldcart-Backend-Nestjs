@@ -12,7 +12,7 @@ export interface ICartService {
    * @returns A promise that resolves to the Cart object.
    * @throws {NotFoundException} If no cart is found for the user.
    */
-  getByUserId(userId: string): Promise<Cart>;
+  getWithItemsByUserId(userId: string): Promise<Cart>;
 
   /**
    * Finds a cart by its ID.
