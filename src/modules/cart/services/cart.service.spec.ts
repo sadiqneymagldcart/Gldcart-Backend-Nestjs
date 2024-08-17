@@ -42,7 +42,7 @@ describe('CartService', () => {
       const cart = { customer: userId };
       mockCartModel.findOne.mockResolvedValue(cart);
 
-      const result = await service.getByUserId(userId);
+      const result = await service.getWithItemsByUserId(userId);
       expect(result).toEqual(cart);
     });
 
@@ -50,7 +50,7 @@ describe('CartService', () => {
       const userId = 'userId';
       mockCartModel.findOne.mockResolvedValue(null);
 
-      await expect(service.getByUserId(userId)).rejects.toThrow(
+      await expect(service.getWithItemsByUserId(userId)).rejects.toThrow(
         NotFoundException,
       );
     });
@@ -218,7 +218,7 @@ describe('CartService', () => {
       const resultMessage = { message: 'Cart deleted successfully' };
       mockCartModel.findByIdAndDelete.mockResolvedValue(resultMessage);
 
-      const result = await service.remove(id);
+      const result = await service.removeCart(id);
       expect(result).toEqual(resultMessage);
     });
 
@@ -226,7 +226,7 @@ describe('CartService', () => {
       const id = 'cartId';
       mockCartModel.findByIdAndDelete.mockResolvedValue(null);
 
-      await expect(service.remove(id)).rejects.toThrow(NotFoundException);
+      await expect(service.removeCart(id)).rejects.toThrow(NotFoundException);
     });
   });
 });

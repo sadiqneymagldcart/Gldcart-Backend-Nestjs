@@ -132,7 +132,7 @@ describe('CartController', () => {
 
       const result = await cartController.removeCartById(id);
       expect(result).toEqual(expectedResponse);
-      expect(cartService.remove).toHaveBeenCalledWith(id);
+      expect(cartService.removeCart).toHaveBeenCalledWith(id);
     });
   });
 });
