@@ -54,5 +54,5 @@ export interface ICartService {
    * @returns A promise that resolves to a message indicating the cart was removed.
    * @throws {NotFoundException} If no cart is found with the given ID.
    */
-  remove(id: string): Promise<{ message: string }>;
+  removeCart(id: string): Promise<{ message: string }>;
 }
