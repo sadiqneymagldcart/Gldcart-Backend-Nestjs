@@ -37,14 +37,6 @@ export class OrderService {
     return { client_secret: paymentIntent.client_secret };
   }
 
-  private async createOrder(order: CreateOrderDto): Promise<OrderDocument> {
-    this.logger.log(`Creating new order`);
-    const newOrder = new this.orderModel(order);
-    await newOrder.save();
-    this.logger.log(`Order created with ID: ${newOrder._id}`);
-    return newOrder;
-  }
-
   public async getOrderWithItemsById(orderId: string): Promise<Order> {
     this.logger.log(`Fetching order with ID: ${orderId}`);
     const order = await this.orderModel
@@ -85,6 +77,14 @@ export class OrderService {
     } finally {
       session.endSession();
     }
+  }
+
+  private async createOrder(order: CreateOrderDto): Promise<OrderDocument> {
+    this.logger.log(`Creating new order`);
+    const newOrder = new this.orderModel(order);
+    await newOrder.save();
+    this.logger.log(`Order created with ID: ${newOrder._id}`);
+    return newOrder;
   }
 
   private async updateOrder(
