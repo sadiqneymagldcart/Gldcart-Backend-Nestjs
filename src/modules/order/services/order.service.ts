@@ -10,7 +10,9 @@ import { StripeService } from '@stripe/services/stripe.service';
 
 @Injectable()
 export class OrderService {
-  private readonly logger = new Logger(OrderService.name);
+  private readonly logger = new Logger(OrderService.name, {
+    timestamp: true,
+  });
 
   public constructor(
     @InjectModel(Order.name) private readonly orderModel: Model<OrderDocument>,
