@@ -19,7 +19,7 @@ export class OrderController {
   public async placeOrder(
     @Body() newOrder: CreateOrderDto,
     @Req() request: Request & { user: { stripe_cus_id: string } },
-  ) {
+  ): Promise<{ client_secret: string }> {
     return this.orderService.placeOrder(newOrder, request.user.stripe_cus_id);
   }
 }

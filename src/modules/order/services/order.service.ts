@@ -21,7 +21,10 @@ export class OrderService {
     private readonly stripeService: StripeService,
   ) {}
 
-  public async placeOrder(order: CreateOrderDto, stripeCustomerId: string) {
+  public async placeOrder(
+    order: CreateOrderDto,
+    stripeCustomerId: string,
+  ): Promise<{ client_secret: string }> {
     this.logger.log(
       `Placing order for customer ${stripeCustomerId} with amount ${order.amount}`,
     );
