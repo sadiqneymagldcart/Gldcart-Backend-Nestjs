@@ -92,7 +92,7 @@ export class OfferingController {
     @PaginationParams() pagination: Pagination,
     @FilteringParams() filters: Filtering,
     @Query('text') text: string,
-  ) {
+  ): Promise<Offering[]> {
     if (text) {
       return this.offeringService.getBySearchQuery(pagination, text);
     } else {
