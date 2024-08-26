@@ -218,7 +218,7 @@ describe('CartService', () => {
       const resultMessage = { message: 'Cart deleted successfully' };
       mockCartModel.findByIdAndDelete.mockResolvedValue(resultMessage);
 
-      const result = await service.removeCart(id);
+      const result = await service.remove(id);
       expect(result).toEqual(resultMessage);
     });
 
@@ -226,7 +226,7 @@ describe('CartService', () => {
       const id = 'cartId';
       mockCartModel.findByIdAndDelete.mockResolvedValue(null);
 
-      await expect(service.removeCart(id)).rejects.toThrow(NotFoundException);
+      await expect(service.remove(id)).rejects.toThrow(NotFoundException);
     });
   });
 });

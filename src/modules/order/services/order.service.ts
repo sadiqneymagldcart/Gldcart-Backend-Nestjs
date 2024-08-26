@@ -10,7 +10,9 @@ import { StripeService } from '@stripe/services/stripe.service';
 
 @Injectable()
 export class OrderService {
-  private readonly logger = new Logger(OrderService.name);
+  private readonly logger = new Logger(OrderService.name, {
+    timestamp: true,
+  });
 
   public constructor(
     @InjectModel(Order.name) private readonly orderModel: Model<OrderDocument>,
@@ -19,7 +21,10 @@ export class OrderService {
     private readonly stripeService: StripeService,
   ) {}
 
-  public async placeOrder(order: CreateOrderDto, stripeCustomerId: string) {
+  public async placeOrder(
+    order: CreateOrderDto,
+    stripeCustomerId: string,
+  ): Promise<{ client_secret: string }> {
     this.logger.log(
       `Placing order for customer ${stripeCustomerId} with amount ${order.amount}`,
     );
@@ -35,14 +40,6 @@ export class OrderService {
       `Order placed successfully for customer ${stripeCustomerId}`,
     );
     return { client_secret: paymentIntent.client_secret };
-  }
-
-  private async createOrder(order: CreateOrderDto): Promise<OrderDocument> {
-    this.logger.log(`Creating new order`);
-    const newOrder = new this.orderModel(order);
-    await newOrder.save();
-    this.logger.log(`Order created with ID: ${newOrder._id}`);
-    return newOrder;
   }
 
   public async getOrderWithItemsById(orderId: string): Promise<Order> {
@@ -85,6 +82,14 @@ export class OrderService {
     } finally {
       session.endSession();
     }
+  }
+
+  private async createOrder(order: CreateOrderDto): Promise<OrderDocument> {
+    this.logger.log(`Creating new order`);
+    const newOrder = new this.orderModel(order);
+    await newOrder.save();
+    this.logger.log(`Order created with ID: ${newOrder._id}`);
+    return newOrder;
   }
 
   private async updateOrder(

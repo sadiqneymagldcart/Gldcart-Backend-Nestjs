@@ -31,17 +31,17 @@ import { RemoveShippingOptionDto } from '@shipping/dtos/remove-shipping-option.d
 export class CartController {
   public constructor(private readonly cartService: CartService) {}
 
-  @Get('user/:userId')
-  @ApiOperation({ summary: 'Get a cart by user id' })
-  public async getCartByUserId(@Param('userId') userId: string) {
-    return this.cartService.getWithItemsByUserId(userId);
-  }
-
   @Get(':id')
   @ApiOperation({ summary: 'Get a cart by id' })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
   public async getCartById(@Param('id') id: string) {
-    return this.cartService.getWithItemsById(id);
+    return this.cartService.getCartWithItemsById(id);
+  }
+
+  @Get('user/:userId')
+  @ApiOperation({ summary: 'Get a cart by user id' })
+  public async getCartByUserId(@Param('userId') userId: string) {
+    return this.cartService.getWithItemsByUserId(userId);
   }
 
   @Post(':userId')
@@ -53,7 +53,16 @@ export class CartController {
     @Param('userId') userId: string,
     @Body() newItem: CreateItemDto,
   ) {
-    return this.cartService.addItem(userId, newItem);
+    return this.cartService.addItemToCart(userId, newItem);
+  }
+
+  @Post('add-shipping/:id')
+  @ApiOperation({ summary: 'Add a shipping option to a cart' })
+  public async addShippingOptionToCart(
+    @Param('id') id: string,
+    @Body() data: AddShippingOptionsDto,
+  ) {
+    return this.cartService.addShippingToCart(id, data);
   }
 
   @Put(':id/item/:itemId')
@@ -67,18 +76,18 @@ export class CartController {
     @Param('itemId') itemId: string,
     @Body() updateItem: UpdateItemDto,
   ) {
-    return this.cartService.updateItemQuantity(id, itemId, updateItem);
+    return this.cartService.updateItemQuantityInCart(id, itemId, updateItem);
   }
 
   @Delete(':id/item/:itemId')
   @ApiOperation({ summary: 'Remove an item from a cart' })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
   @UseInterceptors(TransactionInterceptor)
-  public async removeItemFromCart(
+  public async removeItemInCart(
     @Param('id') id: string,
     @Param('itemId') itemId: string,
   ) {
-    return this.cartService.removeItem(id, itemId);
+    return this.cartService.removeItemInCart(id, itemId);
   }
 
   @Delete(':id')
@@ -86,25 +95,16 @@ export class CartController {
   @ApiOkResponse({ description: 'The cart has been removed' })
   @ApiNotFoundResponse({ description: 'No cart found with this id' })
   @UseInterceptors(TransactionInterceptor)
-  public async removeCartById(@Param('id') id: string) {
+  public async removeCart(@Param('id') id: string) {
     return this.cartService.removeCart(id);
-  }
-
-  @Post('add-shipping/:id')
-  @ApiOperation({ summary: 'Add a shipping option to a cart' })
-  public async addShippingOption(
-    @Param('id') id: string,
-    @Body() data: AddShippingOptionsDto,
-  ) {
-    return this.cartService.addShippingOption(id, data);
   }
 
   @Delete('remove-shipping/:id')
   @ApiOperation({ summary: 'Remove a shipping option from a cart' })
-  public async removeShippingOption(
+  public async removeShippingInCart(
     @Param('id') id: string,
     @Body() data: RemoveShippingOptionDto,
   ) {
-    return this.cartService.removeShippingOption(id, data);
+    return this.cartService.removeShippingInCart(id, data);
   }
 }

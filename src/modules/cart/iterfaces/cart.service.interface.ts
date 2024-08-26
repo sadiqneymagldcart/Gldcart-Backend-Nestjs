@@ -28,7 +28,7 @@ export interface ICartService {
    * @param newItem - The item to add to the cart.
    * @returns A promise that resolves to the updated Cart object.
    */
-  addItem(userId: string, newItem: CreateItemDto): Promise<Cart>;
+  addItemToCart(userId: string, newItem: CreateItemDto): Promise<Cart>;
 
   /**
    * Removes an item from a cart.
@@ -37,7 +37,7 @@ export interface ICartService {
    * @returns A promise that resolves to the updated Cart object.
    * @throws {NotFoundException} If no item is found with the given ID in the cart.
    */
-  removeItem(id: string, itemId: string): Promise<Cart>;
+  removeItemInCart(id: string, itemId: string): Promise<Cart>;
 
   /**
    * Updates an item in a cart.
@@ -46,7 +46,7 @@ export interface ICartService {
    * @returns A promise that resolves to the updated Cart object.
    * @throws {NotFoundException} If no item is found with the given ID in the cart.
    */
-  updateItem(id: string, updateItem: CreateItemDto): Promise<Cart>;
+  updateItemInCart(id: string, updateItem: CreateItemDto): Promise<Cart>;
 
   /**
    * Removes a cart.

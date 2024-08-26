@@ -48,7 +48,7 @@ describe('CartController', () => {
       const expectedCart = {} as Cart;
       jest.spyOn(cartService, 'getByUserId').mockResolvedValue(expectedCart);
 
-      const result = await cartController.getCartByUserId(userId);
+      const result = await cartController.getByUserId(userId);
       expect(result).toEqual(expectedCart);
       expect(cartService.getWithItemsByUserId).toHaveBeenCalledWith(userId);
     });
@@ -62,7 +62,7 @@ describe('CartController', () => {
         .spyOn(cartService, 'getWithItemsById')
         .mockResolvedValue(expectedCart);
 
-      const result = await cartController.getCartById(id);
+      const result = await cartController.getById(id);
       expect(result).toEqual(expectedCart);
       expect(cartService.getWithItemsById).toHaveBeenCalledWith(id);
     });
@@ -79,7 +79,7 @@ describe('CartController', () => {
       const expectedCart = {} as Cart;
       jest.spyOn(cartService, 'addItem').mockResolvedValue(expectedCart);
 
-      const result = await cartController.addItemToCart(userId, newItem);
+      const result = await cartController.addItem(userId, newItem);
       expect(result).toEqual(expectedCart);
       expect(cartService.addItem).toHaveBeenCalledWith(userId, newItem);
     });
@@ -97,7 +97,7 @@ describe('CartController', () => {
         .spyOn(cartService, 'updateItemQuantity')
         .mockResolvedValue(expectedCart);
 
-      const result = await cartController.updateItemQuantityInCart(
+      const result = await cartController.updateItemQuantity(
         id,
         itemId,
         updateItem,
@@ -118,7 +118,7 @@ describe('CartController', () => {
       const expectedCart = {} as Cart;
       jest.spyOn(cartService, 'removeItem').mockResolvedValue(expectedCart);
 
-      const result = await cartController.removeItemFromCart(id, itemId);
+      const result = await cartController.removeItem(id, itemId);
       expect(result).toEqual(expectedCart);
       expect(cartService.removeItem).toHaveBeenCalledWith(id, itemId);
     });
@@ -130,9 +130,9 @@ describe('CartController', () => {
       const expectedResponse = { message: 'Cart removed' };
       jest.spyOn(cartService, 'remove').mockResolvedValue(expectedResponse);
 
-      const result = await cartController.removeCartById(id);
+      const result = await cartController.remove(id);
       expect(result).toEqual(expectedResponse);
-      expect(cartService.removeCart).toHaveBeenCalledWith(id);
+      expect(cartService.remove).toHaveBeenCalledWith(id);
     });
   });
 });
