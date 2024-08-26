@@ -17,7 +17,9 @@ import { RegisterCredentialsDto } from '@auth/dto/register-credentials.dto';
 
 @Injectable()
 export class AuthService implements IAuthService {
-  private readonly logger: Logger = new Logger(AuthService.name);
+  private readonly logger = new Logger(AuthService.name, {
+    timestamp: true,
+  });
 
   public constructor(
     private readonly userService: UserService,
