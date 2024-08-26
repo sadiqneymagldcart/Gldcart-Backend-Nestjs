@@ -14,17 +14,7 @@ export class CartService implements ICartService {
     @InjectModel(Cart.name) private readonly cartModel: Model<CartDocument>,
   ) {}
 
-  public async getWithItemsByUserId(userId: string): Promise<Cart> {
-    const cart = await this.cartModel
-      .findOne({ customer: userId })
-      .populate('items.id');
-    if (!cart) {
-      throw new NotFoundException(`No carts found for user with id ${userId}`);
-    }
-    return cart;
-  }
-
-  public async getCartById(id: string): Promise<Cart> {
+  public async getById(id: string): Promise<Cart> {
     const cart = await this.cartModel.findById(id);
     if (!cart) {
       throw new NotFoundException(`Cart with ID ${id} not found`);
@@ -40,25 +30,23 @@ export class CartService implements ICartService {
     return cart;
   }
 
+  public async getWithItemsByUserId(userId: string): Promise<Cart> {
+    const cart = await this.cartModel
+      .findOne({ customer: userId })
+      .populate('items.id');
+    if (!cart) {
+      throw new NotFoundException(`No carts found for user with id ${userId}`);
+    }
+    return cart;
+  }
+
   public async addItem(userId: string, newItem: CreateItemDto): Promise<Cart> {
     const existingCart = await this.cartModel.findOne({ customer: userId });
     if (!existingCart) {
-      return this.createCartWithItem(userId, newItem);
+      return this.createWithItem(userId, newItem);
     } else {
-      return this.addItemToExistingCart(existingCart, newItem);
+      return this.addItemToExisting(existingCart, newItem);
     }
-  }
-
-  public async removeItem(id: string, itemId: string): Promise<Cart> {
-    const existingCart = await this.getByIdOrThrow(id);
-    const itemIndex = existingCart.items.findIndex(
-      (item) => item.id.toString() === itemId,
-    );
-    if (itemIndex === -1) {
-      throw new NotFoundException(`Item with ID ${id} not found in cart`);
-    }
-    existingCart.items.splice(itemIndex, 1);
-    return existingCart.save();
   }
 
   public async updateItem(
@@ -79,6 +67,18 @@ export class CartService implements ICartService {
 
     existingCart.items[itemIndex] = updateItem;
 
+    return existingCart.save();
+  }
+
+  public async removeItem(id: string, itemId: string): Promise<Cart> {
+    const existingCart = await this.getByIdOrThrow(id);
+    const itemIndex = existingCart.items.findIndex(
+      (item) => item.id.toString() === itemId,
+    );
+    if (itemIndex === -1) {
+      throw new NotFoundException(`Item with ID ${id} not found in cart`);
+    }
+    existingCart.items.splice(itemIndex, 1);
     return existingCart.save();
   }
 
@@ -133,7 +133,7 @@ export class CartService implements ICartService {
     return cart.save();
   }
 
-  public async removeCart(id: string): Promise<{ message: string }> {
+  public async remove(id: string): Promise<{ message: string }> {
     const result = await this.cartModel.findByIdAndDelete(id);
     if (!result) {
       throw new NotFoundException(`Cart with ID ${id} not found`);
@@ -150,7 +150,7 @@ export class CartService implements ICartService {
     return cart;
   }
 
-  private createCartWithItem(
+  private createWithItem(
     userId: string,
     newItem: CreateItemDto,
   ): Promise<Cart> {
@@ -162,7 +162,7 @@ export class CartService implements ICartService {
     return cart.save();
   }
 
-  private addItemToExistingCart(
+  private addItemToExisting(
     existingCart: CartDocument,
     newItem: CreateItemDto,
   ): Promise<Cart> {

@@ -20,7 +20,7 @@ export interface ICartService {
    * @returns A promise that resolves to the Cart object.
    * @throws {NotFoundException} If no cart is found with the given ID.
    */
-  getCartById(id: string): Promise<Cart>;
+  getById(id: string): Promise<Cart>;
 
   /**
    * Adds an item to a user's cart.
@@ -54,5 +54,5 @@ export interface ICartService {
    * @returns A promise that resolves to a message indicating the cart was removed.
    * @throws {NotFoundException} If no cart is found with the given ID.
    */
-  removeCart(id: string): Promise<{ message: string }>;
+  remove(id: string): Promise<{ message: string }>;
 }
