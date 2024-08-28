@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Socket } from 'socket.io';
@@ -9,6 +9,8 @@ import { Chat, ChatDocument } from '@chat/schemas/chat.schema';
 
 @Injectable()
 export class ChatService {
+  private readonly logger = new Logger(ChatService.name);
+
   public constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     @InjectModel(Chat.name) private readonly chatModel: Model<ChatDocument>,
@@ -22,6 +24,7 @@ export class ChatService {
     userId: string,
     status: boolean,
   ): Promise<void> {
+    this.logger.log(`User ${userId} is ${status ? 'online' : 'offline'}`);
     await this.userModel.findOneAndUpdate(
       { _id: userId },
       { is_online: status },
