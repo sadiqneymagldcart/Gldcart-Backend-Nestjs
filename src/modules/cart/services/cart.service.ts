@@ -73,7 +73,7 @@ export class CartService implements ICartService {
     return existingCart.save();
   }
 
-  public async removeItemInCart(id: string, itemId: string): Promise<Cart> {
+  public async removeItemFromCart(id: string, itemId: string): Promise<Cart> {
     const existingCart = await this.getCartByIdOrThrow(id);
     const itemIndex = existingCart.items.findIndex(
       (item) => item.id.toString() === itemId,

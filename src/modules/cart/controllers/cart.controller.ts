@@ -87,7 +87,7 @@ export class CartController {
     @Param('id') id: string,
     @Param('itemId') itemId: string,
   ) {
-    return this.cartService.removeItemInCart(id, itemId);
+    return this.cartService.removeItemFromCart(id, itemId);
   }
 
   @Delete(':id')
