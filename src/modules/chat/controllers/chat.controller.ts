@@ -9,10 +9,10 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 export class ChatController {
   public constructor(private readonly chatService: ChatService) {}
 
-  // @Post()
-  // @ApiOperation({ summary: 'Create a chat' })
-  // @ApiResponse({ status: 201, type: Chat })
-  // public async createChat(@Body() chat: CreateChatDto): Promise<Chat> {
-  //   return this.chatService.createChat(chat);
-  // }
+  @Post()
+  @ApiOperation({ summary: 'Create a chat' })
+  @ApiResponse({ status: 201, type: Chat })
+  public async createChat(@Body() chat: CreateChatDto): Promise<Chat> {
+    return this.chatService.createChat(chat);
+  }
 }
