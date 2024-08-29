@@ -123,7 +123,10 @@ export class ChatGateway
   ): Promise<void> {
     try {
       this.logger.debug('Creating chat', newChat);
-      await this.chatService.findOrCreateChat(newChat);
+      const { chat, isNew } = await this.chatService.findOrCreateChat(newChat);
+      if (!isNew) {
+        client.emit(Events.CHAT_ALREADY_EXISTS, chat);
+      }
     } catch (error) {
       this.handleError('Error creating chat', error, client);
     }
