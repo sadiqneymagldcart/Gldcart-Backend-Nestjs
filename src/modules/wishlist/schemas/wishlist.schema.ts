@@ -45,7 +45,7 @@ async function validateItems(items: Item[], models: Record<ItemTypes, any>) {
   }
 }
 
-WishlistSchema.pre<WishlistDocument>('save', async function (next) {
+WishlistSchema.pre<WishlistDocument>('save', async function (next: any) {
   const userModel = this.model('User');
   const models = {
     [ItemTypes.PRODUCT]: this.model('Product'),
