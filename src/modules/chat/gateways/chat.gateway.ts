@@ -1,4 +1,4 @@
-import { Logger, Injectable } from '@nestjs/common';
+import { Logger, Injectable, ValidationPipe } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -95,7 +95,7 @@ export class ChatGateway
     try {
       const savedMessage = await this.messageService.createMessage(message);
       this.server
-        .to(message.chatId as string)
+        .to(message.chat as string)
         .emit(Events.RECEIVE_MESSAGE, savedMessage);
     } catch (error) {
       this.logger.error('Error handling message', error.stack);
@@ -119,13 +119,12 @@ export class ChatGateway
   @SubscribeMessage(Events.CREATE_CHAT)
   public async createChat(
     @ConnectedSocket() client: Socket,
-    @MessageBody() newChat: CreateChatDto,
+    @MessageBody(new ValidationPipe()) newChat: CreateChatDto,
   ): Promise<void> {
-    console.log(newChat);
     try {
-      this.logger.debug('Creating chat', JSON.stringify(newChat));
-      const { chat, participants } = await this.chatService.createChat(newChat);
-      this.emitToParticipants(participants, Events.RECEIVE_CHAT, chat);
+      this.logger.debug('Creating chat', newChat);
+      await this.chatService.createChat(newChat);
+      // this.emitToParticipants(newChat.participants, Events.RECEIVE_CHAT, chat);
     } catch (error) {
       this.handleError('Error creating chat', error, client);
     }
@@ -184,17 +183,17 @@ export class ChatGateway
     client.emit(Events.ERROR, { message: error.message });
   }
 
-  private emitToParticipants(
-    participants: string[],
-    event: string,
-    data: any,
-  ): void {
-    participants.forEach((participantId) => {
-      const participantSocket = this.server.sockets.sockets.get(participantId);
-      if (participantSocket) {
-        this.logger.debug(`Sending ${event} to user ${participantId}`);
-        participantSocket.emit(event, data);
-      }
-    });
-  }
+  // private emitToParticipants(
+  //   participants: string[],
+  //   event: string,
+  //   data: any,
+  // ): void {
+  //   participants.forEach((participantId) => {
+  //     const participantSocket = this.server.sockets.sockets.get(participantId);
+  //     if (participantSocket) {
+  //       this.logger.debug(`Sending ${event} to user ${participantId}`);
+  //       participantSocket.emit(event, data);
+  //     }
+  //   });
+  // }
 }
