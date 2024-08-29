@@ -36,13 +36,15 @@ export class AuthService implements IAuthService {
   public async register(
     credentials: RegisterCredentialsDto,
   ): Promise<AuthResponseDto> {
-    const existingUser = await this.userService.getByEmail(credentials.email);
+    const existingUser = await this.userService.getUserByEmail(
+      credentials.email,
+    );
     if (existingUser) {
       throw new ConflictException('User already exists');
     }
 
     const hashedPassword = await argon2.hash(credentials.password);
-    const user = await this.userService.create({
+    const user = await this.userService.createUser({
       ...credentials,
       password: hashedPassword,
     });
@@ -90,7 +92,7 @@ export class AuthService implements IAuthService {
   private async validateUser(
     credentials: LoginCredentialsDto,
   ): Promise<CreateTokenDto> {
-    const user = await this.userService.getByEmail(credentials.email);
+    const user = await this.userService.getUserByEmail(credentials.email);
     if (!user) {
       throw new NotFoundException('User not found');
     }

@@ -26,7 +26,7 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'Users found', type: [User] })
   public async getAllUsers(): Promise<User[]> {
     this.logger.log('REST request to get all users');
-    return this.userService.getAll();
+    return this.userService.getAllUsers();
   }
 
   @Get('/:id')
@@ -34,7 +34,7 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'User found', type: User })
   public async getUserById(@Param('id') id: string): Promise<User> {
     this.logger.log(`REST request to get a user: ${id}`);
-    return this.userService.getById(id);
+    return this.userService.getUserById(id);
   }
 
   @Post()
@@ -43,7 +43,7 @@ export class UserController {
   @ApiResponse({ status: 201, description: 'User created', type: User })
   public async createNewUser(@Body() user: CreateUserDto): Promise<User> {
     this.logger.log(`REST request to create a user: ${JSON.stringify(user)}`);
-    return this.userService.create(user);
+    return this.userService.createUser(user);
   }
 
   @Put('/:id')
@@ -55,7 +55,7 @@ export class UserController {
     @Body() user: UpdateUserDto,
   ): Promise<User> {
     this.logger.log(`REST request to update a user: ${id}`);
-    return this.userService.update(id, user);
+    return this.userService.updateUser(id, user);
   }
 
   @Delete('/:id')
@@ -63,6 +63,6 @@ export class UserController {
   @ApiResponse({ status: 204, description: 'User deleted' })
   public async removeUser(@Param('id') id: string): Promise<void> {
     this.logger.log(`REST request to delete a user: ${id}`);
-    return this.userService.remove(id);
+    return this.userService.removeUser(id);
   }
 }

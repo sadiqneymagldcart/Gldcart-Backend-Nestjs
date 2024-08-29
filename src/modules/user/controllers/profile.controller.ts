@@ -79,6 +79,6 @@ export class ProfileController {
     @Param('id') id: string,
     @Body() data: UpdateUserDto,
   ) {
-    return this.userService.update(id, data);
+    return this.userService.updateUser(id, data);
   }
 }
