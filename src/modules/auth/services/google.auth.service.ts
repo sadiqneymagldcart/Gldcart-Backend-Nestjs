@@ -85,7 +85,7 @@ export class GoogleAuthService {
   }
 
   private async fetchGoogleOAuthTokens(code: string): Promise<GoogleToken> {
-    this.logger.debug(`Fetching Google OAuth Tokens with code: ${code}`);
+    this.logger.debug(`Fetching Google OAuth Tokens with code...`);
     const response = await firstValueFrom(
       this.httpService
         .post<GoogleToken>(
@@ -99,7 +99,7 @@ export class GoogleAuthService {
       throw new BadRequestException('Failed to fetch OAuth tokens');
     }
 
-    this.logger.debug(`Received OAuth tokens: ${JSON.stringify(response)}`);
+    this.logger.debug(`Received OAuth tokens`);
     return response;
   }
 
