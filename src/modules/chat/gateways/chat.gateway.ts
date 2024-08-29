@@ -123,7 +123,7 @@ export class ChatGateway
   ): Promise<void> {
     try {
       this.logger.debug('Creating chat', newChat);
-      await this.chatService.createChat(newChat);
+      await this.chatService.findOrCreateChat(newChat);
     } catch (error) {
       this.handleError('Error creating chat', error, client);
     }
