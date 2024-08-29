@@ -81,7 +81,6 @@ export class ChatGateway
     try {
       const userId = this.getUserId(client);
       client.join(chatId);
-      // socket.emit(Events.JOIN_ACK, { message: 'Successfully joined chat' });
       this.server.to(chatId).emit(Events.USER_JOINED, { userId });
     } catch (error) {
       this.handleError('Error handling join', error, client);
@@ -122,9 +121,11 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() newChat: CreateChatDto,
   ): Promise<void> {
+    console.log(newChat);
     try {
-      const chat = await this.chatService.createChat(newChat);
-      this.server.emit(Events.RECEIVE_CHAT, chat);
+      this.logger.debug('Creating chat', JSON.stringify(newChat));
+      const { chat, participants } = await this.chatService.createChat(newChat);
+      this.emitToParticipants(participants, Events.RECEIVE_CHAT, chat);
     } catch (error) {
       this.handleError('Error creating chat', error, client);
     }
@@ -135,13 +136,12 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
   ): Promise<void> {
     const userId = this.getUserId(client);
-
     if (!userId) {
       this.logger.warn('User tried to request all chats without userId');
       return;
     }
-
     const chats = await this.chatService.getUserChats(userId);
+    this.logger.debug(`Sending all chats to user ${userId}, ${chats}`);
     client.emit(Events.SEND_ALL_CHATS, chats);
   }
 
@@ -157,7 +157,6 @@ export class ChatGateway
     try {
       const userId = this.getUserId(client);
       client.leave(chatId);
-      // socket.emit(Events.LEAVE_ACK, { message: 'Successfully left chat' });
       this.server.to(chatId).emit(Events.USER_LEFT, { userId });
     } catch (error) {
       this.handleError('Error handling leave', error, client);
@@ -183,5 +182,19 @@ export class ChatGateway
   private handleError(message: string, error: any, client: Socket): void {
     this.logger.error(`${message}: ${error.stack}`);
     client.emit(Events.ERROR, { message: error.message });
+  }
+
+  private emitToParticipants(
+    participants: string[],
+    event: string,
+    data: any,
+  ): void {
+    participants.forEach((participantId) => {
+      const participantSocket = this.server.sockets.sockets.get(participantId);
+      if (participantSocket) {
+        this.logger.debug(`Sending ${event} to user ${participantId}`);
+        participantSocket.emit(event, data);
+      }
+    });
   }
 }
