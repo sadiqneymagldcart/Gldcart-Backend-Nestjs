@@ -65,6 +65,7 @@ export class TokenService implements ITokenService {
         token,
         this.jwtAccessVerifyOptions,
       );
+
       return plainToInstance(CreateTokenDto, payload);
     } catch (error) {
       throw new BadRequestException('Invalid access token');
