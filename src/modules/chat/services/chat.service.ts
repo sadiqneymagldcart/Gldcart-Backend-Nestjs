@@ -16,8 +16,13 @@ export class ChatService {
     @InjectModel(Chat.name) private readonly chatModel: Model<ChatDocument>,
   ) {}
 
-  public async createChat(chat: CreateChatDto): Promise<Chat> {
-    return this.chatModel.create(chat);
+  public async createChat(
+    createChatDto: CreateChatDto,
+  ): Promise<{ chat: Chat; participants: string[] }> {
+    const chat = new this.chatModel(createChatDto);
+    await chat.save();
+    const participants = createChatDto.participants;
+    return { chat, participants };
   }
 
   public async updateUserOnlineStatus(
@@ -38,7 +43,7 @@ export class ChatService {
     });
   }
 
-  public watchChatCollectionChanges(socket: Socket): void {
+  public watchChatCollectionChanges(client: Socket): void {
     const changeStream = this.chatModel.watch();
     changeStream.on('change', async (change) => {
       let chat: any;
@@ -48,7 +53,7 @@ export class ChatService {
           select: { name: 1, surname: 1, type: 1, is_online: 1 },
         });
       }
-      socket.emit(Events.NEW_CHAT, chat);
+      client.emit(Events.NEW_CHAT, chat);
     });
   }
 }
