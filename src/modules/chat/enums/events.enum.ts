@@ -16,7 +16,6 @@ export enum Events {
   RECEIVE_CHAT = 'receive-chat',
   REQUEST_ALL_CHATS = 'request-all-chats',
   SEND_ALL_CHATS = 'send-all-chats',
-  NEW_CHAT = 'new-chat',
 
   // Error Events
   ERROR = 'error',
