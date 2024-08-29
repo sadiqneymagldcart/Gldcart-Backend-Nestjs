@@ -18,7 +18,7 @@ export class ChatService {
 
   public async findOrCreateChat(
     createChatDto: CreateChatDto,
-  ): Promise<ChatDocument> {
+  ): Promise<{ chat: ChatDocument; isNew: boolean }> {
     const { participants } = createChatDto;
 
     const existingChat = await this.chatModel
@@ -28,11 +28,11 @@ export class ChatService {
       .exec();
 
     if (existingChat) {
-      return existingChat;
+      return { chat: existingChat, isNew: false };
     }
 
-    const newChat = new this.chatModel({ participants });
-    return newChat.save();
+    const newChat = await this.chatModel.create({ participants });
+    return { chat: newChat, isNew: true };
   }
 
   public async updateUserOnlineStatus(
