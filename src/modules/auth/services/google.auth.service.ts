@@ -70,7 +70,7 @@ export class GoogleAuthService {
     state: string,
   ): Promise<AuthResponseDto> {
     const userDto = await this.createUserDto(googleUser, state);
-    const user = await this.userService.create(userDto);
+    const user = await this.userService.createUser(userDto);
 
     const userWithoutPassword = plainToInstance(CreateTokenDto, user, {
       excludeExtraneousValues: true,

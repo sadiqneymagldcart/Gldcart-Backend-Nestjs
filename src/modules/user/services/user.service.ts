@@ -18,7 +18,7 @@ export class UserService {
     private readonly stripeService: StripeService,
   ) {}
 
-  public async create(userData: CreateUserDto): Promise<User> {
+  public async createUser(userData: CreateUserDto): Promise<User> {
     const stripeCustomer = await this.stripeService.createCustomer(
       userData.name,
       userData.email,
@@ -31,7 +31,7 @@ export class UserService {
     return user;
   }
 
-  public async update(id: string, userData: UpdateUserDto): Promise<User> {
+  public async updateUser(id: string, userData: UpdateUserDto): Promise<User> {
     const existingUser = await this.userModel.findByIdAndUpdate(id, userData, {
       new: true,
     });
@@ -41,11 +41,11 @@ export class UserService {
     return existingUser;
   }
 
-  public async getAll(): Promise<User[]> {
+  public async getAllUsers(): Promise<User[]> {
     return this.userModel.find();
   }
 
-  public async getById(id: string): Promise<User> {
+  public async getUserById(id: string): Promise<User> {
     const user = await this.userModel.findById(id);
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
@@ -53,11 +53,11 @@ export class UserService {
     return user;
   }
 
-  public async getByEmail(email: string): Promise<Nullable<User>> {
+  public async getUserByEmail(email: string): Promise<Nullable<User>> {
     return this.userModel.findOne({ email });
   }
 
-  public async remove(id: string): Promise<void> {
+  public async removeUser(id: string): Promise<void> {
     const result = await this.userModel.findOneAndDelete({ _id: id });
     if (!result) {
       throw new NotFoundException(`User with ID ${id} not found`);
