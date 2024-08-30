@@ -16,9 +16,23 @@ export class ChatService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
-  public async createChat(createChatDto: CreateChatDto): Promise<Chat> {
-    const chat = new this.chatModel(createChatDto);
-    return chat.save();
+  public async findOrCreateChat(
+    createChatDto: CreateChatDto,
+  ): Promise<{ chat: ChatDocument; isNew: boolean }> {
+    const { participants } = createChatDto;
+
+    const existingChat = await this.chatModel
+      .findOne({
+        participants: { $all: participants, $size: participants.length },
+      })
+      .exec();
+
+    if (existingChat) {
+      return { chat: existingChat, isNew: false };
+    }
+
+    const newChat = await this.chatModel.create({ participants });
+    return { chat: newChat, isNew: true };
   }
 
   public async updateUserOnlineStatus(

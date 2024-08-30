@@ -123,8 +123,10 @@ export class ChatGateway
   ): Promise<void> {
     try {
       this.logger.debug('Creating chat', newChat);
-      await this.chatService.createChat(newChat);
-      // this.emitToParticipants(newChat.participants, Events.RECEIVE_CHAT, chat);
+      const { chat, isNew } = await this.chatService.findOrCreateChat(newChat);
+      if (!isNew) {
+        client.emit(Events.CHAT_ALREADY_EXISTS, chat);
+      }
     } catch (error) {
       this.handleError('Error creating chat', error, client);
     }
@@ -140,7 +142,9 @@ export class ChatGateway
       return;
     }
     const chats = await this.chatService.getUserChats(userId);
-    this.logger.debug(`Sending all chats to user ${userId}, ${chats}`);
+    this.logger.debug(
+      `Sending all chats to user ${userId}, chat count:  ${chats.length}`,
+    );
     client.emit(Events.SEND_ALL_CHATS, chats);
   }
 
@@ -182,18 +186,4 @@ export class ChatGateway
     this.logger.error(`${message}: ${error.stack}`);
     client.emit(Events.ERROR, { message: error.message });
   }
-
-  // private emitToParticipants(
-  //   participants: string[],
-  //   event: string,
-  //   data: any,
-  // ): void {
-  //   participants.forEach((participantId) => {
-  //     const participantSocket = this.server.sockets.sockets.get(participantId);
-  //     if (participantSocket) {
-  //       this.logger.debug(`Sending ${event} to user ${participantId}`);
-  //       participantSocket.emit(event, data);
-  //     }
-  //   });
-  // }
 }

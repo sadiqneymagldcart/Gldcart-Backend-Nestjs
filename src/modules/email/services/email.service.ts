@@ -8,6 +8,10 @@ import { IEmailService } from '@email/interfaces/mail.service.interface';
 @Injectable()
 export class EmailService implements IEmailService {
   private readonly logger = new Logger(EmailService.name);
+  private readonly contactTemplatePath = path.join(
+    __dirname,
+    '../templates/contact.hbs',
+  );
 
   public constructor(
     private readonly mailerService: MailerService,
@@ -17,24 +21,23 @@ export class EmailService implements IEmailService {
   public async sendContactFormEmail(
     emailData: ContactEmailDto,
   ): Promise<{ message: string }> {
-    const templatePath = path.join(__dirname, '../templates/contact.hbs');
-
     await this.mailerService.sendMail({
       to: this.configService.get<string>('FEEDBACK_EMAIL'),
       subject: 'New Contact Form Submission',
-      template: templatePath,
+      template: this.contactTemplatePath,
       context: {
         name: emailData.name,
         email: emailData.email,
-        number: emailData.phone_number,
+        subject: emailData.subject,
         message: emailData.message,
       },
     });
+    this.logger.debug(`Email sent successfully`);
 
     return { message: 'Email sent successfully' };
   }
 
-  public async sendOrderConfirmationEmail(emailData: any) {
+  public async sendOrderConfirmationEmail(emailData: any): Promise<void> {
     this.logger.log(
       `Sending order confirmation email to ${emailData.email}...`,
     );

@@ -12,7 +12,7 @@ export class ChatController {
   @Post()
   @ApiOperation({ summary: 'Create a chat' })
   @ApiResponse({ status: 201, type: Chat })
-  public async createChat(@Body() chat: CreateChatDto): Promise<Chat> {
-    return this.chatService.createChat(chat);
+  public async createChat(@Body() chat: CreateChatDto) {
+    return this.chatService.findOrCreateChat(chat);
   }
 }
