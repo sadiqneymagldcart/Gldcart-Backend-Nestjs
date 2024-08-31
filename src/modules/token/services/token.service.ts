@@ -11,11 +11,12 @@ import { RefreshToken } from '@token/schemas/token.schema';
 
 @Injectable()
 export class TokenService implements ITokenService {
+  private readonly logger = new Logger(TokenService.name);
+
   private readonly jwtAccessOptions: JwtSignOptions;
   private readonly jwtRefreshOptions: JwtSignOptions;
   private readonly jwtAccessVerifyOptions: JwtVerifyOptions;
   private readonly jwtRefreshVerifyOptions: JwtVerifyOptions;
-  private readonly logger: Logger = new Logger(TokenService.name);
 
   public constructor(
     private readonly jwtService: JwtService,

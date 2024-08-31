@@ -14,4 +14,3 @@ export class Chat {
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);
-

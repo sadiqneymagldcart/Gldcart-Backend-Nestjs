@@ -19,7 +19,9 @@ export class OfferingService {
     this.searchService = new SearchService<OfferingDocument>(offeringModel);
   }
 
-  public async createOffering(createOfferingDto: CreateOfferingDto): Promise<Offering> {
+  public async createOffering(
+    createOfferingDto: CreateOfferingDto,
+  ): Promise<Offering> {
     this.logger.log('Creating a new offering');
     const newOffering = new this.offeringModel(createOfferingDto);
     const savedOffering = await newOffering.save();

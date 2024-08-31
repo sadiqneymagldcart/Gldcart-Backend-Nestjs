@@ -5,9 +5,9 @@ import { UserRole } from '@user/enums/roles.enum';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  public constructor(private reflector: Reflector) {}
+  public constructor(private readonly reflector: Reflector) {}
 
-  canActivate(context: ExecutionContext): boolean {
+  public canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
