@@ -1,9 +1,9 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { RolesGuard } from '@shared/guards/roles.guard';
 import cookieParser from 'cookie-parser';
 import express from 'express';
+import { RolesGuard } from '@shared/guards/roles.guard';
 
 function setupGlobalPrefix(app: INestApplication) {
   app.setGlobalPrefix('api');
