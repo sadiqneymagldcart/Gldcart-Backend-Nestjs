@@ -12,6 +12,7 @@ import { StripeMetadata } from '@stripe/interfaces/metadata.interface';
 @Injectable()
 export class StripeService {
   private readonly logger = new Logger(StripeService.name);
+
   private stripe: Stripe;
 
   public constructor(private readonly configService: ConfigService) {
@@ -29,7 +30,7 @@ export class StripeService {
     } catch (error) {
       this.logger.error(
         `Failed to create customer with email: ${email}`,
-        error,
+        error.stack,
       );
       throw error;
     }
@@ -40,11 +41,12 @@ export class StripeService {
     metadata: StripeMetadata,
     customerId: string,
   ): Promise<Stripe.PaymentIntent> {
+    this.logger.log(
+      `Creating payment intent for customer ${customerId} with amount ${amount}`,
+    );
     try {
       const amountInCents = Math.round(amount * 100);
-      this.logger.debug(
-        `Creating payment intent for customer ${customerId} with amount ${amount} and metadata ${JSON.stringify(metadata)}`,
-      );
+      this.logger.debug(`Payment intent metadata: ${JSON.stringify(metadata)}`);
       const paymentIntent = await this.stripe.paymentIntents.create({
         amount: amountInCents,
         customer: customerId,
@@ -57,7 +59,7 @@ export class StripeService {
     } catch (error) {
       this.logger.error(
         `Failed to create payment intent for customer ${customerId} with amount ${amount}`,
-        error,
+        error.stack,
       );
       throw error;
     }
@@ -81,7 +83,7 @@ export class StripeService {
     } catch (error) {
       this.logger.error(
         `Failed to create subscription for customer ${customerId}`,
-        error,
+        error.stack,
       );
       if (error?.code === StripeError.ResourceMissing) {
         throw new BadRequestException('Credit card not set up');
@@ -104,7 +106,7 @@ export class StripeService {
     } catch (error) {
       this.logger.error(
         `Failed to attach credit card to customer ${customerId}`,
-        error,
+        error.stack,
       );
       throw error;
     }
@@ -124,7 +126,7 @@ export class StripeService {
     } catch (error) {
       this.logger.error(
         `Failed to list credit cards for customer ${customerId}`,
-        error,
+        error.stack,
       );
       throw error;
     }
@@ -147,7 +149,7 @@ export class StripeService {
     } catch (error) {
       this.logger.error(
         `Failed to list subscriptions for customer ${customerId}`,
-        error,
+        error.stack,
       );
       throw error;
     }
@@ -157,7 +159,7 @@ export class StripeService {
     signature: string,
     payload: Buffer,
   ): Promise<Stripe.Event> {
-    this.logger.debug(
+    this.logger.log(
       `Constructing event from payload with signature: ${signature}`,
     );
     try {
@@ -170,7 +172,7 @@ export class StripeService {
       this.logger.log(`Event constructed: ${event.id}`);
       return event;
     } catch (error) {
-      this.logger.error(`Failed to construct event from payload`, error);
+      this.logger.error(`Failed to construct event from payload`, error.stack);
       throw error;
     }
   }

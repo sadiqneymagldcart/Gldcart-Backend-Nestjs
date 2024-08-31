@@ -47,21 +47,29 @@ export class StripeWebhookService {
 
     const data = event.data.object as Stripe.Subscription;
     const customerId: string = data.customer as string;
-    const subscription_status = data.status;
+    const subscriptionStatus = data.status;
 
     this.logger.log(
-      `Updating subscription status for customer ID: ${customerId} to ${subscription_status}`,
+      `Updating subscription status for customer ID: ${customerId} to ${subscriptionStatus}`,
     );
-    await this.userService.updateMonthlySubscriptionStatus(
-      customerId,
-      subscription_status,
-    );
-    this.logger.log(
-      `Subscription status for customer ID: ${customerId} updated successfully`,
-    );
+    try {
+      await this.userService.updateMonthlySubscriptionStatus(
+        customerId,
+        subscriptionStatus,
+      );
+      this.logger.log(
+        `Subscription status for customer ID: ${customerId} updated successfully`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Error updating subscription status for customer ID: ${customerId}`,
+        error.stack,
+      );
+      throw error;
+    }
   }
 
-  public async processPaymentSucceded(event: Stripe.Event) {
+  public async processPaymentSucceeded(event: Stripe.Event) {
     this.logger.log(`Processing payment succeeded for event ID: ${event.id}`);
     await this.createStripeEvent(event.id);
 
@@ -71,9 +79,17 @@ export class StripeWebhookService {
     this.logger.log(
       `Processing order ID: ${orderId} with status: ${OrderStatus.PAID}`,
     );
-    await this.orderService.processOrder(orderId, OrderStatus.PAID);
-    this.logger.log(
-      `Order ID: ${orderId} processed successfully with status: ${OrderStatus.PAID}`,
-    );
+    try {
+      await this.orderService.processOrder(orderId, OrderStatus.PAID);
+      this.logger.log(
+        `Order ID: ${orderId} processed successfully with status: ${OrderStatus.PAID}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Error processing order ID: ${orderId} with status: ${OrderStatus.PAID}`,
+        error.stack,
+      );
+      throw error;
+    }
   }
 }
