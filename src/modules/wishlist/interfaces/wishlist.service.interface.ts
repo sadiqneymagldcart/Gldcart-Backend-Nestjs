@@ -11,21 +11,21 @@ export interface IWishlistService {
    * @param userId - The id of the user
    * @returns A promise that resolves to a Wishlist
    */
-  getByUserId(userId: string): Promise<Wishlist>;
+  getWishlistByUserId(userId: string): Promise<Wishlist>;
 
   /**
    * Find a wishlist by id
    * @param id - The id of the wishlist
    * @returns A promise that resolves to a Wishlist
    */
-  getById(id: string): Promise<Wishlist>;
+  getWishlistById(id: string): Promise<Wishlist>;
 
   /**
    * Find a wishlist with items by id
    * @param id - The id of the wishlist
    * @returns A promise that resolves to a Wishlist with items
    */
-  getWithItemsById(id: string): Promise<Wishlist>;
+  getWishlistWithItemsById(id: string): Promise<Wishlist>;
 
   /**
    * Add an item to a wishlist
@@ -33,7 +33,7 @@ export interface IWishlistService {
    * @param newItem - The item to add
    * @returns A promise that resolves to a Wishlist
    */
-  addItem(userId: string, newItem: CreateItemDto): Promise<Wishlist>;
+  addItemToWishlist(userId: string, newItem: CreateItemDto): Promise<Wishlist>;
 
   /**
    * Remove an item from a wishlist
@@ -41,5 +41,5 @@ export interface IWishlistService {
    * @param itemId - The id of the item to remove
    * @returns A promise that resolves to a Wishlist
    */
-  removeItem(id: string, itemId: string): Promise<Wishlist>;
+  removeItemFromWishlist(id: string, itemId: string): Promise<Wishlist>;
 }
