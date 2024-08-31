@@ -38,6 +38,16 @@ export class ProfileController {
     return this.userService.updateProfilePicture(id, image);
   }
 
+  @Put(':id/personal-details')
+  @ApiOperation({ summary: 'Update user personal details' })
+  @ApiBody({ type: UpdateUserDto })
+  public async updatePersonalDetails(
+    @Param('id') id: string,
+    @Body() data: UpdateUserDto,
+  ) {
+    return this.userService.updateUser(id, data);
+  }
+
   @Get(':id/shipping-addresses')
   @ApiOperation({ summary: 'Get user shipping addresses' })
   public async getShippingAddresses(@Param('id') id: string) {
