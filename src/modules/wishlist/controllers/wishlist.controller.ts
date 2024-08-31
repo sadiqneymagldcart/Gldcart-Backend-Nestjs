@@ -33,7 +33,7 @@ export class WishlistController {
   })
   @ApiNotFoundResponse({ description: 'Wishlist not found.' })
   public async getWishlistById(@Param('id') id: string): Promise<Wishlist> {
-    return this.wishlistService.getById(id);
+    return this.wishlistService.getWishlistById(id);
   }
 
   @Post(':userId')
@@ -47,7 +47,7 @@ export class WishlistController {
     @Param('userId') userId: string,
     @Body() item: CreateItemDto,
   ): Promise<Wishlist> {
-    return this.wishlistService.addItem(userId, item);
+    return this.wishlistService.addItemToWishlist(userId, item);
   }
 
   @Delete(':id/item/:itemId')
@@ -61,7 +61,7 @@ export class WishlistController {
     @Param('id') id: string,
     @Param('itemId') itemId: string,
   ): Promise<Wishlist> {
-    return this.wishlistService.removeItem(id, itemId);
+    return this.wishlistService.removeItemFromWishlist(id, itemId);
   }
 
   @Delete(':id')
@@ -72,6 +72,6 @@ export class WishlistController {
   })
   @ApiNotFoundResponse({ description: 'Wishlist not found.' })
   public async removeWishlistById(@Param('id') id: string): Promise<Wishlist> {
-    return this.wishlistService.remove(id);
+    return this.wishlistService.removeWishlist(id);
   }
 }
