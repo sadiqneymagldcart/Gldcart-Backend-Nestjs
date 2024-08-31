@@ -51,11 +51,11 @@ export class StripeWebhookController {
         return this.stripeWebhookService.processSubscriptionUpdate(event);
 
       case 'payment_intent.created':
-        await this.stripeWebhookService.processPaymentSucceded(event);
+        await this.stripeWebhookService.processPaymentSucceeded(event);
 
       case 'payment_intent.succeeded':
         this.logger.log(`Payment succeeded for payment intent: ${event.id}`);
-        await this.stripeWebhookService.processPaymentSucceded(event);
+        await this.stripeWebhookService.processPaymentSucceeded(event);
 
       case 'payment_intent.payment_failed':
         this.logger.warn(`Payment failed for payment intent: ${event.id}`);

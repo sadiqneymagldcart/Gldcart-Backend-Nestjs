@@ -11,11 +11,12 @@ import { RefreshToken } from '@token/schemas/token.schema';
 
 @Injectable()
 export class TokenService implements ITokenService {
+  private readonly logger = new Logger(TokenService.name);
+
   private readonly jwtAccessOptions: JwtSignOptions;
   private readonly jwtRefreshOptions: JwtSignOptions;
   private readonly jwtAccessVerifyOptions: JwtVerifyOptions;
   private readonly jwtRefreshVerifyOptions: JwtVerifyOptions;
-  private readonly logger: Logger = new Logger(TokenService.name);
 
   public constructor(
     private readonly jwtService: JwtService,
@@ -40,34 +41,53 @@ export class TokenService implements ITokenService {
   }
 
   public async generateAccessToken(payload: CreateTokenDto): Promise<string> {
-    return this.jwtService.sign({ ...payload }, this.jwtAccessOptions);
+    this.logger.log(`Generating access token for user: ${payload._id}`);
+    const token = this.jwtService.sign({ ...payload }, this.jwtAccessOptions);
+    this.logger.log(`Generated access token for user: ${payload._id}`);
+    return token;
   }
 
   public async generateRefreshToken(payload: CreateTokenDto): Promise<string> {
+    this.logger.log(`Generating refresh token for user: ${payload._id}`);
     const refreshToken = this.jwtService.sign(
       { ...payload },
       this.jwtRefreshOptions,
     );
-    return this.saveOrUpdateRefreshToken(payload._id, refreshToken);
+    const savedToken = await this.saveOrUpdateRefreshToken(
+      payload._id,
+      refreshToken,
+    );
+    this.logger.log(
+      `Generated and saved refresh token for user: ${payload._id}`,
+    );
+    return savedToken;
   }
 
   public async revokeRefreshToken(refreshToken: string): Promise<void> {
+    this.logger.log(`Revoking refresh token: ${refreshToken}`);
     try {
       await this.tokenModel.deleteOne({ refresh_token: refreshToken });
+      this.logger.log(`Revoked refresh token: ${refreshToken}`);
     } catch (error) {
+      this.logger.error(
+        `Failed to revoke refresh token: ${refreshToken}`,
+        error.stack,
+      );
       throw new BadRequestException('Failed to revoke refresh token');
     }
   }
 
   public async verifyAccessToken(token: string): Promise<CreateTokenDto> {
+    this.logger.log(`Verifying access token`);
     try {
       const payload = this.jwtService.verify(
         token,
         this.jwtAccessVerifyOptions,
       );
-
+      this.logger.log(`Verified access token`);
       return plainToInstance(CreateTokenDto, payload);
     } catch (error) {
+      this.logger.error('Invalid access token', error.stack);
       throw new BadRequestException('Invalid access token');
     }
   }
@@ -75,6 +95,7 @@ export class TokenService implements ITokenService {
   public async verifyRefreshToken(
     refreshToken: string,
   ): Promise<CreateTokenDto> {
+    this.logger.log(`Verifying refresh token`);
     const storedToken = await this.findRefreshToken(refreshToken);
     if (!storedToken) {
       this.logger.warn('Refresh token not found');
@@ -85,8 +106,10 @@ export class TokenService implements ITokenService {
         refreshToken,
         this.jwtRefreshVerifyOptions,
       );
+      this.logger.log(`Verified refresh token`);
       return plainToInstance(CreateTokenDto, payload);
     } catch (error) {
+      this.logger.error('Invalid refresh token', error.stack);
       throw new BadRequestException('Invalid refresh token');
     }
   }
@@ -94,24 +117,33 @@ export class TokenService implements ITokenService {
   private async findRefreshToken(
     refreshToken: string,
   ): Promise<Nullable<RefreshToken>> {
-    return this.tokenModel.findOne({ refresh_token: refreshToken });
+    this.logger.log(`Finding refresh token: ${refreshToken}`);
+    const token = await this.tokenModel.findOne({
+      refresh_token: refreshToken,
+    });
+    if (!token) {
+      this.logger.warn(`Refresh token not found: ${refreshToken}`);
+    } else {
+      this.logger.log(`Found refresh token: ${refreshToken}`);
+    }
+    return token;
   }
 
   private async saveOrUpdateRefreshToken(
     userId: string,
     refreshToken: string,
   ): Promise<string> {
-    this.logger.debug(`Saving or updating refresh token for user: ${userId}`);
+    this.logger.log(`Saving or updating refresh token for user: ${userId}`);
 
     let existingToken = await this.tokenModel.findOne({
       user: userId,
     });
 
     if (existingToken) {
-      this.logger.debug(`Existing token found for user: ${userId}`);
+      this.logger.log(`Existing token found for user: ${userId}`);
       existingToken.refresh_token = refreshToken;
     } else {
-      this.logger.debug(
+      this.logger.log(
         `No existing token found for user: ${userId}, creating new token`,
       );
       existingToken = new this.tokenModel({
@@ -121,7 +153,7 @@ export class TokenService implements ITokenService {
     }
 
     await existingToken.save();
-    this.logger.debug(`Refresh token saved for user: ${userId}`);
+    this.logger.log(`Refresh token saved for user: ${userId}`);
     return existingToken.refresh_token;
   }
 }
