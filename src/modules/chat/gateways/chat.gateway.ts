@@ -19,10 +19,11 @@ import { ChatService } from '@chat/services/chat.service';
 import { MessageService } from '@chat/services/message.service';
 
 const CLIENT_URL = process.env.CLIENT_URL;
+const CHAT_NAMESPACE = 'chat';
 
 @Injectable()
 @WebSocketGateway({
-  namespace: 'chat',
+  namespace: CHAT_NAMESPACE,
   cors: {
     origin: CLIENT_URL,
   },
@@ -91,7 +92,7 @@ export class ChatGateway
   public async handleMessage(
     @MessageBody() message: CreateMessageDto,
   ): Promise<void> {
-    this.logger.log('Message received', JSON.stringify(message));
+    this.logger.debug('Message received', JSON.stringify(message));
     try {
       const savedMessage = await this.messageService.createMessage(message);
       this.server
