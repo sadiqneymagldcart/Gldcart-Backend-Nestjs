@@ -13,10 +13,11 @@ export class CreateUserDto {
   role: string;
 
   @ApiProperty({
-    example: 'https://example.com/image.jpg',
-    description: 'User profile picture',
+    type: 'string',
+    format: 'binary',
+    description: 'Profile picture file',
   })
-  profile_picture?: string;
+  profile_picture?: any;
 
   @ApiProperty({
     example: 'This is a bio',

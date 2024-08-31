@@ -6,16 +6,16 @@ import {
   Param,
   Post,
   Put,
-  UploadedFiles,
+  UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AwsStorageService } from '@storages/services/storages.service';
+import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from '@user/dto/update-user.dto';
 import { UserService } from '@user/services/user.service';
 import { CreateAddressDto } from '@address/dto/create-address.dto';
 import { UpdateAddressDto } from '@address/dto/update-address.dto';
+import { AwsStorageService } from '@storages/services/aws-storage.service';
 
 @ApiTags('Profile')
 @Controller('profile')
@@ -27,13 +27,25 @@ export class ProfileController {
 
   @Put(':id/profile-picture')
   @ApiOperation({ summary: 'Update user profile picture' })
-  @UseInterceptors(FileInterceptor('image'))
+  @ApiBody({ type: UpdateUserDto })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('profile_picture'))
   public async updateProfilePicture(
-    @UploadedFiles() file: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File,
     @Param('id') id: string,
   ) {
     const image = await this.awsStorage.uploadSingleFile(file);
     return this.userService.updateProfilePicture(id, image);
+  }
+
+  @Put(':id/personal-details')
+  @ApiOperation({ summary: 'Update user personal details' })
+  @ApiBody({ type: UpdateUserDto })
+  public async updatePersonalDetails(
+    @Param('id') id: string,
+    @Body() data: UpdateUserDto,
+  ) {
+    return this.userService.updateUser(id, data);
   }
 
   @Get(':id/shipping-addresses')
