@@ -52,7 +52,7 @@ export class GoogleAuthService {
     code: string,
     state: string,
   ): Promise<AuthResponseDto> {
-    this.logger.debug(
+    this.logger.log(
       `Received OAuth callback with code: ${code} and state: ${state}`,
     );
 
@@ -69,6 +69,7 @@ export class GoogleAuthService {
     googleUser: GoogleUser,
     state: string,
   ): Promise<AuthResponseDto> {
+    this.logger.log(`Processing Google user with email: ${googleUser.email}`);
     const userDto = await this.createUserDto(googleUser, state);
     const user = await this.userService.createUser(userDto);
 
@@ -78,14 +79,20 @@ export class GoogleAuthService {
     const result = await this.authorizeWithGoogle(userWithoutPassword);
 
     if (!result.refreshToken) {
+      this.logger.warn(
+        `Failed to authorize Google user with email: ${googleUser.email}`,
+      );
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    this.logger.log(
+      `Successfully processed Google user with email: ${googleUser.email}`,
+    );
     return result;
   }
 
   private async fetchGoogleOAuthTokens(code: string): Promise<GoogleToken> {
-    this.logger.debug(`Fetching Google OAuth Tokens with code...`);
+    this.logger.log(`Fetching Google OAuth Tokens with code: ${code}`);
     const response = await firstValueFrom(
       this.httpService
         .post<GoogleToken>(
@@ -96,10 +103,11 @@ export class GoogleAuthService {
     );
 
     if (!response) {
+      this.logger.error(`Failed to fetch OAuth tokens with code: ${code}`);
       throw new BadRequestException('Failed to fetch OAuth tokens');
     }
 
-    this.logger.debug(`Received OAuth tokens`);
+    this.logger.log(`Received OAuth tokens successfully`);
     return response;
   }
 
@@ -107,15 +115,17 @@ export class GoogleAuthService {
     id_token: string,
     access_token: string,
   ): Promise<GoogleUser> {
-    this.logger.debug(
-      `Fetching Google user info with id_token: ${id_token} and access_token: ${access_token}`,
-    );
+    this.logger.log(`Fetching Google user info`);
     const response = await this.getGoogleUserResponse(id_token, access_token);
 
     if (!response) {
+      this.logger.error(
+        `Failed to fetch Google user with id_token: ${id_token}`,
+      );
       throw new UnauthorizedException('Failed to fetch Google user');
     }
 
+    this.logger.log(`Fetched Google user info successfully`);
     return response;
   }
 
@@ -135,11 +145,15 @@ export class GoogleAuthService {
   private async authorizeWithGoogle(
     tokenPayload: CreateTokenDto,
   ): Promise<AuthResponseDto> {
+    this.logger.log(
+      `Authorizing Google user with email: ${tokenPayload.email}`,
+    );
     const [accessToken, refreshToken] = await Promise.all([
       this.tokenService.generateAccessToken(tokenPayload),
       this.tokenService.generateRefreshToken(tokenPayload),
     ]);
 
+    this.logger.log(`Authorized Google user with email: ${tokenPayload.email}`);
     return {
       accessToken,
       refreshToken,
@@ -161,6 +175,9 @@ export class GoogleAuthService {
     googleUser: GoogleUser,
     role: string,
   ): Promise<CreateUserDto> {
+    this.logger.log(
+      `Creating user DTO for Google user with email: ${googleUser.email}`,
+    );
     const password = await this.generateRandomPassword();
     const hashedPassword = await argon2.hash(password);
 
