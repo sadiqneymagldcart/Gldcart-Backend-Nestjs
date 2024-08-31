@@ -25,7 +25,7 @@ import { CreateProductDto } from '@product/dto/create-product.dto';
 import { UpdateProductDto } from '@product/dto/update-product.dto';
 import { Product } from '@product/schemas/product.schema';
 import { ProductService } from '@product/services/product.service';
-import { AwsStorageService } from '@storages/services/storages.service';
+import { AwsStorageService } from '@storages/services/aws-storage.service';
 import { PaginatedResourceDto } from '@search/dto/paginated-resource.dto';
 import {
   Pagination,

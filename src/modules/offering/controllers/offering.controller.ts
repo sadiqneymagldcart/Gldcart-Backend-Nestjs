@@ -34,7 +34,7 @@ import {
   Pagination,
   PaginationParams,
 } from '@shared/decorators/pagination.decorator';
-import { AwsStorageService } from '@storages/services/storages.service';
+import { AwsStorageService } from '@storages/services/aws-storage.service';
 
 @ApiTags('Proffesional Services')
 @Controller('offerings')

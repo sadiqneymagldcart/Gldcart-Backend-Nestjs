@@ -11,11 +11,11 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AwsStorageService } from '@storages/services/storages.service';
 import { UpdateUserDto } from '@user/dto/update-user.dto';
 import { UserService } from '@user/services/user.service';
 import { CreateAddressDto } from '@address/dto/create-address.dto';
 import { UpdateAddressDto } from '@address/dto/update-address.dto';
+import { AwsStorageService } from '@storages/services/aws-storage.service';
 
 @ApiTags('Profile')
 @Controller('profile')
