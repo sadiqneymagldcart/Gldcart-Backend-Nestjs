@@ -80,7 +80,7 @@ export class OrderService {
       );
       throw error;
     } finally {
-      session.endSession();
+      await session.endSession();
     }
   }
 

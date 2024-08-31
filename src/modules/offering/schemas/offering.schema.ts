@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { User } from '@user/schemas/user.schema';
 import mongoose from 'mongoose';
+import { User } from '@user/schemas/user.schema';
 
 export type OfferingDocument = Offering & mongoose.Document;
 
@@ -40,3 +40,5 @@ OfferingSchema.index({
   description: 'text',
   subcategory: 'text',
 });
+
+OfferingSchema.index({ name: 1 });

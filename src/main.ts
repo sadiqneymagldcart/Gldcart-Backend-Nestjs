@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { loggerOptions } from '@config/logger.config';
-import { setupMiddlewares } from '@config/middlewares';
+import { setupMiddlewares } from '@config/middlewares.config';
 import { MainModule } from './main.module';
 
 async function bootstrap() {

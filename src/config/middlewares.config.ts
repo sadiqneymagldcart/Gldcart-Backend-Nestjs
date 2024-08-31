@@ -1,7 +1,9 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import express from 'express';
+import { RolesGuard } from '@shared/guards/roles.guard';
 
 function setupGlobalPrefix(app: INestApplication) {
   app.setGlobalPrefix('api');
@@ -25,6 +27,10 @@ function setupGlobalPipes(app: INestApplication) {
   );
 }
 
+function setupGlobalGuards(app: INestApplication) {
+  app.useGlobalGuards(new RolesGuard(app.get(Reflector)));
+}
+
 function setupMiddleware(app: INestApplication) {
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
@@ -46,6 +52,7 @@ export function setupMiddlewares(app: INestApplication) {
   setupGlobalPrefix(app);
   enableCors(app);
   setupGlobalPipes(app);
+  setupGlobalGuards(app);
   setupMiddleware(app);
   setupSwagger(app);
 }

@@ -83,14 +83,4 @@ export class ProfileController {
   ) {
     return this.userService.removeShippingAddress(id, addressId);
   }
-
-  @Put(':id')
-  @ApiOperation({ summary: 'Update user profile' })
-  @ApiBody({ type: UpdateUserDto })
-  public async updateProfile(
-    @Param('id') id: string,
-    @Body() data: UpdateUserDto,
-  ) {
-    return this.userService.updateUser(id, data);
-  }
 }

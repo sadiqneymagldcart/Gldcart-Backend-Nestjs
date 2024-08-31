@@ -10,7 +10,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ReviewModule } from '@review/review.module';
 import { EmailModule } from '@email/email.module';
 import { ProductModule } from '@product/product.module';
-import { RentingModule } from '@renting/renting.module';
 import { OfferingModule } from '@offering/offering.module';
 import { CartModule } from '@cart/cart.module';
 import { ChatModule } from '@chat/chat.module';
@@ -51,7 +50,6 @@ import { OrderModule } from '@order/order.module';
     TokenModule,
     OfferingModule,
     ProductModule,
-    RentingModule,
     CartModule,
     ReviewModule,
     EmailModule,

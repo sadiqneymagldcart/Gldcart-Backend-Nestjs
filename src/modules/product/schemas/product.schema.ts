@@ -49,3 +49,5 @@ ProductSchema.index({
   description: 'text',
   subcategory: 'text',
 });
+
+ProductSchema.index({ name: 1 });
