@@ -60,7 +60,7 @@ export class OfferingController {
   ): Promise<Offering> {
     const imageUrls = await this.awsStorage.uploadMultipleFiles(images);
     const offeringWithImages = { ...offering, images: imageUrls };
-    return this.offeringService.create(offeringWithImages);
+    return this.offeringService.createOffering(offeringWithImages);
   }
 
   @Get()
@@ -94,9 +94,9 @@ export class OfferingController {
     @Query('text') text: string,
   ): Promise<Offering[]> {
     if (text) {
-      return this.offeringService.getBySearchQuery(pagination, text);
+      return this.offeringService.getOfferingBySearchQuery(pagination, text);
     } else {
-      return this.offeringService.getByFilters(pagination, filters);
+      return this.offeringService.getOfferingsByFilters(pagination, filters);
     }
   }
 
@@ -111,7 +111,7 @@ export class OfferingController {
     description: 'Offering not found.',
   })
   public async getOfferingById(@Param('id') id: string): Promise<Offering> {
-    return this.offeringService.getById(id);
+    return this.offeringService.getOfferingById(id);
   }
 
   @Put(':id')
@@ -128,7 +128,7 @@ export class OfferingController {
     @Param('id') id: string,
     @Body() offering: UpdateOfferingDto,
   ): Promise<Offering> {
-    return this.offeringService.update(id, offering);
+    return this.offeringService.updateOffering(id, offering);
   }
 
   @Delete(':id')
@@ -142,6 +142,6 @@ export class OfferingController {
     description: 'Offering not found.',
   })
   public async deleteOffering(@Param('id') id: string): Promise<void> {
-    return this.offeringService.remove(id);
+    return this.offeringService.removeOffering(id);
   }
 }
