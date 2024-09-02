@@ -1,15 +1,19 @@
-import { Injectable, Type } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  Type,
+} from '@nestjs/common';
 import {
   ClassSerializerInterceptor,
   ClassSerializerInterceptorOptions,
   PlainLiteralObject,
 } from '@nestjs/common/serializer';
-import { ExecutionContext, CallHandler } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
+import mongoose from 'mongoose';
 import { map } from 'rxjs/operators';
 import { plainToInstance } from 'class-transformer';
-import mongoose from 'mongoose';
 
 @Injectable()
 export class MongooseClassSerializerInterceptor extends ClassSerializerInterceptor {
