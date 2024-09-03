@@ -24,26 +24,26 @@ export class MongooseClassSerializerInterceptor extends ClassSerializerIntercept
     super(reflector, defaultOptions);
   }
 
-  private changePlainObjectToInstance(
+  private transformToInstance(
     object: PlainLiteralObject,
     classToIntercept: Type,
-  ) {
+  ): PlainLiteralObject {
     if (object instanceof mongoose.Document) {
       return plainToInstance(classToIntercept, object.toJSON());
     }
     return object;
   }
 
-  private prepareResponse(
+  private transformResponse(
     response: PlainLiteralObject | PlainLiteralObject[],
     classToIntercept: Type,
-  ) {
+  ): PlainLiteralObject | PlainLiteralObject[] {
     if (Array.isArray(response)) {
-      return response.map((document: Document) =>
-        this.changePlainObjectToInstance(document, classToIntercept),
+      return response.map((item: PlainLiteralObject) =>
+        this.transformToInstance(item, classToIntercept),
       );
     }
-    return this.changePlainObjectToInstance(response, classToIntercept);
+    return this.transformToInstance(response, classToIntercept);
   }
 
   public intercept(
@@ -54,13 +54,12 @@ export class MongooseClassSerializerInterceptor extends ClassSerializerIntercept
       'classToIntercept',
       context.getClass(),
     );
-
     return next
       .handle()
       .pipe(
         map((response) =>
           this.serialize(
-            this.prepareResponse(response, classToIntercept),
+            this.transformResponse(response, classToIntercept),
             this.defaultOptions,
           ),
         ),
