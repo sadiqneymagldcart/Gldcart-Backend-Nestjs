@@ -14,7 +14,6 @@ import { OfferingModule } from '@offering/offering.module';
 import { CartModule } from '@cart/cart.module';
 import { ChatModule } from '@chat/chat.module';
 import { StripeModule } from '@stripe/stripe.module';
-import { SubscriptionModule } from '@subscription/subscription.module';
 import { ItemModule } from '@item/item.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { WishlistModule } from '@wishlist/wishlist.module';
@@ -55,7 +54,6 @@ import { OrderModule } from '@order/order.module';
     EmailModule,
     ChatModule,
     StripeModule,
-    SubscriptionModule,
     ItemModule,
     WishlistModule,
     OrderModule,
