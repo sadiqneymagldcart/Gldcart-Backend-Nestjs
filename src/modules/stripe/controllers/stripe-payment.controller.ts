@@ -16,16 +16,16 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from '@shared/guards/jwt.auth.guard';
 import { PaymentIntentDto } from '@stripe/dto/payment-intent.dto';
-import { StripeService } from '@stripe/services/stripe.service';
+import { StripePaymentService } from '@stripe/services/stripe-payment.service';
 
 @ApiTags('Stripe')
 @ApiBearerAuth()
 @UseGuards(JwtAuthenticationGuard)
 @Controller('stripe')
-export class StripeController {
-  private readonly logger = new Logger(StripeController.name);
+export class StripePaymentController {
+  private readonly logger = new Logger(StripePaymentController.name);
 
-  public constructor(private readonly stripeService: StripeService) {}
+  public constructor(private readonly stripeService: StripePaymentService) {}
 
   @Post('payment-intent')
   @ApiOperation({ summary: 'Create a new payment intent' })

@@ -4,12 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { StripeService } from '@stripe/services/stripe.service';
+import { StripePaymentService } from '@stripe/services/stripe-payment.service';
 
 @Injectable()
-export class SubscriptionService {
+export class StripeSubscriptionService {
   public constructor(
-    private readonly stripeService: StripeService,
+    private readonly stripeService: StripePaymentService,
     private readonly configService: ConfigService,
   ) {}
 

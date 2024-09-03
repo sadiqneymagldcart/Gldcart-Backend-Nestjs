@@ -13,15 +13,15 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from '@shared/guards/jwt.auth.guard';
-import { SubscriptionService } from '@subscription/services/subscription.service';
+import { StripeSubscriptionService } from '@stripe/services/stripe-subscription.service';
 
 @ApiBearerAuth()
 @ApiTags('Subscriptions')
 @UseGuards(JwtAuthenticationGuard)
 @Controller('subscriptions')
-export class SubscriptionController {
+export class StripeSubscriptionController {
   public constructor(
-    private readonly subscriptionService: SubscriptionService,
+    private readonly subscriptionService: StripeSubscriptionService,
   ) {}
 
   @Post('monthly')
