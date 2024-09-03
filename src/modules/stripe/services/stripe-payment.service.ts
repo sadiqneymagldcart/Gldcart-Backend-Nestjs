@@ -10,8 +10,8 @@ import { StripeError } from '@stripe/enums/stripe-error.enum';
 import { StripeMetadata } from '@stripe/interfaces/metadata.interface';
 
 @Injectable()
-export class StripeService {
-  private readonly logger = new Logger(StripeService.name);
+export class StripePaymentService {
+  private readonly logger = new Logger(StripePaymentService.name);
 
   private stripe: Stripe;
 

@@ -6,7 +6,7 @@ import { InventoryService } from '@inventory/services/inventory.service';
 import { OrderService } from './services/order.service';
 import { OrderController } from './controllers/order.controller';
 import { Order, OrderSchema } from './schemas/order.schema';
-import { StripeService } from '@stripe/services/stripe.service';
+import { StripePaymentService } from '@stripe/services/stripe-payment.service';
 import { TokenModule } from '@token/token.module';
 
 @Module({
@@ -16,7 +16,12 @@ import { TokenModule } from '@token/token.module';
     ProductModule,
   ],
   controllers: [OrderController],
-  providers: [OrderService, EmailService, InventoryService, StripeService],
+  providers: [
+    OrderService,
+    EmailService,
+    InventoryService,
+    StripePaymentService,
+  ],
   exports: [OrderService],
 })
 export class OrderModule {}

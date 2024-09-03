@@ -1,15 +1,19 @@
-import { Injectable, Type } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  Type,
+} from '@nestjs/common';
 import {
   ClassSerializerInterceptor,
   ClassSerializerInterceptorOptions,
   PlainLiteralObject,
 } from '@nestjs/common/serializer';
-import { ExecutionContext, CallHandler } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
+import mongoose from 'mongoose';
 import { map } from 'rxjs/operators';
 import { plainToInstance } from 'class-transformer';
-import mongoose from 'mongoose';
 
 @Injectable()
 export class MongooseClassSerializerInterceptor extends ClassSerializerInterceptor {
@@ -20,26 +24,26 @@ export class MongooseClassSerializerInterceptor extends ClassSerializerIntercept
     super(reflector, defaultOptions);
   }
 
-  private changePlainObjectToInstance(
+  private transformToInstance(
     object: PlainLiteralObject,
     classToIntercept: Type,
-  ) {
+  ): PlainLiteralObject {
     if (object instanceof mongoose.Document) {
       return plainToInstance(classToIntercept, object.toJSON());
     }
     return object;
   }
 
-  private prepareResponse(
+  private transformResponse(
     response: PlainLiteralObject | PlainLiteralObject[],
     classToIntercept: Type,
-  ) {
+  ): PlainLiteralObject | PlainLiteralObject[] {
     if (Array.isArray(response)) {
-      return response.map((document: Document) =>
-        this.changePlainObjectToInstance(document, classToIntercept),
+      return response.map((item: PlainLiteralObject) =>
+        this.transformToInstance(item, classToIntercept),
       );
     }
-    return this.changePlainObjectToInstance(response, classToIntercept);
+    return this.transformToInstance(response, classToIntercept);
   }
 
   public intercept(
@@ -50,13 +54,12 @@ export class MongooseClassSerializerInterceptor extends ClassSerializerIntercept
       'classToIntercept',
       context.getClass(),
     );
-
     return next
       .handle()
       .pipe(
         map((response) =>
           this.serialize(
-            this.prepareResponse(response, classToIntercept),
+            this.transformResponse(response, classToIntercept),
             this.defaultOptions,
           ),
         ),

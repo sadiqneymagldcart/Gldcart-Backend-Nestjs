@@ -10,7 +10,7 @@ import {
 import { Request } from 'express';
 import { ApiTags, ApiOperation, ApiHeader } from '@nestjs/swagger';
 import { StripeWebhookService } from '@stripe/services/stripe-webhook.service';
-import { StripeService } from '@stripe/services/stripe.service';
+import { StripePaymentService } from '@stripe/services/stripe-payment.service';
 
 @ApiTags('Stripe Webhook')
 @Controller('webhook')
@@ -18,7 +18,7 @@ export class StripeWebhookController {
   private readonly logger = new Logger(StripeWebhookController.name);
 
   public constructor(
-    private readonly stripeService: StripeService,
+    private readonly stripeService: StripePaymentService,
     private readonly stripeWebhookService: StripeWebhookService,
   ) {}
 

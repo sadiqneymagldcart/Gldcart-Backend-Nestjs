@@ -41,7 +41,7 @@ export class AwsStorageService {
   }
 
   public async getUrlAndOriginalNames(
-    files: Express.Multer.File[],
+    files: Array<Express.Multer.File>,
   ): Promise<{ url: string; originalName: string }[]> {
     this.logger.log(
       `Getting URLs and original names for files: ${files.map((file) => file.originalname).join(', ')}`,
