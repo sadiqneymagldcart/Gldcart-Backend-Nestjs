@@ -6,7 +6,7 @@ import { InventoryService } from '@inventory/services/inventory.service';
 import { CreateOrderDto } from '@order/dto/create-order.dto';
 import { OrderStatus } from '@order/enums/order-status.enum';
 import { Order, OrderDocument } from '@order/schemas/order.schema';
-import { StripeService } from '@stripe/services/stripe.service';
+import { StripePaymentService } from '@stripe/services/stripe-payment.service';
 
 @Injectable()
 export class OrderService {
@@ -18,7 +18,7 @@ export class OrderService {
     @InjectModel(Order.name) private readonly orderModel: Model<OrderDocument>,
     private readonly inventoryService: InventoryService,
     private readonly emailService: EmailService,
-    private readonly stripeService: StripeService,
+    private readonly stripeService: StripePaymentService,
   ) {}
 
   public async placeOrder(

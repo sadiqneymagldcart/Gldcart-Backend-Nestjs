@@ -2,7 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Nullable } from '@shared/types/common';
-import { StripeService } from '@stripe/services/stripe.service';
+import { StripePaymentService } from '@stripe/services/stripe-payment.service';
 import { CreateUserDto } from '@user/dto/create-user.dto';
 import { UpdateUserDto } from '@user/dto/update-user.dto';
 import { CreateAddressDto } from '@address/dto/create-address.dto';
@@ -17,7 +17,7 @@ export class UserService {
   public constructor(
     @InjectModel(User.name)
     private readonly userModel: Model<UserDocument>,
-    private readonly stripeService: StripeService,
+    private readonly stripeService: StripePaymentService,
   ) {}
 
   public async createUser(userData: CreateUserDto): Promise<User> {
