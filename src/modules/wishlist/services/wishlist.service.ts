@@ -18,12 +18,14 @@ export class WishlistService implements IWishlistService {
   public async getWishlistByUserId(userId: string): Promise<Wishlist> {
     this.logger.log(`Fetching wishlist for user with ID: ${userId}`);
     const wishlist = await this.wishlistModel.findOne({ customer: userId });
+
     if (!wishlist) {
       this.logger.warn(`No wishlists found for user with ID: ${userId}`);
       throw new NotFoundException(
         `No wishlists found for user with id ${userId}`,
       );
     }
+
     this.logger.log(`Fetched wishlist for user with ID: ${userId}`);
     return wishlist;
   }
@@ -31,10 +33,12 @@ export class WishlistService implements IWishlistService {
   public async getWishlistById(id: string): Promise<Wishlist> {
     this.logger.log(`Fetching wishlist with ID: ${id}`);
     const wishlist = await this.wishlistModel.findById(id);
+
     if (!wishlist) {
       this.logger.warn(`Wishlist with ID ${id} not found`);
       throw new NotFoundException(`Wishlist with ID ${id} not found`);
     }
+
     this.logger.log(`Fetched wishlist with ID: ${id}`);
     return wishlist;
   }
@@ -116,10 +120,12 @@ export class WishlistService implements IWishlistService {
   public async removeWishlist(id: string): Promise<Wishlist> {
     this.logger.log(`Removing wishlist with ID: ${id}`);
     const result = await this.wishlistModel.findByIdAndDelete(id);
+
     if (!result) {
       this.logger.warn(`Wishlist with ID ${id} not found`);
       throw new NotFoundException(`Wishlist with ID ${id} not found`);
     }
+
     this.logger.log(`Removed wishlist with ID: ${id}`);
     return result;
   }
@@ -127,10 +133,12 @@ export class WishlistService implements IWishlistService {
   private async getByIdOrThrow(id: string): Promise<WishlistDocument> {
     this.logger.log(`Fetching wishlist with ID: ${id}`);
     const wishlist = await this.wishlistModel.findById(id);
+
     if (!wishlist) {
       this.logger.warn(`Wishlist with ID ${id} not found`);
       throw new NotFoundException(`Wishlist with ID ${id} not found`);
     }
+
     this.logger.log(`Fetched wishlist with ID: ${id}`);
     return wishlist;
   }
