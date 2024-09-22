@@ -2,14 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateRentingDto {
   @ApiProperty({
-    description: 'The price of the product',
+    description: 'The price of the renting',
     example: 100,
   })
   price: number;
 
   @ApiProperty({
-    description: 'The name of the product',
-    example: 'Sample Product',
+    description: 'The name of the renting',
+    example: 'Sample Renting',
   })
   name: string;
 
