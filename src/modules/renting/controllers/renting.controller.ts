@@ -112,8 +112,12 @@ export class RentingController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRentingDto: UpdateRentingDto) {
-    return this.rentingService.update(+id, updateRentingDto);
+  @ApiOperation({ summary: 'Update a renting by ID' })
+  public async update(
+    @Param('id') id: string,
+    @Body() renting: UpdateRentingDto,
+  ) {
+    return this.rentingService.updateRenting(+id, renting);
   }
 
   @Delete(':id')

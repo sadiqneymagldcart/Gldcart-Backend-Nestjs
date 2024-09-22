@@ -58,8 +58,20 @@ export class RentingService {
     );
   }
 
-  public update(id: number, updateRentingDto: UpdateRentingDto) {
-    return `This action updates a #${id} renting`;
+  public async updateRenting(
+    id: number,
+    updateRentingDto: UpdateRentingDto,
+  ): Promise<Renting> {
+    const existingRenting = await this.rentingModel.findByIdAndUpdate(
+      id,
+      updateRentingDto,
+      { new: true },
+    );
+
+    if (!existingRenting)
+      throw new NotFoundException(`Renting with ID ${id} not found`);
+
+    return existingRenting;
   }
 
   public remove(id: number) {
