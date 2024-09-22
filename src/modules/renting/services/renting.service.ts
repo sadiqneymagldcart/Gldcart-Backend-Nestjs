@@ -1,11 +1,20 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { CreateRentingDto } from '@renting/dto/create-renting.dto';
 import { UpdateRentingDto } from '@renting/dto/update-renting.dto';
+import { Renting, RentingDocument } from '@renting/schemas/renting.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class RentingService {
-  public create(createRentingDto: CreateRentingDto) {
-    return 'This action adds a new renting';
+  public constructor(
+    @InjectModel(Renting.name)
+    private readonly rentingModel: Model<RentingDocument>,
+  ) {}
+
+  public async create(createRentingDto: CreateRentingDto): Promise<Renting> {
+    const createdRent = new this.rentingModel(createRentingDto);
+    return createdRent.save();
   }
 
   public getAll() {
