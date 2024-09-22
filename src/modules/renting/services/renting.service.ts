@@ -74,7 +74,9 @@ export class RentingService {
     return existingRenting;
   }
 
-  public remove(id: number) {
-    return `This action removes a #${id} renting`;
+  public async remove(id: number) {
+    const result = await this.rentingModel.findByIdAndDelete(id);
+
+    if (!result) throw new NotFoundException(`Renting with ID ${id} not found`);
   }
 }
