@@ -82,6 +82,9 @@
       "@inventory/*": [
         "src/modules/inventory/*"
       ],
+      "@verification/*": [
+        "src/modules/verification/*"
+      ],
       "@shared/*": [
         "src/shared/*"
       ],
@@ -99,4 +102,5 @@
       ]
     }
   }
+
 }

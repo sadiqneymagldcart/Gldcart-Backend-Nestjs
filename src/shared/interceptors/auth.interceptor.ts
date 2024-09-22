@@ -11,7 +11,7 @@ import { AuthResponseDto } from '@auth/dto/auth-response.dto';
 import { setRefreshTokenCookie } from '@common/utils/auth-response.util';
 
 export class AuthInterceptor implements NestInterceptor {
-  private readonly logger: Logger = new Logger(AuthInterceptor.name);
+  private readonly logger = new Logger(AuthInterceptor.name);
 
   public intercept(
     context: ExecutionContext,

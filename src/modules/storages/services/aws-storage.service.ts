@@ -7,12 +7,17 @@ export class AwsStorageService {
   private readonly logger = new Logger(AwsStorageService.name);
 
   private readonly s3: S3Client;
-  private readonly bucketName = this.configService.get('AWS_BUCKET_NAME');
-  private readonly bucketRegion = this.configService.get('AWS_BUCKET_REGION');
-  private readonly accessKey = this.configService.get('AWS_ACCESS_KEY');
-  private readonly secretKey = this.configService.get('AWS_SECRET_KEY');
+  private readonly bucketName: string;
+  private readonly bucketRegion: string;
+  private readonly accessKey: string;
+  private readonly secretKey: string;
 
   public constructor(private readonly configService: ConfigService) {
+    this.bucketName = this.configService.get<string>('AWS_BUCKET_NAME');
+    this.bucketRegion = this.configService.get<string>('AWS_BUCKET_REGION');
+    this.accessKey = this.configService.get<string>('AWS_ACCESS_KEY');
+    this.secretKey = this.configService.get<string>('AWS_SECRET_KEY');
+
     this.s3 = new S3Client({
       region: this.bucketRegion,
       credentials: {
