@@ -117,12 +117,12 @@ export class RentingController {
     @Param('id') id: string,
     @Body() renting: UpdateRentingDto,
   ) {
-    return this.rentingService.updateRenting(+id, renting);
+    return this.rentingService.updateRenting(id, renting);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a renting by ID' })
   public async remove(@Param('id') id: string): Promise<void> {
-    return this.rentingService.remove(+id);
+    return this.rentingService.remove(id);
   }
 }
