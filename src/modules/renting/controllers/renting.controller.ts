@@ -97,7 +97,7 @@ export class RentingController {
     @Query('text') text: string,
   ) {
     this.logger.debug(
-      `Getting products with filters: ${JSON.stringify(filters)} and pagination: ${JSON.stringify(pagination)}`,
+      `Getting rentings with filters: ${JSON.stringify(filters)} and pagination: ${JSON.stringify(pagination)}`,
     );
 
     if (text)
@@ -106,7 +106,8 @@ export class RentingController {
   }
 
   @Get(':id')
-  getRenting(@Param('id') id: string) {
+  @ApiOperation({ summary: 'Get a rent by ID' })
+  public async getRentingById(@Param('id') id: string): Promise<Renting> {
     return this.rentingService.getRentingById(id);
   }
 
