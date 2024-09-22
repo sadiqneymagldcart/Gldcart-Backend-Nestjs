@@ -59,7 +59,7 @@ export class RentingService {
   }
 
   public async updateRenting(
-    id: number,
+    id: string,
     updateRentingDto: UpdateRentingDto,
   ): Promise<Renting> {
     const existingRenting = await this.rentingModel.findByIdAndUpdate(
@@ -74,7 +74,7 @@ export class RentingService {
     return existingRenting;
   }
 
-  public async remove(id: number) {
+  public async remove(id: string) {
     const result = await this.rentingModel.findByIdAndDelete(id);
 
     if (!result) throw new NotFoundException(`Renting with ID ${id} not found`);
