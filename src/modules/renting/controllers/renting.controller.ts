@@ -121,7 +121,8 @@ export class RentingController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  @ApiOperation({ summary: 'Delete a renting by ID' })
+  public async remove(@Param('id') id: string): Promise<void> {
     return this.rentingService.remove(+id);
   }
 }
