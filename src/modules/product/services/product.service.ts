@@ -8,6 +8,7 @@ import { SearchService } from '@search/services/search.service';
 import { Pagination } from '@shared/decorators/pagination.decorator';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { clearCacheKeys } from '@shared/cache/clear.cache';
 
 @Injectable()
 export class ProductService {
@@ -20,34 +21,11 @@ export class ProductService {
     this.searchService = new SearchService<ProductDocument>(productModel);
   }
 
-  public async getCacheKeys(): Promise<string[]> {
-    const redisStore: any = this.cacheManager.store;
-
-    // Execute Redis 'keys' command to get all keys
-    return new Promise((resolve, reject) => {
-      redisStore.keys('*', (err, keys) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(keys);
-      });
-    });
-  }
-
-  public async clearCacheKeys(): Promise<void> {
-    const keys = await this.getCacheKeys();
-    keys.forEach(async (key: string) => await this.cacheManager.del(key));
-  }
-
   public async createProduct(
     createProductDto: CreateProductDto,
   ): Promise<Product> {
     const createdProduct = new this.productModel(createProductDto);
-    const savedProduct = await createdProduct.save();
-
-    await this.clearCacheKeys();
-
-    return savedProduct;
+    return createdProduct.save();
   }
 
   public async getAllProducts(): Promise<Product[]> {
@@ -68,10 +46,6 @@ export class ProductService {
       [key: string]: any;
     } = {},
   ): Promise<Product[]> {
-    const cachedProducts = await this.cacheManager.get<Product[]>('products');
-
-    console.log('Cache Products : ', cachedProducts);
-
     return this.searchService.searchWithPaginationAndFilters(
       pagination,
       filters,
@@ -120,6 +94,6 @@ export class ProductService {
     if (!result) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
-    await this.clearCacheKeys();
+    await clearCacheKeys(this.cacheManager);
   }
 }

@@ -1,10 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateRentingDto } from '@renting/dto/create-renting.dto';
 import { UpdateRentingDto } from '@renting/dto/update-renting.dto';
 import { Renting, RentingDocument } from '@renting/schemas/renting.schema';
 import { SearchService } from '@search/services/search.service';
+import { clearCacheKeys } from '@shared/cache/clear.cache';
 import { Pagination } from '@shared/decorators/pagination.decorator';
+import { Cache } from 'cache-manager';
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -14,6 +17,7 @@ export class RentingService {
   public constructor(
     @InjectModel(Renting.name)
     private readonly rentingModel: Model<RentingDocument>,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {
     this.searchService = new SearchService<RentingDocument>(rentingModel);
   }
@@ -78,5 +82,7 @@ export class RentingService {
     const result = await this.rentingModel.findByIdAndDelete(id);
 
     if (!result) throw new NotFoundException(`Renting with ID ${id} not found`);
+
+    await clearCacheKeys(this.cacheManager);
   }
 }
