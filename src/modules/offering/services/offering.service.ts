@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { SearchService } from '@search/services/search.service';
@@ -6,6 +6,9 @@ import { Pagination } from '@shared/decorators/pagination.decorator';
 import { Offering, OfferingDocument } from '@offering/schemas/offering.schema';
 import { CreateOfferingDto } from '@offering/dto/create-offering.dto';
 import { UpdateOfferingDto } from '@offering/dto/update-offering.dto';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { clearCacheKeys } from '@shared/cache/clear.cache';
 
 @Injectable()
 export class OfferingService {
@@ -15,6 +18,7 @@ export class OfferingService {
 
   public constructor(
     @InjectModel(Offering.name) private offeringModel: Model<OfferingDocument>,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {
     this.searchService = new SearchService<OfferingDocument>(offeringModel);
   }
@@ -26,6 +30,7 @@ export class OfferingService {
     const newOffering = new this.offeringModel(createOfferingDto);
     const savedOffering = await newOffering.save();
     this.logger.log(`Offering created with ID: ${savedOffering._id}`);
+
     return savedOffering;
   }
 
@@ -93,6 +98,9 @@ export class OfferingService {
       this.logger.warn(`Offering with ID ${id} not found`);
       throw new NotFoundException(`Offering with ID ${id} not found`);
     }
+
+    await clearCacheKeys(this.cacheManager);
+
     this.logger.log(`Offering with ID ${id} removed`);
   }
 }
