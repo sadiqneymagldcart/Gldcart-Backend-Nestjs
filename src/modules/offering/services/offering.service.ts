@@ -31,6 +31,8 @@ export class OfferingService {
     const savedOffering = await newOffering.save();
     this.logger.log(`Offering created with ID: ${savedOffering._id}`);
 
+    await clearCacheKeys(this.cacheManager);
+
     return savedOffering;
   }
 

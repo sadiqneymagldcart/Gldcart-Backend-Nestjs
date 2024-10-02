@@ -25,6 +25,7 @@ export class ProductService {
     createProductDto: CreateProductDto,
   ): Promise<Product> {
     const createdProduct = new this.productModel(createProductDto);
+    await clearCacheKeys(this.cacheManager);
     return createdProduct.save();
   }
 
