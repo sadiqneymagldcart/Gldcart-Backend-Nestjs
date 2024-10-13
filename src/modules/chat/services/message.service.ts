@@ -12,7 +12,9 @@ export class MessageService {
   ) {}
 
   public async createMessage(message: CreateMessageDto): Promise<Message> {
-    return this.messageModel.create(message);
+    const new_message = new this.messageModel(message);
+
+    return new_message.save();
   }
 
   public async getChatMessages(chatId: string): Promise<Message[]> {
