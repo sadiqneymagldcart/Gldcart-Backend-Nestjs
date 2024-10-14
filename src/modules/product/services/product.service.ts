@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateProductDto } from '@product/dto/create-product.dto';
@@ -6,6 +6,9 @@ import { UpdateProductDto } from '@product/dto/update-product.dto';
 import { Product, ProductDocument } from '@product/schemas/product.schema';
 import { SearchService } from '@search/services/search.service';
 import { Pagination } from '@shared/decorators/pagination.decorator';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { clearCacheKeys } from '@shared/cache/clear.cache';
 
 @Injectable()
 export class ProductService {
@@ -13,6 +16,7 @@ export class ProductService {
   public constructor(
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {
     this.searchService = new SearchService<ProductDocument>(productModel);
   }
@@ -21,6 +25,7 @@ export class ProductService {
     createProductDto: CreateProductDto,
   ): Promise<Product> {
     const createdProduct = new this.productModel(createProductDto);
+    await clearCacheKeys(this.cacheManager);
     return createdProduct.save();
   }
 
@@ -90,5 +95,6 @@ export class ProductService {
     if (!result) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
+    await clearCacheKeys(this.cacheManager);
   }
 }

@@ -28,3 +28,12 @@ export class Renting {
 }
 
 export const RentingSchema = SchemaFactory.createForClass(Renting);
+
+RentingSchema.index({
+  name: 'text',
+  category: 'text',
+  description: 'text',
+  subcategory: 'text',
+});
+
+RentingSchema.index({ name: 1 });
